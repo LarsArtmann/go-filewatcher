@@ -18,38 +18,38 @@ A well-architected file watcher SDK wrapping `fsnotify` with composable filters,
 
 ## Quality Gates
 
-| Gate                    | Status  | Details                                      |
-| ----------------------- | ------- | -------------------------------------------- |
-| All tests passing       | ✅ 46/46 | `go test -race -count=1 ./...` passes clean  |
-| Race detector clean     | ✅      | No data races detected by `-race` flag       |
-| `go vet` clean          | ✅      | No issues                                    |
-| Build clean             | ✅      | `go build ./...` succeeds                    |
-| Coverage                | ⚠️ 84.8% | Down from reported 86.1% — below 90% target  |
-| Critical bugs           | ❌ 4     | See section D                                |
-| Linter config           | ✅      | `.golangci.yml` with 55+ linters             |
-| Dependencies minimal    | ✅      | Only `fsnotify` + `cockroachdb/errors`       |
+| Gate                 | Status   | Details                                     |
+| -------------------- | -------- | ------------------------------------------- |
+| All tests passing    | ✅ 46/46 | `go test -race -count=1 ./...` passes clean |
+| Race detector clean  | ✅       | No data races detected by `-race` flag      |
+| `go vet` clean       | ✅       | No issues                                   |
+| Build clean          | ✅       | `go build ./...` succeeds                   |
+| Coverage             | ⚠️ 84.8% | Down from reported 86.1% — below 90% target |
+| Critical bugs        | ❌ 4     | See section D                               |
+| Linter config        | ✅       | `.golangci.yml` with 55+ linters            |
+| Dependencies minimal | ✅       | Only `fsnotify` + `cockroachdb/errors`      |
 
 ---
 
 ## File Inventory
 
-| File                 | Lines | Purpose                                                        | Coverage |
-| -------------------- | ----- | -------------------------------------------------------------- | -------- |
-| `watcher.go`         | 433   | Core: `New()`, `Watch(ctx)→<-chan Event`, `Add()`, `Close()`   | ~85%     |
-| `options.go`         | 83    | 9 functional options                                           | 100%     |
-| `filter.go`          | 149   | 11 composable filters (Extensions, IgnoreDirs, Hidden, Glob…)  | 80-100%  |
-| `debouncer.go`       | 119   | Per-key `Debouncer` + `GlobalDebouncer`                        | 66-100%  |
-| `middleware.go`      | 131   | 7 middleware (Logging, Recovery, RateLimit, Metrics…)           | 0-100%   |
-| `errors.go`          | 15    | 4 sentinel errors with `cockroachdb/errors`                    | 100%     |
-| `event.go`           | 51    | `Op` type (Create/Write/Remove/Rename) + `Event` struct        | 100%     |
-| `doc.go`             | 61    | Package documentation with examples                            | N/A      |
-| **Source total**     | **1042** |                                                                |          |
-| `watcher_test.go`    | 557   | 14 integration tests (real filesystem)                         |          |
-| `filter_test.go`     | 243   | 18 unit tests (table-driven)                                   |          |
-| `debouncer_test.go`  | 143   | 8 unit tests (concurrent-safe)                                 |          |
-| `middleware_test.go`  | 217   | 10 unit tests                                                  |          |
-| **Test total**       | **1160** |                                                                |          |
-| **Grand total**      | **2202** |                                                                |          |
+| File                 | Lines    | Purpose                                                       | Coverage |
+| -------------------- | -------- | ------------------------------------------------------------- | -------- |
+| `watcher.go`         | 433      | Core: `New()`, `Watch(ctx)→<-chan Event`, `Add()`, `Close()`  | ~85%     |
+| `options.go`         | 83       | 9 functional options                                          | 100%     |
+| `filter.go`          | 149      | 11 composable filters (Extensions, IgnoreDirs, Hidden, Glob…) | 80-100%  |
+| `debouncer.go`       | 119      | Per-key `Debouncer` + `GlobalDebouncer`                       | 66-100%  |
+| `middleware.go`      | 131      | 7 middleware (Logging, Recovery, RateLimit, Metrics…)         | 0-100%   |
+| `errors.go`          | 15       | 4 sentinel errors with `cockroachdb/errors`                   | 100%     |
+| `event.go`           | 51       | `Op` type (Create/Write/Remove/Rename) + `Event` struct       | 100%     |
+| `doc.go`             | 61       | Package documentation with examples                           | N/A      |
+| **Source total**     | **1042** |                                                               |          |
+| `watcher_test.go`    | 557      | 14 integration tests (real filesystem)                        |          |
+| `filter_test.go`     | 243      | 18 unit tests (table-driven)                                  |          |
+| `debouncer_test.go`  | 143      | 8 unit tests (concurrent-safe)                                |          |
+| `middleware_test.go` | 217      | 10 unit tests                                                 |          |
+| **Test total**       | **1160** |                                                               |          |
+| **Grand total**      | **2202** |                                                               |          |
 
 ---
 
@@ -98,15 +98,15 @@ A well-architected file watcher SDK wrapping `fsnotify` with composable filters,
 
 ### Test Coverage — 84.8% (Target: 90%+)
 
-| Function                 | Coverage | Why Missing                                    |
-| ------------------------ | -------- | ---------------------------------------------- |
+| Function                 | Coverage | Why Missing                                                                 |
+| ------------------------ | -------- | --------------------------------------------------------------------------- |
 | `MiddlewareLogging`      | ~0%      | Test exists but only tests the middleware mechanics, not the logging output |
-| `MiddlewareWriteFileLog` | 0%       | File-based logging middleware not tested at all |
-| `handleError`            | 0%       | Default stderr error path never exercised       |
-| `watchLoop`              | ~60%     | Error channel branch not covered                |
-| `addPath`                | ~68%     | Some walk error paths not covered               |
-| `NewGlobalDebouncer`     | ~66%     | Default delay fallback branch not covered       |
-| `shouldSkipDir`          | ~70%     | DefaultIgnoreDirs branch partially covered      |
+| `MiddlewareWriteFileLog` | 0%       | File-based logging middleware not tested at all                             |
+| `handleError`            | 0%       | Default stderr error path never exercised                                   |
+| `watchLoop`              | ~60%     | Error channel branch not covered                                            |
+| `addPath`                | ~68%     | Some walk error paths not covered                                           |
+| `NewGlobalDebouncer`     | ~66%     | Default delay fallback branch not covered                                   |
+| `shouldSkipDir`          | ~70%     | DefaultIgnoreDirs branch partially covered                                  |
 
 ### Documentation
 
@@ -146,6 +146,7 @@ A well-architected file watcher SDK wrapping `fsnotify` with composable filters,
 ## D) TOTALLY FUCKED UP
 
 ### 🔴 Critical Bug #1: `MiddlewareRateLimit` — Data Race
+
 **File:** `middleware.go:56-63`
 
 ```go
@@ -161,6 +162,7 @@ The closure captures `lastEvent` by reference. If the handler is invoked concurr
 **Fix:** Use `sync.Mutex` or `atomic.Int64` (store `time.Now().UnixNano()`).
 
 ### 🔴 Critical Bug #2: `Debouncer.Flush()` Lies About Its Behavior
+
 **File:** `debouncer.go:49-57`
 
 ```go
@@ -179,6 +181,7 @@ The doc comment says "executes all pending functions immediately." It does **not
 **Fix:** Either (a) store the `fn` closures alongside timers and call them before deleting, or (b) rename to `CancelAll()` and fix the doc comment.
 
 ### 🔴 Critical Bug #3: No Guard Against Multiple `Watch()` Calls
+
 **File:** `watcher.go:130-150`
 
 ```go
@@ -197,6 +200,7 @@ Calling `Watch()` twice creates **two `watchLoop` goroutines** reading from the 
 **Fix:** Add `watching bool` field, set it in `Watch()`, check it, clear it in `Close()`.
 
 ### 🔴 Critical Bug #4: `Add()` Uses `RLock` but Mutates `fswatcher`
+
 **File:** `watcher.go:153-167`
 
 ```go
@@ -213,6 +217,7 @@ func (w *Watcher) Add(path string) error {
 **Fix:** Change `Add()` to use `w.mu.Lock()` instead of `w.mu.RLock()`.
 
 ### 🟡 Medium Bug #5: `convertEvent` Loses Combined Operations
+
 **File:** `watcher.go:412-433`
 
 `fsnotify` reports ops as bitmasks (e.g., `Create|Write`). The `switch` picks only the first matching case. A `Create|Write` becomes just `Create`, silently discarding `Write`. fsnotify explicitly documents that `Create` may be followed by `Write` events, and combined ops are possible.
@@ -220,6 +225,7 @@ func (w *Watcher) Add(path string) error {
 **Fix:** Either emit multiple `Event`s for combined ops, or document the priority order (Create > Write > Remove > Rename).
 
 ### 🟡 Medium Bug #6: Middleware Errors Silently Discarded
+
 **File:** `watcher.go:342`
 
 ```go
@@ -231,6 +237,7 @@ Errors from middleware (including `MiddlewareRecovery` returning panic-recovery 
 **Fix:** Propagate errors through the handler chain, dispatch to `errorHandler` if non-nil.
 
 ### 🟡 Medium Bug #7: Events Silently Dropped on Full Channel
+
 **File:** `watcher.go:311`
 
 ```go
@@ -243,6 +250,7 @@ Under heavy filesystem activity, events vanish with zero indication — no loggi
 **Fix:** At minimum, log a warning. Better: add a `dropped` counter exposed via `Stats()`.
 
 ### 🟡 Design Issue #8: `shouldSkipDir` Hardcodes Dot-Dir Skipping
+
 **File:** `watcher.go:243-248`
 
 ```go
@@ -256,6 +264,7 @@ Dot-directories are **always skipped during tree walking**, even if the user wan
 **Fix:** Add `WithSkipDotDirs(bool)` option (default: true for backward compat).
 
 ### 🟡 Design Issue #9: `debounceInterface` is `interface{}`
+
 **File:** `watcher.go:61-64`
 
 Using an untyped `interface{}` in a Go library that otherwise embraces strong types is inconsistent. The `getDebounceKey` method (`watcher.go:361-366`) uses a fragile type assertion against `*Debouncer` — any custom debouncer implementation would silently break per-path debouncing.
@@ -268,75 +277,75 @@ Using an untyped `interface{}` in a Go library that otherwise embraces strong ty
 
 ### P0 — Before Any Use (Critical Fixes)
 
-| #   | Task                                                 | Effort | File(s)            |
-| --- | ---------------------------------------------------- | ------ | ------------------ |
-| 1   | Fix `MiddlewareRateLimit` data race                  | 5min   | `middleware.go`    |
-| 2   | Fix `Debouncer.Flush()` to actually execute pending  | 10min  | `debouncer.go`     |
-| 3   | Add `watching` guard to prevent double `Watch()`     | 5min   | `watcher.go`       |
-| 4   | Change `Add()` from `RLock` to `Lock`               | 2min   | `watcher.go`       |
-| 5   | Propagate middleware errors instead of discarding    | 10min  | `watcher.go`       |
+| #   | Task                                                | Effort | File(s)         |
+| --- | --------------------------------------------------- | ------ | --------------- |
+| 1   | Fix `MiddlewareRateLimit` data race                 | 5min   | `middleware.go` |
+| 2   | Fix `Debouncer.Flush()` to actually execute pending | 10min  | `debouncer.go`  |
+| 3   | Add `watching` guard to prevent double `Watch()`    | 5min   | `watcher.go`    |
+| 4   | Change `Add()` from `RLock` to `Lock`               | 2min   | `watcher.go`    |
+| 5   | Propagate middleware errors instead of discarding   | 10min  | `watcher.go`    |
 
 ### P1 — Before v0.1.0 (Important)
 
-| #   | Task                                                  | Effort | File(s)            |
-| --- | ----------------------------------------------------- | ------ | ------------------ |
-| 6   | Extract `debounceInterface` to named Go interface     | 10min  | `watcher.go`       |
-| 7   | Add `WithBuffer(size int)` option                     | 5min   | `options.go`       |
-| 8   | Add `WithSkipDotDirs(bool)` option                    | 5min   | `options.go`, `watcher.go` |
-| 9   | Add `Remove(path)` method                             | 15min  | `watcher.go`       |
-| 10  | Add `WatchList() []string` method                     | 10min  | `watcher.go`       |
-| 11  | Add `FilterRegex(pattern)` filter                     | 10min  | `filter.go`        |
-| 12  | Log or count dropped events on full channel           | 10min  | `watcher.go`       |
-| 13  | Raise test coverage to 90%+                           | 30min  | `*_test.go`        |
-| 14  | Add benchmark tests for Debouncer                     | 20min  | `debouncer_test.go`|
-| 15  | Add `Example*` test functions for godoc               | 20min  | `*_test.go`        |
-| 16  | Document combined-op priority in `convertEvent`       | 2min   | `watcher.go`       |
-| 17  | Formalize `io.Closer` interface compliance            | 2min   | `watcher.go`       |
+| #   | Task                                              | Effort | File(s)                    |
+| --- | ------------------------------------------------- | ------ | -------------------------- |
+| 6   | Extract `debounceInterface` to named Go interface | 10min  | `watcher.go`               |
+| 7   | Add `WithBuffer(size int)` option                 | 5min   | `options.go`               |
+| 8   | Add `WithSkipDotDirs(bool)` option                | 5min   | `options.go`, `watcher.go` |
+| 9   | Add `Remove(path)` method                         | 15min  | `watcher.go`               |
+| 10  | Add `WatchList() []string` method                 | 10min  | `watcher.go`               |
+| 11  | Add `FilterRegex(pattern)` filter                 | 10min  | `filter.go`                |
+| 12  | Log or count dropped events on full channel       | 10min  | `watcher.go`               |
+| 13  | Raise test coverage to 90%+                       | 30min  | `*_test.go`                |
+| 14  | Add benchmark tests for Debouncer                 | 20min  | `debouncer_test.go`        |
+| 15  | Add `Example*` test functions for godoc           | 20min  | `*_test.go`                |
+| 16  | Document combined-op priority in `convertEvent`   | 2min   | `watcher.go`               |
+| 17  | Formalize `io.Closer` interface compliance        | 2min   | `watcher.go`               |
 
 ### P2 — Before v1.0 (Nice to Have)
 
-| #   | Task                                                  | Effort |
-| --- | ----------------------------------------------------- | ------ |
-| 18  | `Stats()` method (event counts, uptime, last event)   | 20min  |
-| 19  | Stress test with 10k+ files                           | 30min  |
-| 20  | `examples/` directory with standalone programs         | 30min  |
-| 21  | Set up GitHub Actions CI                               | 20min  |
-| 22  | Create justfile or Makefile                            | 10min  |
-| 23  | Integrate in a real project to validate API            | 1hr    |
-| 24  | `FilterMinSize(size int64)` filter                     | 10min  |
-| 25  | Tag v0.1.0 after all P0/P1 items done                 | 2min   |
+| #   | Task                                                | Effort |
+| --- | --------------------------------------------------- | ------ |
+| 18  | `Stats()` method (event counts, uptime, last event) | 20min  |
+| 19  | Stress test with 10k+ files                         | 30min  |
+| 20  | `examples/` directory with standalone programs      | 30min  |
+| 21  | Set up GitHub Actions CI                            | 20min  |
+| 22  | Create justfile or Makefile                         | 10min  |
+| 23  | Integrate in a real project to validate API         | 1hr    |
+| 24  | `FilterMinSize(size int64)` filter                  | 10min  |
+| 25  | Tag v0.1.0 after all P0/P1 items done               | 2min   |
 
 ---
 
 ## F) Top 25 Things to Do Next
 
-| #   | Task                                                             | Priority | Effort | Status      |
-| --- | ---------------------------------------------------------------- | -------- | ------ | ----------- |
-| 1   | Fix `MiddlewareRateLimit` data race (use `sync.Mutex` or atomic) | P0       | 5min   | Not started |
-| 2   | Fix `Debouncer.Flush()` — execute pending fns, not cancel them   | P0       | 10min  | Not started |
-| 3   | Add `watching bool` guard against double `Watch()` calls         | P0       | 5min   | Not started |
-| 4   | Change `Add()` from `RLock` to `Lock` (mutation needs write lock)| P0       | 2min   | Not started |
-| 5   | Propagate middleware errors, don't discard with `_ =`            | P0       | 10min  | Not started |
-| 6   | Extract `debounceInterface` to named interface                   | P1       | 10min  | Not started |
-| 7   | Add `WithBuffer(size int)` option (configurable channel buffer)  | P1       | 5min   | Not started |
-| 8   | Add `WithSkipDotDirs(bool)` option                               | P1       | 5min   | Not started |
-| 9   | Add `Remove(path)` method to stop watching a directory           | P1       | 15min  | Not started |
-| 10  | Add `WatchList() []string` method                                | P1       | 10min  | Not started |
-| 11  | Add `FilterRegex(pattern string)` filter                         | P1       | 10min  | Not started |
-| 12  | Log/count dropped events when channel buffer is full             | P1       | 10min  | Not started |
-| 13  | Raise coverage to 90%+ (middleware, error paths)                 | P1       | 30min  | Not started |
-| 14  | Add benchmark tests for Debouncer                                | P1       | 20min  | Not started |
-| 15  | Add `Example*` test functions for godoc                          | P1       | 20min  | Not started |
-| 16  | Document combined-op priority in `convertEvent`                  | P1       | 2min   | Not started |
-| 17  | Formalize `io.Closer` compliance: `var _ io.Closer = (*Watcher)(nil)` | P1 | 2min   | Not started |
-| 18  | Add `Stats()` method (event counts, uptime, last event)          | P2       | 20min  | Not started |
-| 19  | Stress test with 10k+ files                                      | P2       | 30min  | Not started |
-| 20  | Add `examples/` directory with standalone programs                | P2       | 30min  | Not started |
-| 21  | Set up GitHub Actions CI                                         | P2       | 20min  | Not started |
-| 22  | Create justfile or Makefile                                      | P2       | 10min  | Not started |
-| 23  | Integrate in a real project (hierarchical-errors, Kernovia, etc.)| P2       | 1hr    | Not started |
-| 24  | Add `FilterMinSize(size int64)` filter                           | P3       | 10min  | Not started |
-| 25  | Tag v0.1.0 after all P0/P1 items complete                        | P3       | 2min   | Not started |
+| #   | Task                                                                  | Priority | Effort | Status      |
+| --- | --------------------------------------------------------------------- | -------- | ------ | ----------- |
+| 1   | Fix `MiddlewareRateLimit` data race (use `sync.Mutex` or atomic)      | P0       | 5min   | Not started |
+| 2   | Fix `Debouncer.Flush()` — execute pending fns, not cancel them        | P0       | 10min  | Not started |
+| 3   | Add `watching bool` guard against double `Watch()` calls              | P0       | 5min   | Not started |
+| 4   | Change `Add()` from `RLock` to `Lock` (mutation needs write lock)     | P0       | 2min   | Not started |
+| 5   | Propagate middleware errors, don't discard with `_ =`                 | P0       | 10min  | Not started |
+| 6   | Extract `debounceInterface` to named interface                        | P1       | 10min  | Not started |
+| 7   | Add `WithBuffer(size int)` option (configurable channel buffer)       | P1       | 5min   | Not started |
+| 8   | Add `WithSkipDotDirs(bool)` option                                    | P1       | 5min   | Not started |
+| 9   | Add `Remove(path)` method to stop watching a directory                | P1       | 15min  | Not started |
+| 10  | Add `WatchList() []string` method                                     | P1       | 10min  | Not started |
+| 11  | Add `FilterRegex(pattern string)` filter                              | P1       | 10min  | Not started |
+| 12  | Log/count dropped events when channel buffer is full                  | P1       | 10min  | Not started |
+| 13  | Raise coverage to 90%+ (middleware, error paths)                      | P1       | 30min  | Not started |
+| 14  | Add benchmark tests for Debouncer                                     | P1       | 20min  | Not started |
+| 15  | Add `Example*` test functions for godoc                               | P1       | 20min  | Not started |
+| 16  | Document combined-op priority in `convertEvent`                       | P1       | 2min   | Not started |
+| 17  | Formalize `io.Closer` compliance: `var _ io.Closer = (*Watcher)(nil)` | P1       | 2min   | Not started |
+| 18  | Add `Stats()` method (event counts, uptime, last event)               | P2       | 20min  | Not started |
+| 19  | Stress test with 10k+ files                                           | P2       | 30min  | Not started |
+| 20  | Add `examples/` directory with standalone programs                    | P2       | 30min  | Not started |
+| 21  | Set up GitHub Actions CI                                              | P2       | 20min  | Not started |
+| 22  | Create justfile or Makefile                                           | P2       | 10min  | Not started |
+| 23  | Integrate in a real project (hierarchical-errors, Kernovia, etc.)     | P2       | 1hr    | Not started |
+| 24  | Add `FilterMinSize(size int64)` filter                                | P3       | 10min  | Not started |
+| 25  | Tag v0.1.0 after all P0/P1 items complete                             | P3       | 2min   | Not started |
 
 ---
 
@@ -347,6 +356,7 @@ Using an untyped `interface{}` in a Go library that otherwise embraces strong ty
 fsnotify reports events as bitmasks (e.g., `Create|Write`). The current code picks the first match via `switch` order (Create > Write > Remove > Rename). This means a `Create|Write` silently loses the `Write`.
 
 Three options:
+
 1. **Keep current behavior** — Pick highest-priority op. Simple, but loses information.
 2. **Emit multiple events** — One `Event` per set bit. More accurate, but changes the API contract (one fsnotify event → multiple channel events). Could surprise users.
 3. **Add `Event.Ops` field** — Change `Op` to `Ops []Op` (or use a bitmask like fsnotify). Breaking API change but most accurate.
@@ -357,20 +367,20 @@ This is a semantic API decision that affects every consumer. It can't be made wi
 
 ## Dependencies
 
-| Dependency                      | Version | Type     | Why                                   |
-| ------------------------------- | ------- | -------- | ------------------------------------- |
-| `github.com/fsnotify/fsnotify`  | v1.9.0  | Direct   | Cross-platform file system watching   |
-| `github.com/cockroachdb/errors` | v1.12.0 | Direct   | Error wrapping with stack traces     |
+| Dependency                      | Version | Type   | Why                                 |
+| ------------------------------- | ------- | ------ | ----------------------------------- |
+| `github.com/fsnotify/fsnotify`  | v1.9.0  | Direct | Cross-platform file system watching |
+| `github.com/cockroachdb/errors` | v1.12.0 | Direct | Error wrapping with stack traces    |
 
 ---
 
 ## Bug Severity Summary
 
-| Severity | Count | Items                                        |
-| -------- | ----- | -------------------------------------------- |
-| 🔴 Critical | 4   | Rate-limit race, Flush() lying, double-Watch, RLock mutation |
-| 🟡 Medium   | 5   | Combined ops, error swallowing, silent drops, dot-dirs, type assertion |
-| Total    | 9     |                                              |
+| Severity    | Count | Items                                                                  |
+| ----------- | ----- | ---------------------------------------------------------------------- |
+| 🔴 Critical | 4     | Rate-limit race, Flush() lying, double-Watch, RLock mutation           |
+| 🟡 Medium   | 5     | Combined ops, error swallowing, silent drops, dot-dirs, type assertion |
+| Total       | 9     |                                                                        |
 
 ---
 

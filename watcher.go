@@ -70,8 +70,10 @@ type DebouncerInterface interface {
 }
 
 // Compile-time interface checks.
-var _ DebouncerInterface = (*Debouncer)(nil)
-var _ DebouncerInterface = (*GlobalDebouncer)(nil)
+var (
+	_ DebouncerInterface = (*Debouncer)(nil)
+	_ DebouncerInterface = (*GlobalDebouncer)(nil)
+)
 
 // New creates a new Watcher for the given paths with the specified options.
 // At least one path must be provided. Paths are validated to exist.

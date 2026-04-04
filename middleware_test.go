@@ -19,7 +19,7 @@ func TestMiddlewareLogging(t *testing.T) {
 	}
 
 	handler := mw(func(_ context.Context, _ Event) error { return nil })
-	_ = handler(context.Background(), Event{Path: "test.go", Op: Write})
+	_ = handler(context.Background(), Event{Path: "test.go", Op: Write, Timestamp: time.Now()})
 
 	if got := called.Load(); got != 1 {
 		t.Errorf("expected middleware to be called, got %d", got)
@@ -37,7 +37,7 @@ func TestMiddlewareRecovery(t *testing.T) {
 
 	wrapped := recovery(panicHandler)
 
-	err := wrapped(context.Background(), Event{Path: "test.go", Op: Write})
+	err := wrapped(context.Background(), Event{Path: "test.go", Op: Write, Timestamp: time.Now()})
 	if err == nil {
 		t.Fatal("expected error from recovered panic")
 	}
@@ -54,7 +54,7 @@ func TestMiddlewareRecovery_NoPanic(t *testing.T) {
 
 	wrapped := recovery(normalHandler)
 
-	err := wrapped(context.Background(), Event{Path: "test.go", Op: Write})
+	err := wrapped(context.Background(), Event{Path: "test.go", Op: Write, Timestamp: time.Now()})
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -71,9 +71,18 @@ func TestMiddlewareRateLimit(t *testing.T) {
 		return nil
 	})
 
-	_ = handler(context.Background(), Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()})
-	_ = handler(context.Background(), Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()})
-	_ = handler(context.Background(), Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()})
+	_ = handler(
+		context.Background(),
+		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()},
+	)
+	_ = handler(
+		context.Background(),
+		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()},
+	)
+	_ = handler(
+		context.Background(),
+		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()},
+	)
 
 	if got := count.Load(); got != 1 {
 		t.Errorf("expected 1 call due to rate limiting, got %d", got)
@@ -81,7 +90,10 @@ func TestMiddlewareRateLimit(t *testing.T) {
 
 	time.Sleep(150 * time.Millisecond)
 
-	_ = handler(context.Background(), Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()})
+	_ = handler(
+		context.Background(),
+		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()},
+	)
 
 	if got := count.Load(); got != 2 {
 		t.Errorf("expected 2 calls after rate limit window, got %d", got)
@@ -99,8 +111,8 @@ func TestMiddlewareFilter(t *testing.T) {
 		return nil
 	})
 
-	_ = handler(context.Background(), Event{Path: "test.txt", Op: Write})
-	_ = handler(context.Background(), Event{Path: "test.go", Op: Write})
+	_ = handler(context.Background(), Event{Path: "test.txt", Op: Write, Timestamp: time.Now()})
+	_ = handler(context.Background(), Event{Path: "test.go", Op: Write, Timestamp: time.Now()})
 
 	if got := count.Load(); got != 1 {
 		t.Errorf("expected 1 call (only .go file), got %d", got)
@@ -124,7 +136,7 @@ func TestMiddlewareOnError(t *testing.T) {
 
 	handler := mw(errHandler)
 
-	err := handler(context.Background(), Event{Path: "test.go", Op: Write})
+	err := handler(context.Background(), Event{Path: "test.go", Op: Write, Timestamp: time.Now()})
 	if err == nil {
 		t.Fatal("expected error to propagate")
 	}
@@ -146,9 +158,18 @@ func TestMiddlewareMetrics(t *testing.T) {
 	successHandler := func(_ context.Context, _ Event) error { return nil }
 	handler := mw(successHandler)
 
-	_ = handler(context.Background(), Event{Op: Write})
-	_ = handler(context.Background(), Event{Op: Write})
-	_ = handler(context.Background(), Event{Op: Create})
+	_ = handler(
+		context.Background(),
+		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()},
+	)
+	_ = handler(
+		context.Background(),
+		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()},
+	)
+	_ = handler(
+		context.Background(),
+		Event{Op: Create, Path: "/tmp/test.txt", Timestamp: time.Now()},
+	)
 
 	if metrics[Write] != 2 {
 		t.Errorf("expected 2 Write metrics, got %d", metrics[Write])
@@ -179,7 +200,10 @@ func TestMiddlewareChain(t *testing.T) {
 		),
 	)
 
-	_ = handler(context.Background(), Event{Op: Write})
+	_ = handler(
+		context.Background(),
+		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()},
+	)
 
 	expected := []string{"first", "second", "third"}
 	if len(order) != len(expected) {

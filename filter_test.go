@@ -5,12 +5,29 @@ import (
 	"time"
 )
 
+// runFilterTests is a helper function that runs table-driven filter tests.
+func runFilterTests(t *testing.T, filterName string, f Filter, tests []struct {
+	name  string
+	event Event
+	want  bool
+},
+) {
+	t.Helper()
+	t.Run(filterName, func(t *testing.T) {
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				t.Parallel()
+				if got := f(tt.event); got != tt.want {
+					t.Errorf("%s() = %v, want %v", filterName, got, tt.want)
+				}
+			})
+		}
+	})
+}
+
 func TestFilterExtensions(t *testing.T) {
 	t.Parallel()
-
-	f := FilterExtensions(".go", ".md")
-
-	tests := []struct {
+	runFilterTests(t, "FilterExtensions", FilterExtensions(".go", ".md"), []struct {
 		name  string
 		event Event
 		want  bool
@@ -18,25 +35,17 @@ func TestFilterExtensions(t *testing.T) {
 		{"go file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now()}, true},
 		{"md file", Event{Path: "/tmp/readme.md", Op: Write, Timestamp: time.Now()}, true},
 		{"txt file", Event{Path: "/tmp/notes.txt", Op: Write, Timestamp: time.Now()}, false},
-		{"go file uppercase ext", Event{Path: "/tmp/main.GO", Op: Write, Timestamp: time.Now()}, true},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := f(tt.event); got != tt.want {
-				t.Errorf("FilterExtensions() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+		{
+			"go file uppercase ext",
+			Event{Path: "/tmp/main.GO", Op: Write, Timestamp: time.Now()},
+			true,
+		},
+	})
 }
 
 func TestFilterIgnoreExtensions(t *testing.T) {
 	t.Parallel()
-
-	f := FilterIgnoreExtensions(".log", ".tmp")
-
-	tests := []struct {
+	runFilterTests(t, "FilterIgnoreExtensions", FilterIgnoreExtensions(".log", ".tmp"), []struct {
 		name  string
 		event Event
 		want  bool
@@ -44,76 +53,48 @@ func TestFilterIgnoreExtensions(t *testing.T) {
 		{"go file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now()}, true},
 		{"log file", Event{Path: "/tmp/app.log", Op: Write, Timestamp: time.Now()}, false},
 		{"tmp file", Event{Path: "/tmp/cache.tmp", Op: Write, Timestamp: time.Now()}, false},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := f(tt.event); got != tt.want {
-				t.Errorf("FilterIgnoreExtensions() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	})
 }
 
 func TestFilterIgnoreDirs(t *testing.T) {
 	t.Parallel()
-
-	f := FilterIgnoreDirs("vendor", "node_modules")
-
-	tests := []struct {
+	runFilterTests(t, "FilterIgnoreDirs", FilterIgnoreDirs("vendor", "node_modules"), []struct {
 		name  string
 		event Event
 		want  bool
 	}{
 		{"normal file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now()}, true},
 		{"vendor file", Event{Path: "/tmp/vendor/pkg.go", Op: Write, Timestamp: time.Now()}, false},
-		{"nested vendor", Event{Path: "/tmp/pkg/vendor/lib.go", Op: Write, Timestamp: time.Now()}, false},
-		{"node_modules", Event{Path: "/tmp/node_modules/index.js", Op: Write, Timestamp: time.Now()}, false},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := f(tt.event); got != tt.want {
-				t.Errorf("FilterIgnoreDirs() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+		{
+			"nested vendor",
+			Event{Path: "/tmp/pkg/vendor/lib.go", Op: Write, Timestamp: time.Now()},
+			false,
+		},
+		{
+			"node_modules",
+			Event{Path: "/tmp/node_modules/index.js", Op: Write, Timestamp: time.Now()},
+			false,
+		},
+	})
 }
 
 func TestFilterIgnoreHidden(t *testing.T) {
 	t.Parallel()
-
-	f := FilterIgnoreHidden()
-
-	tests := []struct {
+	runFilterTests(t, "FilterIgnoreHidden", FilterIgnoreHidden(), []struct {
 		name  string
 		event Event
 		want  bool
 	}{
-		{"normal file", Event{Path: "/tmp/main.go", Op: Write}, true},
-		{"hidden file", Event{Path: "/tmp/.hidden", Op: Write}, false},
-		{"hidden dir", Event{Path: "/tmp/.git/config", Op: Write}, false},
-		{"dotfile in name", Event{Path: "/tmp/.env", Op: Write}, false},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := f(tt.event); got != tt.want {
-				t.Errorf("FilterIgnoreHidden() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+		{"normal file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now()}, true},
+		{"hidden file", Event{Path: "/tmp/.hidden", Op: Write, Timestamp: time.Now()}, false},
+		{"hidden dir", Event{Path: "/tmp/.git/config", Op: Write, Timestamp: time.Now()}, false},
+		{"dotfile in name", Event{Path: "/tmp/.env", Op: Write, Timestamp: time.Now()}, false},
+	})
 }
 
 func TestFilterOperations(t *testing.T) {
 	t.Parallel()
-
-	f := FilterOperations(Write, Create)
-
-	tests := []struct {
+	runFilterTests(t, "FilterOperations", FilterOperations(Write, Create), []struct {
 		name  string
 		event Event
 		want  bool
@@ -122,16 +103,7 @@ func TestFilterOperations(t *testing.T) {
 		{"create", Event{Op: Create, Path: "/tmp/test.txt", Timestamp: time.Now()}, true},
 		{"remove", Event{Op: Remove, Path: "/tmp/test.txt", Timestamp: time.Now()}, false},
 		{"rename", Event{Op: Rename, Path: "/tmp/test.txt", Timestamp: time.Now()}, false},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := f(tt.event); got != tt.want {
-				t.Errorf("FilterOperations() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	})
 }
 
 func TestFilterNotOperations(t *testing.T) {
@@ -157,8 +129,8 @@ func TestFilterGlob(t *testing.T) {
 		event Event
 		want  bool
 	}{
-		{"go file", Event{Path: "/tmp/main.go", Op: Write}, true},
-		{"txt file", Event{Path: "/tmp/readme.txt", Op: Write}, false},
+		{"go file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now()}, true},
+		{"txt file", Event{Path: "/tmp/readme.txt", Op: Write, Timestamp: time.Now()}, false},
 	}
 
 	for _, tt := range tests {
@@ -179,13 +151,13 @@ func TestFilterAnd(t *testing.T) {
 		FilterOperations(Write),
 	)
 
-	if !f(Event{Path: "main.go", Op: Write}) {
+	if !f(Event{Path: "main.go", Op: Write, Timestamp: time.Now()}) {
 		t.Error("expected .go Write to pass")
 	}
-	if f(Event{Path: "main.go", Op: Remove}) {
+	if f(Event{Path: "main.go", Op: Remove, Timestamp: time.Now()}) {
 		t.Error("expected .go Remove to be filtered")
 	}
-	if f(Event{Path: "main.txt", Op: Write}) {
+	if f(Event{Path: "main.txt", Op: Write, Timestamp: time.Now()}) {
 		t.Error("expected .txt Write to be filtered")
 	}
 }
@@ -198,13 +170,13 @@ func TestFilterOr(t *testing.T) {
 		FilterExtensions(".md"),
 	)
 
-	if !f(Event{Path: "main.go", Op: Write}) {
+	if !f(Event{Path: "main.go", Op: Write, Timestamp: time.Now()}) {
 		t.Error("expected .go to pass")
 	}
-	if !f(Event{Path: "readme.md", Op: Write}) {
+	if !f(Event{Path: "readme.md", Op: Write, Timestamp: time.Now()}) {
 		t.Error("expected .md to pass")
 	}
-	if f(Event{Path: "main.txt", Op: Write}) {
+	if f(Event{Path: "main.txt", Op: Write, Timestamp: time.Now()}) {
 		t.Error("expected .txt to be filtered")
 	}
 }
@@ -214,10 +186,10 @@ func TestFilterNot(t *testing.T) {
 
 	f := FilterNot(FilterExtensions(".go"))
 
-	if f(Event{Path: "main.go", Op: Write}) {
+	if f(Event{Path: "main.go", Op: Write, Timestamp: time.Now()}) {
 		t.Error("expected .go to be filtered after inversion")
 	}
-	if !f(Event{Path: "main.txt", Op: Write}) {
+	if !f(Event{Path: "main.txt", Op: Write, Timestamp: time.Now()}) {
 		t.Error("expected .txt to pass after inversion")
 	}
 }

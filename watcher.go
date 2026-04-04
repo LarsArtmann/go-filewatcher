@@ -94,9 +94,17 @@ func New(paths []string, opts ...Option) (*Watcher, error) {
 	}
 
 	w := &Watcher{
-		fswatcher: fswatcher,
-		paths:     paths,
-		recursive: true,
+		fswatcher:         fswatcher,
+		paths:             paths,
+		recursive:         true,
+		filters:           nil,
+		middleware:        nil,
+		globalDebounce:    0,
+		perPathDebounce:   0,
+		errorHandler:      nil,
+		mu:                sync.RWMutex{},
+		closed:            false,
+		debounceInterface: nil,
 	}
 
 	for _, opt := range opts {
@@ -204,7 +212,10 @@ func (w *Watcher) addPath(root string) error {
 
 // walkAndAddPaths walks a directory tree and adds all directories to the watcher.
 func (w *Watcher) walkAndAddPaths(root string) error {
-	return filepath.WalkDir(root, w.walkDirFunc)
+	if err := filepath.WalkDir(root, w.walkDirFunc); err != nil {
+		return errors.Wrapf(err, "walking directory %q", root)
+	}
+	return nil
 }
 
 // walkDirFunc is the WalkDirFunc for adding paths during directory traversal.
@@ -346,6 +357,7 @@ func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handl
 }
 
 // getDebounceKey returns the debounce key based on debouncer type.
+// For per-path debouncing, returns the path key; otherwise returns empty string.
 func (w *Watcher) getDebounceKey() string {
 	if _, ok := w.debounceInterface.(*Debouncer); ok {
 		return ""

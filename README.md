@@ -32,17 +32,17 @@ for event := range events {
 
 ## Options
 
-| Option | Description |
-|---|---|
-| `WithDebounce(d)` | Global debounce — all events coalesced into one after delay |
-| `WithPerPathDebounce(d)` | Per-path debounce — each file debounced independently |
-| `WithFilter(f)` | Add a custom filter function |
-| `WithExtensions(exts...)` | Only emit events for given file extensions |
-| `WithIgnoreDirs(dirs...)` | Discard events from given directory names |
-| `WithIgnoreHidden()` | Discard events for hidden files/dirs (dot prefix) |
-| `WithRecursive(b)` | Enable/disable recursive directory watching (default: true) |
-| `WithMiddleware(m...)` | Add middleware to the event processing pipeline |
-| `WithErrorHandler(fn)` | Set custom error handler for watcher errors |
+| Option                    | Description                                                 |
+| ------------------------- | ----------------------------------------------------------- |
+| `WithDebounce(d)`         | Global debounce — all events coalesced into one after delay |
+| `WithPerPathDebounce(d)`  | Per-path debounce — each file debounced independently       |
+| `WithFilter(f)`           | Add a custom filter function                                |
+| `WithExtensions(exts...)` | Only emit events for given file extensions                  |
+| `WithIgnoreDirs(dirs...)` | Discard events from given directory names                   |
+| `WithIgnoreHidden()`      | Discard events for hidden files/dirs (dot prefix)           |
+| `WithRecursive(b)`        | Enable/disable recursive directory watching (default: true) |
+| `WithMiddleware(m...)`    | Add middleware to the event processing pipeline             |
+| `WithErrorHandler(fn)`    | Set custom error handler for watcher errors                 |
 
 ## Filters
 
@@ -73,10 +73,10 @@ Available: `MiddlewareLogging`, `MiddlewareRecovery`, `MiddlewareRateLimit`, `Mi
 
 ## Event Types
 
-| Op | Description |
-|---|---|
+| Op       | Description               |
+| -------- | ------------------------- |
 | `Create` | File or directory created |
-| `Write` | File modified |
+| `Write`  | File modified             |
 | `Remove` | File or directory removed |
 | `Rename` | File or directory renamed |
 

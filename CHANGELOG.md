@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+
 - Core watcher: `New()`, `Watch(ctx)→<-chan Event`, `Add()`, `Close()`
 - 9 functional options: debounce, per-path debounce, filter, extensions, ignore dirs, ignore hidden, recursive, middleware, error handler
 - 11 composable filters: Extensions, IgnoreExtensions, IgnoreDirs, IgnoreHidden, Operations, NotOperations, Glob, And, Or, Not

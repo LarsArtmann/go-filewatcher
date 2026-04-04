@@ -118,14 +118,12 @@ func FilterGlob(pattern string) Filter {
 }
 
 // FilterRegex creates a filter that only passes events for paths
-// matching the given regular expression pattern.
+// matching the given regular expression pattern. The pattern is
+// pre-compiled at creation time for efficiency.
 func FilterRegex(pattern string) Filter {
+	re := regexp.MustCompile(pattern)
 	return func(event Event) bool {
-		matched, err := regexp.MatchString(pattern, event.Path)
-		if err != nil {
-			return false
-		}
-		return matched
+		return re.MatchString(event.Path)
 	}
 }
 

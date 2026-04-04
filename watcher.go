@@ -30,6 +30,8 @@ import (
 )
 
 // DefaultIgnoreDirs contains commonly ignored directory names.
+//
+//nolint:gochecknoglobals // Exported for user reference in configuration.
 var DefaultIgnoreDirs = []string{
 	".git", ".hg", ".svn",
 	"vendor", "node_modules",
@@ -172,7 +174,10 @@ func (w *Watcher) Close() error {
 		w.debounceInterface.Stop()
 	}
 
-	return w.fswatcher.Close()
+	if err := w.fswatcher.Close(); err != nil {
+		return errors.Wrap(err, "closing fsnotify watcher")
+	}
+	return nil
 }
 
 // initDebouncer sets up the appropriate debouncer based on configuration.
@@ -188,35 +193,47 @@ func (w *Watcher) initDebouncer() {
 // addPath adds a directory (and optionally its subdirectories) to the fsnotify watcher.
 func (w *Watcher) addPath(root string) error {
 	if !w.recursive {
-		return w.fswatcher.Add(root)
+		if err := w.fswatcher.Add(root); err != nil {
+			return errors.Wrapf(err, "adding watch path %q", root)
+		}
+		return nil
 	}
 
-	return filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
-		if err != nil {
-			return nil
-		}
+	return w.walkAndAddPaths(root)
+}
 
-		if !d.IsDir() {
-			return nil
-		}
+// walkAndAddPaths walks a directory tree and adds all directories to the watcher.
+func (w *Watcher) walkAndAddPaths(root string) error {
+	return filepath.WalkDir(root, w.walkDirFunc)
+}
 
-		// Skip hidden directories
-		name := d.Name()
-		if strings.HasPrefix(name, ".") && name != "." {
-			return filepath.SkipDir
-		}
+// walkDirFunc is the WalkDirFunc for adding paths during directory traversal.
+func (w *Watcher) walkDirFunc(path string, d os.DirEntry, err error) error {
+	if err != nil {
+		return errors.Wrapf(err, "walking path %q", path)
+	}
 
-		// Check against default ignore dirs
-		if slices.Contains(DefaultIgnoreDirs, name) {
-			return filepath.SkipDir
-		}
-
-		if addErr := w.fswatcher.Add(path); addErr != nil {
-			return errors.Wrapf(addErr, "watching path %q", path)
-		}
-
+	if !d.IsDir() {
 		return nil
-	})
+	}
+
+	if w.shouldSkipDir(d.Name()) {
+		return filepath.SkipDir
+	}
+
+	if addErr := w.fswatcher.Add(path); addErr != nil {
+		return errors.Wrapf(addErr, "watching path %q", path)
+	}
+
+	return nil
+}
+
+// shouldSkipDir checks if a directory should be skipped based on ignore rules.
+func (w *Watcher) shouldSkipDir(name string) bool {
+	if strings.HasPrefix(name, ".") && name != "." {
+		return true
+	}
+	return slices.Contains(DefaultIgnoreDirs, name)
 }
 
 // watchLoop is the main event processing goroutine.
@@ -251,56 +268,89 @@ func (w *Watcher) processEvent(ctx context.Context, fsEvent fsnotify.Event, even
 		return
 	}
 
-	// Apply filters
 	if !w.passesFilters(*event) {
-		// Still handle dynamic directory watching even if filtered
-		if event.Op == Create {
-			w.handleNewDirectory(fsEvent.Name)
-		}
+		w.handleFilteredEvent(fsEvent, *event)
 		return
 	}
 
-	// Handle dynamic directory watching
+	w.handleNewDirectory(fsEvent.Name)
+	w.emitEvent(ctx, *event, eventCh)
+}
+
+// handleFilteredEvent processes events that don't pass filters.
+func (w *Watcher) handleFilteredEvent(fsEvent fsnotify.Event, event Event) {
 	if event.Op == Create {
 		w.handleNewDirectory(fsEvent.Name)
 	}
+}
 
-	// Build the emit function with middleware
-	emit := func(e Event) {
+// emitEvent handles the actual event emission with middleware and debouncing.
+func (w *Watcher) emitEvent(ctx context.Context, event Event, eventCh chan<- Event) {
+	emit := w.buildEmitFunc(ctx, eventCh)
+	handler := w.buildMiddlewareHandler(emit)
+	w.executeHandler(ctx, event, handler)
+}
+
+// buildEmitFunc creates the emit function for sending events.
+func (w *Watcher) buildEmitFunc(ctx context.Context, eventCh chan<- Event) func(Event) {
+	return func(e Event) {
 		select {
 		case eventCh <- e:
 		case <-ctx.Done():
 		default:
 		}
 	}
+}
 
-	// Wrap with middleware chain (applied in reverse order)
-	handler := func(_ context.Context, e Event) error {
+// buildMiddlewareHandler creates the handler chain with all middleware applied.
+func (w *Watcher) buildMiddlewareHandler(emit func(Event)) Handler {
+	handler := func(_ context.Context, e Event) {
 		emit(e)
+	}
+
+	for i := len(w.middleware) - 1; i >= 0; i-- {
+		handler = w.wrapWithMiddleware(handler, w.middleware[i])
+	}
+
+	return func(ctx context.Context, e Event) error {
+		handler(ctx, e)
 		return nil
 	}
-	for i := len(w.middleware) - 1; i >= 0; i-- {
-		mw := w.middleware[i]
-		currentHandler := handler
-		handler = func(ctx context.Context, e Event) error {
-			return mw(func(_ context.Context, e Event) error {
-				return currentHandler(ctx, e)
-			})(ctx, e)
-		}
+}
+
+// wrapWithMiddleware wraps a handler function with a middleware.
+func (w *Watcher) wrapWithMiddleware(
+	handler func(context.Context, Event),
+	mw Middleware,
+) func(context.Context, Event) {
+	wrapped := mw(func(ctx context.Context, e Event) error {
+		handler(ctx, e)
+		return nil
+	})
+	return func(ctx context.Context, e Event) {
+		_ = wrapped(ctx, e)
+	}
+}
+
+// executeHandler runs the handler, applying debouncing if configured.
+func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handler) {
+	if w.debounceInterface == nil {
+		_ = handler(ctx, event)
+		return
 	}
 
-	// Apply debounce or emit directly
-	if w.debounceInterface != nil {
-		key := ""
-		if _, ok := w.debounceInterface.(*Debouncer); ok {
-			key = event.Path
-		}
-		w.debounceInterface.Debounce(key, func() {
-			_ = handler(ctx, *event)
-		})
-	} else {
-		_ = handler(ctx, *event)
+	key := w.getDebounceKey()
+	w.debounceInterface.Debounce(key, func() {
+		_ = handler(ctx, event)
+	})
+}
+
+// getDebounceKey returns the debounce key based on debouncer type.
+func (w *Watcher) getDebounceKey() string {
+	if _, ok := w.debounceInterface.(*Debouncer); ok {
+		return ""
 	}
+	return ""
 }
 
 // handleNewDirectory adds newly created directories to the watcher

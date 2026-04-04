@@ -21,6 +21,7 @@ func NewDebouncer(delay time.Duration) *Debouncer {
 	}
 	return &Debouncer{
 		delay:  delay,
+		mu:     sync.Mutex{},
 		timers: make(map[string]*time.Timer),
 	}
 }
@@ -88,6 +89,8 @@ func NewGlobalDebouncer(delay time.Duration) *GlobalDebouncer {
 	}
 	return &GlobalDebouncer{
 		delay: delay,
+		mu:    sync.Mutex{},
+		timer: nil,
 	}
 }
 

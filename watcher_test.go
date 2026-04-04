@@ -38,7 +38,7 @@ func TestNew_FilePath(t *testing.T) {
 	t.Parallel()
 
 	tmpFile := filepath.Join(t.TempDir(), "test.txt")
-	if err := os.WriteFile(tmpFile, []byte("test"), 0o644); err != nil {
+	if err := os.WriteFile(tmpFile, []byte("test"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
@@ -105,6 +105,8 @@ func TestWatcher_Watch_AfterClose(t *testing.T) {
 }
 
 func TestWatcher_Watch_DetectsWrite(t *testing.T) {
+	t.Parallel()
+
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir}, WithExtensions(".go"))
@@ -122,7 +124,7 @@ func TestWatcher_Watch_DetectsWrite(t *testing.T) {
 	}
 
 	testFile := filepath.Join(tmpDir, "test.go")
-	if err := os.WriteFile(testFile, []byte("package test"), 0o644); err != nil {
+	if err := os.WriteFile(testFile, []byte("package test"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
@@ -140,6 +142,8 @@ func TestWatcher_Watch_DetectsWrite(t *testing.T) {
 }
 
 func TestWatcher_Watch_FiltersExtensions(t *testing.T) {
+	t.Parallel()
+
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir}, WithExtensions(".go"))
@@ -157,12 +161,12 @@ func TestWatcher_Watch_FiltersExtensions(t *testing.T) {
 	}
 
 	txtFile := filepath.Join(tmpDir, "test.txt")
-	if err := os.WriteFile(txtFile, []byte("text"), 0o644); err != nil {
+	if err := os.WriteFile(txtFile, []byte("text"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
 	goFile := filepath.Join(tmpDir, "test.go")
-	if err := os.WriteFile(goFile, []byte("package test"), 0o644); err != nil {
+	if err := os.WriteFile(goFile, []byte("package test"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
@@ -177,6 +181,8 @@ func TestWatcher_Watch_FiltersExtensions(t *testing.T) {
 }
 
 func TestWatcher_Watch_ContextCancellation(t *testing.T) {
+	t.Parallel()
+
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir})
@@ -201,6 +207,8 @@ func TestWatcher_Watch_ContextCancellation(t *testing.T) {
 }
 
 func TestWatcher_Watch_Deletes(t *testing.T) {
+	t.Parallel()
+
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir})
@@ -218,7 +226,7 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 	}
 
 	testFile := filepath.Join(tmpDir, "todelete.go")
-	if err := os.WriteFile(testFile, []byte("package test"), 0o644); err != nil {
+	if err := os.WriteFile(testFile, []byte("package test"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
@@ -243,6 +251,8 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 }
 
 func TestWatcher_Watch_WithMiddleware(t *testing.T) {
+	t.Parallel()
+
 	tmpDir := t.TempDir()
 
 	var processed atomic.Int32
@@ -269,7 +279,7 @@ func TestWatcher_Watch_WithMiddleware(t *testing.T) {
 	}
 
 	testFile := filepath.Join(tmpDir, "test.txt")
-	if err := os.WriteFile(testFile, []byte("test"), 0o644); err != nil {
+	if err := os.WriteFile(testFile, []byte("test"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
@@ -285,6 +295,8 @@ func TestWatcher_Watch_WithMiddleware(t *testing.T) {
 }
 
 func TestWatcher_Watch_WithDebounce(t *testing.T) {
+	t.Parallel()
+
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir},
@@ -306,7 +318,7 @@ func TestWatcher_Watch_WithDebounce(t *testing.T) {
 	testFile := filepath.Join(tmpDir, "test.txt")
 
 	for i := range 5 {
-		if err := os.WriteFile(testFile, []byte("test"+string(rune('0'+i))), 0o644); err != nil {
+		if err := os.WriteFile(testFile, []byte("test"+string(rune('0'+i))), 0o600); err != nil {
 			t.Fatal(err)
 		}
 		time.Sleep(10 * time.Millisecond)
@@ -331,6 +343,8 @@ collect:
 }
 
 func TestWatcher_Watch_WithPerPathDebounce(t *testing.T) {
+	t.Parallel()
+
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir},
@@ -352,10 +366,10 @@ func TestWatcher_Watch_WithPerPathDebounce(t *testing.T) {
 	file1 := filepath.Join(tmpDir, "a.txt")
 	file2 := filepath.Join(tmpDir, "b.txt")
 
-	if err := os.WriteFile(file1, []byte("a"), 0o644); err != nil {
+	if err := os.WriteFile(file1, []byte("a"), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.WriteFile(file2, []byte("b"), 0o644); err != nil {
+	if err := os.WriteFile(file2, []byte("b"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
@@ -385,6 +399,8 @@ collect:
 }
 
 func TestWatcher_Watch_NewDirectory(t *testing.T) {
+	t.Parallel()
+
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir}, WithRecursive(true))
@@ -402,7 +418,7 @@ func TestWatcher_Watch_NewDirectory(t *testing.T) {
 	}
 
 	newDir := filepath.Join(tmpDir, "subdir")
-	if err := os.Mkdir(newDir, 0o755); err != nil {
+	if err := os.Mkdir(newDir, 0o750); err != nil {
 		t.Fatal(err)
 	}
 
@@ -414,7 +430,7 @@ func TestWatcher_Watch_NewDirectory(t *testing.T) {
 
 	// Now create a file in the new subdirectory
 	nestedFile := filepath.Join(newDir, "nested.txt")
-	if err := os.WriteFile(nestedFile, []byte("nested"), 0o644); err != nil {
+	if err := os.WriteFile(nestedFile, []byte("nested"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
@@ -429,6 +445,8 @@ func TestWatcher_Watch_NewDirectory(t *testing.T) {
 }
 
 func TestWatcher_Watch_ErrorHandler(t *testing.T) {
+	t.Parallel()
+
 	tmpDir := t.TempDir()
 
 	var errorReceived atomic.Pointer[error]
@@ -451,6 +469,8 @@ func TestWatcher_Watch_ErrorHandler(t *testing.T) {
 }
 
 func TestWatcher_Add(t *testing.T) {
+	t.Parallel()
+
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir})
@@ -473,7 +493,7 @@ func TestWatcher_Add(t *testing.T) {
 	}
 
 	testFile := filepath.Join(newDir, "added.txt")
-	if err := os.WriteFile(testFile, []byte("added"), 0o644); err != nil {
+	if err := os.WriteFile(testFile, []byte("added"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
@@ -488,6 +508,8 @@ func TestWatcher_Add(t *testing.T) {
 }
 
 func TestWatcher_IgnoreDirs(t *testing.T) {
+	t.Parallel()
+
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir},
@@ -507,17 +529,17 @@ func TestWatcher_IgnoreDirs(t *testing.T) {
 	}
 
 	vendorDir := filepath.Join(tmpDir, "vendor")
-	if err := os.Mkdir(vendorDir, 0o755); err != nil {
+	if err := os.Mkdir(vendorDir, 0o750); err != nil {
 		t.Fatal(err)
 	}
 
 	vendorFile := filepath.Join(vendorDir, "lib.go")
-	if err := os.WriteFile(vendorFile, []byte("package vendor"), 0o644); err != nil {
+	if err := os.WriteFile(vendorFile, []byte("package vendor"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
 	normalFile := filepath.Join(tmpDir, "main.go")
-	if err := os.WriteFile(normalFile, []byte("package main"), 0o644); err != nil {
+	if err := os.WriteFile(normalFile, []byte("package main"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 

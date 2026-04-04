@@ -15,10 +15,10 @@ func TestFilterExtensions(t *testing.T) {
 		event Event
 		want  bool
 	}{
-		{"go file", Event{Path: "/tmp/main.go", Op: Write}, true},
-		{"md file", Event{Path: "/tmp/readme.md", Op: Write}, true},
-		{"txt file", Event{Path: "/tmp/notes.txt", Op: Write}, false},
-		{"go file uppercase ext", Event{Path: "/tmp/main.GO", Op: Write}, true},
+		{"go file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now()}, true},
+		{"md file", Event{Path: "/tmp/readme.md", Op: Write, Timestamp: time.Now()}, true},
+		{"txt file", Event{Path: "/tmp/notes.txt", Op: Write, Timestamp: time.Now()}, false},
+		{"go file uppercase ext", Event{Path: "/tmp/main.GO", Op: Write, Timestamp: time.Now()}, true},
 	}
 
 	for _, tt := range tests {
@@ -41,9 +41,9 @@ func TestFilterIgnoreExtensions(t *testing.T) {
 		event Event
 		want  bool
 	}{
-		{"go file", Event{Path: "/tmp/main.go", Op: Write}, true},
-		{"log file", Event{Path: "/tmp/app.log", Op: Write}, false},
-		{"tmp file", Event{Path: "/tmp/cache.tmp", Op: Write}, false},
+		{"go file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now()}, true},
+		{"log file", Event{Path: "/tmp/app.log", Op: Write, Timestamp: time.Now()}, false},
+		{"tmp file", Event{Path: "/tmp/cache.tmp", Op: Write, Timestamp: time.Now()}, false},
 	}
 
 	for _, tt := range tests {
@@ -66,10 +66,10 @@ func TestFilterIgnoreDirs(t *testing.T) {
 		event Event
 		want  bool
 	}{
-		{"normal file", Event{Path: "/tmp/main.go", Op: Write}, true},
-		{"vendor file", Event{Path: "/tmp/vendor/pkg.go", Op: Write}, false},
-		{"nested vendor", Event{Path: "/tmp/pkg/vendor/lib.go", Op: Write}, false},
-		{"node_modules", Event{Path: "/tmp/node_modules/index.js", Op: Write}, false},
+		{"normal file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now()}, true},
+		{"vendor file", Event{Path: "/tmp/vendor/pkg.go", Op: Write, Timestamp: time.Now()}, false},
+		{"nested vendor", Event{Path: "/tmp/pkg/vendor/lib.go", Op: Write, Timestamp: time.Now()}, false},
+		{"node_modules", Event{Path: "/tmp/node_modules/index.js", Op: Write, Timestamp: time.Now()}, false},
 	}
 
 	for _, tt := range tests {
@@ -118,10 +118,10 @@ func TestFilterOperations(t *testing.T) {
 		event Event
 		want  bool
 	}{
-		{"write", Event{Op: Write}, true},
-		{"create", Event{Op: Create}, true},
-		{"remove", Event{Op: Remove}, false},
-		{"rename", Event{Op: Rename}, false},
+		{"write", Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()}, true},
+		{"create", Event{Op: Create, Path: "/tmp/test.txt", Timestamp: time.Now()}, true},
+		{"remove", Event{Op: Remove, Path: "/tmp/test.txt", Timestamp: time.Now()}, false},
+		{"rename", Event{Op: Rename, Path: "/tmp/test.txt", Timestamp: time.Now()}, false},
 	}
 
 	for _, tt := range tests {
@@ -139,10 +139,10 @@ func TestFilterNotOperations(t *testing.T) {
 
 	f := FilterNotOperations(Remove)
 
-	if f(Event{Op: Remove}) {
+	if f(Event{Op: Remove, Path: "/tmp/test.txt", Timestamp: time.Now()}) {
 		t.Error("expected Remove to be filtered out")
 	}
-	if !f(Event{Op: Write}) {
+	if !f(Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()}) {
 		t.Error("expected Write to pass")
 	}
 }

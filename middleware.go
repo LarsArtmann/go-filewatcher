@@ -113,7 +113,8 @@ func MiddlewareMetrics(counter func(op Op)) Middleware {
 func MiddlewareWriteFileLog(filePath string) Middleware {
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			f, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
+			//nolint:gosec // filePath is user-provided, intentional design for log file location
+			f, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o600)
 			if err == nil {
 				_, _ = fmt.Fprintf(
 					f,

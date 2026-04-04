@@ -71,9 +71,9 @@ func TestMiddlewareRateLimit(t *testing.T) {
 		return nil
 	})
 
-	_ = handler(context.Background(), Event{Op: Write})
-	_ = handler(context.Background(), Event{Op: Write})
-	_ = handler(context.Background(), Event{Op: Write})
+	_ = handler(context.Background(), Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()})
+	_ = handler(context.Background(), Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()})
+	_ = handler(context.Background(), Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()})
 
 	if got := count.Load(); got != 1 {
 		t.Errorf("expected 1 call due to rate limiting, got %d", got)
@@ -81,7 +81,7 @@ func TestMiddlewareRateLimit(t *testing.T) {
 
 	time.Sleep(150 * time.Millisecond)
 
-	_ = handler(context.Background(), Event{Op: Write})
+	_ = handler(context.Background(), Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()})
 
 	if got := count.Load(); got != 2 {
 		t.Errorf("expected 2 calls after rate limit window, got %d", got)

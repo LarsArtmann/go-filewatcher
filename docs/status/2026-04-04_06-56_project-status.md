@@ -1,6 +1,6 @@
 # Project Status Report
 
-**Date:** 2026-04-04 06:56  
+**Date:** 2026-04-04 16:15 (Updated)  
 **Project:** go-filewatcher  
 **Branch:** master  
 **Last Commit:** 5b41bcb (refactor: integrate per-path debouncing into executeHandler)
@@ -72,8 +72,8 @@
 
 ### Build System
 
-- [x] **No `justfile` or `Makefile`** - uses raw `go` commands
-- [x] No CI/CD pipeline configured
+- [x] **`justfile` added** - standardized build/test/lint commands
+- [ ] No CI/CD pipeline configured
 
 ### Error Propagation (from static analysis)
 
@@ -81,20 +81,23 @@
 - [x] `opts` (slice of Option functions) is meaningless in error messages
 - [x] Path context IS already included in all error messages
 
-### Real Issue: `getDebounceKey()` (watcher.go:349-354)
+### CORRECTION: `getDebounceKey()` - Already Fixed ✅
+
+The static analysis warning about "always returns empty" was **STALE**. The code was fixed in commit `5b41bcb`:
 
 ```go
-func (w *Watcher) getDebounceKey() string {
+// watcher.go:381-388
+func (w *Watcher) getDebounceKey(path string) string {
     if _, ok := w.debounceInterface.(*Debouncer); ok {
-        return ""
+        return path  // ✅ Returns path for per-key debouncing
     }
-    return ""  // BUG: Both return "", never returns path for per-key debouncing
+    return ""  // GlobalDebouncer ignores the key
 }
 ```
 
-- [x] Currently `executeHandler` never uses the key (both debouncers work without it)
-- [x] `Debouncer` uses `""` key anyway (works correctly for per-path mode)
-- [x] **Not breaking current functionality** but incomplete/wrong implementation
+- [x] `executeHandler` passes `event.Path` to `getDebounceKey`
+- [x] `Debouncer` receives path as key for per-path debouncing
+- [x] `GlobalDebouncer` receives but ignores the key (global behavior)
 
 ---
 
@@ -142,12 +145,13 @@ Or restart IDE/terminal to reset toolchain state.
 
 ## 🚀 WHAT WE SHOULD IMPROVE
 
-### High Priority (Quick Wins)
+### High Priority (Quick Wins) - COMPLETED ✅
 
-1. **Fix `getDebounceKey()`** - implement properly or remove dead code
-2. **Add `justfile`** - standardize build/test/lint commands
-3. **Fix disk space** - clean caches, free space
-4. **Verify tests pass** - currently blocked by cache issue
+1. [x] ~~**Fix `getDebounceKey()`**~~ - Already fixed in previous commits
+2. [x] **Add `justfile`** - standardized build/test/lint commands
+3. [ ] **Fix disk space** - clean caches, free space
+4. [ ] **Verify tests pass** - currently blocked by cache issue
+5. [x] **Add `examples/` directory** - runnable examples added
 
 ### Medium Priority
 

@@ -43,7 +43,10 @@ func (d *Debouncer) Debounce(key string, fn func()) {
 		entry.timer.Stop()
 	}
 
-	entry := &debounceEntry{fn: fn}
+	entry := &debounceEntry{
+		fn:    fn,
+		timer: nil,
+	}
 	entry.timer = time.AfterFunc(d.delay, func() {
 		fn()
 		d.mu.Lock()
@@ -99,6 +102,7 @@ func NewGlobalDebouncer(delay time.Duration) *GlobalDebouncer {
 	}
 	return &GlobalDebouncer{
 		delay: delay,
+		fn:    nil,
 		mu:    sync.Mutex{},
 		timer: nil,
 	}

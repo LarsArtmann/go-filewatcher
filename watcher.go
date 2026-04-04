@@ -122,6 +122,7 @@ func New(paths []string, opts ...Option) (*Watcher, error) {
 		errorHandler:      nil,
 		skipDotDirs:       true,
 		bufferSize:        64,
+		onAdd:             nil,
 		mu:                sync.RWMutex{},
 		closed:            false,
 		watching:          false,
@@ -460,9 +461,8 @@ func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handl
 	w.debounceInterface.Debounce(key, execute)
 }
 
-// getDebounceKey returns the debounce key based on debouncer type.
-// For per-path debouncing (Debouncer), returns the path; otherwise returns empty string.
-func (w *Watcher) getDebounceKey(path string) string { //nolint:unparam // path param needed for future extensibility
+//nolint:unparam // path param needed for future extensibility
+func (w *Watcher) getDebounceKey(path string) string {
 	if _, ok := w.debounceInterface.(*Debouncer); ok {
 		return path
 	}

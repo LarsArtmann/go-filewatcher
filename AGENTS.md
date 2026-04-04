@@ -33,7 +33,7 @@ if errors.Is(err, ErrPathNotFound) { ... }
 
 ### Single Package Layout
 
-All code in **root package** (`filewatcher`). No `internal/` for core code — only `pkg/errors/` for custom error types.
+All code in **root package** (`filewatcher`). No `internal/` or `pkg/` subdirectories — all code lives in the package root.
 
 ---
 

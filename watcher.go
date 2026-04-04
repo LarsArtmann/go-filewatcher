@@ -461,7 +461,6 @@ func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handl
 	w.debounceInterface.Debounce(key, execute)
 }
 
-//nolint:unparam // path param needed for future extensibility
 func (w *Watcher) getDebounceKey(path string) string {
 	if _, ok := w.debounceInterface.(*Debouncer); ok {
 		return path

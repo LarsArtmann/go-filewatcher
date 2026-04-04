@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -206,10 +207,8 @@ func (w *Watcher) addPath(root string) error {
 		}
 
 		// Check against default ignore dirs
-		for _, ignored := range DefaultIgnoreDirs {
-			if name == ignored {
-				return filepath.SkipDir
-			}
+		if slices.Contains(DefaultIgnoreDirs, name) {
+			return filepath.SkipDir
 		}
 
 		if addErr := w.fswatcher.Add(path); addErr != nil {

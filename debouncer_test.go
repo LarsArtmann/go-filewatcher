@@ -131,7 +131,7 @@ func TestDebouncer_RapidCalls(t *testing.T) {
 	var count atomic.Int32
 	d := NewDebouncer(30 * time.Millisecond)
 
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		d.Debounce("key1", func() { count.Add(1) })
 	}
 

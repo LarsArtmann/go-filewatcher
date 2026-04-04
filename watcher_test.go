@@ -305,7 +305,7 @@ func TestWatcher_Watch_WithDebounce(t *testing.T) {
 
 	testFile := filepath.Join(tmpDir, "test.txt")
 
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		if err := os.WriteFile(testFile, []byte("test"+string(rune('0'+i))), 0o644); err != nil {
 			t.Fatal(err)
 		}

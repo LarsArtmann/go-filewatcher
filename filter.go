@@ -68,7 +68,7 @@ func FilterIgnoreHidden() Filter {
 		if strings.HasPrefix(base, ".") {
 			return false
 		}
-		for _, part := range strings.Split(event.Path, string(filepath.Separator)) {
+		for part := range strings.SplitSeq(event.Path, string(filepath.Separator)) {
 			if strings.HasPrefix(part, ".") && part != "." && part != ".." {
 				return false
 			}

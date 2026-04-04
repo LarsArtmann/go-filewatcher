@@ -18,6 +18,7 @@ package filewatcher
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"slices"
@@ -53,15 +54,21 @@ type Watcher struct {
 	perPathDebounce time.Duration
 	errorHandler    func(error)
 	skipDotDirs     bool
+	bufferSize      int
+	onAdd           func(path string) // callback when a path is added
 
 	// Internal state
 	mu       sync.RWMutex
 	closed   bool
 	watching bool
+	watchList []string // tracked paths currently being watched
 
 	// Debouncer (initialized based on config)
 	debounceInterface DebouncerInterface
 }
+
+// Compile-time interface check: Watcher implements io.Closer.
+var _ io.Closer = (*Watcher)(nil)
 
 // DebouncerInterface is the interface for debouncer implementations.
 type DebouncerInterface interface {
@@ -114,8 +121,11 @@ func New(paths []string, opts ...Option) (*Watcher, error) {
 		perPathDebounce:   0,
 		errorHandler:      nil,
 		skipDotDirs:       true,
+		bufferSize:        64,
 		mu:                sync.RWMutex{},
 		closed:            false,
+		watching:          false,
+		watchList:         make([]string, 0, len(paths)),
 		debounceInterface: nil,
 	}
 
@@ -158,7 +168,7 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 		}
 	}
 
-	eventCh := make(chan Event, 64)
+	eventCh := make(chan Event, w.bufferSize)
 
 	w.watching = true
 	go w.watchLoop(ctx, eventCh)
@@ -180,7 +190,70 @@ func (w *Watcher) Add(path string) error {
 		return errors.Wrapf(err, "resolving path %q", path)
 	}
 
-	return w.addPath(abs)
+	if err := w.addPath(abs); err != nil {
+		return err
+	}
+	w.watchList = append(w.watchList, abs)
+	return nil
+}
+
+// Remove removes a path from the watcher. The watcher stops monitoring
+// this path and all its subdirectories (if recursive).
+func (w *Watcher) Remove(path string) error {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	if w.closed {
+		return errors.WithStack(ErrWatcherClosed)
+	}
+
+	abs, err := filepath.Abs(path)
+	if err != nil {
+		return errors.Wrapf(err, "resolving path %q", path)
+	}
+
+	if err := w.fswatcher.Remove(abs); err != nil {
+		return errors.Wrapf(err, "removing watch path %q", abs)
+	}
+
+	// Remove from watchList
+	for i, p := range w.watchList {
+		if p == abs {
+			w.watchList = append(w.watchList[:i], w.watchList[i+1:]...)
+			break
+		}
+	}
+
+	return nil
+}
+
+// WatchList returns a copy of the list of paths currently being watched.
+func (w *Watcher) WatchList() []string {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	result := make([]string, len(w.watchList))
+	copy(result, w.watchList)
+	return result
+}
+
+// Stats provides observability metrics for the watcher.
+type Stats struct {
+	WatchCount int
+	IsWatching bool
+	IsClosed   bool
+}
+
+// Stats returns current statistics about the watcher.
+func (w *Watcher) Stats() Stats {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	return Stats{
+		WatchCount: len(w.watchList),
+		IsWatching: w.watching,
+		IsClosed:   w.closed,
+	}
 }
 
 // Close stops the watcher and releases all resources.
@@ -195,6 +268,7 @@ func (w *Watcher) Close() error {
 
 	w.closed = true
 	w.watching = false
+	w.watchList = w.watchList[:0]
 
 	if w.debounceInterface != nil {
 		w.debounceInterface.Stop()
@@ -233,6 +307,8 @@ func (w *Watcher) walkAndAddPaths(root string) error {
 	if err := filepath.WalkDir(root, w.walkDirFunc); err != nil {
 		return errors.Wrapf(err, "walking directory %q", root)
 	}
+	// Track the root path
+	w.watchList = append(w.watchList, root)
 	return nil
 }
 
@@ -252,6 +328,10 @@ func (w *Watcher) walkDirFunc(path string, d os.DirEntry, err error) error {
 
 	if addErr := w.fswatcher.Add(path); addErr != nil {
 		return errors.Wrapf(addErr, "watching path %q", path)
+	}
+
+	if w.onAdd != nil {
+		w.onAdd(path)
 	}
 
 	return nil
@@ -433,6 +513,10 @@ func (w *Watcher) handleError(err error) {
 
 // convertEvent converts an fsnotify.Event to a filewatcher.Event.
 // Returns nil for operations that are not mapped (e.g., Chmod).
+//
+// Priority of combined operations: Create > Write > Remove > Rename.
+// This ensures the most meaningful operation is reported when multiple
+// operations occur simultaneously.
 func convertEvent(fsEvent fsnotify.Event) *Event {
 	var op Op
 
@@ -449,9 +533,17 @@ func convertEvent(fsEvent fsnotify.Event) *Event {
 		return nil
 	}
 
+	// Check if path is a directory. For Remove events, the file may already
+	// be gone, so we ignore stat errors in that case.
+	isDir := false
+	if info, err := os.Stat(fsEvent.Name); err == nil {
+		isDir = info.IsDir()
+	}
+
 	return &Event{
 		Path:      fsEvent.Name,
 		Op:        op,
 		Timestamp: time.Now(),
+		IsDir:     isDir,
 	}
 }

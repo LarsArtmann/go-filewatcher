@@ -43,6 +43,9 @@ type Event struct {
 	Op Op
 	// Timestamp is when the event was detected.
 	Timestamp time.Time
+	// IsDir indicates whether the event is for a directory (true) or file (false).
+	// This allows consumers to distinguish between directory and file events.
+	IsDir bool
 }
 
 // String returns a human-readable representation of the event.

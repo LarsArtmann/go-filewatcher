@@ -1,7 +1,9 @@
 package filewatcher
 
 import (
+	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -113,6 +115,40 @@ func FilterGlob(pattern string) Filter {
 		}
 		return matched
 	}
+}
+
+// FilterRegex creates a filter that only passes events for paths
+// matching the given regular expression pattern.
+func FilterRegex(pattern string) Filter {
+	return func(event Event) bool {
+		matched, err := regexp.MatchString(pattern, event.Path)
+		if err != nil {
+			return false
+		}
+		return matched
+	}
+}
+
+// FilterMinSize creates a filter that only passes events for files
+// with size greater than or equal to the given minimum size in bytes.
+// Directory events are not filtered by size.
+func FilterMinSize(minSize int64) Filter {
+	return func(event Event) bool {
+		if event.IsDir {
+			return true // Don't filter directories by size
+		}
+		info, err := os.Stat(event.Path)
+		if err != nil {
+			return false // If we can't stat, filter out
+		}
+		return info.Size() >= minSize
+	}
+}
+
+// FilterCustom is an alias for creating custom filters.
+// It provides a named escape hatch for complex filtering logic.
+func FilterCustom(fn func(Event) bool) Filter {
+	return fn
 }
 
 // FilterAnd combines multiple filters with AND logic.

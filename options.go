@@ -90,3 +90,23 @@ func WithSkipDotDirs(skip bool) Option {
 		w.skipDotDirs = skip
 	}
 }
+
+// WithBuffer sets the buffer size for the event channel.
+// A larger buffer helps handle event bursts without dropping events.
+// Default is 64. Minimum effective value is 1.
+func WithBuffer(size int) Option {
+	return func(w *Watcher) {
+		if size > 0 {
+			w.bufferSize = size
+		}
+	}
+}
+
+// WithOnAdd sets a callback that is invoked whenever a new path is added
+// to the watcher. This is useful for logging or tracking which directories
+// are being watched.
+func WithOnAdd(fn func(path string)) Option {
+	return func(w *Watcher) {
+		w.onAdd = fn
+	}
+}

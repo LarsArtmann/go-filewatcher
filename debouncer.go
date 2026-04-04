@@ -148,3 +148,14 @@ func (g *GlobalDebouncer) Stop() {
 	}
 	g.fn = nil
 }
+
+// Pending returns whether there is a pending execution.
+func (g *GlobalDebouncer) Pending() int {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+
+	if g.timer != nil {
+		return 1
+	}
+	return 0
+}

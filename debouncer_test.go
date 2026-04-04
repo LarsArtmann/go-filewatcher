@@ -142,3 +142,25 @@ func TestDebouncer_RapidCalls(t *testing.T) {
 		t.Errorf("expected 1 execution after 100 rapid calls, got %d", got)
 	}
 }
+
+func TestGlobalDebouncer_Pending(t *testing.T) {
+	t.Parallel()
+
+	d := NewGlobalDebouncer(200 * time.Millisecond)
+
+	if got := d.Pending(); got != 0 {
+		t.Errorf("expected 0 pending initially, got %d", got)
+	}
+
+	d.Debounce("", func() {})
+
+	if got := d.Pending(); got != 1 {
+		t.Errorf("expected 1 pending after debounce, got %d", got)
+	}
+
+	d.Stop()
+
+	if got := d.Pending(); got != 0 {
+		t.Errorf("expected 0 pending after stop, got %d", got)
+	}
+}

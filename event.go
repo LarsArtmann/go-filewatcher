@@ -1,6 +1,7 @@
 package filewatcher
 
 import (
+	"encoding"
 	"fmt"
 	"time"
 )
@@ -19,6 +20,13 @@ const (
 	Rename
 )
 
+// Compile-time interface check: Op implements encoding.TextMarshaler and
+// encoding.TextUnmarshaler for JSON, XML, YAML, and other serialization.
+var (
+	_ encoding.TextMarshaler   = Op(0)
+	_ encoding.TextUnmarshaler = (*Op)(nil)
+)
+
 // String returns a human-readable representation of the operation.
 func (op Op) String() string {
 	switch op {
@@ -35,17 +43,38 @@ func (op Op) String() string {
 	}
 }
 
+// MarshalText implements encoding.TextMarshaler.
+func (op Op) MarshalText() ([]byte, error) {
+	return []byte(op.String()), nil
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (op *Op) UnmarshalText(text []byte) error {
+	switch string(text) {
+	case "CREATE":
+		*op = Create
+	case "WRITE":
+		*op = Write
+	case "REMOVE":
+		*op = Remove
+	case "RENAME":
+		*op = Rename
+	default:
+		return fmt.Errorf("unknown operation: %q", string(text))
+	}
+	return nil
+}
+
 // Event represents a file system change event.
 type Event struct {
 	// Path is the absolute path of the file or directory that changed.
-	Path string
+	Path string `json:"path"`
 	// Op is the operation that occurred.
-	Op Op
+	Op Op `json:"op"`
 	// Timestamp is when the event was detected.
-	Timestamp time.Time
+	Timestamp time.Time `json:"timestamp"`
 	// IsDir indicates whether the event is for a directory (true) or file (false).
-	// This allows consumers to distinguish between directory and file events.
-	IsDir bool
+	IsDir bool `json:"is_dir"`
 }
 
 // String returns a human-readable representation of the event.

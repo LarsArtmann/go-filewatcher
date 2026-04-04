@@ -1,6 +1,7 @@
 package filewatcher
 
 import (
+	"strings"
 	"testing"
 	"time"
 )
@@ -207,7 +208,7 @@ func TestEvent_String(t *testing.T) {
 	if s == "" {
 		t.Error("expected non-empty string")
 	}
-	if !contains(s, "WRITE") {
+	if !strings.Contains(s, "WRITE") {
 		t.Errorf("expected string to contain WRITE, got %q", s)
 	}
 }
@@ -231,13 +232,4 @@ func TestOp_String(t *testing.T) {
 			t.Errorf("Op(%d).String() = %q, want %q", tt.op, got, tt.want)
 		}
 	}
-}
-
-func contains(s, substr string) bool {
-	for i := 0; i <= len(s)-len(substr); i++ {
-		if s[i:i+len(substr)] == substr {
-			return true
-		}
-	}
-	return false
 }

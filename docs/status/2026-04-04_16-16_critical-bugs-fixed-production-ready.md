@@ -295,29 +295,31 @@ var (
 | --- | --------------------------------------------------------- | -------- | ------ | ----------- |
 | 1   | Tag v0.1.0 release                                        | P0       | 2min   | Ready       |
 | 2   | Add GitHub Actions CI                                     | P1       | 20min  | Not started |
-| 3   | Add `Remove(path)` method                                 | P1       | 15min  | Not started |
-| 4   | Add `WatchList() []string` method                         | P1       | 10min  | Not started |
-| 5   | Add `FilterRegex(pattern)` filter                         | P2       | 10min  | Not started |
-| 6   | Add `WithBuffer(size int)` option                         | P2       | 5min   | Not started |
-| 7   | Add `Stats()` method                                      | P2       | 20min  | Not started |
+| 3   | Add `Remove(path)` method                                 | P1       | 15min  | ✅ Done     |
+| 4   | Add `WatchList() []string` method                         | P1       | 10min  | ✅ Done     |
+| 5   | Add `FilterRegex(pattern)` filter                         | P2       | 10min  | ✅ Done     |
+| 6   | Add `WithBuffer(size int)` option                         | P2       | 5min   | ✅ Done     |
+| 7   | Add `Stats()` method                                      | P2       | 20min  | ✅ Done     |
 | 8   | Add benchmark tests                                       | P2       | 30min  | Not started |
-| 9   | Create `examples/` directory                              | P2       | 30min  | Not started |
-| 10  | Add `Example*` test functions                             | P2       | 20min  | Not started |
-| 11  | Document combined-op priority                             | P3       | 5min   | Not started |
-| 12  | Add `FilterMinSize(size int64)`                           | P3       | 10min  | Not started |
-| 13  | Add `FilterCustom(fn)` escape hatch                       | P3       | 5min   | Not started |
-| 14  | Add `WithOnAdd(fn)` callback                              | P3       | 10min  | Not started |
-| 15  | Stress test with 10k+ files                               | P3       | 1hr    | Not started |
-| 16  | Add fuzz tests for filters                                | P3       | 30min  | Not started |
-| 17  | Improve README with advanced examples                     | P3       | 30min  | Not started |
-| 18  | Add goreleaser configuration                              | P3       | 20min  | Not started |
-| 19  | Add codecov integration                                   | P3       | 15min  | Not started |
-| 20  | Add security scanning (gosec)                             | P3       | 10min  | Not started |
-| 21  | Add dependabot configuration                              | P3       | 5min   | Not started |
-| 22  | Add contribution guidelines                               | P3       | 20min  | Not started |
-| 23  | Add code of conduct                                       | P3       | 10min  | Not started |
-| 24  | Add issue templates                                       | P3       | 15min  | Not started |
-| 25  | Add PR template                                           | P3       | 10min  | Not started |
+| 9   | Create `examples/` directory                              | P2       | 30min  | ✅ Done     |
+| 10  | Add `Example*` test functions                             | P2       | 20min  | ✅ Done     |
+| 11  | Document combined-op priority                             | P3       | 5min   | ✅ Done     |
+| 12  | Add `FilterMinSize(size int64)`                           | P3       | 10min  | ✅ Done     |
+| 13  | Add `FilterCustom(fn)` escape hatch                       | P3       | 5min   | ✅ Done     |
+| 14  | Add `WithOnAdd(fn)` callback                              | P3       | 10min  | ✅ Done     |
+| 15  | Add `io.Closer` formalization                             | P3       | 2min   | ✅ Done     |
+| 16  | Add `Event.IsDir` field for directory detection           | P3       | 5min   | ✅ Done     |
+| 17  | Stress test with 10k+ files                               | P3       | 1hr    | Not started |
+| 18  | Add fuzz tests for filters                                | P3       | 30min  | Not started |
+| 19  | Improve README with advanced examples                     | P3       | 30min  | Not started |
+| 20  | Add goreleaser configuration                              | P3       | 20min  | Not started |
+| 21  | Add codecov integration                                   | P3       | 15min  | Not started |
+| 22  | Add security scanning (gosec)                             | P3       | 10min  | Not started |
+| 23  | Add dependabot configuration                              | P3       | 5min   | Not started |
+| 24  | Add contribution guidelines                               | P3       | 20min  | Not started |
+| 25  | Add code of conduct                                       | P3       | 10min  | Not started |
+| 26  | Add issue templates                                       | P3       | 15min  | Not started |
+| 27  | Add PR template                                           | P3       | 10min  | Not started |
 
 ---
 

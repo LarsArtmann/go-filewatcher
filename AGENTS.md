@@ -1,308 +1,136 @@
-# Agent Guide for go-filewatcher
+# Agent Guide: go-filewatcher
 
-**Project**: go-filewatcher — A high-level, composable file system watcher for Go  
-**Go Version**: 1.26.1  
-**Module**: `github.com/larsartmann/go-filewatcher`
+**Go 1.26.1** | `github.com/larsartmann/go-filewatcher`
 
 ---
 
-## Quick Start
+## Critical Commands
 
 ```bash
-# Install dependencies
-go mod download
-
-# Build
-just build
-
-# Run all checks (format, vet, lint, test)
-just check
-
-# Run tests with race detector
-just test
-
-# Run tests with coverage
-just test-cover
+just check    # Full quality: tidy, fmt, vet, lint, test
+just ci       # Same as check
+just lint-fix # Auto-fix linter issues
 ```
 
 ---
 
-## Essential Commands
+## Non-Obvious Conventions
 
-| Command | Description |
-|---------|-------------|
-| `just build` | Build the project (`go build ./...`) |
-| `just test` | Run tests with race detector |
-| `just test-v` | Run tests with verbose output |
-| `just test-cover` | Generate HTML coverage report |
-| `just lint` | Run golangci-lint |
-| `just lint-fix` | Run linter with auto-fix |
-| `just vet` | Run `go vet ./...` |
-| `just check` | Full quality gate: tidy, fmt, vet, lint, test |
-| `just ci` | CI pipeline: tidy, fmt, vet, lint, test |
-| `just bench` | Run benchmarks |
-| `just tidy` | Tidy go.mod/go.sum |
-| `just fmt` | Format code with `go fmt` |
-| `just clean` | Clean build cache |
+### Error Handling: NOT Standard Library
 
----
-
-## Project Structure
-
-```
-go-filewatcher/
-├── *.go              # Core package files (single package)
-├── *_test.go         # Test files
-├── justfile          # Task runner commands
-├── go.mod            # Module definition
-├── .golangci.yml     # Linter configuration
-├── examples/         # Usage examples
-│   ├── basic/        # Simple extension filter + debounce
-│   ├── middleware/   # Middleware chain example
-│   └── per-path-debounce/  # Per-path debounce example
-├── pkg/errors/       # Custom error types (apperrors.go)
-└── docs/status/      # Project status documentation
-```
-
-**Key Files**:
-- `watcher.go` — Main Watcher struct and lifecycle (New, Watch, Close, Add, Remove)
-- `options.go` — Functional options (WithDebounce, WithExtensions, etc.)
-- `filter.go` — Event filters (FilterExtensions, FilterIgnoreDirs, etc.)
-- `middleware.go` — Middleware chain (MiddlewareLogging, MiddlewareRecovery, etc.)
-- `debouncer.go` — Debouncer implementations (Debouncer, GlobalDebouncer)
-- `event.go` — Event types and Op constants
-- `errors.go` — Sentinel errors using cockroachdb/errors
-
----
-
-## Architecture & Design Patterns
-
-### Core Design Principles
-
-1. **Functional Options Pattern** — All configuration via `Option` funcs
-2. **Middleware Chain** — Cross-cutting concerns via composable middleware
-3. **Filter Composition** — AND/OR/NOT logic for event filtering
-4. **Context-First** — All async operations accept `context.Context`
-5. **Error Handling** — `cockroachdb/errors` for error wrapping and stack traces
-6. **Channel-Based** — Event streaming via `<-chan Event`
-
-### Watcher Lifecycle
+Uses `github.com/cockroachdb/errors` for stack traces:
 
 ```go
-// 1. Create
-w, err := filewatcher.New([]string{"./src"}, opts...)
-if err != nil { log.Fatal(err) }
-defer w.Close()
-
-// 2. Start watching
-events, err := w.Watch(ctx)
-if err != nil { log.Fatal(err) }
-
-// 3. Process events
-for event := range events {
-    // handle event
-}
-// Channel closes when context cancelled or watcher closed
-```
-
-### Concurrency Model
-
-- **Thread-safe**: All public methods use `sync.RWMutex`
-- **Single goroutine**: `watchLoop` runs in one goroutine, handles fsnotify events
-- **Debouncing**: Timer-based, mutex-protected
-- **Graceful shutdown**: Context cancellation or `Close()` stops the watcher
-
----
-
-## Code Conventions
-
-### Naming
-
-- **Exported**: PascalCase (`Watcher`, `WithDebounce`, `FilterExtensions`)
-- **Unexported**: camelCase (`watchLoop`, `addPath`, `shouldSkipDir`)
-- **Interfaces**: `-er` suffix (`DebouncerInterface`)
-- **Options**: `WithXxx` pattern (`WithDebounce`, `WithExtensions`)
-- **Filters**: `FilterXxx` pattern (`FilterExtensions`, `FilterIgnoreDirs`)
-- **Middleware**: `MiddlewareXxx` pattern (`MiddlewareLogging`, `MiddlewareRecovery`)
-
-### Error Handling
-
-```go
-// Use cockroachdb/errors for wrapping
 import "github.com/cockroachdb/errors"
 
-// Sentinel errors (defined in errors.go)
-var ErrWatcherClosed = errors.New("watcher is closed")
-
-// Wrapping with context
-return errors.Wrapf(err, "adding watch path %q", path)
+// Wrapping
+return errors.Wrapf(err, "path %q", path)
 return errors.WithStack(ErrNoPaths)
 
-// Checking errors
+// Checking still works
 if errors.Is(err, ErrPathNotFound) { ... }
 ```
 
-### Struct Tags & Comments
+### Single Package Layout
 
-```go
-//nolint:gochecknoglobals // Exported for user reference
-var DefaultIgnoreDirs = []string{...}
-
-// Compile-time interface check
-var _ io.Closer = (*Watcher)(nil)
-```
+All code in **root package** (`filewatcher`). No `internal/` for core code — only `pkg/errors/` for custom error types.
 
 ---
 
-## Testing Patterns
+## Critical Gotchas
 
-### Test Structure
+### 1. Middleware Order Is Reversed
 
 ```go
-func TestXxx(t *testing.T) {
-    t.Parallel()  // Always use parallel tests
+WithMiddleware(
+    MiddlewareRecovery(),   // Runs LAST (innermost)
+    MiddlewareLogging(nil), // Runs FIRST (outermost)
+)
+```
 
-    tmpDir := t.TempDir()  // Use temp dirs for file operations
+### 2. Two Debounce Modes (Different Semantics)
 
-    // Test code...
+```go
+WithDebounce(d)           // Global: ALL events → ONE callback
+WithPerPathDebounce(d)    // Per-path: EACH file → separate callback
+```
+
+### 3. Strict Linter: `exhaustruct`
+
+**All struct fields must be initialized** — no zero values allowed:
+
+```go
+// WRONG — fails lint
+w := &Watcher{fswatcher: fs}
+
+// RIGHT — all fields
+w := &Watcher{
+    fswatcher: fs,
+    paths: paths,
+    recursive: true,
+    // ... every field
 }
 ```
 
-### Key Testing Patterns
+### 4. Required: `t.Parallel()` in All Tests
 
-- **Parallel tests**: All tests use `t.Parallel()`
-- **Temp directories**: Use `t.TempDir()` for isolation
-- **Race detection**: Run with `-race` flag (enabled in justfile)
-- **Error checking**: Use `errors.Is()` for sentinel errors
-- **Cleanup**: Use `defer` for watcher cleanup
-
-### Running Tests
-
-```bash
-# All tests with race detection
-just test
-
-# Verbose output
-just test-v
-
-# Coverage report
-just test-cover  # Generates coverage.html
-
-# Specific test
-go test -race -run TestWatcher_Watch ./...
+```go
+func TestXxx(t *testing.T) {
+    t.Parallel()  // REQUIRED (enforced by paralleltest linter)
+    // ...
+}
 ```
+
+### 5. Event Priority (Multiple Ops)
+
+Create > Write > Remove > Rename — highest wins.
+
+### 6. Chmod Events Ignored
+
+Not mapped to any Op, `convertEvent()` returns `nil`.
+
+### 7. Exported Global with Nolint
+
+```go
+//nolint:gochecknoglobals // Intentionally exported for users
+var DefaultIgnoreDirs = []string{".git", "vendor", ...}
+```
+
+Don't remove the nolint — this is intentional.
 
 ---
 
-## Linter Configuration
+## Key Patterns
 
-Uses **golangci-lint** with aggressive settings (`.golangci.yml`):
+| Pattern | Where |
+|---------|-------|
+| Functional Options | `options.go` — `type Option func(*Watcher)` |
+| Middleware Chain | `middleware.go` — applied in **reverse** order |
+| Filter Composition | `filter.go` — `FilterAnd()`, `FilterOr()` |
 
-**Enabled linters** (key ones):
-- `errcheck`, `errorlint`, `wrapcheck` — Error handling
-- `staticcheck`, `gosimple`, `unused` — Static analysis
-- `gocritic`, `revive` — Code quality
-- `govet`, `ineffassign` — Correctness
-- `exhaustruct` — Struct initialization
-- `paralleltest` — Parallel test enforcement
-- `gosec` — Security
+---
 
-**Run linter**:
-```bash
-just lint       # Check only
-just lint-fix   # Auto-fix where possible
-```
+## Linter Cheat Sheet
+
+50+ linters enabled. Key ones that bite:
+
+| Linter | Rule |
+|--------|------|
+| `exhaustruct` | All struct fields must be initialized |
+| `wrapcheck` | All errors must be wrapped |
+| `paralleltest` | All tests must use `t.Parallel()` |
+| `gochecknoglobals` | No globals unless `//nolint` |
+| `gci` | Import order matters |
+
+Run `just lint-fix` — it auto-fixes many issues.
 
 ---
 
 ## Dependencies
 
-```go
-require (
-    github.com/cockroachdb/errors v1.12.0  // Error handling with stack traces
-    github.com/fsnotify/fsnotify v1.9.0     // Core file system notifications
-)
+```
+github.com/cockroachdb/errors   # Error wrapping
+github.com/fsnotify/fsnotify    # Core file watching
 ```
 
-**No other external dependencies** — keep it minimal.
-
----
-
-## Common Tasks
-
-### Adding a New Option
-
-```go
-// In options.go
-func WithXxx(value SomeType) Option {
-    return func(w *Watcher) {
-        w.xxx = value
-    }
-}
-
-// In watcher.go — add field to Watcher struct
-type Watcher struct {
-    // ... existing fields ...
-    xxx SomeType
-}
-```
-
-### Adding a New Filter
-
-```go
-// In filter.go
-type Filter func(event Event) bool
-
-func FilterXxx(params) Filter {
-    return func(event Event) bool {
-        // return true to keep, false to discard
-    }
-}
-```
-
-### Adding Middleware
-
-```go
-// In middleware.go
-type Middleware func(Handler) Handler
-type Handler func(ctx context.Context, event Event) error
-
-func MiddlewareXxx() Middleware {
-    return func(next Handler) Handler {
-        return func(ctx context.Context, event Event) error {
-            // pre-processing
-            err := next(ctx, event)
-            // post-processing
-            return err
-        }
-    }
-}
-```
-
----
-
-## Gotchas & Important Notes
-
-1. **DefaultIgnoreDirs** is an exported global (nolint:gochecknoglobals) — users can reference it
-2. **Recursive watching** is ON by default — subdirectories auto-added
-3. **Dot directories** are skipped by default — use `WithSkipDotDirs(false)` to watch them
-4. **Buffer size** defaults to 64 — use `WithBuffer(size)` for high-volume scenarios
-5. **Debouncing**: 
-   - `WithDebounce()` = global (all events coalesced)
-   - `WithPerPathDebounce()` = per-path (each file debounced independently)
-6. **Middleware order**: Applied in reverse (last added runs first)
-7. **Event priority**: Create > Write > Remove > Rename (when multiple ops occur)
-8. **Chmod events** are ignored — not mapped to any Op
-
----
-
-## Related Projects
-
-- Built on [fsnotify/fsnotify](https://github.com/fsnotify/fsnotify)
-- Follows conventions from [go-cqrs-lite](https://github.com/larsartmann/go-cqrs-lite)
-
----
-
-## License
-
-Proprietary — See LICENSE file.
+Keep it minimal — no other deps.

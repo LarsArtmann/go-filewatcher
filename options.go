@@ -81,3 +81,12 @@ func WithErrorHandler(handler func(error)) Option {
 		w.errorHandler = handler
 	}
 }
+
+// WithSkipDotDirs controls whether directories starting with a dot (.
+// are skipped during recursive directory walking. Default is true.
+// Set to false to watch dot-directories like .config, .vscode, etc.
+func WithSkipDotDirs(skip bool) Option {
+	return func(w *Watcher) {
+		w.skipDotDirs = skip
+	}
+}

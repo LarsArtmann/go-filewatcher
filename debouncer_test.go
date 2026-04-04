@@ -50,8 +50,9 @@ func TestDebouncer_Flush(t *testing.T) {
 
 	time.Sleep(50 * time.Millisecond)
 
-	if got := count.Load(); got != 0 {
-		t.Errorf("expected 0 executions after flush, got %d", got)
+	// Flush executes pending functions immediately, so we expect 1 execution
+	if got := count.Load(); got != 1 {
+		t.Errorf("expected 1 execution after flush (executes pending), got %d", got)
 	}
 
 	if got := d.Pending(); got != 0 {

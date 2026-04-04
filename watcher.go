@@ -52,17 +52,26 @@ type Watcher struct {
 	globalDebounce  time.Duration
 	perPathDebounce time.Duration
 	errorHandler    func(error)
+	skipDotDirs     bool
 
 	// Internal state
-	mu     sync.RWMutex
-	closed bool
+	mu       sync.RWMutex
+	closed   bool
+	watching bool
 
 	// Debouncer (initialized based on config)
-	debounceInterface interface {
-		Debounce(key string, fn func())
-		Stop()
-	}
+	debounceInterface DebouncerInterface
 }
+
+// DebouncerInterface is the interface for debouncer implementations.
+type DebouncerInterface interface {
+	Debounce(key string, fn func())
+	Stop()
+}
+
+// Compile-time interface checks.
+var _ DebouncerInterface = (*Debouncer)(nil)
+var _ DebouncerInterface = (*GlobalDebouncer)(nil)
 
 // New creates a new Watcher for the given paths with the specified options.
 // At least one path must be provided. Paths are validated to exist.
@@ -102,6 +111,7 @@ func New(paths []string, opts ...Option) (*Watcher, error) {
 		globalDebounce:    0,
 		perPathDebounce:   0,
 		errorHandler:      nil,
+		skipDotDirs:       true,
 		mu:                sync.RWMutex{},
 		closed:            false,
 		debounceInterface: nil,
@@ -135,6 +145,10 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 		return nil, errors.WithStack(ErrWatcherClosed)
 	}
 
+	if w.watching {
+		return nil, errors.WithStack(ErrWatcherRunning)
+	}
+
 	// Add initial paths to the fsnotify watcher
 	for _, p := range w.paths {
 		if err := w.addPath(p); err != nil {
@@ -144,6 +158,7 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 
 	eventCh := make(chan Event, 64)
 
+	w.watching = true
 	go w.watchLoop(ctx, eventCh)
 
 	return eventCh, nil
@@ -151,8 +166,8 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 
 // Add adds a new path to the watcher. The path must be an existing directory.
 func (w *Watcher) Add(path string) error {
-	w.mu.RLock()
-	defer w.mu.RUnlock()
+	w.mu.Lock()
+	defer w.mu.Unlock()
 
 	if w.closed {
 		return errors.WithStack(ErrWatcherClosed)
@@ -177,6 +192,7 @@ func (w *Watcher) Close() error {
 	}
 
 	w.closed = true
+	w.watching = false
 
 	if w.debounceInterface != nil {
 		w.debounceInterface.Stop()
@@ -241,7 +257,7 @@ func (w *Watcher) walkDirFunc(path string, d os.DirEntry, err error) error {
 
 // shouldSkipDir checks if a directory should be skipped based on ignore rules.
 func (w *Watcher) shouldSkipDir(name string) bool {
-	if strings.HasPrefix(name, ".") && name != "." {
+	if w.skipDotDirs && strings.HasPrefix(name, ".") && name != "." {
 		return true
 	}
 	return slices.Contains(DefaultIgnoreDirs, name)
@@ -339,21 +355,27 @@ func (w *Watcher) wrapWithMiddleware(
 		return nil
 	})
 	return func(ctx context.Context, e Event) {
-		_ = wrapped(ctx, e)
+		if err := wrapped(ctx, e); err != nil {
+			w.handleError(err)
+		}
 	}
 }
 
 // executeHandler runs the handler, applying debouncing if configured.
 func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handler) {
+	execute := func() {
+		if err := handler(ctx, event); err != nil {
+			w.handleError(err)
+		}
+	}
+
 	if w.debounceInterface == nil {
-		_ = handler(ctx, event)
+		execute()
 		return
 	}
 
 	key := w.getDebounceKey(event.Path)
-	w.debounceInterface.Debounce(key, func() {
-		_ = handler(ctx, event)
-	})
+	w.debounceInterface.Debounce(key, execute)
 }
 
 // getDebounceKey returns the debounce key based on debouncer type.

@@ -13,3 +13,6 @@ var ErrPathNotFound = errors.New("path not found")
 
 // ErrPathNotDir is returned when a path is not a directory.
 var ErrPathNotDir = errors.New("path is not a directory")
+
+// ErrWatcherRunning is returned when Watch() is called on an already running watcher.
+var ErrWatcherRunning = errors.New("watcher is already running")

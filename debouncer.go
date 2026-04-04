@@ -5,13 +5,19 @@ import (
 	"time"
 )
 
+// debounceEntry holds a timer and its associated function.
+type debounceEntry struct {
+	timer *time.Timer
+	fn    func()
+}
+
 // Debouncer prevents rapid successive function executions by coalescing
 // calls within a delay window. It supports per-key debouncing so that
 // different keys (e.g., file paths) are debounced independently.
 type Debouncer struct {
-	delay  time.Duration
-	mu     sync.Mutex
-	timers map[string]*time.Timer
+	delay   time.Duration
+	mu      sync.Mutex
+	entries map[string]*debounceEntry
 }
 
 // NewDebouncer creates a new Debouncer with the specified delay.
@@ -20,9 +26,9 @@ func NewDebouncer(delay time.Duration) *Debouncer {
 		delay = 500 * time.Millisecond
 	}
 	return &Debouncer{
-		delay:  delay,
-		mu:     sync.Mutex{},
-		timers: make(map[string]*time.Timer),
+		delay:   delay,
+		mu:      sync.Mutex{},
+		entries: make(map[string]*debounceEntry),
 	}
 }
 
@@ -33,16 +39,18 @@ func (d *Debouncer) Debounce(key string, fn func()) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 
-	if timer, exists := d.timers[key]; exists {
-		timer.Stop()
+	if entry, exists := d.entries[key]; exists {
+		entry.timer.Stop()
 	}
 
-	d.timers[key] = time.AfterFunc(d.delay, func() {
+	entry := &debounceEntry{fn: fn}
+	entry.timer = time.AfterFunc(d.delay, func() {
 		fn()
 		d.mu.Lock()
-		delete(d.timers, key)
+		delete(d.entries, key)
 		d.mu.Unlock()
 	})
+	d.entries[key] = entry
 }
 
 // Flush executes all pending functions immediately and clears all timers.
@@ -50,9 +58,10 @@ func (d *Debouncer) Flush() {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 
-	for key, timer := range d.timers {
-		timer.Stop()
-		delete(d.timers, key)
+	for key, entry := range d.entries {
+		entry.timer.Stop()
+		entry.fn()
+		delete(d.entries, key)
 	}
 }
 
@@ -61,9 +70,9 @@ func (d *Debouncer) Stop() {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 
-	for key, timer := range d.timers {
-		timer.Stop()
-		delete(d.timers, key)
+	for key, entry := range d.entries {
+		entry.timer.Stop()
+		delete(d.entries, key)
 	}
 }
 
@@ -71,7 +80,7 @@ func (d *Debouncer) Stop() {
 func (d *Debouncer) Pending() int {
 	d.mu.Lock()
 	defer d.mu.Unlock()
-	return len(d.timers)
+	return len(d.entries)
 }
 
 // GlobalDebouncer coalesces all events into a single timer, regardless of key.
@@ -80,6 +89,7 @@ type GlobalDebouncer struct {
 	delay time.Duration
 	mu    sync.Mutex
 	timer *time.Timer
+	fn    func()
 }
 
 // NewGlobalDebouncer creates a new GlobalDebouncer with the specified delay.
@@ -104,7 +114,23 @@ func (g *GlobalDebouncer) Debounce(_ string, fn func()) {
 		g.timer.Stop()
 	}
 
+	g.fn = fn
 	g.timer = time.AfterFunc(g.delay, fn)
+}
+
+// Flush executes the pending function immediately and clears the timer.
+func (g *GlobalDebouncer) Flush() {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+
+	if g.timer != nil {
+		g.timer.Stop()
+		g.timer = nil
+		if g.fn != nil {
+			g.fn()
+			g.fn = nil
+		}
+	}
 }
 
 // Stop cancels the pending execution.
@@ -116,4 +142,5 @@ func (g *GlobalDebouncer) Stop() {
 		g.timer.Stop()
 		g.timer = nil
 	}
+	g.fn = nil
 }

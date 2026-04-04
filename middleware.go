@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"runtime/debug"
+	"sync/atomic"
 	"time"
 )
 
@@ -53,15 +54,18 @@ func MiddlewareRecovery() Middleware {
 // MiddlewareRateLimit returns a middleware that limits the rate of event
 // processing to at most one event per minInterval.
 func MiddlewareRateLimit(minInterval time.Duration) Middleware {
-	var lastEvent time.Time
+	var lastEvent int64 // stores UnixNano for atomic operations
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			now := time.Now()
-			if now.Sub(lastEvent) < minInterval {
+			now := time.Now().UnixNano()
+			last := atomic.LoadInt64(&lastEvent)
+			if now-last < minInterval.Nanoseconds() {
 				return nil
 			}
-			lastEvent = now
-			return next(ctx, event)
+			if atomic.CompareAndSwapInt64(&lastEvent, last, now) {
+				return next(ctx, event)
+			}
+			return nil
 		}
 	}
 }

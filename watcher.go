@@ -58,9 +58,9 @@ type Watcher struct {
 	onAdd           func(path string) // callback when a path is added
 
 	// Internal state
-	mu       sync.RWMutex
-	closed   bool
-	watching bool
+	mu        sync.RWMutex
+	closed    bool
+	watching  bool
 	watchList []string // tracked paths currently being watched
 
 	// Debouncer (initialized based on config)

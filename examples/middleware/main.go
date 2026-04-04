@@ -32,17 +32,22 @@ func main() {
 					writeCount.Add(1)
 				case filewatcher.Remove:
 					removeCount.Add(1)
+				case filewatcher.Rename:
+					// Rename operations tracked separately
 				}
 			}),
 		),
 	)
 	if err != nil {
+		_ = watcher.Close()
+		cancel()
 		log.Fatal(err)
 	}
 
 	events, err := watcher.Watch(ctx)
 	if err != nil {
 		_ = watcher.Close()
+		cancel()
 		log.Fatal(err)
 	}
 

@@ -43,6 +43,7 @@ func ExampleWatcher_Watch() {
 
 	events, err := watcher.Watch(ctx)
 	if err != nil {
+		cancel()
 		log.Fatal(err)
 	}
 
@@ -121,6 +122,7 @@ func ExampleWatcher_Remove() {
 
 	_, err = watcher.Watch(ctx)
 	if err != nil {
+		cancel()
 		log.Fatal(err)
 	}
 

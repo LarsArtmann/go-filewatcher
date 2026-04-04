@@ -32,12 +32,12 @@ func TestFilterExtensions(t *testing.T) {
 		event Event
 		want  bool
 	}{
-		{"go file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now()}, true},
-		{"md file", Event{Path: "/tmp/readme.md", Op: Write, Timestamp: time.Now()}, true},
-		{"txt file", Event{Path: "/tmp/notes.txt", Op: Write, Timestamp: time.Now()}, false},
+		{"go file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false}, true},
+		{"md file", Event{Path: "/tmp/readme.md", Op: Write, Timestamp: time.Now(), IsDir: false}, true},
+		{"txt file", Event{Path: "/tmp/notes.txt", Op: Write, Timestamp: time.Now(), IsDir: false}, false},
 		{
 			"go file uppercase ext",
-			Event{Path: "/tmp/main.GO", Op: Write, Timestamp: time.Now()},
+			Event{Path: "/tmp/main.GO", Op: Write, Timestamp: time.Now(), IsDir: false},
 			true,
 		},
 	})
@@ -50,9 +50,9 @@ func TestFilterIgnoreExtensions(t *testing.T) {
 		event Event
 		want  bool
 	}{
-		{"go file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now()}, true},
-		{"log file", Event{Path: "/tmp/app.log", Op: Write, Timestamp: time.Now()}, false},
-		{"tmp file", Event{Path: "/tmp/cache.tmp", Op: Write, Timestamp: time.Now()}, false},
+		{"go file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false}, true},
+		{"log file", Event{Path: "/tmp/app.log", Op: Write, Timestamp: time.Now(), IsDir: false}, false},
+		{"tmp file", Event{Path: "/tmp/cache.tmp", Op: Write, Timestamp: time.Now(), IsDir: false}, false},
 	})
 }
 
@@ -63,16 +63,16 @@ func TestFilterIgnoreDirs(t *testing.T) {
 		event Event
 		want  bool
 	}{
-		{"normal file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now()}, true},
-		{"vendor file", Event{Path: "/tmp/vendor/pkg.go", Op: Write, Timestamp: time.Now()}, false},
+		{"normal file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false}, true},
+		{"vendor file", Event{Path: "/tmp/vendor/pkg.go", Op: Write, Timestamp: time.Now(), IsDir: false}, false},
 		{
 			"nested vendor",
-			Event{Path: "/tmp/pkg/vendor/lib.go", Op: Write, Timestamp: time.Now()},
+			Event{Path: "/tmp/pkg/vendor/lib.go", Op: Write, Timestamp: time.Now(), IsDir: false},
 			false,
 		},
 		{
 			"node_modules",
-			Event{Path: "/tmp/node_modules/index.js", Op: Write, Timestamp: time.Now()},
+			Event{Path: "/tmp/node_modules/index.js", Op: Write, Timestamp: time.Now(), IsDir: false},
 			false,
 		},
 	})

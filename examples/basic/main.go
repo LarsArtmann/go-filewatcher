@@ -21,9 +21,10 @@ func main() {
 		filewatcher.WithDebounce(300*time.Millisecond),
 	)
 	if err != nil {
+		cancel()
 		log.Fatal(err)
 	}
-	defer watcher.Close()
+	defer func() { _ = watcher.Close() }()
 
 	events, err := watcher.Watch(ctx)
 	if err != nil {

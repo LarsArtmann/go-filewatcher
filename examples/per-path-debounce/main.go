@@ -21,12 +21,15 @@ func main() {
 		filewatcher.WithFilter(filewatcher.FilterExtensions(".go")),
 	)
 	if err != nil {
+		cancel()
+		_ = watcher.Close()
 		log.Fatal(err)
 	}
 
 	events, err := watcher.Watch(ctx)
 	if err != nil {
 		_ = watcher.Close()
+		cancel()
 		log.Fatal(err)
 	}
 

@@ -46,6 +46,7 @@ func (d *Debouncer) Debounce(key string, fn func()) {
 	entry := &debounceEntry{
 		timer: nil,
 		fn:    fn,
+		//nolint:exhaustruct // timer field set after initialization
 	}
 	entry.timer = time.AfterFunc(d.delay, func() {
 		fn()
@@ -105,6 +106,7 @@ func NewGlobalDebouncer(delay time.Duration) *GlobalDebouncer {
 		mu:    sync.Mutex{},
 		timer: nil,
 		fn:    nil,
+		//nolint:exhaustruct // fn field set after initialization in Debounce method
 	}
 }
 

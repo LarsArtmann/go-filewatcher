@@ -350,17 +350,17 @@ func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handl
 		return
 	}
 
-	key := w.getDebounceKey()
+	key := w.getDebounceKey(event.Path)
 	w.debounceInterface.Debounce(key, func() {
 		_ = handler(ctx, event)
 	})
 }
 
 // getDebounceKey returns the debounce key based on debouncer type.
-// For per-path debouncing, returns the path key; otherwise returns empty string.
-func (w *Watcher) getDebounceKey() string {
+// For per-path debouncing (Debouncer), returns the path; otherwise returns empty string.
+func (w *Watcher) getDebounceKey(path string) string {
 	if _, ok := w.debounceInterface.(*Debouncer); ok {
-		return ""
+		return path
 	}
 	return ""
 }

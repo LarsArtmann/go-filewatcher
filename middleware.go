@@ -38,7 +38,11 @@ func MiddlewareRecovery() Middleware {
 		return func(ctx context.Context, event Event) (err error) {
 			defer func() {
 				if r := recover(); r != nil {
-					err = fmt.Errorf("recovered from panic in event handler: %v\n%s", r, debug.Stack())
+					err = fmt.Errorf(
+						"recovered from panic in event handler: %v\n%s",
+						r,
+						debug.Stack(),
+					)
 				}
 			}()
 			return next(ctx, event)
@@ -111,7 +115,13 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 		return func(ctx context.Context, event Event) error {
 			f, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
 			if err == nil {
-				_, _ = fmt.Fprintf(f, "%s %s %s\n", event.Timestamp.Format(time.RFC3339), event.Op, event.Path)
+				_, _ = fmt.Fprintf(
+					f,
+					"%s %s %s\n",
+					event.Timestamp.Format(time.RFC3339),
+					event.Op,
+					event.Path,
+				)
 				_ = f.Close()
 			}
 			return next(ctx, event)

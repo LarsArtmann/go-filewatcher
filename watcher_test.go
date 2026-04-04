@@ -376,7 +376,11 @@ collect:
 	}
 
 	if len(paths) != 2 {
-		t.Errorf("expected 2 events for different files with per-path debounce, got %d: %v", len(paths), paths)
+		t.Errorf(
+			"expected 2 events for different files with per-path debounce, got %d: %v",
+			len(paths),
+			paths,
+		)
 	}
 }
 

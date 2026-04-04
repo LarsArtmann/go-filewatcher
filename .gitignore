@@ -1,1 +1,7 @@
 # File watcher library - built\n*.test\ncoverage.out
+# Test coverage
+/coverage
+# Dependencies
+node_modules/
+# Build artifacts
+/go-filewatcher

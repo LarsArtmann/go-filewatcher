@@ -460,9 +460,6 @@ func TestWatcher_Watch_ErrorHandler(t *testing.T) {
 	}
 	defer func() { _ = w.Close() }()
 
-	_ = w
-
-	// Error handler is set; just verify construction works
 	if errorReceived.Load() != nil {
 		t.Error("expected no error yet")
 	}

@@ -143,12 +143,6 @@ func FilterMinSize(minSize int64) Filter {
 	}
 }
 
-// FilterCustom is an alias for creating custom filters.
-// It provides a named escape hatch for complex filtering logic.
-func FilterCustom(fn func(Event) bool) Filter {
-	return fn
-}
-
 // FilterAnd combines multiple filters with AND logic.
 // All filters must return true for the event to pass.
 func FilterAnd(filters ...Filter) Filter {

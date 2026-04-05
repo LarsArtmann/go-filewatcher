@@ -41,9 +41,11 @@ func WithExtensions(exts ...string) Option {
 
 // WithIgnoreDirs discards events for files within the given directory names.
 // Common values: "vendor", "node_modules", ".git", "dist", "build", "bin".
+// Also skips these directories during recursive walking.
 func WithIgnoreDirs(dirs ...string) Option {
 	return func(w *Watcher) {
 		w.filters = append(w.filters, FilterIgnoreDirs(dirs...))
+		w.ignoreDirNames = append(w.ignoreDirNames, dirs...)
 	}
 }
 

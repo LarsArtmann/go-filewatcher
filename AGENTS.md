@@ -102,11 +102,11 @@ Don't remove the nolint — this is intentional.
 
 ## Key Patterns
 
-| Pattern | Where |
-|---------|-------|
-| Functional Options | `options.go` — `type Option func(*Watcher)` |
-| Middleware Chain | `middleware.go` — applied in **reverse** order |
-| Filter Composition | `filter.go` — `FilterAnd()`, `FilterOr()` |
+| Pattern            | Where                                          |
+| ------------------ | ---------------------------------------------- |
+| Functional Options | `options.go` — `type Option func(*Watcher)`    |
+| Middleware Chain   | `middleware.go` — applied in **reverse** order |
+| Filter Composition | `filter.go` — `FilterAnd()`, `FilterOr()`      |
 
 ---
 
@@ -114,13 +114,13 @@ Don't remove the nolint — this is intentional.
 
 50+ linters enabled. Key ones that bite:
 
-| Linter | Rule |
-|--------|------|
-| `exhaustruct` | All struct fields must be initialized |
-| `wrapcheck` | All errors must be wrapped |
-| `paralleltest` | All tests must use `t.Parallel()` |
-| `gochecknoglobals` | No globals unless `//nolint` |
-| `gci` | Import order matters |
+| Linter             | Rule                                  |
+| ------------------ | ------------------------------------- |
+| `exhaustruct`      | All struct fields must be initialized |
+| `wrapcheck`        | All errors must be wrapped            |
+| `paralleltest`     | All tests must use `t.Parallel()`     |
+| `gochecknoglobals` | No globals unless `//nolint`          |
+| `gci`              | Import order matters                  |
 
 Run `just lint-fix` — it auto-fixes many issues.
 

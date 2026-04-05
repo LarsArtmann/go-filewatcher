@@ -17,13 +17,13 @@ Evaluated `samber/do/v2` integration (decision: **no**), then deep-reflected on 
 
 ### This Session
 
-| Commit | What | Files |
-|--------|------|-------|
-| `3eaf3e4` | Remove unused `//nolint:unparam` directive in `watcher.go:464` | `watcher.go` |
-| `de57c1e` | Replace reinvented `contains()` helper with `strings.Contains` in `filter_test.go` | `filter_test.go` |
-| `83d08ad` | Fix stale `pkg/errors/` reference in `AGENTS.md` (directory doesn't exist) | `AGENTS.md` |
-| `813328a` | Add `Pending() int` method to `GlobalDebouncer` for API consistency with `Debouncer` | `debouncer.go`, `debouncer_test.go` |
-| `6d934dc` | Add `encoding.TextMarshaler`/`TextUnmarshaler` to `Op` + json struct tags to `Event` | `event.go`, `event_test.go` |
+| Commit    | What                                                                                       | Files                                             |
+| --------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------- |
+| `3eaf3e4` | Remove unused `//nolint:unparam` directive in `watcher.go:464`                             | `watcher.go`                                      |
+| `de57c1e` | Replace reinvented `contains()` helper with `strings.Contains` in `filter_test.go`         | `filter_test.go`                                  |
+| `83d08ad` | Fix stale `pkg/errors/` reference in `AGENTS.md` (directory doesn't exist)                 | `AGENTS.md`                                       |
+| `813328a` | Add `Pending() int` method to `GlobalDebouncer` for API consistency with `Debouncer`       | `debouncer.go`, `debouncer_test.go`               |
+| `6d934dc` | Add `encoding.TextMarshaler`/`TextUnmarshaler` to `Op` + json struct tags to `Event`       | `event.go`, `event_test.go`                       |
 | `909a220` | Rewrite ADR with comprehensive gaps analysis (code comparison, DI landscape, quantitative) | `docs/adr/2026-04-04_samber-do-v2-integration.md` |
 
 ### Cumulative (all sessions)
@@ -44,13 +44,13 @@ Evaluated `samber/do/v2` integration (decision: **no**), then deep-reflected on 
 
 The ADR lists 5 future improvements. None are implemented yet — they're documented as next steps:
 
-| # | Improvement | Status |
-|---|-------------|--------|
-| 1 | Extract `fsnotify.Watcher` behind internal interface for testability | Not started |
-| 2 | Add `HealthCheck() error` to `Watcher` | Not started |
-| 3 | Document DI integration pattern in README | Not started |
-| 4 | Use `log/slog` in middleware (replace `log.Logger`) | Not started |
-| 5 | Add `Event` batch accumulation | Not started |
+| #   | Improvement                                                          | Status      |
+| --- | -------------------------------------------------------------------- | ----------- |
+| 1   | Extract `fsnotify.Watcher` behind internal interface for testability | Not started |
+| 2   | Add `HealthCheck() error` to `Watcher`                               | Not started |
+| 3   | Document DI integration pattern in README                            | Not started |
+| 4   | Use `log/slog` in middleware (replace `log.Logger`)                  | Not started |
+| 5   | Add `Event` batch accumulation                                       | Not started |
 
 ### Test Coverage — 78.9%
 
@@ -64,21 +64,21 @@ The ADR lists 5 future improvements. None are implemented yet — they're docume
 
 ## c) NOT STARTED 📋
 
-| # | Item | Why it matters |
-|---|------|---------------|
-| 1 | **Fix pre-existing race condition** in `walkAndAddPaths` / `watchList` | Race detector fails on `go test -race`. `watchList` is appended without holding `w.mu` when called from `handleNewDirectory` in the watch goroutine, while `Close()` reads it from another goroutine. |
-| 2 | **Fix 10 exhaustruct violations** in `filter_test.go` | Event structs missing `IsDir` field in test cases |
-| 3 | **Fix 5 gocritic exitAfterDefer** in examples | `log.Fatal` after `defer cancel()` means cancel never runs |
-| 4 | **Fix new recvcheck warning** in `event.go:10` | `Op` methods mix pointer (`UnmarshalText`) and value (`String`, `MarshalText`) receivers — self-introduced in commit `6d934dc` |
-| 5 | **Fix golines formatting** in `filter_test.go:36` | Line too long |
-| 6 | **Extract `fsnotify.Watcher` behind internal interface** | Enables mock-based testing of watch loop |
-| 7 | **Add `HealthCheck() error` to `Watcher`** | DI-friendly lifecycle hook |
-| 8 | **Replace `log.Logger` with `log/slog`** in middleware | Structured logging (stdlib since Go 1.21) |
-| 9 | **Document DI integration patterns** in README | Show consumers how to use with `samber/do`, `wire`, `fx` |
-| 10 | **Add `Event` batch accumulation** | Useful for consumers processing events in batches |
-| 11 | **Increase test coverage to 85%+** | Currently 78.9% |
-| 12 | **Add benchmarks** for filter evaluation and middleware chains | `just bench` exists but no bench tests |
-| 13 | **CI pipeline** | No GitHub Actions or CI config |
+| #   | Item                                                                   | Why it matters                                                                                                                                                                                        |
+| --- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Fix pre-existing race condition** in `walkAndAddPaths` / `watchList` | Race detector fails on `go test -race`. `watchList` is appended without holding `w.mu` when called from `handleNewDirectory` in the watch goroutine, while `Close()` reads it from another goroutine. |
+| 2   | **Fix 10 exhaustruct violations** in `filter_test.go`                  | Event structs missing `IsDir` field in test cases                                                                                                                                                     |
+| 3   | **Fix 5 gocritic exitAfterDefer** in examples                          | `log.Fatal` after `defer cancel()` means cancel never runs                                                                                                                                            |
+| 4   | **Fix new recvcheck warning** in `event.go:10`                         | `Op` methods mix pointer (`UnmarshalText`) and value (`String`, `MarshalText`) receivers — self-introduced in commit `6d934dc`                                                                        |
+| 5   | **Fix golines formatting** in `filter_test.go:36`                      | Line too long                                                                                                                                                                                         |
+| 6   | **Extract `fsnotify.Watcher` behind internal interface**               | Enables mock-based testing of watch loop                                                                                                                                                              |
+| 7   | **Add `HealthCheck() error` to `Watcher`**                             | DI-friendly lifecycle hook                                                                                                                                                                            |
+| 8   | **Replace `log.Logger` with `log/slog`** in middleware                 | Structured logging (stdlib since Go 1.21)                                                                                                                                                             |
+| 9   | **Document DI integration patterns** in README                         | Show consumers how to use with `samber/do`, `wire`, `fx`                                                                                                                                              |
+| 10  | **Add `Event` batch accumulation**                                     | Useful for consumers processing events in batches                                                                                                                                                     |
+| 11  | **Increase test coverage to 85%+**                                     | Currently 78.9%                                                                                                                                                                                       |
+| 12  | **Add benchmarks** for filter evaluation and middleware chains         | `just bench` exists but no bench tests                                                                                                                                                                |
+| 13  | **CI pipeline**                                                        | No GitHub Actions or CI config                                                                                                                                                                        |
 
 ---
 
@@ -93,6 +93,7 @@ The ADR lists 5 future improvements. None are implemented yet — they're docume
 **Impact:** Data race in production if `Close()` is called while new directories are being added.
 
 **Race detector output (17 test failures):**
+
 ```
 TestWatcher_IgnoreDirs, TestDebouncer_Stop, TestDebouncer_DifferentKeys,
 TestDebouncer_RapidCalls, TestFilterGlob, TestFilterIgnoreDirs,
@@ -145,33 +146,33 @@ TestDebouncer_DefaultDelay, TestDebouncer_NegativeDelay
 
 Sorted by impact × urgency ÷ work:
 
-| # | Task | Impact | Work | Type |
-|---|------|--------|------|------|
-| 1 | Fix race condition in `walkAndAddPaths` / `watchList` | 🔴 Critical | Small | Bug |
-| 2 | Fix recvcheck: make `String()`/`MarshalText()` use pointer receiver | Medium | Tiny | Lint |
-| 3 | Fix 10 exhaustruct violations in `filter_test.go` | Medium | Tiny | Lint |
-| 4 | Fix 5 gocritic exitAfterDefer in examples | Medium | Tiny | Lint |
-| 5 | Fix golines formatting in `filter_test.go` | Low | Tiny | Lint |
-| 6 | Extract `fsnotify.Watcher` behind internal interface | High | Medium | Architecture |
-| 7 | Add mock-based tests for watch loop | High | Medium | Testing |
-| 8 | Add `HealthCheck() error` to `Watcher` | Medium | Small | Feature |
-| 9 | Replace `log.Logger` with `log/slog` in middleware | Medium | Small | Modernization |
-| 10 | Increase test coverage to 85%+ | Medium | Medium | Quality |
-| 11 | Investigate and fix `TestWatcher_Watch_Deletes` flakiness | Medium | Small | Testing |
-| 12 | Add benchmarks for filters, middleware, debouncer | Medium | Small | Performance |
-| 13 | Document DI integration patterns in README | Medium | Tiny | Docs |
-| 14 | Add `Event` batch accumulation option | Medium | Medium | Feature |
-| 15 | Add CI pipeline (GitHub Actions) | Medium | Small | Infra |
-| 16 | Add `Close()` to `DebouncerInterface` (rename `Stop()`) | Low | Small | API cleanup |
-| 17 | Add `Watcher.Watch()` with callback option (not just channel) | Medium | Medium | Feature |
-| 18 | Add `FilterExcludePaths` for exact path exclusion | Low | Tiny | Feature |
-| 19 | Add `Event.Size` field (file size at event time) | Low | Small | Feature |
-| 20 | Add `MiddlewareThrottle` (N events per duration) | Low | Small | Feature |
-| 21 | Add changelog entries for recent changes | Low | Tiny | Docs |
-| 22 | Update README with new serialization features | Low | Tiny | Docs |
-| 23 | Add `Watcher.IsWatching()` convenience method | Low | Tiny | Feature |
-| 24 | Consider `context.Context` in `DebouncerInterface` | Low | Medium | API |
-| 25 | Generate GoDoc site (pkg.go.dev works but no custom) | Low | Tiny | Docs |
+| #   | Task                                                                | Impact      | Work   | Type          |
+| --- | ------------------------------------------------------------------- | ----------- | ------ | ------------- |
+| 1   | Fix race condition in `walkAndAddPaths` / `watchList`               | 🔴 Critical | Small  | Bug           |
+| 2   | Fix recvcheck: make `String()`/`MarshalText()` use pointer receiver | Medium      | Tiny   | Lint          |
+| 3   | Fix 10 exhaustruct violations in `filter_test.go`                   | Medium      | Tiny   | Lint          |
+| 4   | Fix 5 gocritic exitAfterDefer in examples                           | Medium      | Tiny   | Lint          |
+| 5   | Fix golines formatting in `filter_test.go`                          | Low         | Tiny   | Lint          |
+| 6   | Extract `fsnotify.Watcher` behind internal interface                | High        | Medium | Architecture  |
+| 7   | Add mock-based tests for watch loop                                 | High        | Medium | Testing       |
+| 8   | Add `HealthCheck() error` to `Watcher`                              | Medium      | Small  | Feature       |
+| 9   | Replace `log.Logger` with `log/slog` in middleware                  | Medium      | Small  | Modernization |
+| 10  | Increase test coverage to 85%+                                      | Medium      | Medium | Quality       |
+| 11  | Investigate and fix `TestWatcher_Watch_Deletes` flakiness           | Medium      | Small  | Testing       |
+| 12  | Add benchmarks for filters, middleware, debouncer                   | Medium      | Small  | Performance   |
+| 13  | Document DI integration patterns in README                          | Medium      | Tiny   | Docs          |
+| 14  | Add `Event` batch accumulation option                               | Medium      | Medium | Feature       |
+| 15  | Add CI pipeline (GitHub Actions)                                    | Medium      | Small  | Infra         |
+| 16  | Add `Close()` to `DebouncerInterface` (rename `Stop()`)             | Low         | Small  | API cleanup   |
+| 17  | Add `Watcher.Watch()` with callback option (not just channel)       | Medium      | Medium | Feature       |
+| 18  | Add `FilterExcludePaths` for exact path exclusion                   | Low         | Tiny   | Feature       |
+| 19  | Add `Event.Size` field (file size at event time)                    | Low         | Small  | Feature       |
+| 20  | Add `MiddlewareThrottle` (N events per duration)                    | Low         | Small  | Feature       |
+| 21  | Add changelog entries for recent changes                            | Low         | Tiny   | Docs          |
+| 22  | Update README with new serialization features                       | Low         | Tiny   | Docs          |
+| 23  | Add `Watcher.IsWatching()` convenience method                       | Low         | Tiny   | Feature       |
+| 24  | Consider `context.Context` in `DebouncerInterface`                  | Low         | Medium | API           |
+| 25  | Generate GoDoc site (pkg.go.dev works but no custom)                | Low         | Tiny   | Docs          |
 
 ---
 
@@ -191,16 +192,16 @@ The race is in `watchAndAddPaths` appending to `watchList` without holding `w.mu
 
 ## Quality Metrics
 
-| Metric | Value | Target |
-|--------|-------|--------|
-| Test coverage | 78.9% | 85%+ |
-| `go vet` | ✅ Pass | ✅ |
-| `go test` | ✅ Pass | ✅ |
-| `go test -race` | ❌ 17 failures (pre-existing race) | ✅ Pass |
-| Linter issues | 17 (10 exhaustruct, 5 gocritic, 1 golines, 1 recvcheck) | 0 |
-| Direct dependencies | 2 (`fsnotify`, `cockroachdb/errors`) | Minimal |
-| Total LOC | 2,855 | — |
-| Commits | 6 this session, 20 total | — |
+| Metric              | Value                                                   | Target  |
+| ------------------- | ------------------------------------------------------- | ------- |
+| Test coverage       | 78.9%                                                   | 85%+    |
+| `go vet`            | ✅ Pass                                                 | ✅      |
+| `go test`           | ✅ Pass                                                 | ✅      |
+| `go test -race`     | ❌ 17 failures (pre-existing race)                      | ✅ Pass |
+| Linter issues       | 17 (10 exhaustruct, 5 gocritic, 1 golines, 1 recvcheck) | 0       |
+| Direct dependencies | 2 (`fsnotify`, `cockroachdb/errors`)                    | Minimal |
+| Total LOC           | 2,855                                                   | —       |
+| Commits             | 6 this session, 20 total                                | —       |
 
 ---
 

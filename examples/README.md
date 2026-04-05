@@ -17,8 +17,8 @@ go run ./examples/middleware
 
 ## Examples
 
-| Example | Description |
-|---------|-------------|
-| [basic](./basic) | Simplest usage with extensions filter and debounce |
-| [per-path-debounce](./per-path-debounce) | Each file debounced independently |
-| [middleware](./middleware) | Logging, recovery, and metrics middleware |
+| Example                                  | Description                                        |
+| ---------------------------------------- | -------------------------------------------------- |
+| [basic](./basic)                         | Simplest usage with extensions filter and debounce |
+| [per-path-debounce](./per-path-debounce) | Each file debounced independently                  |
+| [middleware](./middleware)               | Logging, recovery, and metrics middleware          |

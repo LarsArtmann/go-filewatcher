@@ -18,25 +18,25 @@ The library is **functionally complete** for v0.1.0 but has **one critical data 
 
 ## A) FULLY DONE ✅
 
-| Item | Details |
-|------|---------|
-| Core watcher | `New()`, `Watch()`, `Close()`, `Add()`, `Remove()`, `WatchList()`, `Stats()` — all working |
-| Event system | `Op` type (Create/Write/Remove/Rename), `Event` struct with JSON tags, `MarshalText`/`UnmarshalText` on Op |
-| 12 functional options | `WithDebounce`, `WithPerPathDebounce`, `WithFilter`, `WithExtensions`, `WithIgnoreDirs`, `WithIgnoreHidden`, `WithRecursive`, `WithMiddleware`, `WithErrorHandler`, `WithSkipDotDirs`, `WithBuffer`, `WithOnAdd` |
-| 11 filter constructors | `FilterExtensions`, `FilterIgnoreExtensions`, `FilterIgnoreDirs`, `FilterIgnoreHidden`, `FilterOperations`, `FilterNotOperations`, `FilterGlob`, `FilterRegex`, `FilterMinSize`, `FilterAnd`, `FilterOr`, `FilterNot` |
-| 7 middleware | `MiddlewareLogging`, `MiddlewareRecovery`, `MiddlewareRateLimit`, `MiddlewareFilter`, `MiddlewareOnError`, `MiddlewareMetrics`, `MiddlewareWriteFileLog` |
-| 2 debounce strategies | `Debouncer` (per-key) and `GlobalDebouncer` (all-events) — both with `Debounce()`, `Flush()`, `Stop()`, `Pending()` |
-| 5 sentinel errors | `ErrWatcherClosed`, `ErrNoPaths`, `ErrPathNotFound`, `ErrPathNotDir`, `ErrWatcherRunning` |
-| 4 critical bugs fixed | MiddlewareRateLimit data race, Debouncer.Flush() lying, double Watch() guard, Add() RLock mutation |
-| 3 medium bugs fixed | error swallowing in middleware, SkipDotDirs, DebouncerInterface type |
-| 3 runnable examples | `examples/basic/`, `examples/middleware/`, `examples/per-path-debounce/` |
-| Op serialization | `MarshalText`/`UnmarshalText` on `Op`, JSON tags on `Event` |
-| GlobalDebouncer.Pending() | API consistency with per-key `Debouncer` |
-| ADR: samber/do/v2 | Evaluated and rejected — documented in `docs/adr/` |
-| Regex pre-compilation | `FilterRegex` compiles pattern once at construction |
-| Justfile | 20+ recipes including `check`, `ci`, `lint-fix`, `bench`, `build-all` |
-| CHANGELOG.md | Unreleased section with all features listed |
-| AGENTS.md | Agent onboarding guide with commands, conventions, gotchas |
+| Item                      | Details                                                                                                                                                                                                               |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Core watcher              | `New()`, `Watch()`, `Close()`, `Add()`, `Remove()`, `WatchList()`, `Stats()` — all working                                                                                                                            |
+| Event system              | `Op` type (Create/Write/Remove/Rename), `Event` struct with JSON tags, `MarshalText`/`UnmarshalText` on Op                                                                                                            |
+| 12 functional options     | `WithDebounce`, `WithPerPathDebounce`, `WithFilter`, `WithExtensions`, `WithIgnoreDirs`, `WithIgnoreHidden`, `WithRecursive`, `WithMiddleware`, `WithErrorHandler`, `WithSkipDotDirs`, `WithBuffer`, `WithOnAdd`      |
+| 11 filter constructors    | `FilterExtensions`, `FilterIgnoreExtensions`, `FilterIgnoreDirs`, `FilterIgnoreHidden`, `FilterOperations`, `FilterNotOperations`, `FilterGlob`, `FilterRegex`, `FilterMinSize`, `FilterAnd`, `FilterOr`, `FilterNot` |
+| 7 middleware              | `MiddlewareLogging`, `MiddlewareRecovery`, `MiddlewareRateLimit`, `MiddlewareFilter`, `MiddlewareOnError`, `MiddlewareMetrics`, `MiddlewareWriteFileLog`                                                              |
+| 2 debounce strategies     | `Debouncer` (per-key) and `GlobalDebouncer` (all-events) — both with `Debounce()`, `Flush()`, `Stop()`, `Pending()`                                                                                                   |
+| 5 sentinel errors         | `ErrWatcherClosed`, `ErrNoPaths`, `ErrPathNotFound`, `ErrPathNotDir`, `ErrWatcherRunning`                                                                                                                             |
+| 4 critical bugs fixed     | MiddlewareRateLimit data race, Debouncer.Flush() lying, double Watch() guard, Add() RLock mutation                                                                                                                    |
+| 3 medium bugs fixed       | error swallowing in middleware, SkipDotDirs, DebouncerInterface type                                                                                                                                                  |
+| 3 runnable examples       | `examples/basic/`, `examples/middleware/`, `examples/per-path-debounce/`                                                                                                                                              |
+| Op serialization          | `MarshalText`/`UnmarshalText` on `Op`, JSON tags on `Event`                                                                                                                                                           |
+| GlobalDebouncer.Pending() | API consistency with per-key `Debouncer`                                                                                                                                                                              |
+| ADR: samber/do/v2         | Evaluated and rejected — documented in `docs/adr/`                                                                                                                                                                    |
+| Regex pre-compilation     | `FilterRegex` compiles pattern once at construction                                                                                                                                                                   |
+| Justfile                  | 20+ recipes including `check`, `ci`, `lint-fix`, `bench`, `build-all`                                                                                                                                                 |
+| CHANGELOG.md              | Unreleased section with all features listed                                                                                                                                                                           |
+| AGENTS.md                 | Agent onboarding guide with commands, conventions, gotchas                                                                                                                                                            |
 
 **Total exported API surface:** ~55 symbols (13 types + 47 functions/methods + 5 errors + 1 var)
 
@@ -44,36 +44,36 @@ The library is **functionally complete** for v0.1.0 but has **one critical data 
 
 ## B) PARTIALLY DONE 🟡
 
-| Item | What's Done | What's Missing |
-|------|-------------|----------------|
-| Linter compliance | 57 linters configured, most pass | **17 issues remain:** 10 exhaustruct (all in `filter_test.go` — missing `IsDir` field), 5 gocritic (`exitAfterDefer`), 1 golines (line too long), 1 recvcheck (`Op` mixed receivers) |
-| Test coverage | 78.9%, 50+ tests | Target 85%+; missing edge-case tests for error paths, concurrent access, and `handleNewDirectory` |
-| README | Installation, quick start, options table, filters, middleware, event types | No advanced usage, no architecture diagram, no migration guide, no DI integration docs |
-| Documentation | 10 status reports + 1 ADR | No CONTRIBUTING.md, CODEOWNERS, or ROADMAP.md |
+| Item              | What's Done                                                                | What's Missing                                                                                                                                                                       |
+| ----------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Linter compliance | 57 linters configured, most pass                                           | **17 issues remain:** 10 exhaustruct (all in `filter_test.go` — missing `IsDir` field), 5 gocritic (`exitAfterDefer`), 1 golines (line too long), 1 recvcheck (`Op` mixed receivers) |
+| Test coverage     | 78.9%, 50+ tests                                                           | Target 85%+; missing edge-case tests for error paths, concurrent access, and `handleNewDirectory`                                                                                    |
+| README            | Installation, quick start, options table, filters, middleware, event types | No advanced usage, no architecture diagram, no migration guide, no DI integration docs                                                                                               |
+| Documentation     | 10 status reports + 1 ADR                                                  | No CONTRIBUTING.md, CODEOWNERS, or ROADMAP.md                                                                                                                                        |
 
 ---
 
 ## C) NOT STARTED ❌
 
-| Item | Priority | Notes |
-|------|----------|-------|
-| **Fix race condition in `watcher.go:312`** | 🔴 CRITICAL | `walkAndAddPaths` appends to `watchList` without lock. Called from `handleNewDirectory` in watch goroutine. 17 test failures with `-race` |
-| GitHub Actions CI | High | No pipeline exists — all quality checks are manual |
-| Tag v0.1.0 release | High | Blocked on race fix + linter cleanup |
-| Goreleaser | Medium | Cross-compilation config exists in justfile but no goreleaser |
-| Benchmarks | Medium | `just bench` exists but no benchmark functions written |
-| Stress tests (10k+ files) | Medium | Not tested under load |
-| CONTRIBUTING.md | Medium | No contribution guidelines |
-| Dependabot / Renovate | Low | No automated dependency updates |
-| `context.Context` in DebouncerInterface | Low | No context support in debouncer |
-| `WithPollInterval` fallback | Low | No polling fallback for platforms without fsnotify |
-| `FilterModifiedSince(t)` | Low | Time-based filter not implemented |
-| `MiddlewareThrottle` | Low | N events per duration middleware not implemented |
-| `Watcher.IsWatching()` | Low | Convenience method not added |
-| `Event.Size` field | Low | File size not tracked |
-| `Errors() <-chan error` | Low | Alternative error channel not implemented |
-| Extract `fsnotify.Watcher` behind interface | Low | ADR recommendation — enables mock testing |
-| Push to origin | Low | 1 commit ahead of origin |
+| Item                                        | Priority    | Notes                                                                                                                                     |
+| ------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **Fix race condition in `watcher.go:312`**  | 🔴 CRITICAL | `walkAndAddPaths` appends to `watchList` without lock. Called from `handleNewDirectory` in watch goroutine. 17 test failures with `-race` |
+| GitHub Actions CI                           | High        | No pipeline exists — all quality checks are manual                                                                                        |
+| Tag v0.1.0 release                          | High        | Blocked on race fix + linter cleanup                                                                                                      |
+| Goreleaser                                  | Medium      | Cross-compilation config exists in justfile but no goreleaser                                                                             |
+| Benchmarks                                  | Medium      | `just bench` exists but no benchmark functions written                                                                                    |
+| Stress tests (10k+ files)                   | Medium      | Not tested under load                                                                                                                     |
+| CONTRIBUTING.md                             | Medium      | No contribution guidelines                                                                                                                |
+| Dependabot / Renovate                       | Low         | No automated dependency updates                                                                                                           |
+| `context.Context` in DebouncerInterface     | Low         | No context support in debouncer                                                                                                           |
+| `WithPollInterval` fallback                 | Low         | No polling fallback for platforms without fsnotify                                                                                        |
+| `FilterModifiedSince(t)`                    | Low         | Time-based filter not implemented                                                                                                         |
+| `MiddlewareThrottle`                        | Low         | N events per duration middleware not implemented                                                                                          |
+| `Watcher.IsWatching()`                      | Low         | Convenience method not added                                                                                                              |
+| `Event.Size` field                          | Low         | File size not tracked                                                                                                                     |
+| `Errors() <-chan error`                     | Low         | Alternative error channel not implemented                                                                                                 |
+| Extract `fsnotify.Watcher` behind interface | Low         | ADR recommendation — enables mock testing                                                                                                 |
+| Push to origin                              | Low         | 1 commit ahead of origin                                                                                                                  |
 
 ---
 
@@ -96,6 +96,7 @@ w.watchList = append(w.watchList, root)  // NO LOCK HELD
 ### 2. `go test -race` Status: 17 FAILURES
 
 Tests failing (all due to the same root cause):
+
 - `TestWatcher_IgnoreDirs`
 - `TestWatcher_Watch_ErrorHandler`
 - `TestNew_FilePath`
@@ -111,7 +112,7 @@ Tests failing (all due to the same root cause):
 
 ```go
 func (op Op) String() string           // value receiver
-func (op Op) MarshalText() ([]byte, error) // value receiver  
+func (op Op) MarshalText() ([]byte, error) // value receiver
 func (op *Op) UnmarshalText(text []byte) error // pointer receiver ← MISMATCH
 ```
 
@@ -161,33 +162,33 @@ Including `sentry-go`, `gogo/protobuf`, `kr/pretty`, `kr/text`, `logtags`, `reda
 
 ## F) TOP 25 THINGS TO DO NEXT (Prioritized)
 
-| # | Task | Priority | Effort | Blocked By |
-|---|------|----------|--------|------------|
-| 1 | Fix race condition in `walkAndAddPaths` (`watcher.go:312`) | 🔴 Critical | Small | Nothing |
-| 2 | Fix `Op` mixed receivers (`event.go`) — use all value receivers | 🔴 Critical | Trivial | Nothing |
-| 3 | Fix 10 exhaustruct issues in `filter_test.go` — add `IsDir: false` | High | Trivial | Nothing |
-| 4 | Fix 5 gocritic `exitAfterDefer` issues | High | Small | Nothing |
-| 5 | Fix 1 golines issue (line too long) | High | Trivial | Nothing |
-| 6 | Run `go test -race ./...` and confirm 0 failures | 🔴 Critical | — | #1 |
-| 7 | Decide: remove `cockroachdb/errors` or keep? | High | Decision | User input |
-| 8 | Remove `cockroachdb/errors` (if decided) — replace with stdlib | High | Medium | #7 |
-| 9 | Tag v0.1.0 release | High | Trivial | #1-6 |
-| 10 | GitHub Actions CI pipeline (`just ci` + `go test -race`) | High | Medium | Nothing |
-| 11 | Push to origin | Medium | Trivial | Nothing |
-| 12 | Fix `TestWatcher_Watch_Deletes` flakiness | Medium | Medium | Nothing |
-| 13 | Raise test coverage to 85%+ | Medium | Medium | #1 |
-| 14 | Add benchmarks (debouncer, filters, middleware) | Medium | Medium | Nothing |
-| 15 | Add stress tests (10k+ files) | Medium | Medium | #1 |
-| 16 | Extract `fsnotify.Watcher` behind interface | Medium | Medium | Nothing |
-| 17 | Fix `convertEvent` combined ops (emit multiple or bitmask) | Medium | Small | Nothing |
-| 18 | Fix `shouldSkipDir` to respect `WithIgnoreDirs` during walking | Medium | Small | Nothing |
-| 19 | Split `watcher.go` into focused files | Medium | Small | #1 |
-| 20 | Add CONTRIBUTING.md + CODEOWNERS | Low | Small | Nothing |
-| 21 | Goreleaser configuration | Low | Medium | #9 |
-| 22 | Replace `log.Logger` with `log/slog` | Low | Medium | Nothing |
-| 23 | Cache file handle in `MiddlewareWriteFileLog` | Low | Small | Nothing |
-| 24 | Add `Errors() <-chan error` method | Low | Small | Nothing |
-| 25 | Validate in real projects (file-and-image-renamer, dynamic-markdown-site) | Low | Medium | #1, #9 |
+| #   | Task                                                                      | Priority    | Effort   | Blocked By |
+| --- | ------------------------------------------------------------------------- | ----------- | -------- | ---------- |
+| 1   | Fix race condition in `walkAndAddPaths` (`watcher.go:312`)                | 🔴 Critical | Small    | Nothing    |
+| 2   | Fix `Op` mixed receivers (`event.go`) — use all value receivers           | 🔴 Critical | Trivial  | Nothing    |
+| 3   | Fix 10 exhaustruct issues in `filter_test.go` — add `IsDir: false`        | High        | Trivial  | Nothing    |
+| 4   | Fix 5 gocritic `exitAfterDefer` issues                                    | High        | Small    | Nothing    |
+| 5   | Fix 1 golines issue (line too long)                                       | High        | Trivial  | Nothing    |
+| 6   | Run `go test -race ./...` and confirm 0 failures                          | 🔴 Critical | —        | #1         |
+| 7   | Decide: remove `cockroachdb/errors` or keep?                              | High        | Decision | User input |
+| 8   | Remove `cockroachdb/errors` (if decided) — replace with stdlib            | High        | Medium   | #7         |
+| 9   | Tag v0.1.0 release                                                        | High        | Trivial  | #1-6       |
+| 10  | GitHub Actions CI pipeline (`just ci` + `go test -race`)                  | High        | Medium   | Nothing    |
+| 11  | Push to origin                                                            | Medium      | Trivial  | Nothing    |
+| 12  | Fix `TestWatcher_Watch_Deletes` flakiness                                 | Medium      | Medium   | Nothing    |
+| 13  | Raise test coverage to 85%+                                               | Medium      | Medium   | #1         |
+| 14  | Add benchmarks (debouncer, filters, middleware)                           | Medium      | Medium   | Nothing    |
+| 15  | Add stress tests (10k+ files)                                             | Medium      | Medium   | #1         |
+| 16  | Extract `fsnotify.Watcher` behind interface                               | Medium      | Medium   | Nothing    |
+| 17  | Fix `convertEvent` combined ops (emit multiple or bitmask)                | Medium      | Small    | Nothing    |
+| 18  | Fix `shouldSkipDir` to respect `WithIgnoreDirs` during walking            | Medium      | Small    | Nothing    |
+| 19  | Split `watcher.go` into focused files                                     | Medium      | Small    | #1         |
+| 20  | Add CONTRIBUTING.md + CODEOWNERS                                          | Low         | Small    | Nothing    |
+| 21  | Goreleaser configuration                                                  | Low         | Medium   | #9         |
+| 22  | Replace `log.Logger` with `log/slog`                                      | Low         | Medium   | Nothing    |
+| 23  | Cache file handle in `MiddlewareWriteFileLog`                             | Low         | Small    | Nothing    |
+| 24  | Add `Errors() <-chan error` method                                        | Low         | Small    | Nothing    |
+| 25  | Validate in real projects (file-and-image-renamer, dynamic-markdown-site) | Low         | Medium   | #1, #9     |
 
 ---
 

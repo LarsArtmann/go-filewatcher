@@ -33,9 +33,21 @@ func TestFilterExtensions(t *testing.T) {
 		event Event
 		want  bool
 	}{
-		{"go file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false}, true},
-		{"md file", Event{Path: "/tmp/readme.md", Op: Write, Timestamp: time.Now(), IsDir: false}, true},
-		{"txt file", Event{Path: "/tmp/notes.txt", Op: Write, Timestamp: time.Now(), IsDir: false}, false},
+		{
+			"go file",
+			Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false},
+			true,
+		},
+		{
+			"md file",
+			Event{Path: "/tmp/readme.md", Op: Write, Timestamp: time.Now(), IsDir: false},
+			true,
+		},
+		{
+			"txt file",
+			Event{Path: "/tmp/notes.txt", Op: Write, Timestamp: time.Now(), IsDir: false},
+			false,
+		},
 		{
 			"go file uppercase ext",
 			Event{Path: "/tmp/main.GO", Op: Write, Timestamp: time.Now(), IsDir: false},
@@ -51,9 +63,21 @@ func TestFilterIgnoreExtensions(t *testing.T) {
 		event Event
 		want  bool
 	}{
-		{"go file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false}, true},
-		{"log file", Event{Path: "/tmp/app.log", Op: Write, Timestamp: time.Now(), IsDir: false}, false},
-		{"tmp file", Event{Path: "/tmp/cache.tmp", Op: Write, Timestamp: time.Now(), IsDir: false}, false},
+		{
+			"go file",
+			Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false},
+			true,
+		},
+		{
+			"log file",
+			Event{Path: "/tmp/app.log", Op: Write, Timestamp: time.Now(), IsDir: false},
+			false,
+		},
+		{
+			"tmp file",
+			Event{Path: "/tmp/cache.tmp", Op: Write, Timestamp: time.Now(), IsDir: false},
+			false,
+		},
 	})
 }
 
@@ -64,8 +88,16 @@ func TestFilterIgnoreDirs(t *testing.T) {
 		event Event
 		want  bool
 	}{
-		{"normal file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false}, true},
-		{"vendor file", Event{Path: "/tmp/vendor/pkg.go", Op: Write, Timestamp: time.Now(), IsDir: false}, false},
+		{
+			"normal file",
+			Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false},
+			true,
+		},
+		{
+			"vendor file",
+			Event{Path: "/tmp/vendor/pkg.go", Op: Write, Timestamp: time.Now(), IsDir: false},
+			false,
+		},
 		{
 			"nested vendor",
 			Event{Path: "/tmp/pkg/vendor/lib.go", Op: Write, Timestamp: time.Now(), IsDir: false},
@@ -73,7 +105,12 @@ func TestFilterIgnoreDirs(t *testing.T) {
 		},
 		{
 			"node_modules",
-			Event{Path: "/tmp/node_modules/index.js", Op: Write, Timestamp: time.Now(), IsDir: false},
+			Event{
+				Path:      "/tmp/node_modules/index.js",
+				Op:        Write,
+				Timestamp: time.Now(),
+				IsDir:     false,
+			},
 			false,
 		},
 	})

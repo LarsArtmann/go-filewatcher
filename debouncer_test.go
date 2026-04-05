@@ -1,6 +1,7 @@
 package filewatcher
 
 import (
+	"fmt"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -143,6 +144,79 @@ func TestDebouncer_RapidCalls(t *testing.T) {
 	}
 }
 
+func TestGlobalDebouncer_Flush(t *testing.T) {
+	t.Parallel()
+
+	var count atomic.Int32
+	d := NewGlobalDebouncer(200 * time.Millisecond)
+
+	d.Debounce("", func() { count.Add(1) })
+
+	if got := d.Pending(); got != 1 {
+		t.Errorf("expected 1 pending before flush, got %d", got)
+	}
+
+	d.Flush()
+
+	time.Sleep(50 * time.Millisecond)
+
+	if got := count.Load(); got != 1 {
+		t.Errorf("expected 1 execution after flush, got %d", got)
+	}
+
+	if got := d.Pending(); got != 0 {
+		t.Errorf("expected 0 pending after flush, got %d", got)
+	}
+}
+
+func TestGlobalDebouncer_Stop(t *testing.T) {
+	t.Parallel()
+
+	var count atomic.Int32
+	d := NewGlobalDebouncer(50 * time.Millisecond)
+
+	d.Debounce("", func() { count.Add(1) })
+	d.Stop()
+
+	time.Sleep(100 * time.Millisecond)
+
+	if got := count.Load(); got != 0 {
+		t.Errorf("expected 0 executions after stop, got %d", got)
+	}
+}
+
+func TestGlobalDebouncer_Debounce(t *testing.T) {
+	t.Parallel()
+
+	var count atomic.Int32
+	d := NewGlobalDebouncer(50 * time.Millisecond)
+
+	d.Debounce("", func() { count.Add(1) })
+	d.Debounce("", func() { count.Add(1) })
+	d.Debounce("", func() { count.Add(1) })
+
+	time.Sleep(100 * time.Millisecond)
+
+	if got := count.Load(); got != 1 {
+		t.Errorf("expected 1 execution after debouncing 3 global calls, got %d", got)
+	}
+}
+
+func TestGlobalDebouncer_DefaultDelay(t *testing.T) {
+	t.Parallel()
+
+	d := NewGlobalDebouncer(0)
+
+	var count atomic.Int32
+	d.Debounce("", func() { count.Add(1) })
+
+	time.Sleep(600 * time.Millisecond)
+
+	if got := count.Load(); got != 1 {
+		t.Errorf("expected 1 execution with default delay, got %d", got)
+	}
+}
+
 func TestGlobalDebouncer_Pending(t *testing.T) {
 	t.Parallel()
 
@@ -162,5 +236,38 @@ func TestGlobalDebouncer_Pending(t *testing.T) {
 
 	if got := d.Pending(); got != 0 {
 		t.Errorf("expected 0 pending after stop, got %d", got)
+	}
+}
+
+func BenchmarkDebouncer_Debounce(b *testing.B) {
+	d := NewDebouncer(1 * time.Second)
+	defer d.Stop()
+
+	b.ResetTimer()
+	for i := range b.N {
+		d.Debounce("key", func() {})
+		// Use index to avoid compiler optimization
+		_ = i
+	}
+}
+
+func BenchmarkDebouncer_DifferentKeys(b *testing.B) {
+	d := NewDebouncer(1 * time.Second)
+	defer d.Stop()
+
+	b.ResetTimer()
+	for i := range b.N {
+		d.Debounce(fmt.Sprintf("key-%d", i%100), func() {})
+	}
+}
+
+func BenchmarkGlobalDebouncer_Debounce(b *testing.B) {
+	d := NewGlobalDebouncer(1 * time.Second)
+	defer d.Stop()
+
+	b.ResetTimer()
+	for i := range b.N {
+		d.Debounce("", func() {})
+		_ = i
 	}
 }

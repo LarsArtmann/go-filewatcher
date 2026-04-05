@@ -2,6 +2,9 @@ package filewatcher
 
 import (
 	"context"
+	"log/slog"
+	"os"
+	"strings"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -197,6 +200,83 @@ func TestMiddlewareMetrics(t *testing.T) {
 	}
 }
 
+func TestMiddlewareLogging_NilLogger(t *testing.T) {
+	t.Parallel()
+
+	mw := MiddlewareLogging(nil)
+
+	handler := mw(func(_ context.Context, _ Event) error { return nil })
+
+	err := handler(
+		context.Background(),
+		Event{Path: "test.go", Op: Write, Timestamp: time.Now(), IsDir: false},
+	)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+}
+
+func TestMiddlewareWriteFileLog(t *testing.T) {
+	t.Parallel()
+
+	tmpFile := t.TempDir() + "/events.log"
+
+	mw := MiddlewareWriteFileLog(tmpFile)
+
+	handler := mw(func(_ context.Context, _ Event) error { return nil })
+
+	ts := time.Date(2025, 1, 1, 12, 0, 0, 0, time.UTC)
+	err := handler(
+		context.Background(),
+		Event{Path: "/tmp/test.go", Op: Write, Timestamp: ts, IsDir: false},
+	)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	data, err := os.ReadFile(tmpFile) //nolint:gosec // test file from TempDir
+	if err != nil {
+		t.Fatalf("failed to read log file: %v", err)
+	}
+
+	content := string(data)
+	if !strings.Contains(content, "WRITE") {
+		t.Errorf("expected log to contain WRITE, got %q", content)
+	}
+	if !strings.Contains(content, "/tmp/test.go") {
+		t.Errorf("expected log to contain file path, got %q", content)
+	}
+}
+
+func TestMiddlewareWriteFileLog_Appends(t *testing.T) {
+	t.Parallel()
+
+	tmpFile := t.TempDir() + "/events.log"
+
+	mw := MiddlewareWriteFileLog(tmpFile)
+	handler := mw(func(_ context.Context, _ Event) error { return nil })
+
+	_ = handler(
+		context.Background(),
+		Event{Path: "a.go", Op: Write, Timestamp: time.Now(), IsDir: false},
+	)
+	_ = handler(
+		context.Background(),
+		Event{Path: "b.go", Op: Create, Timestamp: time.Now(), IsDir: false},
+	)
+
+	data, err := os.ReadFile(tmpFile) //nolint:gosec // test file from TempDir
+	if err != nil {
+		t.Fatalf("failed to read log file: %v", err)
+	}
+
+	content := string(data)
+	lines := strings.Split(strings.TrimSpace(content), "\n")
+	if len(lines) < 2 {
+		t.Errorf("expected at least 2 lines in log, got %d: %q", len(lines), content)
+	}
+}
+
 func TestMiddlewareChain(t *testing.T) {
 	t.Parallel()
 
@@ -231,5 +311,58 @@ func TestMiddlewareChain(t *testing.T) {
 		if order[i] != exp {
 			t.Errorf("position %d: expected %q, got %q", i, exp, order[i])
 		}
+	}
+}
+
+func BenchmarkMiddlewareLogging(b *testing.B) {
+	logger := slog.New(slog.DiscardHandler)
+	mw := MiddlewareLogging(logger)
+	handler := mw(func(_ context.Context, _ Event) error { return nil })
+	event := Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
+	ctx := context.Background()
+
+	b.ResetTimer()
+	for i := range b.N {
+		_ = handler(ctx, event)
+		_ = i
+	}
+}
+
+func BenchmarkMiddlewareRecovery(b *testing.B) {
+	mw := MiddlewareRecovery()
+	handler := mw(func(_ context.Context, _ Event) error { return nil })
+	event := Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
+	ctx := context.Background()
+
+	b.ResetTimer()
+	for i := range b.N {
+		_ = handler(ctx, event)
+		_ = i
+	}
+}
+
+func BenchmarkMiddlewareRateLimit(b *testing.B) {
+	mw := MiddlewareRateLimit(0) // no limit
+	handler := mw(func(_ context.Context, _ Event) error { return nil })
+	event := Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
+	ctx := context.Background()
+
+	b.ResetTimer()
+	for i := range b.N {
+		_ = handler(ctx, event)
+		_ = i
+	}
+}
+
+func BenchmarkMiddlewareMetrics(b *testing.B) {
+	mw := MiddlewareMetrics(func(_ Op) {})
+	handler := mw(func(_ context.Context, _ Event) error { return nil })
+	event := Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
+	ctx := context.Background()
+
+	b.ResetTimer()
+	for i := range b.N {
+		_ = handler(ctx, event)
+		_ = i
 	}
 }

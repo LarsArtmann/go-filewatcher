@@ -1,6 +1,7 @@
 package filewatcher
 
 import (
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -272,6 +273,97 @@ func TestFilterNot(t *testing.T) {
 	}
 }
 
+func TestFilterMinSize(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	smallFile := tmpDir + "/small.txt"
+	if err := os.WriteFile(smallFile, []byte("hi"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	largeFile := tmpDir + "/large.txt"
+	if err := os.WriteFile(largeFile, make([]byte, 1000), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	f := FilterMinSize(100)
+
+	tests := []struct {
+		name  string
+		event Event
+		want  bool
+	}{
+		{
+			"small file",
+			Event{Path: smallFile, Op: Write, Timestamp: time.Now(), IsDir: false},
+			false,
+		},
+		{
+			"large file",
+			Event{Path: largeFile, Op: Write, Timestamp: time.Now(), IsDir: false},
+			true,
+		},
+		{
+			"directory",
+			Event{Path: tmpDir, Op: Create, Timestamp: time.Now(), IsDir: true},
+			true,
+		},
+		{
+			"nonexistent file",
+			Event{Path: "/nonexistent/file.txt", Op: Write, Timestamp: time.Now(), IsDir: false},
+			false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			if got := f(tt.event); got != tt.want {
+				t.Errorf("FilterMinSize(100) = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestFilterRegex(t *testing.T) {
+	t.Parallel()
+
+	f := FilterRegex(`\.go$`)
+
+	tests := []struct {
+		name  string
+		event Event
+		want  bool
+	}{
+		{
+			"go file",
+			Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false},
+			true,
+		},
+		{
+			"txt file",
+			Event{Path: "/tmp/readme.txt", Op: Write, Timestamp: time.Now(), IsDir: false},
+			false,
+		},
+		{
+			"go file in subdir",
+			Event{Path: "/tmp/pkg/helper.go", Op: Write, Timestamp: time.Now(), IsDir: false},
+			true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			if got := f(tt.event); got != tt.want {
+				t.Errorf("FilterRegex() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestEvent_String(t *testing.T) {
 	t.Parallel()
 
@@ -309,5 +401,77 @@ func TestOp_String(t *testing.T) {
 		if got := tt.op.String(); got != tt.want {
 			t.Errorf("Op(%d).String() = %q, want %q", tt.op, got, tt.want)
 		}
+	}
+}
+
+func BenchmarkFilterExtensions(b *testing.B) {
+	f := FilterExtensions(".go", ".md", ".txt")
+	event := Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false}
+
+	b.ResetTimer()
+	for i := range b.N {
+		f(event)
+		_ = i
+	}
+}
+
+func BenchmarkFilterIgnoreDirs(b *testing.B) {
+	f := FilterIgnoreDirs("vendor", "node_modules", ".git")
+	event := Event{Path: "/tmp/vendor/pkg/lib.go", Op: Write, Timestamp: time.Now(), IsDir: false}
+
+	b.ResetTimer()
+	for i := range b.N {
+		f(event)
+		_ = i
+	}
+}
+
+func BenchmarkFilterGlob(b *testing.B) {
+	f := FilterGlob("*.go")
+	event := Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false}
+
+	b.ResetTimer()
+	for i := range b.N {
+		f(event)
+		_ = i
+	}
+}
+
+func BenchmarkFilterRegex(b *testing.B) {
+	f := FilterRegex(`\.go$`)
+	event := Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false}
+
+	b.ResetTimer()
+	for i := range b.N {
+		f(event)
+		_ = i
+	}
+}
+
+func BenchmarkFilterAnd(b *testing.B) {
+	f := FilterAnd(
+		FilterExtensions(".go"),
+		FilterOperations(Write),
+	)
+	event := Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false}
+
+	b.ResetTimer()
+	for i := range b.N {
+		f(event)
+		_ = i
+	}
+}
+
+func BenchmarkFilterOr(b *testing.B) {
+	f := FilterOr(
+		FilterExtensions(".go"),
+		FilterExtensions(".md"),
+	)
+	event := Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false}
+
+	b.ResetTimer()
+	for i := range b.N {
+		f(event)
+		_ = i
 	}
 }

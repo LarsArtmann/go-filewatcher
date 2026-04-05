@@ -1,10 +1,13 @@
 package filewatcher
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -217,7 +220,7 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 	}
 	defer func() { _ = w.Close() }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	events, err := w.Watch(ctx)
@@ -230,11 +233,8 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Wait for create event
-	select {
-	case <-events:
-	case <-time.After(2 * time.Second):
-	}
+	// Drain all events from file creation/write
+	drainEvents(t, events, 500*time.Millisecond)
 
 	if err := os.Remove(testFile); err != nil {
 		t.Fatal(err)
@@ -245,7 +245,7 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 		if event.Op != Remove {
 			t.Errorf("expected Remove, got %s", event.Op.String())
 		}
-	case <-time.After(3 * time.Second):
+	case <-time.After(5 * time.Second):
 		t.Fatal("timed out waiting for remove event")
 	}
 }
@@ -504,6 +504,167 @@ func TestWatcher_Add(t *testing.T) {
 	}
 }
 
+func TestWatcher_Remove(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = w.Close() }()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	events, err := w.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	if err := w.Remove(tmpDir); err != nil {
+		t.Fatalf("Remove failed: %v", err)
+	}
+
+	testFile := filepath.Join(tmpDir, "after-remove.txt")
+	if err := os.WriteFile(testFile, []byte("test"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	select {
+	case event := <-events:
+		t.Errorf("expected no events after Remove(), got %v", event)
+	case <-time.After(500 * time.Millisecond):
+	}
+}
+
+func TestWatcher_Remove_ClosedWatcher(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_ = w.Close()
+
+	if err := w.Remove(tmpDir); err == nil {
+		t.Fatal("expected error when removing from closed watcher")
+	}
+}
+
+func TestWatcher_WatchList(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = w.Close() }()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err = w.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	list := w.WatchList()
+	if len(list) == 0 {
+		t.Fatal("expected non-empty watch list after Watch()")
+	}
+
+	found := false
+	for _, p := range list {
+		if p == tmpDir {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("expected %q in watch list, got %v", tmpDir, list)
+	}
+}
+
+func TestWatcher_WatchList_IsCopy(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = w.Close() }()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err = w.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	list1 := w.WatchList()
+	list2 := w.WatchList()
+
+	if len(list1) != len(list2) {
+		t.Fatal("WatchList should return consistent length")
+	}
+
+	if &list1[0] == &list2[0] {
+		t.Error("WatchList should return a copy, not the same slice")
+	}
+}
+
+func TestWatcher_Stats(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = w.Close() }()
+
+	stats := w.Stats()
+	if stats.IsClosed {
+		t.Error("expected watcher not to be closed")
+	}
+	if stats.IsWatching {
+		t.Error("expected watcher not to be watching before Watch()")
+	}
+	if stats.WatchCount != 0 {
+		t.Errorf("expected 0 watch count before Watch(), got %d", stats.WatchCount)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err = w.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	stats = w.Stats()
+	if stats.IsClosed {
+		t.Error("expected watcher not to be closed")
+	}
+	if !stats.IsWatching {
+		t.Error("expected watcher to be watching after Watch()")
+	}
+	if stats.WatchCount == 0 {
+		t.Error("expected non-zero watch count after Watch()")
+	}
+}
+
 func TestWatcher_IgnoreDirs(t *testing.T) {
 	t.Parallel()
 
@@ -550,5 +711,88 @@ func TestWatcher_IgnoreDirs(t *testing.T) {
 		}
 	case <-time.After(3 * time.Second):
 		t.Fatal("timed out waiting for event")
+	}
+}
+
+func TestWatcher_handleError_Default(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = w.Close() }()
+
+	old := os.Stderr
+	r, w2, _ := os.Pipe()
+	os.Stderr = w2
+
+	w.handleError(errors.New("test stderr error"))
+
+	_ = w2.Close()
+	os.Stderr = old
+
+	var buf bytes.Buffer
+	_, _ = io.Copy(&buf, r)
+
+	if !strings.Contains(buf.String(), "test stderr error") {
+		t.Errorf("expected error on stderr, got %q", buf.String())
+	}
+}
+
+func TestWatcher_Watch_DoubleWatch(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = w.Close() }()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	_, err = w.Watch(ctx)
+	if err != nil {
+		t.Fatalf("first Watch failed: %v", err)
+	}
+
+	_, err = w.Watch(ctx)
+	if err == nil {
+		t.Fatal("expected error when watching already running watcher")
+	}
+	if !errors.Is(err, ErrWatcherRunning) {
+		t.Errorf("expected ErrWatcherRunning, got %v", err)
+	}
+}
+
+func TestWatcher_Add_ClosedWatcher(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_ = w.Close()
+
+	if err := w.Add(t.TempDir()); err == nil {
+		t.Fatal("expected error when adding to closed watcher")
+	}
+}
+
+func drainEvents(t *testing.T, events <-chan Event, timeout time.Duration) {
+	t.Helper()
+	for {
+		select {
+		case <-events:
+		case <-time.After(timeout):
+			return
+		}
 	}
 }

@@ -21,7 +21,7 @@ func main() {
 		filewatcher.WithDebounce(300*time.Millisecond),
 	)
 	if err != nil {
-		cancel()
+		//nolint:gocritic // log.Fatal exits immediately, defer won't run (intentional)
 		log.Fatal(err)
 	}
 	defer func() { _ = watcher.Close() }()
@@ -34,7 +34,8 @@ func main() {
 	fmt.Println("Watching for .go and .md file changes (10s timeout)...")
 
 	for event := range events {
-		fmt.Printf("[%s] %s: %s\n", event.Timestamp.Format("15:04:05"), event.Op, event.Path)
+		ts := event.Timestamp.Format("15:04:05")
+		fmt.Printf("[%s] %s: %s\n", ts, event.Op.String(), event.Path)
 	}
 
 	fmt.Println("Done.")

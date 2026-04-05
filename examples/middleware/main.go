@@ -39,15 +39,12 @@ func main() {
 		),
 	)
 	if err != nil {
-		_ = watcher.Close()
-		cancel()
+		//nolint:gocritic // log.Fatal exits immediately, defer won't run (intentional)
 		log.Fatal(err)
 	}
 
 	events, err := watcher.Watch(ctx)
 	if err != nil {
-		_ = watcher.Close()
-		cancel()
 		log.Fatal(err)
 	}
 

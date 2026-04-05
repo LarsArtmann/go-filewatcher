@@ -134,7 +134,7 @@ func TestWatcher_Watch_DetectsWrite(t *testing.T) {
 			t.Errorf("expected path %s, got %s", testFile, event.Path)
 		}
 		if event.Op != Write && event.Op != Create {
-			t.Errorf("expected Write or Create, got %s", event.Op)
+			t.Errorf("expected Write or Create, got %s", event.Op.String())
 		}
 	case <-time.After(3 * time.Second):
 		t.Fatal("timed out waiting for event")
@@ -243,7 +243,7 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 	select {
 	case event := <-events:
 		if event.Op != Remove {
-			t.Errorf("expected Remove, got %s", event.Op)
+			t.Errorf("expected Remove, got %s", event.Op.String())
 		}
 	case <-time.After(3 * time.Second):
 		t.Fatal("timed out waiting for remove event")

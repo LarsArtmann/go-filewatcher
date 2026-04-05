@@ -21,8 +21,7 @@ func main() {
 		filewatcher.WithFilter(filewatcher.FilterExtensions(".go")),
 	)
 	if err != nil {
-		cancel()
-		_ = watcher.Close()
+		//nolint:gocritic // log.Fatal exits immediately, defer won't run (intentional)
 		log.Fatal(err)
 	}
 
@@ -38,7 +37,8 @@ func main() {
 	fmt.Println("Watching for .go file changes...")
 
 	for event := range events {
-		fmt.Printf("[%s] %s: %s\n", event.Timestamp.Format("15:04:05.000"), event.Op, event.Path)
+		ts := event.Timestamp.Format("15:04:05.000")
+		fmt.Printf("[%s] %s: %s\n", ts, event.Op.String(), event.Path)
 	}
 
 	_ = watcher.Close()

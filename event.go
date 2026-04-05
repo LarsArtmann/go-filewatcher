@@ -7,6 +7,8 @@ import (
 )
 
 // Op represents a file system operation type.
+//
+//nolint:recvcheck // UnmarshalText/UnmarshalJSON must have pointer receiver to modify the receiver.
 type Op int
 
 const (
@@ -23,7 +25,7 @@ const (
 // Compile-time interface check: Op implements encoding.TextMarshaler and
 // encoding.TextUnmarshaler for JSON, XML, YAML, and other serialization.
 var (
-	_ encoding.TextMarshaler   = Op(0)
+	_ encoding.TextMarshaler   = (*Op)(nil)
 	_ encoding.TextUnmarshaler = (*Op)(nil)
 )
 
@@ -48,6 +50,11 @@ func (op Op) MarshalText() ([]byte, error) {
 	return []byte(op.String()), nil
 }
 
+// MarshalJSON implements json.Marshaler.
+func (op Op) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + op.String() + `"`), nil
+}
+
 // UnmarshalText implements encoding.TextUnmarshaler.
 func (op *Op) UnmarshalText(text []byte) error {
 	switch string(text) {
@@ -63,6 +70,16 @@ func (op *Op) UnmarshalText(text []byte) error {
 		return fmt.Errorf("unknown operation: %q", string(text))
 	}
 	return nil
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (op *Op) UnmarshalJSON(data []byte) error {
+	// Remove surrounding quotes from JSON string
+	str := string(data)
+	if len(str) >= 2 && str[0] == '"' && str[len(str)-1] == '"' {
+		str = str[1 : len(str)-1]
+	}
+	return op.UnmarshalText([]byte(str))
 }
 
 // Event represents a file system change event.

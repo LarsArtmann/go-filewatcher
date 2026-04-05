@@ -19,7 +19,10 @@ func TestMiddlewareLogging(t *testing.T) {
 	}
 
 	handler := mw(func(_ context.Context, _ Event) error { return nil })
-	_ = handler(context.Background(), Event{Path: "test.go", Op: Write, Timestamp: time.Now()})
+	_ = handler(
+		context.Background(),
+		Event{Path: "test.go", Op: Write, Timestamp: time.Now(), IsDir: false},
+	)
 
 	if got := called.Load(); got != 1 {
 		t.Errorf("expected middleware to be called, got %d", got)
@@ -37,7 +40,10 @@ func TestMiddlewareRecovery(t *testing.T) {
 
 	wrapped := recovery(panicHandler)
 
-	err := wrapped(context.Background(), Event{Path: "test.go", Op: Write, Timestamp: time.Now()})
+	err := wrapped(
+		context.Background(),
+		Event{Path: "test.go", Op: Write, Timestamp: time.Now(), IsDir: false},
+	)
 	if err == nil {
 		t.Fatal("expected error from recovered panic")
 	}
@@ -54,7 +60,10 @@ func TestMiddlewareRecovery_NoPanic(t *testing.T) {
 
 	wrapped := recovery(normalHandler)
 
-	err := wrapped(context.Background(), Event{Path: "test.go", Op: Write, Timestamp: time.Now()})
+	err := wrapped(
+		context.Background(),
+		Event{Path: "test.go", Op: Write, Timestamp: time.Now(), IsDir: false},
+	)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -73,15 +82,15 @@ func TestMiddlewareRateLimit(t *testing.T) {
 
 	_ = handler(
 		context.Background(),
-		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()},
+		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now(), IsDir: false},
 	)
 	_ = handler(
 		context.Background(),
-		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()},
+		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now(), IsDir: false},
 	)
 	_ = handler(
 		context.Background(),
-		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()},
+		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now(), IsDir: false},
 	)
 
 	if got := count.Load(); got != 1 {
@@ -92,7 +101,7 @@ func TestMiddlewareRateLimit(t *testing.T) {
 
 	_ = handler(
 		context.Background(),
-		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()},
+		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now(), IsDir: false},
 	)
 
 	if got := count.Load(); got != 2 {
@@ -111,8 +120,14 @@ func TestMiddlewareFilter(t *testing.T) {
 		return nil
 	})
 
-	_ = handler(context.Background(), Event{Path: "test.txt", Op: Write, Timestamp: time.Now()})
-	_ = handler(context.Background(), Event{Path: "test.go", Op: Write, Timestamp: time.Now()})
+	_ = handler(
+		context.Background(),
+		Event{Path: "test.txt", Op: Write, Timestamp: time.Now(), IsDir: false},
+	)
+	_ = handler(
+		context.Background(),
+		Event{Path: "test.go", Op: Write, Timestamp: time.Now(), IsDir: false},
+	)
 
 	if got := count.Load(); got != 1 {
 		t.Errorf("expected 1 call (only .go file), got %d", got)
@@ -136,7 +151,10 @@ func TestMiddlewareOnError(t *testing.T) {
 
 	handler := mw(errHandler)
 
-	err := handler(context.Background(), Event{Path: "test.go", Op: Write, Timestamp: time.Now()})
+	err := handler(
+		context.Background(),
+		Event{Path: "test.go", Op: Write, Timestamp: time.Now(), IsDir: false},
+	)
 	if err == nil {
 		t.Fatal("expected error to propagate")
 	}
@@ -160,15 +178,15 @@ func TestMiddlewareMetrics(t *testing.T) {
 
 	_ = handler(
 		context.Background(),
-		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()},
+		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now(), IsDir: false},
 	)
 	_ = handler(
 		context.Background(),
-		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()},
+		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now(), IsDir: false},
 	)
 	_ = handler(
 		context.Background(),
-		Event{Op: Create, Path: "/tmp/test.txt", Timestamp: time.Now()},
+		Event{Op: Create, Path: "/tmp/test.txt", Timestamp: time.Now(), IsDir: false},
 	)
 
 	if metrics[Write] != 2 {
@@ -202,7 +220,7 @@ func TestMiddlewareChain(t *testing.T) {
 
 	_ = handler(
 		context.Background(),
-		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()},
+		Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now(), IsDir: false},
 	)
 
 	expected := []string{"first", "second", "third"}

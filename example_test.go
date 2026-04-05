@@ -43,13 +43,13 @@ func ExampleWatcher_Watch() {
 
 	events, err := watcher.Watch(ctx)
 	if err != nil {
-		cancel()
+		//nolint:gocritic // log.Fatal exits immediately, defer won't run (intentional)
 		log.Fatal(err)
 	}
 
 	// Process events until context is cancelled
 	for event := range events {
-		fmt.Printf("%s: %s\n", event.Op, event.Path)
+		fmt.Printf("%s: %s\n", event.Op.String(), event.Path)
 	}
 }
 
@@ -122,7 +122,7 @@ func ExampleWatcher_Remove() {
 
 	_, err = watcher.Watch(ctx)
 	if err != nil {
-		cancel()
+		//nolint:gocritic // log.Fatal exits immediately, defer won't run (intentional)
 		log.Fatal(err)
 	}
 

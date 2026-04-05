@@ -123,10 +123,26 @@ func TestFilterIgnoreHidden(t *testing.T) {
 		event Event
 		want  bool
 	}{
-		{"normal file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now()}, true},
-		{"hidden file", Event{Path: "/tmp/.hidden", Op: Write, Timestamp: time.Now()}, false},
-		{"hidden dir", Event{Path: "/tmp/.git/config", Op: Write, Timestamp: time.Now()}, false},
-		{"dotfile in name", Event{Path: "/tmp/.env", Op: Write, Timestamp: time.Now()}, false},
+		{
+			"normal file",
+			Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false},
+			true,
+		},
+		{
+			"hidden file",
+			Event{Path: "/tmp/.hidden", Op: Write, Timestamp: time.Now(), IsDir: false},
+			false,
+		},
+		{
+			"hidden dir",
+			Event{Path: "/tmp/.git/config", Op: Write, Timestamp: time.Now(), IsDir: false},
+			false,
+		},
+		{
+			"dotfile in name",
+			Event{Path: "/tmp/.env", Op: Write, Timestamp: time.Now(), IsDir: false},
+			false,
+		},
 	})
 }
 
@@ -137,10 +153,26 @@ func TestFilterOperations(t *testing.T) {
 		event Event
 		want  bool
 	}{
-		{"write", Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()}, true},
-		{"create", Event{Op: Create, Path: "/tmp/test.txt", Timestamp: time.Now()}, true},
-		{"remove", Event{Op: Remove, Path: "/tmp/test.txt", Timestamp: time.Now()}, false},
-		{"rename", Event{Op: Rename, Path: "/tmp/test.txt", Timestamp: time.Now()}, false},
+		{
+			"write",
+			Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now(), IsDir: false},
+			true,
+		},
+		{
+			"create",
+			Event{Op: Create, Path: "/tmp/test.txt", Timestamp: time.Now(), IsDir: false},
+			true,
+		},
+		{
+			"remove",
+			Event{Op: Remove, Path: "/tmp/test.txt", Timestamp: time.Now(), IsDir: false},
+			false,
+		},
+		{
+			"rename",
+			Event{Op: Rename, Path: "/tmp/test.txt", Timestamp: time.Now(), IsDir: false},
+			false,
+		},
 	})
 }
 
@@ -149,10 +181,10 @@ func TestFilterNotOperations(t *testing.T) {
 
 	f := FilterNotOperations(Remove)
 
-	if f(Event{Op: Remove, Path: "/tmp/test.txt", Timestamp: time.Now()}) {
+	if f(Event{Op: Remove, Path: "/tmp/test.txt", Timestamp: time.Now(), IsDir: false}) {
 		t.Error("expected Remove to be filtered out")
 	}
-	if !f(Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now()}) {
+	if !f(Event{Op: Write, Path: "/tmp/test.txt", Timestamp: time.Now(), IsDir: false}) {
 		t.Error("expected Write to pass")
 	}
 }
@@ -167,8 +199,16 @@ func TestFilterGlob(t *testing.T) {
 		event Event
 		want  bool
 	}{
-		{"go file", Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now()}, true},
-		{"txt file", Event{Path: "/tmp/readme.txt", Op: Write, Timestamp: time.Now()}, false},
+		{
+			"go file",
+			Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false},
+			true,
+		},
+		{
+			"txt file",
+			Event{Path: "/tmp/readme.txt", Op: Write, Timestamp: time.Now(), IsDir: false},
+			false,
+		},
 	}
 
 	for _, tt := range tests {
@@ -189,13 +229,13 @@ func TestFilterAnd(t *testing.T) {
 		FilterOperations(Write),
 	)
 
-	if !f(Event{Path: "main.go", Op: Write, Timestamp: time.Now()}) {
+	if !f(Event{Path: "main.go", Op: Write, Timestamp: time.Now(), IsDir: false}) {
 		t.Error("expected .go Write to pass")
 	}
-	if f(Event{Path: "main.go", Op: Remove, Timestamp: time.Now()}) {
+	if f(Event{Path: "main.go", Op: Remove, Timestamp: time.Now(), IsDir: false}) {
 		t.Error("expected .go Remove to be filtered")
 	}
-	if f(Event{Path: "main.txt", Op: Write, Timestamp: time.Now()}) {
+	if f(Event{Path: "main.txt", Op: Write, Timestamp: time.Now(), IsDir: false}) {
 		t.Error("expected .txt Write to be filtered")
 	}
 }
@@ -208,13 +248,13 @@ func TestFilterOr(t *testing.T) {
 		FilterExtensions(".md"),
 	)
 
-	if !f(Event{Path: "main.go", Op: Write, Timestamp: time.Now()}) {
+	if !f(Event{Path: "main.go", Op: Write, Timestamp: time.Now(), IsDir: false}) {
 		t.Error("expected .go to pass")
 	}
-	if !f(Event{Path: "readme.md", Op: Write, Timestamp: time.Now()}) {
+	if !f(Event{Path: "readme.md", Op: Write, Timestamp: time.Now(), IsDir: false}) {
 		t.Error("expected .md to pass")
 	}
-	if f(Event{Path: "main.txt", Op: Write, Timestamp: time.Now()}) {
+	if f(Event{Path: "main.txt", Op: Write, Timestamp: time.Now(), IsDir: false}) {
 		t.Error("expected .txt to be filtered")
 	}
 }
@@ -224,10 +264,10 @@ func TestFilterNot(t *testing.T) {
 
 	f := FilterNot(FilterExtensions(".go"))
 
-	if f(Event{Path: "main.go", Op: Write, Timestamp: time.Now()}) {
+	if f(Event{Path: "main.go", Op: Write, Timestamp: time.Now(), IsDir: false}) {
 		t.Error("expected .go to be filtered after inversion")
 	}
-	if !f(Event{Path: "main.txt", Op: Write, Timestamp: time.Now()}) {
+	if !f(Event{Path: "main.txt", Op: Write, Timestamp: time.Now(), IsDir: false}) {
 		t.Error("expected .txt to pass after inversion")
 	}
 }
@@ -239,6 +279,7 @@ func TestEvent_String(t *testing.T) {
 		Path:      "/tmp/test.go",
 		Op:        Write,
 		Timestamp: time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC),
+		IsDir:     false,
 	}
 
 	s := e.String()

@@ -1,6 +1,6 @@
 package filewatcher
 
-import "github.com/cockroachdb/errors"
+import "errors"
 
 // ErrWatcherClosed is returned when operations are attempted on a closed watcher.
 var ErrWatcherClosed = errors.New("watcher is closed")

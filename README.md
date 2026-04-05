@@ -56,7 +56,7 @@ filter := filewatcher.FilterAnd(
 )
 ```
 
-Available: `FilterExtensions`, `FilterIgnoreExtensions`, `FilterIgnoreDirs`, `FilterIgnoreHidden`, `FilterOperations`, `FilterNotOperations`, `FilterGlob`, `FilterAnd`, `FilterOr`, `FilterNot`.
+Available: `FilterExtensions`, `FilterIgnoreExtensions`, `FilterIgnoreDirs`, `FilterIgnoreHidden`, `FilterOperations`, `FilterNotOperations`, `FilterGlob`, `FilterRegex`, `FilterMinSize`, `FilterAnd`, `FilterOr`, `FilterNot`.
 
 ## Middleware
 
@@ -82,7 +82,7 @@ Available: `MiddlewareLogging`, `MiddlewareRecovery`, `MiddlewareRateLimit`, `Mi
 
 ## Design
 
-Follows [go-cqrs-lite](https://github.com/larsartmann/go-cqrs-lite) conventions: functional options, sentinel errors (`cockroachdb/errors`), middleware chains, channel-based streaming, minimal dependencies.
+Follows functional options, sentinel errors (`errors`/`fmt.Errorf`), middleware chains, channel-based streaming, minimal dependencies (only [fsnotify](https://github.com/fsnotify/fsnotify)).
 
 ## License
 

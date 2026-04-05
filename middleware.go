@@ -3,9 +3,10 @@ package filewatcher
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"runtime/debug"
+	"sync"
 	"sync/atomic"
 	"time"
 )
@@ -19,14 +20,17 @@ type Middleware func(Handler) Handler
 type Handler func(ctx context.Context, event Event) error
 
 // MiddlewareLogging returns a middleware that logs all events to the
-// provided logger. If logger is nil, it uses log.Default().
-func MiddlewareLogging(logger *log.Logger) Middleware {
+// provided slog logger. If logger is nil, it uses slog.Default().
+func MiddlewareLogging(logger *slog.Logger) Middleware {
 	if logger == nil {
-		logger = log.Default()
+		logger = slog.Default()
 	}
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			logger.Printf("filewatcher: %s %s", event.Op.String(), event.Path)
+			logger.Info("filewatcher event",
+				slog.String("op", event.Op.String()),
+				slog.String("path", event.Path),
+			)
 			return next(ctx, event)
 		}
 	}
@@ -114,21 +118,34 @@ func MiddlewareMetrics(counter func(op Op)) Middleware {
 
 // MiddlewareWriteFileLog returns a middleware that appends event logs
 // to a file at the given path. This is useful for audit trails.
+// The file handle is cached for the lifetime of the middleware.
 func MiddlewareWriteFileLog(filePath string) Middleware {
+	type cachedFile struct {
+		mu sync.Mutex
+		f  *os.File
+	}
+
+	//nolint:exhaustruct // f is lazily initialized on first write
+	cf := &cachedFile{}
+
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			//nolint:gosec // filePath is user-provided, intentional design for log file location
-			f, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o600)
-			if err == nil {
+			cf.mu.Lock()
+			var writeErr error
+			if cf.f == nil {
+				//nolint:gosec // filePath is user-provided, intentional design for log file location
+				cf.f, writeErr = os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o600)
+			}
+			if writeErr == nil && cf.f != nil {
 				_, _ = fmt.Fprintf(
-					f,
+					cf.f,
 					"%s %s %s\n",
 					event.Timestamp.Format(time.RFC3339),
 					event.Op.String(),
 					event.Path,
 				)
-				_ = f.Close()
 			}
+			cf.mu.Unlock()
 			return next(ctx, event)
 		}
 	}

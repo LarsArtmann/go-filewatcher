@@ -25,7 +25,7 @@
 //
 // Following go-cqrs-lite conventions:
 //   - Functional options for configuration
-//   - Sentinel errors with cockroachdb/errors
+//   - Sentinel errors with stdlib errors package
 //   - No panics, explicit error handling
 //   - Context as first parameter
 //   - Channel-based event streaming

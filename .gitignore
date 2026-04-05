@@ -5,3 +5,5 @@
 node_modules/
 # Build artifacts
 /go-filewatcher
+# Crush
+.crush/

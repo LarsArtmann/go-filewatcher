@@ -16,24 +16,43 @@ just lint-fix # Auto-fix linter issues
 
 ## Non-Obvious Conventions
 
-### Error Handling: NOT Standard Library
+### Error Handling: Standard Library
 
-Uses `github.com/cockroachdb/errors` for stack traces:
+Uses `errors` and `fmt` from the standard library:
 
 ```go
-import "github.com/cockroachdb/errors"
+import (
+    "errors"
+    "fmt"
+)
 
-// Wrapping
-return errors.Wrapf(err, "path %q", path)
-return errors.WithStack(ErrNoPaths)
+// Creating sentinel errors
+var ErrPathNotFound = errors.New("path not found")
 
-// Checking still works
+// Wrapping with context
+return fmt.Errorf("path %q: %w", path, err)
+
+// Checking
 if errors.Is(err, ErrPathNotFound) { ... }
 ```
 
 ### Single Package Layout
 
 All code in **root package** (`filewatcher`). No `internal/` or `pkg/` subdirectories — all code lives in the package root.
+
+### File Organization
+
+| File                  | Responsibility                                        |
+| --------------------- | ----------------------------------------------------- |
+| `watcher.go`          | Public API: New, Watch, Add, Remove, WatchList, Stats |
+| `watcher_internal.go` | Event processing: watchLoop, middleware, emitEvent    |
+| `watcher_walk.go`     | Directory walking: addPath, walkAndAddPaths           |
+| `filter.go`           | All Filter functions                                  |
+| `middleware.go`        | All Middleware functions                               |
+| `debouncer.go`        | Debouncer + GlobalDebouncer                           |
+| `event.go`            | Op type, Event type, JSON/Text marshaling             |
+| `errors.go`           | Sentinel errors                                       |
+| `options.go`          | Functional options                                    |
 
 ---
 
@@ -129,8 +148,7 @@ Run `just lint-fix` — it auto-fixes many issues.
 ## Dependencies
 
 ```
-github.com/cockroachdb/errors   # Error wrapping
 github.com/fsnotify/fsnotify    # Core file watching
 ```
 
-Keep it minimal — no other deps.
+Only dependency. Keep it minimal.

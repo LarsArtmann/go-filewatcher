@@ -1,6 +1,6 @@
 module github.com/larsartmann/go-filewatcher
 
-go 1.26.1
+go 1.26.0
 
 require github.com/fsnotify/fsnotify v1.9.0
 

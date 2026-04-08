@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+const logFilePermission = 0o600 // rw------- (owner read/write only) for audit log files
+
 // Middleware wraps an event handler for cross-cutting concerns.
 // Middleware is applied in reverse order (last added runs first),
 // matching the go-cqrs-lite convention.
@@ -134,7 +136,7 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 			var writeErr error
 			if cf.f == nil {
 				//nolint:gosec // filePath is user-provided, intentional design for log file location
-				cf.f, writeErr = os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o600)
+				cf.f, writeErr = os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, logFilePermission)
 			}
 			if writeErr == nil && cf.f != nil {
 				_, _ = fmt.Fprintf(

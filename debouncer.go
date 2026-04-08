@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+const defaultDebounceDelay = 500 * time.Millisecond // Default delay for debouncing when none is specified
+
 // debounceEntry holds a timer and its associated function.
 type debounceEntry struct {
 	timer *time.Timer
@@ -23,7 +25,7 @@ type Debouncer struct {
 // NewDebouncer creates a new Debouncer with the specified delay.
 func NewDebouncer(delay time.Duration) *Debouncer {
 	if delay <= 0 {
-		delay = 500 * time.Millisecond
+		delay = defaultDebounceDelay
 	}
 	return &Debouncer{
 		delay:   delay,
@@ -98,7 +100,7 @@ type GlobalDebouncer struct {
 // NewGlobalDebouncer creates a new GlobalDebouncer with the specified delay.
 func NewGlobalDebouncer(delay time.Duration) *GlobalDebouncer {
 	if delay <= 0 {
-		delay = 500 * time.Millisecond
+		delay = defaultDebounceDelay
 	}
 	return &GlobalDebouncer{
 		delay: delay,

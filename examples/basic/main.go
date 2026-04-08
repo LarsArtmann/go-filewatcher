@@ -11,14 +11,19 @@ import (
 	filewatcher "github.com/larsartmann/go-filewatcher"
 )
 
+const (
+	exampleTimeout      = 10 * time.Second        // Total runtime for the example
+	debounceDelay       = 300 * time.Millisecond  // Delay for coalescing rapid file events
+)
+
 func main() {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), exampleTimeout)
 	defer cancel()
 
 	watcher, err := filewatcher.New(
 		[]string{"."},
 		filewatcher.WithExtensions(".go", ".md"),
-		filewatcher.WithDebounce(300*time.Millisecond),
+		filewatcher.WithDebounce(debounceDelay),
 	)
 	if err != nil {
 		//nolint:gocritic // log.Fatal exits immediately, defer won't run (intentional)

@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+const testFilePermission = 0o600 // rw------- (owner read/write only)
+
 func testEvent(path string, op Op) Event {
 	return Event{Path: path, Op: op, Timestamp: time.Now(), IsDir: false}
 }
@@ -75,16 +77,8 @@ func assertLogContains(t *testing.T, content, substr string) {
 	}
 }
 
-func testWriteEventGo(path string) Event {
-	return Event{Path: path, Op: Write, Timestamp: time.Now(), IsDir: false}
-}
-
-func testContextTimeout(t *testing.T, d time.Duration) (context.Context, context.CancelFunc) {
-	t.Helper()
-	return context.WithTimeout(t.Context(), d)
-}
-
 func setupTestContext(t *testing.T, timeout time.Duration) context.Context {
+	t.Helper()
 	ctx, cancel := context.WithTimeout(t.Context(), timeout)
 	t.Cleanup(cancel)
 	return ctx
@@ -109,60 +103,6 @@ func waitForEventOrFail(t *testing.T, events <-chan Event, timeout time.Duration
 	return *event
 }
 
-func waitForEventOrFailMsg(t *testing.T, events <-chan Event, timeout time.Duration, msg string) Event {
-	t.Helper()
-	event := waitForEvent(t, events, timeout)
-	if event == nil {
-		t.Fatal(msg)
-	}
-	return *event
-}
-
-func waitForEvents(t *testing.T, events <-chan Event, count int, timeout time.Duration) []Event {
-	t.Helper()
-	var result []Event
-	deadline := time.After(timeout)
-	for {
-		select {
-		case event := <-events:
-			result = append(result, event)
-			if len(result) >= count {
-				return result
-			}
-		case <-deadline:
-			return result
-		}
-	}
-}
-
-func newWatcherWithTimeout(t *testing.T, tmpDir string, timeout time.Duration) (*Watcher, <-chan Event) {
-	t.Helper()
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
-	t.Cleanup(cancel)
-
-	events, err := w.Watch(ctx)
-	if err != nil {
-		_ = w.Close()
-		t.Fatalf("Watch failed: %v", err)
-	}
-	t.Cleanup(func() { _ = w.Close() })
-	return w, events
-}
-
-func newWatcherWithTimeoutDefault(t *testing.T, tmpDir string) (*Watcher, <-chan Event) {
-	t.Helper()
-	return newWatcherWithTimeout(t, tmpDir, 5*time.Second)
-}
-
-func setupDebouncer(count *atomic.Int32, delay time.Duration) *Debouncer {
-	d := NewDebouncer(delay)
-	return d
-}
-
 func debounceAndCount(d *Debouncer, key string, count *atomic.Int32) {
 	d.Debounce(key, func() { count.Add(1) })
 }
@@ -183,14 +123,6 @@ func debounceGlobalSingle(d *GlobalDebouncer, count *atomic.Int32) {
 	d.Debounce("", func() { count.Add(1) })
 }
 
-func debounceSingle(d *Debouncer, key string, count *atomic.Int32) {
-	d.Debounce(key, func() { count.Add(1) })
-}
-
-func debounceGlobalNoCount(d *GlobalDebouncer) {
-	d.Debounce("", func() {})
-}
-
 func debounceNoCount(d *Debouncer, key string) {
 	d.Debounce(key, func() {})
 }
@@ -201,38 +133,19 @@ func debounceMultiNoCount(d *Debouncer, keys []string) {
 	}
 }
 
-func benchmarkMiddlewareEvent() (context.Context, Event) {
-	return context.Background(), Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
+func debounceGlobalNoCount(d *GlobalDebouncer) {
+	d.Debounce("", func() {})
+}
+
+func debounceSingle(d *Debouncer, key string, count *atomic.Int32) {
+	d.Debounce(key, func() { count.Add(1) })
 }
 
 func createTestFile(t *testing.T, tmpDir, filename, content string) string {
 	t.Helper()
 	path := filepath.Join(tmpDir, filename)
-	if err := os.WriteFile(path, []byte(content), 0o600); err != nil {
+	if err := os.WriteFile(path, []byte(content), testFilePermission); err != nil {
 		t.Fatal(err)
 	}
 	return path
-}
-
-func createTestFileDefault(t *testing.T, tmpDir string) string {
-	t.Helper()
-	return createTestFile(t, tmpDir, "test.go", "package test")
-}
-
-func assertTimeout(t *testing.T, events <-chan Event, timeout time.Duration) {
-	t.Helper()
-	select {
-	case <-events:
-	case <-time.After(timeout):
-		t.Fatal("timed out waiting for event")
-	}
-}
-
-func assertTimeoutMsg(t *testing.T, events <-chan Event, timeout time.Duration, msg string) {
-	t.Helper()
-	select {
-	case <-events:
-	case <-time.After(timeout):
-		t.Fatal(msg)
-	}
 }

@@ -27,6 +27,8 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
+const defaultEventBufferSize = 64 // Default capacity for the event channel buffer
+
 // DefaultIgnoreDirs contains commonly ignored directory names.
 //
 //nolint:gochecknoglobals // Exported for user reference in configuration.
@@ -119,7 +121,7 @@ func New(paths []string, opts ...Option) (*Watcher, error) {
 		perPathDebounce:   0,
 		errorHandler:      nil,
 		skipDotDirs:       true,
-		bufferSize:        64,
+		bufferSize:        defaultEventBufferSize,
 		onAdd:             nil,
 		ignoreDirNames:    nil,
 		mu:                sync.RWMutex{},

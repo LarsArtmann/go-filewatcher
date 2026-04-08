@@ -125,21 +125,14 @@ func TestWatcher_Watch_DetectsWrite(t *testing.T) {
 		t.Fatalf("Watch failed: %v", err)
 	}
 
-	testFile := filepath.Join(tmpDir, "test.go")
-	if err := os.WriteFile(testFile, []byte("package test"), 0o600); err != nil {
-		t.Fatal(err)
-	}
+	testFile := createTestFile(t, tmpDir, "test.go", "package test")
 
-	select {
-	case event := <-events:
-		if event.Path != testFile {
-			t.Errorf("expected path %s, got %s", testFile, event.Path)
-		}
-		if event.Op != Write && event.Op != Create {
-			t.Errorf("expected Write or Create, got %s", event.Op.String())
-		}
-	case <-time.After(3 * time.Second):
-		t.Fatal("timed out waiting for event")
+	event := waitForEventOrFail(t, events, 3*time.Second)
+	if event.Path != testFile {
+		t.Errorf("expected path %s, got %s", testFile, event.Path)
+	}
+	if event.Op != Write && event.Op != Create {
+		t.Errorf("expected Write or Create, got %s", event.Op.String())
 	}
 }
 
@@ -225,10 +218,7 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 		t.Fatalf("Watch failed: %v", err)
 	}
 
-	testFile := filepath.Join(tmpDir, "todelete.go")
-	if err := os.WriteFile(testFile, []byte("package test"), 0o600); err != nil {
-		t.Fatal(err)
-	}
+	testFile := createTestFile(t, tmpDir, "todelete.go", "package test")
 
 	// Drain all events from file creation/write
 	drainEvents(t, events, 500*time.Millisecond)
@@ -274,10 +264,7 @@ func TestWatcher_Watch_WithMiddleware(t *testing.T) {
 		t.Fatalf("Watch failed: %v", err)
 	}
 
-	testFile := filepath.Join(tmpDir, "test.txt")
-	if err := os.WriteFile(testFile, []byte("test"), 0o600); err != nil {
-		t.Fatal(err)
-	}
+	_ = createTestFile(t, tmpDir, "test.txt", "test")
 
 	select {
 	case <-events:

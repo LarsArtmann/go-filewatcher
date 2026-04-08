@@ -12,8 +12,13 @@ import (
 	filewatcher "github.com/larsartmann/go-filewatcher"
 )
 
+const (
+	exampleTimeout = 10 * time.Second // Total runtime for the example
+	maxEventCount  = 10               // Number of events to process before stopping
+)
+
 func main() {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), exampleTimeout)
 	defer cancel()
 
 	var createCount, writeCount, removeCount atomic.Int64
@@ -54,7 +59,7 @@ func main() {
 	counter := 0
 	for range events {
 		counter++
-		if counter >= 10 {
+		if counter >= maxEventCount {
 			break
 		}
 	}

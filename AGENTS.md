@@ -48,7 +48,7 @@ All code in **root package** (`filewatcher`). No `internal/` or `pkg/` subdirect
 | `watcher_internal.go` | Event processing: watchLoop, middleware, emitEvent    |
 | `watcher_walk.go`     | Directory walking: addPath, walkAndAddPaths           |
 | `filter.go`           | All Filter functions                                  |
-| `middleware.go`        | All Middleware functions                               |
+| `middleware.go`       | All Middleware functions                              |
 | `debouncer.go`        | Debouncer + GlobalDebouncer                           |
 | `event.go`            | Op type, Event type, JSON/Text marshaling             |
 | `errors.go`           | Sentinel errors                                       |

@@ -6,40 +6,40 @@
 
 ## a) FULLY DONE ✅
 
-| # | Task | Impact |
-|---|------|--------|
-| 1 | Replace cockroachdb/errors with stdlib | Removed 39 transitive deps, simpler codebase |
-| 2 | Replace log.Logger with slog.Logger | Modern structured logging, Go 1.21+ idiomatic |
-| 3 | Cache file handle in MiddlewareWriteFileLog | Eliminates repeated os.OpenFile per event |
-| 4 | Split watcher.go into 3 focused files | ~284 + ~200 + ~80 lines, clear responsibilities |
-| 5 | Fix shouldSkipDir for WithIgnoreDirs | Bug fix: custom ignore dirs now work during walk |
-| 6 | Add comprehensive tests (91.9% coverage) | 15+ new tests, all edge cases covered |
-| 7 | Add benchmarks (filters, debouncers, middleware) | Performance baselines established |
-| 8 | Fix flaky TestWatcher_Watch_Deletes | drainEvents() helper for reliable event draining |
-| 9 | Add GitHub Actions CI | Automated test + lint on every push |
-| 10 | Update CHANGELOG.md and README.md | Accurate documentation of all changes |
-| 11 | Remove dead artifacts (report/, pkg/) | Cleaner repo |
-| 12 | Update AGENTS.md for stdlib errors | Agent guide is now accurate |
-| 13 | Update doc.go for stdlib errors | Package docs are now accurate |
-| 14 | Add .crush/ to .gitignore | Local tooling excluded from tracking |
+| #   | Task                                             | Impact                                           |
+| --- | ------------------------------------------------ | ------------------------------------------------ |
+| 1   | Replace cockroachdb/errors with stdlib           | Removed 39 transitive deps, simpler codebase     |
+| 2   | Replace log.Logger with slog.Logger              | Modern structured logging, Go 1.21+ idiomatic    |
+| 3   | Cache file handle in MiddlewareWriteFileLog      | Eliminates repeated os.OpenFile per event        |
+| 4   | Split watcher.go into 3 focused files            | ~284 + ~200 + ~80 lines, clear responsibilities  |
+| 5   | Fix shouldSkipDir for WithIgnoreDirs             | Bug fix: custom ignore dirs now work during walk |
+| 6   | Add comprehensive tests (91.9% coverage)         | 15+ new tests, all edge cases covered            |
+| 7   | Add benchmarks (filters, debouncers, middleware) | Performance baselines established                |
+| 8   | Fix flaky TestWatcher_Watch_Deletes              | drainEvents() helper for reliable event draining |
+| 9   | Add GitHub Actions CI                            | Automated test + lint on every push              |
+| 10  | Update CHANGELOG.md and README.md                | Accurate documentation of all changes            |
+| 11  | Remove dead artifacts (report/, pkg/)            | Cleaner repo                                     |
+| 12  | Update AGENTS.md for stdlib errors               | Agent guide is now accurate                      |
+| 13  | Update doc.go for stdlib errors                  | Package docs are now accurate                    |
+| 14  | Add .crush/ to .gitignore                        | Local tooling excluded from tracking             |
 
 ## b) PARTIALLY DONE 🔶
 
-| Item | Status | What's Missing |
-|------|--------|----------------|
-| TestWatcher_Watch_Deletes | Fixed but could be more elegant | drainEvents waits 500ms — could use sync-based signaling |
-| Benchmark coverage | Filters + middleware + debouncer | No watcher-level benchmarks (event processing pipeline) |
-| CI pipeline | Build + test + lint | No coverage threshold enforcement, no examples testing |
+| Item                      | Status                           | What's Missing                                           |
+| ------------------------- | -------------------------------- | -------------------------------------------------------- |
+| TestWatcher_Watch_Deletes | Fixed but could be more elegant  | drainEvents waits 500ms — could use sync-based signaling |
+| Benchmark coverage        | Filters + middleware + debouncer | No watcher-level benchmarks (event processing pipeline)  |
+| CI pipeline               | Build + test + lint              | No coverage threshold enforcement, no examples testing   |
 
 ## c) NOT STARTED ⬜
 
-| # | Item | Priority |
-|---|------|----------|
-| 1 | Integration/E2E tests | High |
-| 2 | Fuzz tests for filter functions | Medium |
-| 3 | `Watcher.Restart()` / `Watcher.Reset()` method | Medium |
-| 4 | Example tests (`TestExample*`) | Medium |
-| 5 | Coverage threshold in CI (>90%) | Low |
+| #   | Item                                           | Priority |
+| --- | ---------------------------------------------- | -------- |
+| 1   | Integration/E2E tests                          | High     |
+| 2   | Fuzz tests for filter functions                | Medium   |
+| 3   | `Watcher.Restart()` / `Watcher.Reset()` method | Medium   |
+| 4   | Example tests (`TestExample*`)                 | Medium   |
+| 5   | Coverage threshold in CI (>90%)                | Low      |
 
 ## d) TOTALLY FUCKED UP 💥
 
@@ -85,33 +85,33 @@ Nothing! All changes build clean, pass with `-race`, lint at 0 issues, and tests
 
 ## f) TOP 25 NEXT ITEMS (Prioritized: Impact ↑ / Effort ↓)
 
-| # | Item | Impact | Effort | Category |
-|---|------|--------|--------|----------|
-| 1 | Close MiddlewareWriteFileLog file handle on Watcher.Close() | High | Low | Bug |
-| 2 | Add `slog.LogValuer` to Event type | High | Low | Type Model |
-| 3 | Replace bare `atomic int64` with `atomic.Int64` in MiddlewareRateLimit | Medium | Low | Code Quality |
-| 4 | Fix GlobalDebouncer.Debounce key parameter (use it or remove it) | Medium | Low | API |
-| 5 | Add integration tests: watch tree → create/modify/delete → verify events | High | Medium | Testing |
-| 6 | Add coverage threshold enforcement in CI (>=90%) | High | Low | DevOps |
-| 7 | Consolidate doc.go — move package doc there, remove from watcher.go | Medium | Low | Code Quality |
-| 8 | Add `UnmarshalText` to Op type for YAML/JSON round-trip symmetry | Medium | Low | Type Model |
-| 9 | Enrich Stats struct: event counts, filter stats, error count, uptime | High | Medium | API |
-| 10 | Make convertEvent's os.Stat optional or cacheable | High | Medium | Performance |
-| 11 | Add watcher-level benchmarks (full event pipeline) | Medium | Low | Testing |
-| 12 | Add fuzz tests for FilterRegex and FilterGlob | Medium | Medium | Testing |
-| 13 | Add example tests (TestExample*) in example_test.go | Medium | Low | Documentation |
-| 14 | Validate WithBuffer(0) — error or document | Low | Low | API |
-| 15 | Add benchmark results table to README | Medium | Low | Documentation |
-| 16 | Add API stability doc (stable vs experimental) | Medium | Low | Documentation |
-| 17 | Adopt semver in CHANGELOG | Low | Low | DevOps |
-| 18 | Add benchmark regression detection in CI | Medium | Medium | DevOps |
-| 19 | Extract drainEvents to testutil package | Low | Low | Testing |
-| 20 | Add Watcher.Restart() method | Medium | Medium | API |
-| 21 | Filter func type could return match metadata | Medium | High | Architecture |
-| 22 | Test examples/ in CI pipeline | Low | Low | DevOps |
-| 23 | Add `-race` to benchmark CI step | Low | Low | DevOps |
-| 24 | Add context cancellation integration test | Medium | Low | Testing |
-| 25 | Explore fsnotify v2 API changes for future compatibility | Low | Low | Maintenance |
+| #   | Item                                                                     | Impact | Effort | Category      |
+| --- | ------------------------------------------------------------------------ | ------ | ------ | ------------- |
+| 1   | Close MiddlewareWriteFileLog file handle on Watcher.Close()              | High   | Low    | Bug           |
+| 2   | Add `slog.LogValuer` to Event type                                       | High   | Low    | Type Model    |
+| 3   | Replace bare `atomic int64` with `atomic.Int64` in MiddlewareRateLimit   | Medium | Low    | Code Quality  |
+| 4   | Fix GlobalDebouncer.Debounce key parameter (use it or remove it)         | Medium | Low    | API           |
+| 5   | Add integration tests: watch tree → create/modify/delete → verify events | High   | Medium | Testing       |
+| 6   | Add coverage threshold enforcement in CI (>=90%)                         | High   | Low    | DevOps        |
+| 7   | Consolidate doc.go — move package doc there, remove from watcher.go      | Medium | Low    | Code Quality  |
+| 8   | Add `UnmarshalText` to Op type for YAML/JSON round-trip symmetry         | Medium | Low    | Type Model    |
+| 9   | Enrich Stats struct: event counts, filter stats, error count, uptime     | High   | Medium | API           |
+| 10  | Make convertEvent's os.Stat optional or cacheable                        | High   | Medium | Performance   |
+| 11  | Add watcher-level benchmarks (full event pipeline)                       | Medium | Low    | Testing       |
+| 12  | Add fuzz tests for FilterRegex and FilterGlob                            | Medium | Medium | Testing       |
+| 13  | Add example tests (TestExample\*) in example_test.go                     | Medium | Low    | Documentation |
+| 14  | Validate WithBuffer(0) — error or document                               | Low    | Low    | API           |
+| 15  | Add benchmark results table to README                                    | Medium | Low    | Documentation |
+| 16  | Add API stability doc (stable vs experimental)                           | Medium | Low    | Documentation |
+| 17  | Adopt semver in CHANGELOG                                                | Low    | Low    | DevOps        |
+| 18  | Add benchmark regression detection in CI                                 | Medium | Medium | DevOps        |
+| 19  | Extract drainEvents to testutil package                                  | Low    | Low    | Testing       |
+| 20  | Add Watcher.Restart() method                                             | Medium | Medium | API           |
+| 21  | Filter func type could return match metadata                             | Medium | High   | Architecture  |
+| 22  | Test examples/ in CI pipeline                                            | Low    | Low    | DevOps        |
+| 23  | Add `-race` to benchmark CI step                                         | Low    | Low    | DevOps        |
+| 24  | Add context cancellation integration test                                | Medium | Low    | Testing       |
+| 25  | Explore fsnotify v2 API changes for future compatibility                 | Low    | Low    | Maintenance   |
 
 ---
 
@@ -131,13 +131,13 @@ This is a breaking API decision that affects users, so I can't decide unilateral
 
 ## Quality Gates ✅
 
-| Gate | Status |
-|------|--------|
-| `go build ./...` | ✅ PASS |
-| `go test -race -count=1 .` | ✅ PASS |
-| `golangci-lint run .` | ✅ 0 issues |
-| Coverage | ✅ 91.9% |
-| Benchmarks | ✅ All pass |
+| Gate                       | Status      |
+| -------------------------- | ----------- |
+| `go build ./...`           | ✅ PASS     |
+| `go test -race -count=1 .` | ✅ PASS     |
+| `golangci-lint run .`      | ✅ 0 issues |
+| Coverage                   | ✅ 91.9%    |
+| Benchmarks                 | ✅ All pass |
 
 ## Commit History (this session)
 

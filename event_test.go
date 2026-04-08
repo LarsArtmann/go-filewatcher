@@ -3,7 +3,6 @@ package filewatcher
 import (
 	"encoding/json"
 	"testing"
-	"time"
 )
 
 func TestOp_MarshalText(t *testing.T) {
@@ -67,12 +66,7 @@ func TestOp_UnmarshalText_Invalid(t *testing.T) {
 func TestEvent_JSON(t *testing.T) {
 	t.Parallel()
 
-	event := Event{
-		Path:      "/tmp/test.go",
-		Op:        Write,
-		Timestamp: time.Date(2025, 1, 1, 12, 0, 0, 0, time.UTC),
-		IsDir:     false,
-	}
+	event := fixedTimeEvent("/tmp/test.go", Write, 12)
 
 	data, err := json.Marshal(event)
 	if err != nil {

@@ -106,12 +106,22 @@ func TestFilterExtensions(t *testing.T) {
 
 func TestFilterIgnoreExtensions(t *testing.T) {
 	t.Parallel()
-	runFilterTests(t, "FilterIgnoreExtensions", FilterIgnoreExtensions(".log", ".tmp"), ignoreExtTestCases())
+	runFilterTests(
+		t,
+		"FilterIgnoreExtensions",
+		FilterIgnoreExtensions(".log", ".tmp"),
+		ignoreExtTestCases(),
+	)
 }
 
 func TestFilterIgnoreDirs(t *testing.T) {
 	t.Parallel()
-	runFilterTests(t, "FilterIgnoreDirs", FilterIgnoreDirs("vendor", "node_modules"), ignoreDirTestCases())
+	runFilterTests(
+		t,
+		"FilterIgnoreDirs",
+		FilterIgnoreDirs("vendor", "node_modules"),
+		ignoreDirTestCases(),
+	)
 }
 
 func TestFilterIgnoreHidden(t *testing.T) {

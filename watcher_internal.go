@@ -85,6 +85,11 @@ func (w *Watcher) buildMiddlewareHandler(emit func(Event)) Handler {
 		handler = w.wrapWithMiddleware(handler, w.middleware[i])
 	}
 
+	return wrapHandlerWithNilReturn(handler)
+}
+
+// wrapHandlerWithNilReturn wraps a handler to return nil error.
+func wrapHandlerWithNilReturn(handler func(context.Context, Event)) Handler {
 	return func(ctx context.Context, e Event) error {
 		handler(ctx, e)
 		return nil
@@ -96,10 +101,7 @@ func (w *Watcher) wrapWithMiddleware(
 	handler func(context.Context, Event),
 	mw Middleware,
 ) func(context.Context, Event) {
-	wrapped := mw(func(ctx context.Context, e Event) error {
-		handler(ctx, e)
-		return nil
-	})
+	wrapped := mw(wrapHandlerWithNilReturn(handler))
 	return func(ctx context.Context, e Event) {
 		if err := wrapped(ctx, e); err != nil {
 			w.handleError(err)

@@ -15,28 +15,24 @@ type Filter func(event Event) bool
 // matching one of the given extensions. Extensions should include the
 // dot prefix (e.g., ".go", ".md").
 func FilterExtensions(exts ...string) Filter {
-	extSet := make(map[string]struct{}, len(exts))
-	for _, ext := range exts {
-		extSet[strings.ToLower(ext)] = struct{}{}
-	}
-	return func(event Event) bool {
-		ext := strings.ToLower(filepath.Ext(event.Path))
-		_, ok := extSet[ext]
-		return ok
-	}
+	return makeExtFilter(exts, true)
 }
 
 // FilterIgnoreExtensions creates a filter that discards events for files
 // matching one of the given extensions.
 func FilterIgnoreExtensions(exts ...string) Filter {
+	return makeExtFilter(exts, false)
+}
+
+func makeExtFilter(exts []string, include bool) Filter {
 	extSet := make(map[string]struct{}, len(exts))
 	for _, ext := range exts {
 		extSet[strings.ToLower(ext)] = struct{}{}
 	}
 	return func(event Event) bool {
 		ext := strings.ToLower(filepath.Ext(event.Path))
-		_, ignore := extSet[ext]
-		return !ignore
+		_, found := extSet[ext]
+		return found == include
 	}
 }
 
@@ -82,26 +78,23 @@ func FilterIgnoreHidden() Filter {
 // FilterOperations creates a filter that only passes events matching
 // one of the given operations.
 func FilterOperations(ops ...Op) Filter {
-	opSet := make(map[Op]struct{}, len(ops))
-	for _, op := range ops {
-		opSet[op] = struct{}{}
-	}
-	return func(event Event) bool {
-		_, ok := opSet[event.Op]
-		return ok
-	}
+	return makeOpFilter(ops, true)
 }
 
 // FilterNotOperations creates a filter that discards events matching
 // any of the given operations.
 func FilterNotOperations(ops ...Op) Filter {
+	return makeOpFilter(ops, false)
+}
+
+func makeOpFilter(ops []Op, include bool) Filter {
 	opSet := make(map[Op]struct{}, len(ops))
 	for _, op := range ops {
 		opSet[op] = struct{}{}
 	}
 	return func(event Event) bool {
-		_, exclude := opSet[event.Op]
-		return !exclude
+		_, found := opSet[event.Op]
+		return found == include
 	}
 }
 

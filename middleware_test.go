@@ -21,15 +21,13 @@ func TestMiddlewareLogging(t *testing.T) {
 		}
 	}
 
-	handler := mw(func(_ context.Context, _ Event) error { return nil })
+	handler := mw(noopHandler())
 	_ = handler(
 		context.Background(),
 		testWriteEvent("test.go"),
 	)
 
-	if got := called.Load(); got != 1 {
-		t.Errorf("expected middleware to be called, got %d", got)
-	}
+	assertCount(t, &called, 1)
 }
 
 func TestMiddlewareRecovery(t *testing.T) {
@@ -57,11 +55,7 @@ func TestMiddlewareRecovery_NoPanic(t *testing.T) {
 
 	recovery := MiddlewareRecovery()
 
-	normalHandler := func(_ context.Context, _ Event) error {
-		return nil
-	}
-
-	wrapped := recovery(normalHandler)
+	wrapped := recovery(noopHandler())
 
 	err := wrapped(
 		context.Background(),
@@ -78,26 +72,19 @@ func TestMiddlewareRateLimit(t *testing.T) {
 	var count atomic.Int32
 	rateLimit := MiddlewareRateLimit(100 * time.Millisecond)
 
-	handler := rateLimit(func(_ context.Context, _ Event) error {
-		count.Add(1)
-		return nil
-	})
+	handler := rateLimit(countHandler(&count))
 
 	_ = handler(context.Background(), testEvent("/tmp/test.txt", Write))
 	_ = handler(context.Background(), testEvent("/tmp/test.txt", Write))
 	_ = handler(context.Background(), testEvent("/tmp/test.txt", Write))
 
-	if got := count.Load(); got != 1 {
-		t.Errorf("expected 1 call due to rate limiting, got %d", got)
-	}
+	assertCount(t, &count, 1)
 
 	time.Sleep(150 * time.Millisecond)
 
 	_ = handler(context.Background(), testEvent("/tmp/test.txt", Write))
 
-	if got := count.Load(); got != 2 {
-		t.Errorf("expected 2 calls after rate limit window, got %d", got)
-	}
+	assertCount(t, &count, 2)
 }
 
 func TestMiddlewareFilter(t *testing.T) {
@@ -106,17 +93,12 @@ func TestMiddlewareFilter(t *testing.T) {
 	var count atomic.Int32
 	mw := MiddlewareFilter(FilterExtensions(".go"))
 
-	handler := mw(func(_ context.Context, _ Event) error {
-		count.Add(1)
-		return nil
-	})
+	handler := mw(countHandler(&count))
 
 	_ = handler(context.Background(), testWriteEvent("test.txt"))
 	_ = handler(context.Background(), testWriteEvent("test.go"))
 
-	if got := count.Load(); got != 1 {
-		t.Errorf("expected 1 call (only .go file), got %d", got)
-	}
+	assertCount(t, &count, 1)
 }
 
 func TestMiddlewareOnError(t *testing.T) {
@@ -155,8 +137,7 @@ func TestMiddlewareMetrics(t *testing.T) {
 	metrics := make(map[Op]int)
 	mw := MiddlewareMetrics(func(op Op) { metrics[op]++ })
 
-	successHandler := func(_ context.Context, _ Event) error { return nil }
-	handler := mw(successHandler)
+	handler := mw(noopHandler())
 
 	_ = handler(context.Background(), testEvent("/tmp/test.txt", Write))
 	_ = handler(context.Background(), testEvent("/tmp/test.txt", Write))
@@ -175,7 +156,7 @@ func TestMiddlewareLogging_NilLogger(t *testing.T) {
 
 	mw := MiddlewareLogging(nil)
 
-	handler := mw(func(_ context.Context, _ Event) error { return nil })
+	handler := mw(noopHandler())
 
 	err := handler(context.Background(), testWriteEvent("test.go"))
 	if err != nil {
@@ -190,7 +171,7 @@ func TestMiddlewareWriteFileLog(t *testing.T) {
 
 	mw := MiddlewareWriteFileLog(tmpFile)
 
-	handler := mw(func(_ context.Context, _ Event) error { return nil })
+	handler := mw(noopHandler())
 
 	ts := time.Date(2025, 1, 1, 12, 0, 0, 0, time.UTC)
 	e := Event{Path: "/tmp/test.go", Op: Write, Timestamp: ts, IsDir: false}
@@ -205,12 +186,8 @@ func TestMiddlewareWriteFileLog(t *testing.T) {
 	}
 
 	content := string(data)
-	if !strings.Contains(content, "WRITE") {
-		t.Errorf("expected log to contain WRITE, got %q", content)
-	}
-	if !strings.Contains(content, "/tmp/test.go") {
-		t.Errorf("expected log to contain file path, got %q", content)
-	}
+	assertLogContains(t, content, "WRITE")
+	assertLogContains(t, content, "/tmp/test.go")
 }
 
 func TestMiddlewareWriteFileLog_Appends(t *testing.T) {
@@ -219,7 +196,7 @@ func TestMiddlewareWriteFileLog_Appends(t *testing.T) {
 	tmpFile := t.TempDir() + "/events.log"
 
 	mw := MiddlewareWriteFileLog(tmpFile)
-	handler := mw(func(_ context.Context, _ Event) error { return nil })
+	handler := mw(noopHandler())
 
 	_ = handler(context.Background(), testWriteEvent("a.go"))
 	_ = handler(context.Background(), testEvent("b.go", Create))
@@ -252,7 +229,7 @@ func TestMiddlewareChain(t *testing.T) {
 	handler := record("first")(
 		record("second")(
 			record("third")(
-				func(_ context.Context, _ Event) error { return nil },
+				noopHandler(),
 			),
 		),
 	)
@@ -273,7 +250,7 @@ func TestMiddlewareChain(t *testing.T) {
 func BenchmarkMiddlewareLogging(b *testing.B) {
 	logger := slog.New(slog.DiscardHandler)
 	mw := MiddlewareLogging(logger)
-	handler := mw(func(_ context.Context, _ Event) error { return nil })
+	handler := mw(noopHandler())
 	event := Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
 	ctx := context.Background()
 
@@ -286,7 +263,7 @@ func BenchmarkMiddlewareLogging(b *testing.B) {
 
 func BenchmarkMiddlewareRecovery(b *testing.B) {
 	mw := MiddlewareRecovery()
-	handler := mw(func(_ context.Context, _ Event) error { return nil })
+	handler := mw(noopHandler())
 	event := Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
 	ctx := context.Background()
 
@@ -299,7 +276,7 @@ func BenchmarkMiddlewareRecovery(b *testing.B) {
 
 func BenchmarkMiddlewareRateLimit(b *testing.B) {
 	mw := MiddlewareRateLimit(0) // no limit
-	handler := mw(func(_ context.Context, _ Event) error { return nil })
+	handler := mw(noopHandler())
 	event := Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
 	ctx := context.Background()
 
@@ -312,7 +289,7 @@ func BenchmarkMiddlewareRateLimit(b *testing.B) {
 
 func BenchmarkMiddlewareMetrics(b *testing.B) {
 	mw := MiddlewareMetrics(func(_ Op) {})
-	handler := mw(func(_ context.Context, _ Event) error { return nil })
+	handler := mw(noopHandler())
 	event := Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
 	ctx := context.Background()
 

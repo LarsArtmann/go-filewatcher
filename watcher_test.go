@@ -118,8 +118,7 @@ func TestWatcher_Watch_DetectsWrite(t *testing.T) {
 	}
 	defer func() { _ = w.Close() }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	ctx := setupTestContext(t, 5*time.Second)
 
 	events, err := w.Watch(ctx)
 	if err != nil {
@@ -155,8 +154,7 @@ func TestWatcher_Watch_FiltersExtensions(t *testing.T) {
 	}
 	defer func() { _ = w.Close() }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	ctx := setupTestContext(t, 5*time.Second)
 
 	events, err := w.Watch(ctx)
 	if err != nil {
@@ -220,8 +218,7 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 	}
 	defer func() { _ = w.Close() }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	ctx := setupTestContext(t, 10*time.Second)
 
 	events, err := w.Watch(ctx)
 	if err != nil {
@@ -270,8 +267,7 @@ func TestWatcher_Watch_WithMiddleware(t *testing.T) {
 	}
 	defer func() { _ = w.Close() }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	ctx := setupTestContext(t, 5*time.Second)
 
 	events, err := w.Watch(ctx)
 	if err != nil {
@@ -307,8 +303,7 @@ func TestWatcher_Watch_WithDebounce(t *testing.T) {
 	}
 	defer func() { _ = w.Close() }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	ctx := setupTestContext(t, 5*time.Second)
 
 	events, err := w.Watch(ctx)
 	if err != nil {
@@ -355,8 +350,7 @@ func TestWatcher_Watch_WithPerPathDebounce(t *testing.T) {
 	}
 	defer func() { _ = w.Close() }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	ctx := setupTestContext(t, 5*time.Second)
 
 	events, err := w.Watch(ctx)
 	if err != nil {
@@ -409,8 +403,7 @@ func TestWatcher_Watch_NewDirectory(t *testing.T) {
 	}
 	defer func() { _ = w.Close() }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	ctx := setupTestContext(t, 5*time.Second)
 
 	events, err := w.Watch(ctx)
 	if err != nil {
@@ -476,8 +469,7 @@ func TestWatcher_Add(t *testing.T) {
 	}
 	defer func() { _ = w.Close() }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	ctx := setupTestContext(t, 5*time.Second)
 
 	events, err := w.Watch(ctx)
 	if err != nil {
@@ -515,8 +507,7 @@ func TestWatcher_Remove(t *testing.T) {
 	}
 	defer func() { _ = w.Close() }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	ctx := setupTestContext(t, 5*time.Second)
 
 	events, err := w.Watch(ctx)
 	if err != nil {
@@ -567,8 +558,7 @@ func TestWatcher_WatchList(t *testing.T) {
 	}
 	defer func() { _ = w.Close() }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	ctx := setupTestContext(t, 5*time.Second)
 
 	_, err = w.Watch(ctx)
 	if err != nil {
@@ -603,8 +593,7 @@ func TestWatcher_WatchList_IsCopy(t *testing.T) {
 	}
 	defer func() { _ = w.Close() }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	ctx := setupTestContext(t, 5*time.Second)
 
 	_, err = w.Watch(ctx)
 	if err != nil {
@@ -645,8 +634,7 @@ func TestWatcher_Stats(t *testing.T) {
 		t.Errorf("expected 0 watch count before Watch(), got %d", stats.WatchCount)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	ctx := setupTestContext(t, 5*time.Second)
 
 	_, err = w.Watch(ctx)
 	if err != nil {
@@ -678,8 +666,7 @@ func TestWatcher_IgnoreDirs(t *testing.T) {
 	}
 	defer func() { _ = w.Close() }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	ctx := setupTestContext(t, 5*time.Second)
 
 	events, err := w.Watch(ctx)
 	if err != nil {
@@ -752,7 +739,7 @@ func TestWatcher_Watch_DoubleWatch(t *testing.T) {
 	}
 	defer func() { _ = w.Close() }()
 
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 
 	_, err = w.Watch(ctx)

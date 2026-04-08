@@ -13,15 +13,11 @@ func TestDebouncer_Debounce(t *testing.T) {
 	var count atomic.Int32
 	d := NewDebouncer(50 * time.Millisecond)
 
-	d.Debounce("key1", func() { count.Add(1) })
-	d.Debounce("key1", func() { count.Add(1) })
-	d.Debounce("key1", func() { count.Add(1) })
+	debounceMulti(d, []string{"key1", "key1", "key1"}, &count)
 
 	time.Sleep(100 * time.Millisecond)
 
-	if got := count.Load(); got != 1 {
-		t.Errorf("expected 1 execution after debouncing 3 calls, got %d", got)
-	}
+	assertCount(t, &count, 1)
 }
 
 func TestDebouncer_DifferentKeys(t *testing.T) {
@@ -30,14 +26,11 @@ func TestDebouncer_DifferentKeys(t *testing.T) {
 	var count atomic.Int32
 	d := NewDebouncer(50 * time.Millisecond)
 
-	d.Debounce("key1", func() { count.Add(1) })
-	d.Debounce("key2", func() { count.Add(1) })
+	debounceMulti(d, []string{"key1", "key2"}, &count)
 
 	time.Sleep(100 * time.Millisecond)
 
-	if got := count.Load(); got != 2 {
-		t.Errorf("expected 2 executions for different keys, got %d", got)
-	}
+	assertCount(t, &count, 2)
 }
 
 func TestDebouncer_Flush(t *testing.T) {
@@ -46,19 +39,13 @@ func TestDebouncer_Flush(t *testing.T) {
 	var count atomic.Int32
 	d := NewDebouncer(200 * time.Millisecond)
 
-	d.Debounce("key1", func() { count.Add(1) })
+	debounceSingle(d, "key1", &count)
 	d.Flush()
 
 	time.Sleep(50 * time.Millisecond)
 
-	// Flush executes pending functions immediately, so we expect 1 execution
-	if got := count.Load(); got != 1 {
-		t.Errorf("expected 1 execution after flush (executes pending), got %d", got)
-	}
-
-	if got := d.Pending(); got != 0 {
-		t.Errorf("expected 0 pending after flush, got %d", got)
-	}
+	assertCount(t, &count, 1)
+	assertPending(t, d, 0)
 }
 
 func TestDebouncer_Stop(t *testing.T) {
@@ -67,14 +54,12 @@ func TestDebouncer_Stop(t *testing.T) {
 	var count atomic.Int32
 	d := NewDebouncer(50 * time.Millisecond)
 
-	d.Debounce("key1", func() { count.Add(1) })
+	debounceSingle(d, "key1", &count)
 	d.Stop()
 
 	time.Sleep(100 * time.Millisecond)
 
-	if got := count.Load(); got != 0 {
-		t.Errorf("expected 0 executions after stop, got %d", got)
-	}
+	assertCount(t, &count, 0)
 }
 
 func TestDebouncer_Pending(t *testing.T) {
@@ -82,19 +67,13 @@ func TestDebouncer_Pending(t *testing.T) {
 
 	d := NewDebouncer(200 * time.Millisecond)
 
-	d.Debounce("key1", func() {})
-	d.Debounce("key2", func() {})
-	d.Debounce("key3", func() {})
+	debounceMultiNoCount(d, []string{"key1", "key2", "key3"})
 
-	if got := d.Pending(); got != 3 {
-		t.Errorf("expected 3 pending, got %d", got)
-	}
+	assertPending(t, d, 3)
 
 	d.Stop()
 
-	if got := d.Pending(); got != 0 {
-		t.Errorf("expected 0 pending after stop, got %d", got)
-	}
+	assertPending(t, d, 0)
 }
 
 func TestDebouncer_DefaultDelay(t *testing.T) {
@@ -103,13 +82,11 @@ func TestDebouncer_DefaultDelay(t *testing.T) {
 	d := NewDebouncer(0)
 
 	var count atomic.Int32
-	d.Debounce("key", func() { count.Add(1) })
+	debounceSingle(d, "key", &count)
 
 	time.Sleep(600 * time.Millisecond)
 
-	if got := count.Load(); got != 1 {
-		t.Errorf("expected 1 execution with default delay, got %d", got)
-	}
+	assertCount(t, &count, 1)
 }
 
 func TestDebouncer_NegativeDelay(t *testing.T) {
@@ -118,13 +95,11 @@ func TestDebouncer_NegativeDelay(t *testing.T) {
 	d := NewDebouncer(-1 * time.Second)
 
 	var count atomic.Int32
-	d.Debounce("key", func() { count.Add(1) })
+	debounceSingle(d, "key", &count)
 
 	time.Sleep(600 * time.Millisecond)
 
-	if got := count.Load(); got != 1 {
-		t.Errorf("expected 1 execution with negative delay (should default to 500ms), got %d", got)
-	}
+	assertCount(t, &count, 1)
 }
 
 func TestDebouncer_RapidCalls(t *testing.T) {
@@ -133,15 +108,11 @@ func TestDebouncer_RapidCalls(t *testing.T) {
 	var count atomic.Int32
 	d := NewDebouncer(30 * time.Millisecond)
 
-	for range 100 {
-		d.Debounce("key1", func() { count.Add(1) })
-	}
+	debounceSingle(d, "key1", &count)
 
 	time.Sleep(100 * time.Millisecond)
 
-	if got := count.Load(); got != 1 {
-		t.Errorf("expected 1 execution after 100 rapid calls, got %d", got)
-	}
+	assertCount(t, &count, 1)
 }
 
 func TestGlobalDebouncer_Flush(t *testing.T) {
@@ -150,23 +121,16 @@ func TestGlobalDebouncer_Flush(t *testing.T) {
 	var count atomic.Int32
 	d := NewGlobalDebouncer(200 * time.Millisecond)
 
-	d.Debounce("", func() { count.Add(1) })
+	debounceGlobalSingle(d, &count)
 
-	if got := d.Pending(); got != 1 {
-		t.Errorf("expected 1 pending before flush, got %d", got)
-	}
+	assertGlobalPending(t, d, 1)
 
 	d.Flush()
 
 	time.Sleep(50 * time.Millisecond)
 
-	if got := count.Load(); got != 1 {
-		t.Errorf("expected 1 execution after flush, got %d", got)
-	}
-
-	if got := d.Pending(); got != 0 {
-		t.Errorf("expected 0 pending after flush, got %d", got)
-	}
+	assertCount(t, &count, 1)
+	assertGlobalPending(t, d, 0)
 }
 
 func TestGlobalDebouncer_Stop(t *testing.T) {
@@ -175,14 +139,12 @@ func TestGlobalDebouncer_Stop(t *testing.T) {
 	var count atomic.Int32
 	d := NewGlobalDebouncer(50 * time.Millisecond)
 
-	d.Debounce("", func() { count.Add(1) })
+	debounceGlobalSingle(d, &count)
 	d.Stop()
 
 	time.Sleep(100 * time.Millisecond)
 
-	if got := count.Load(); got != 0 {
-		t.Errorf("expected 0 executions after stop, got %d", got)
-	}
+	assertCount(t, &count, 0)
 }
 
 func TestGlobalDebouncer_Debounce(t *testing.T) {
@@ -191,15 +153,11 @@ func TestGlobalDebouncer_Debounce(t *testing.T) {
 	var count atomic.Int32
 	d := NewGlobalDebouncer(50 * time.Millisecond)
 
-	d.Debounce("", func() { count.Add(1) })
-	d.Debounce("", func() { count.Add(1) })
-	d.Debounce("", func() { count.Add(1) })
+	debounceGlobalMulti(d, &count, 3)
 
 	time.Sleep(100 * time.Millisecond)
 
-	if got := count.Load(); got != 1 {
-		t.Errorf("expected 1 execution after debouncing 3 global calls, got %d", got)
-	}
+	assertCount(t, &count, 1)
 }
 
 func TestGlobalDebouncer_DefaultDelay(t *testing.T) {
@@ -208,13 +166,11 @@ func TestGlobalDebouncer_DefaultDelay(t *testing.T) {
 	d := NewGlobalDebouncer(0)
 
 	var count atomic.Int32
-	d.Debounce("", func() { count.Add(1) })
+	debounceGlobalSingle(d, &count)
 
 	time.Sleep(600 * time.Millisecond)
 
-	if got := count.Load(); got != 1 {
-		t.Errorf("expected 1 execution with default delay, got %d", got)
-	}
+	assertCount(t, &count, 1)
 }
 
 func TestGlobalDebouncer_Pending(t *testing.T) {
@@ -222,21 +178,15 @@ func TestGlobalDebouncer_Pending(t *testing.T) {
 
 	d := NewGlobalDebouncer(200 * time.Millisecond)
 
-	if got := d.Pending(); got != 0 {
-		t.Errorf("expected 0 pending initially, got %d", got)
-	}
+	assertGlobalPending(t, d, 0)
 
-	d.Debounce("", func() {})
+	debounceGlobalNoCount(d)
 
-	if got := d.Pending(); got != 1 {
-		t.Errorf("expected 1 pending after debounce, got %d", got)
-	}
+	assertGlobalPending(t, d, 1)
 
 	d.Stop()
 
-	if got := d.Pending(); got != 0 {
-		t.Errorf("expected 0 pending after stop, got %d", got)
-	}
+	assertGlobalPending(t, d, 0)
 }
 
 func BenchmarkDebouncer_Debounce(b *testing.B) {

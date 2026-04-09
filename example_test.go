@@ -55,16 +55,11 @@ func ExampleWatcher_Watch() {
 
 // ExampleWithFilter demonstrates using custom filters.
 func ExampleWithFilter() {
-	// Create a filter that only allows .go files not in test directories
 	filter := filewatcher.FilterAnd(
 		filewatcher.FilterExtensions(".go"),
 		filewatcher.FilterNot(filewatcher.FilterIgnoreDirs("testdata")),
 	)
-
-	watcher, err := filewatcher.New(
-		[]string{"."},
-		filewatcher.WithFilter(filter),
-	)
+	watcher, err := filewatcher.New([]string{"."}, filewatcher.WithFilter(filter))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -196,15 +191,12 @@ func ExampleFilterRegex() {
 
 // ExampleFilterAnd demonstrates combining filters with AND logic.
 func ExampleFilterAnd() {
-	// Only .go files that are not in vendor directories
-	filter := filewatcher.FilterAnd(
-		filewatcher.FilterExtensions(".go"),
-		filewatcher.FilterNot(filewatcher.FilterIgnoreDirs("vendor")),
-	)
-
 	watcher, err := filewatcher.New(
 		[]string{"."},
-		filewatcher.WithFilter(filter),
+		filewatcher.WithFilter(filewatcher.FilterAnd(
+			filewatcher.FilterExtensions(".go"),
+			filewatcher.FilterNot(filewatcher.FilterIgnoreDirs("vendor")),
+		)),
 	)
 	if err != nil {
 		log.Fatal(err)

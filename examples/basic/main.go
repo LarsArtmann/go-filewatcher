@@ -14,7 +14,13 @@ import (
 const (
 	exampleTimeout = 10 * time.Second       // Total runtime for the example
 	debounceDelay  = 300 * time.Millisecond // Delay for coalescing rapid file events
+	timeFormat     = "15:04:05"
 )
+
+func printEvent(event filewatcher.Event) {
+	ts := event.Timestamp.Format(timeFormat)
+	fmt.Printf("[%s] %s: %s\n", ts, event.Op.String(), event.Path)
+}
 
 func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), exampleTimeout)
@@ -39,8 +45,7 @@ func main() {
 	fmt.Println("Watching for .go and .md file changes (10s timeout)...")
 
 	for event := range events {
-		ts := event.Timestamp.Format("15:04:05")
-		fmt.Printf("[%s] %s: %s\n", ts, event.Op.String(), event.Path)
+		printEvent(event)
 	}
 
 	fmt.Println("Done.")

@@ -136,7 +136,11 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 			var writeErr error
 			if cf.f == nil {
 				//nolint:gosec // filePath is user-provided, intentional design for log file location
-				cf.f, writeErr = os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, logFilePermission)
+				cf.f, writeErr = os.OpenFile(
+					filePath,
+					os.O_APPEND|os.O_CREATE|os.O_WRONLY,
+					logFilePermission,
+				)
 			}
 			if writeErr == nil && cf.f != nil {
 				_, _ = fmt.Fprintf(

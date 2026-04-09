@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	exampleTimeout      = 10 * time.Second        // Total runtime for the example
-	debounceDelay       = 300 * time.Millisecond  // Delay for coalescing rapid file events
+	exampleTimeout = 10 * time.Second       // Total runtime for the example
+	debounceDelay  = 300 * time.Millisecond // Delay for coalescing rapid file events
 )
 
 func main() {

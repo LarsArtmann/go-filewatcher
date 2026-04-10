@@ -55,7 +55,10 @@ func ExampleWatcher_Watch() {
 
 // ExampleWithFilter demonstrates using custom filters.
 func ExampleWithFilter() {
-	watcher, err := filewatcher.New([]string{"."}, filewatcher.WithFilter(goExcludeDirsFilter("testdata")))
+	watcher, err := filewatcher.New(
+		[]string{"."},
+		filewatcher.WithFilter(goExcludeDirsFilter("testdata")),
+	)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -112,7 +112,13 @@ func receiveEventOrTimeout(t *testing.T, events <-chan Event, timeout time.Durat
 	}
 }
 
-func receiveEventMatchingOrTimeout(t *testing.T, events <-chan Event, timeout time.Duration, check func(Event), msg string) {
+func receiveEventMatchingOrTimeout(
+	t *testing.T,
+	events <-chan Event,
+	timeout time.Duration,
+	check func(Event),
+	msg string,
+) {
 	t.Helper()
 	select {
 	case event := <-events:

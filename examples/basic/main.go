@@ -3,7 +3,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"time"
@@ -15,7 +14,7 @@ import (
 const debounceDelay = 300 * time.Millisecond // Delay for coalescing rapid file events
 
 func main() {
-	ctx, cancel := context.WithTimeout(context.Background(), shared.DefaultTimeout())
+	ctx, cancel := shared.WithDefaultTimeout()
 	defer cancel()
 
 	watcher, err := filewatcher.New(

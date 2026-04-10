@@ -2,6 +2,7 @@
 package shared
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -21,4 +22,9 @@ func PrintEvent(event filewatcher.Event) {
 // DefaultTimeout returns the default timeout duration for examples.
 func DefaultTimeout() time.Duration {
 	return defaultTimeout
+}
+
+// WithDefaultTimeout creates a context with the default timeout and a cancel function.
+func WithDefaultTimeout() (context.Context, context.CancelFunc) {
+	return context.WithTimeout(context.Background(), defaultTimeout)
 }

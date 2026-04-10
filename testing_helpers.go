@@ -103,11 +103,21 @@ func waitForEventOrFail(t *testing.T, events <-chan Event, timeout time.Duration
 	return *event
 }
 
-func receiveEventOrTimeout(t *testing.T, events <-chan Event, timeout time.Duration) {
+// waitForEventOrTimeout waits for a single event from the channel.
+// Returns true if an event was received, false if timeout occurred.
+func waitForEventOrTimeout(t *testing.T, events <-chan Event, timeout time.Duration) bool {
 	t.Helper()
 	select {
 	case <-events:
+		return true
 	case <-time.After(timeout):
+		return false
+	}
+}
+
+func receiveEventOrTimeout(t *testing.T, events <-chan Event, timeout time.Duration) {
+	t.Helper()
+	if !waitForEventOrTimeout(t, events, timeout) {
 		t.Fatal("timed out waiting for event")
 	}
 }

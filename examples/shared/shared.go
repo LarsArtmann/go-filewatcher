@@ -1,5 +1,5 @@
-// Package shared provides helper functions for examples.
-package shared
+// Package demo provides helper functions for examples.
+package demo
 
 import (
 	"context"

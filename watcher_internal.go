@@ -126,11 +126,11 @@ func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handl
 	w.debounceInterface.Debounce(key, execute)
 }
 
-func (w *Watcher) getDebounceKey(path string) string {
+func (w *Watcher) getDebounceKey(path string) DebounceKey {
 	if _, ok := w.debounceInterface.(*Debouncer); ok {
-		return path
+		return DebounceKey(path)
 	}
-	return ""
+	return DebounceKey("")
 }
 
 // handleNewDirectory adds newly created directories to the watcher

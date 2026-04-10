@@ -72,7 +72,7 @@ var _ io.Closer = (*Watcher)(nil)
 
 // DebouncerInterface is the interface for debouncer implementations.
 type DebouncerInterface interface {
-	Debounce(key string, fn func())
+	Debounce(key DebounceKey, fn func())
 	Stop()
 }
 
@@ -88,27 +88,27 @@ var (
 // The watcher is not started until Watch() is called.
 func New(paths []string, opts ...Option) (*Watcher, error) {
 	if len(paths) == 0 {
-		return nil, fmt.Errorf("%w: no paths provided", ErrNoPaths)
+		return nil, fmt.Errorf("%w: at least one path must be provided", ErrNoPaths)
 	}
 
 	// Validate all paths exist
 	for _, p := range paths {
-		abs, err := filepath.Abs(p)
-		if err != nil {
-			return nil, fmt.Errorf("resolving path %q: %w", p, err)
+		abs, resolveErr := filepath.Abs(p)
+		if resolveErr != nil {
+			return nil, fmt.Errorf("resolving path %q during validation: %w", p, resolveErr)
 		}
-		info, err := os.Stat(abs)
-		if err != nil {
+		info, statErr := os.Stat(abs)
+		if statErr != nil {
 			return nil, fmt.Errorf("%w: path %q (resolved: %q)", ErrPathNotFound, p, abs)
 		}
 		if !info.IsDir() {
-			return nil, fmt.Errorf("%w: path %q", ErrPathNotDir, p)
+			return nil, fmt.Errorf("%w: path %q must be a directory", ErrPathNotDir, p)
 		}
 	}
 
-	fswatcher, err := fsnotify.NewWatcher()
-	if err != nil {
-		return nil, fmt.Errorf("creating fsnotify watcher: %w", err)
+	fswatcher, fsErr := fsnotify.NewWatcher()
+	if fsErr != nil {
+		return nil, fmt.Errorf("creating fsnotify watcher: %w", fsErr)
 	}
 
 	w := &Watcher{
@@ -156,18 +156,18 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 	defer w.mu.Unlock()
 
 	if w.closed {
-		return nil, fmt.Errorf("%w: cannot watch", ErrWatcherClosed)
+		return nil, fmt.Errorf("%w: cannot start watch on closed watcher", ErrWatcherClosed)
 	}
 
 	if w.watching {
-		return nil, fmt.Errorf("%w: already running", ErrWatcherRunning)
+		return nil, fmt.Errorf("%w: watcher is already running", ErrWatcherRunning)
 	}
 
 	// Add initial paths to the fsnotify watcher
 	for _, p := range w.paths {
-		pathErr := w.addPath(p)
-		if pathErr != nil {
-			return nil, fmt.Errorf("adding watch path %q: %w", p, pathErr)
+		addErr := w.addPath(p)
+		if addErr != nil {
+			return nil, fmt.Errorf("adding watch path %q during Watch(): %w", p, addErr)
 		}
 	}
 
@@ -185,16 +185,16 @@ func (w *Watcher) Add(path string) error {
 	defer w.mu.Unlock()
 
 	if w.closed {
-		return fmt.Errorf("%w: cannot add", ErrWatcherClosed)
+		return fmt.Errorf("%w: cannot add path to closed watcher", ErrWatcherClosed)
 	}
 
-	abs, addErr := filepath.Abs(path)
-	if addErr != nil {
-		return fmt.Errorf("resolving path %q: %w", path, addErr)
+	abs, resolveErr := filepath.Abs(path)
+	if resolveErr != nil {
+		return fmt.Errorf("resolving path %q in Add(): %w", path, resolveErr)
 	}
 
-	if err := w.addPath(abs); err != nil {
-		return err
+	if pathErr := w.addPath(abs); pathErr != nil {
+		return fmt.Errorf("adding resolved path %q to watcher: %w", abs, pathErr)
 	}
 	w.watchList = append(w.watchList, abs)
 	return nil
@@ -207,16 +207,16 @@ func (w *Watcher) Remove(path string) error {
 	defer w.mu.Unlock()
 
 	if w.closed {
-		return fmt.Errorf("%w: cannot remove", ErrWatcherClosed)
+		return fmt.Errorf("%w: cannot remove path from closed watcher", ErrWatcherClosed)
 	}
 
-	abs, removeErr := filepath.Abs(path)
-	if removeErr != nil {
-		return fmt.Errorf("resolving path %q: %w", path, removeErr)
+	abs, resolveErr := filepath.Abs(path)
+	if resolveErr != nil {
+		return fmt.Errorf("resolving path %q in Remove(): %w", path, resolveErr)
 	}
 
-	if err := w.fswatcher.Remove(abs); err != nil {
-		return fmt.Errorf("removing watch path %q: %w", abs, err)
+	if removeErr := w.fswatcher.Remove(abs); removeErr != nil {
+		return fmt.Errorf("removing watch path %q from fsnotify: %w", abs, removeErr)
 	}
 
 	// Remove from watchList

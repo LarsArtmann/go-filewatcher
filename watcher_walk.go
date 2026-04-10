@@ -41,9 +41,10 @@ func (w *Watcher) walkAndAddPaths(root string) error {
 }
 
 // walkDirFunc is the WalkDirFunc for adding paths during directory traversal.
-func (w *Watcher) walkDirFunc(path string, d os.DirEntry, err error) error {
-	if err != nil {
-		return fmt.Errorf("walking path %q: %w", path, err)
+func (w *Watcher) walkDirFunc(path string, d os.DirEntry, walkErr error) error {
+	if walkErr != nil {
+		isDir := d != nil && d.IsDir()
+		return fmt.Errorf("walking directory entry %q (isDir=%v): %w", path, isDir, walkErr)
 	}
 
 	if !d.IsDir() {

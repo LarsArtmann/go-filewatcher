@@ -103,24 +103,39 @@ func waitForEventOrFail(t *testing.T, events <-chan Event, timeout time.Duration
 	return *event
 }
 
-func debounceAndCount(d *Debouncer, key DebounceKey, count *atomic.Int32) {
-	d.Debounce(key, func() { count.Add(1) })
+func receiveEventOrTimeout(t *testing.T, events <-chan Event, timeout time.Duration) {
+	t.Helper()
+	select {
+	case <-events:
+	case <-time.After(timeout):
+		t.Fatal("timed out waiting for event")
+	}
+}
+
+func receiveEventMatchingOrTimeout(t *testing.T, events <-chan Event, timeout time.Duration, check func(Event), msg string) {
+	t.Helper()
+	select {
+	case event := <-events:
+		check(event)
+	case <-time.After(timeout):
+		t.Fatal(msg)
+	}
 }
 
 func debounceMulti(d *Debouncer, keys []DebounceKey, count *atomic.Int32) {
 	for _, key := range keys {
-		debounceAndCount(d, key, count)
+		d.Debounce(key, func() { count.Add(1) })
 	}
+}
+
+func debounceSingle(d *Debouncer, key DebounceKey, count *atomic.Int32) {
+	debounceMulti(d, []DebounceKey{key}, count)
 }
 
 func debounceGlobalMulti(d *GlobalDebouncer, count *atomic.Int32, times int) {
 	for range times {
 		d.Debounce(DebounceKey(""), func() { count.Add(1) })
 	}
-}
-
-func debounceGlobalSingle(d *GlobalDebouncer, count *atomic.Int32) {
-	d.Debounce(DebounceKey(""), func() { count.Add(1) })
 }
 
 func debounceNoCount(d *Debouncer, key DebounceKey) {
@@ -135,10 +150,6 @@ func debounceMultiNoCount(d *Debouncer, keys []DebounceKey) {
 
 func debounceGlobalNoCount(d *GlobalDebouncer) {
 	d.Debounce(DebounceKey(""), func() {})
-}
-
-func debounceSingle(d *Debouncer, key DebounceKey, count *atomic.Int32) {
-	d.Debounce(key, func() { count.Add(1) })
 }
 
 func createTestFile(t *testing.T, tmpDir TempDir, filename, content string) string {

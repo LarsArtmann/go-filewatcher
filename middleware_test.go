@@ -249,47 +249,23 @@ func TestMiddlewareChain(t *testing.T) {
 
 func BenchmarkMiddlewareLogging(b *testing.B) {
 	logger := slog.New(slog.DiscardHandler)
-	mw := MiddlewareLogging(logger)
-	handler := mw(noopHandler())
-	event := Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
-	ctx := context.Background()
-
-	b.ResetTimer()
-	for i := range b.N {
-		_ = handler(ctx, event)
-		_ = i
-	}
+	runMiddlewareBenchmark(b, func() Middleware { return MiddlewareLogging(logger) })
 }
 
 func BenchmarkMiddlewareRecovery(b *testing.B) {
-	mw := MiddlewareRecovery()
-	handler := mw(noopHandler())
-	event := Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
-	ctx := context.Background()
-
-	b.ResetTimer()
-	for i := range b.N {
-		_ = handler(ctx, event)
-		_ = i
-	}
+	runMiddlewareBenchmark(b, func() Middleware { return MiddlewareRecovery() })
 }
 
 func BenchmarkMiddlewareRateLimit(b *testing.B) {
-	mw := MiddlewareRateLimit(0) // no limit
-	handler := mw(noopHandler())
-	event := Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
-	ctx := context.Background()
-
-	b.ResetTimer()
-	for i := range b.N {
-		_ = handler(ctx, event)
-		_ = i
-	}
+	runMiddlewareBenchmark(b, func() Middleware { return MiddlewareRateLimit(0) })
 }
 
 func BenchmarkMiddlewareMetrics(b *testing.B) {
-	mw := MiddlewareMetrics(func(_ Op) {})
-	handler := mw(noopHandler())
+	runMiddlewareBenchmark(b, func() Middleware { return MiddlewareMetrics(func(_ Op) {}) })
+}
+
+func runMiddlewareBenchmark(b *testing.B, mwFunc func() Middleware) {
+	handler := mwFunc()(noopHandler())
 	event := Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
 	ctx := context.Background()
 

@@ -164,14 +164,14 @@ func TestWatcher_Watch_FiltersExtensions(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	select {
-	case event := <-events:
-		if event.Path != goFile {
-			t.Errorf("expected go file event, got %s", event.Path)
-		}
-	case <-time.After(3 * time.Second):
-		t.Fatal("timed out waiting for .go file event")
-	}
+	receiveEventMatchingOrTimeout(t, events, 3*time.Second,
+		func(event Event) {
+			if event.Path != goFile {
+				t.Errorf("expected go file event, got %s", event.Path)
+			}
+		},
+		"timed out waiting for .go file event",
+	)
 }
 
 func TestWatcher_Watch_ContextCancellation(t *testing.T) {
@@ -227,14 +227,14 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	select {
-	case event := <-events:
-		if event.Op != Remove {
-			t.Errorf("expected Remove, got %s", event.Op.String())
-		}
-	case <-time.After(5 * time.Second):
-		t.Fatal("timed out waiting for remove event")
-	}
+	receiveEventMatchingOrTimeout(t, events, 5*time.Second,
+		func(event Event) {
+			if event.Op != Remove {
+				t.Errorf("expected Remove, got %s", event.Op.String())
+			}
+		},
+		"timed out waiting for remove event",
+	)
 }
 
 func TestWatcher_Watch_WithMiddleware(t *testing.T) {
@@ -266,11 +266,7 @@ func TestWatcher_Watch_WithMiddleware(t *testing.T) {
 
 	_ = createTestFile(t, TempDir(tmpDir), "test.txt", "test")
 
-	select {
-	case <-events:
-	case <-time.After(3 * time.Second):
-		t.Fatal("timed out waiting for event")
-	}
+	receiveEventOrTimeout(t, events, 3*time.Second)
 
 	if got := processed.Load(); got != 1 {
 		t.Errorf("expected middleware to be called once, got %d", got)
@@ -414,14 +410,14 @@ func TestWatcher_Watch_NewDirectory(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	select {
-	case event := <-events:
-		if event.Path != nestedFile {
-			t.Errorf("expected event for nested file %s, got %s", nestedFile, event.Path)
-		}
-	case <-time.After(3 * time.Second):
-		t.Fatal("timed out waiting for nested file event - new directory may not be watched")
-	}
+	receiveEventMatchingOrTimeout(t, events, 3*time.Second,
+		func(event Event) {
+			if event.Path != nestedFile {
+				t.Errorf("expected event for nested file %s, got %s", nestedFile, event.Path)
+			}
+		},
+		"timed out waiting for nested file event - new directory may not be watched",
+	)
 }
 
 func TestWatcher_Watch_ErrorHandler(t *testing.T) {
@@ -468,19 +464,16 @@ func TestWatcher_Add(t *testing.T) {
 		t.Fatalf("Add failed: %v", err)
 	}
 
-	testFile := filepath.Join(newDir, "added.txt")
-	if err := os.WriteFile(testFile, []byte("added"), 0o600); err != nil {
-		t.Fatal(err)
-	}
+	testFile := createTestFile(t, TempDir(newDir), "added.txt", "added")
 
-	select {
-	case event := <-events:
-		if event.Path != testFile {
-			t.Errorf("expected event from added dir, got %s", event.Path)
-		}
-	case <-time.After(3 * time.Second):
-		t.Fatal("timed out waiting for event from added directory")
-	}
+	receiveEventMatchingOrTimeout(t, events, 3*time.Second,
+		func(event Event) {
+			if event.Path != testFile {
+				t.Errorf("expected event from added dir, got %s", event.Path)
+			}
+		},
+		"timed out waiting for event from added directory",
+	)
 }
 
 func TestWatcher_Remove(t *testing.T) {
@@ -505,10 +498,7 @@ func TestWatcher_Remove(t *testing.T) {
 		t.Fatalf("Remove failed: %v", err)
 	}
 
-	testFile := filepath.Join(tmpDir, "after-remove.txt")
-	if err := os.WriteFile(testFile, []byte("test"), 0o600); err != nil {
-		t.Fatal(err)
-	}
+	_ = createTestFile(t, TempDir(tmpDir), "after-remove.txt", "test")
 
 	select {
 	case event := <-events:
@@ -675,17 +665,17 @@ func TestWatcher_IgnoreDirs(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	select {
-	case event := <-events:
-		if event.Path == vendorFile {
-			t.Error("vendor file should have been filtered")
-		}
-		if event.Path != normalFile {
-			t.Errorf("expected normal file event, got %s", event.Path)
-		}
-	case <-time.After(3 * time.Second):
-		t.Fatal("timed out waiting for event")
-	}
+	receiveEventMatchingOrTimeout(t, events, 3*time.Second,
+		func(event Event) {
+			if event.Path == vendorFile {
+				t.Error("vendor file should have been filtered")
+			}
+			if event.Path != normalFile {
+				t.Errorf("expected normal file event, got %s", event.Path)
+			}
+		},
+		"timed out waiting for event",
+	)
 }
 
 func TestWatcher_handleError_Default(t *testing.T) {

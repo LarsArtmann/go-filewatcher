@@ -55,11 +55,7 @@ func ExampleWatcher_Watch() {
 
 // ExampleWithFilter demonstrates using custom filters.
 func ExampleWithFilter() {
-	filter := filewatcher.FilterAnd(
-		filewatcher.FilterExtensions(".go"),
-		filewatcher.FilterNot(filewatcher.FilterIgnoreDirs("testdata")),
-	)
-	watcher, err := filewatcher.New([]string{"."}, filewatcher.WithFilter(filter))
+	watcher, err := filewatcher.New([]string{"."}, filewatcher.WithFilter(goExcludeDirsFilter("testdata")))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -193,10 +189,7 @@ func ExampleFilterRegex() {
 func ExampleFilterAnd() {
 	watcher, err := filewatcher.New(
 		[]string{"."},
-		filewatcher.WithFilter(filewatcher.FilterAnd(
-			filewatcher.FilterExtensions(".go"),
-			filewatcher.FilterNot(filewatcher.FilterIgnoreDirs("vendor")),
-		)),
+		filewatcher.WithFilter(goExcludeDirsFilter("vendor")),
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -278,4 +271,11 @@ func ExampleEvent() {
 	fmt.Printf("Event: %s\n", event.String())
 	fmt.Printf("Operation: %s\n", event.Op.String())
 	fmt.Printf("Is directory: %v\n", event.IsDir)
+}
+
+func goExcludeDirsFilter(dirs ...string) filewatcher.Filter {
+	return filewatcher.FilterAnd(
+		filewatcher.FilterExtensions(".go"),
+		filewatcher.FilterNot(filewatcher.FilterIgnoreDirs(dirs...)),
+	)
 }

@@ -9,15 +9,13 @@ import (
 	"time"
 
 	filewatcher "github.com/larsartmann/go-filewatcher"
+	"github.com/larsartmann/go-filewatcher/examples/shared"
 )
 
-const (
-	exampleTimeout = 10 * time.Second       // Total runtime for the example
-	debounceDelay  = 500 * time.Millisecond // Delay for per-path debouncing
-)
+const debounceDelay = 500 * time.Millisecond // Delay for per-path debouncing
 
 func main() {
-	ctx, cancel := context.WithTimeout(context.Background(), exampleTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), shared.DefaultTimeout())
 	defer cancel()
 
 	watcher, err := filewatcher.New(
@@ -42,8 +40,7 @@ func main() {
 	fmt.Println("Watching for .go file changes...")
 
 	for event := range events {
-		ts := event.Timestamp.Format("15:04:05.000")
-		fmt.Printf("[%s] %s: %s\n", ts, event.Op.String(), event.Path)
+		shared.PrintEvent(event)
 	}
 
 	_ = watcher.Close()

@@ -74,34 +74,18 @@ func regexTestCases() filterTests {
 	}
 }
 
+func extensionsTestCases() filterTests {
+	return filterTests{
+		{"go file", testWriteEvent("/tmp/main.go"), true},
+		{"md file", testWriteEvent("/tmp/readme.md"), true},
+		{"txt file", testWriteEvent("/tmp/notes.txt"), false},
+		{"go file uppercase ext", testWriteEvent("/tmp/main.GO"), true},
+	}
+}
+
 func TestFilterExtensions(t *testing.T) {
 	t.Parallel()
-	runFilterTests(t, "FilterExtensions", FilterExtensions(".go", ".md"), []struct {
-		name  string
-		event Event
-		want  bool
-	}{
-		{
-			"go file",
-			Event{Path: "/tmp/main.go", Op: Write, Timestamp: time.Now(), IsDir: false},
-			true,
-		},
-		{
-			"md file",
-			Event{Path: "/tmp/readme.md", Op: Write, Timestamp: time.Now(), IsDir: false},
-			true,
-		},
-		{
-			"txt file",
-			Event{Path: "/tmp/notes.txt", Op: Write, Timestamp: time.Now(), IsDir: false},
-			false,
-		},
-		{
-			"go file uppercase ext",
-			Event{Path: "/tmp/main.GO", Op: Write, Timestamp: time.Now(), IsDir: false},
-			true,
-		},
-	})
+	runFilterTests(t, "FilterExtensions", FilterExtensions(".go", ".md"), extensionsTestCases())
 }
 
 func TestFilterIgnoreExtensions(t *testing.T) {

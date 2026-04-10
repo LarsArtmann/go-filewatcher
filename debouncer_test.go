@@ -121,7 +121,7 @@ func TestGlobalDebouncer_Flush(t *testing.T) {
 	var count atomic.Int32
 	d := NewGlobalDebouncer(200 * time.Millisecond)
 
-	debounceGlobalSingle(d, &count)
+	debounceGlobalMulti(d, &count, 1)
 
 	assertGlobalPending(t, d, 1)
 
@@ -139,7 +139,7 @@ func TestGlobalDebouncer_Stop(t *testing.T) {
 	var count atomic.Int32
 	d := NewGlobalDebouncer(50 * time.Millisecond)
 
-	debounceGlobalSingle(d, &count)
+	debounceGlobalMulti(d, &count, 1)
 	d.Stop()
 
 	time.Sleep(100 * time.Millisecond)
@@ -166,7 +166,7 @@ func TestGlobalDebouncer_DefaultDelay(t *testing.T) {
 	d := NewGlobalDebouncer(0)
 
 	var count atomic.Int32
-	debounceGlobalSingle(d, &count)
+	debounceGlobalMulti(d, &count, 1)
 
 	time.Sleep(600 * time.Millisecond)
 
@@ -193,12 +193,7 @@ func BenchmarkDebouncer_Debounce(b *testing.B) {
 	d := NewDebouncer(1 * time.Second)
 	defer d.Stop()
 
-	b.ResetTimer()
-	for i := range b.N {
-		d.Debounce("key", func() {})
-		// Use index to avoid compiler optimization
-		_ = i
-	}
+	runDebouncerBenchmark(b, d, "key")
 }
 
 func BenchmarkDebouncer_DifferentKeys(b *testing.B) {
@@ -215,6 +210,18 @@ func BenchmarkGlobalDebouncer_Debounce(b *testing.B) {
 	d := NewGlobalDebouncer(1 * time.Second)
 	defer d.Stop()
 
+	runGlobalDebouncerBenchmark(b, d)
+}
+
+func runDebouncerBenchmark(b *testing.B, d *Debouncer, key DebounceKey) {
+	b.ResetTimer()
+	for i := range b.N {
+		d.Debounce(key, func() {})
+		_ = i
+	}
+}
+
+func runGlobalDebouncerBenchmark(b *testing.B, d *GlobalDebouncer) {
 	b.ResetTimer()
 	for i := range b.N {
 		d.Debounce("", func() {})

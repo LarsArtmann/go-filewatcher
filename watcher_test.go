@@ -752,9 +752,7 @@ func TestWatcher_Add_ClosedWatcher(t *testing.T) {
 func drainEvents(t *testing.T, events <-chan Event, timeout time.Duration) {
 	t.Helper()
 	for {
-		select {
-		case <-events:
-		case <-time.After(timeout):
+		if !waitForEventOrTimeout(t, events, timeout) {
 			return
 		}
 	}

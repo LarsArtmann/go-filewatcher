@@ -125,6 +125,25 @@ linters:
         - wrapcheck
         - wsl_v5
         - zerologlint
+    settings:
+        depguard:
+            rules:
+                Main:
+                    allow:
+                        - "$EXAMPLES"
+                        - "$HOME"
+                    files:
+                        - "!examples/"
+        forbidigo:
+            exclude-functions:
+                - "fmt\\.Print.*"
+                - "print"
+                - "println"
+    exclusions:
+        rules:
+            - path: "^examples/"
+              linters:
+                - forbidigo
 formatters:
     enable:
         - gci

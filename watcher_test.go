@@ -220,7 +220,8 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 	testFile := createTestFile(t, TempDir(tmpDir), "todelete.go", "package test")
 
 	// Drain all events from file creation/write
-	drainEvents(t, events, 500*time.Millisecond)
+	for waitForEventOrTimeout(t, events, 500*time.Millisecond) {
+	}
 
 	if err := os.Remove(testFile); err != nil {
 		t.Fatal(err)
@@ -746,14 +747,5 @@ func TestWatcher_Add_ClosedWatcher(t *testing.T) {
 
 	if err := w.Add(t.TempDir()); err == nil {
 		t.Fatal("expected error when adding to closed watcher")
-	}
-}
-
-func drainEvents(t *testing.T, events <-chan Event, timeout time.Duration) {
-	t.Helper()
-	for {
-		if !waitForEventOrTimeout(t, events, timeout) {
-			return
-		}
 	}
 }

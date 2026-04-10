@@ -214,6 +214,7 @@ func BenchmarkGlobalDebouncer_Debounce(b *testing.B) {
 }
 
 func runDebouncerBenchmark(b *testing.B, d *Debouncer, key DebounceKey) {
+	b.Helper()
 	b.ResetTimer()
 	for i := range b.N {
 		d.Debounce(key, func() {})
@@ -222,6 +223,7 @@ func runDebouncerBenchmark(b *testing.B, d *Debouncer, key DebounceKey) {
 }
 
 func runGlobalDebouncerBenchmark(b *testing.B, d *GlobalDebouncer) {
+	b.Helper()
 	b.ResetTimer()
 	for i := range b.N {
 		d.Debounce("", func() {})

@@ -79,11 +79,10 @@ func TestWatcher_Close_Twice(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err := w.Close(); err != nil {
-		t.Fatalf("first close failed: %v", err)
-	}
-	if err := w.Close(); err != nil {
-		t.Fatalf("second close failed: %v", err)
+	for i := 1; i <= 2; i++ {
+		if err := w.Close(); err != nil {
+			t.Fatalf("close attempt %d failed: %v", i, err)
+		}
 	}
 }
 

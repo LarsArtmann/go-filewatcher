@@ -253,7 +253,7 @@ func BenchmarkMiddlewareLogging(b *testing.B) {
 }
 
 func BenchmarkMiddlewareRecovery(b *testing.B) {
-	runMiddlewareBenchmark(b, func() Middleware { return MiddlewareRecovery() })
+	runMiddlewareBenchmark(b, MiddlewareRecovery)
 }
 
 func BenchmarkMiddlewareRateLimit(b *testing.B) {
@@ -265,6 +265,7 @@ func BenchmarkMiddlewareMetrics(b *testing.B) {
 }
 
 func runMiddlewareBenchmark(b *testing.B, mwFunc func() Middleware) {
+	b.Helper()
 	handler := mwFunc()(noopHandler())
 	event := Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
 	ctx := context.Background()

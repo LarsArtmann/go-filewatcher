@@ -125,7 +125,7 @@ func TestWatcher_Watch_DetectsWrite(t *testing.T) {
 		t.Fatalf("Watch failed: %v", err)
 	}
 
-	testFile := createTestFile(t, tmpDir, "test.go", "package test")
+	testFile := createTestFile(t, TempDir(tmpDir), "test.go", "package test")
 
 	event := waitForEventOrFail(t, events, 3*time.Second)
 	if event.Path != testFile {
@@ -218,7 +218,7 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 		t.Fatalf("Watch failed: %v", err)
 	}
 
-	testFile := createTestFile(t, tmpDir, "todelete.go", "package test")
+	testFile := createTestFile(t, TempDir(tmpDir), "todelete.go", "package test")
 
 	// Drain all events from file creation/write
 	drainEvents(t, events, 500*time.Millisecond)
@@ -264,7 +264,7 @@ func TestWatcher_Watch_WithMiddleware(t *testing.T) {
 		t.Fatalf("Watch failed: %v", err)
 	}
 
-	_ = createTestFile(t, tmpDir, "test.txt", "test")
+	_ = createTestFile(t, TempDir(tmpDir), "test.txt", "test")
 
 	select {
 	case <-events:

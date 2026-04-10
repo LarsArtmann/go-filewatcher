@@ -70,9 +70,9 @@ func noopHandler() Handler {
 	}
 }
 
-func assertLogContains(t *testing.T, content, substr string) {
+func assertLogContains(t *testing.T, content string, substr LogSubstring) {
 	t.Helper()
-	if !strings.Contains(content, substr) {
+	if !strings.Contains(content, string(substr)) {
 		t.Errorf("expected log to contain %q, got %q", substr, content)
 	}
 }
@@ -103,11 +103,11 @@ func waitForEventOrFail(t *testing.T, events <-chan Event, timeout time.Duration
 	return *event
 }
 
-func debounceAndCount(d *Debouncer, key string, count *atomic.Int32) {
+func debounceAndCount(d *Debouncer, key DebounceKey, count *atomic.Int32) {
 	d.Debounce(key, func() { count.Add(1) })
 }
 
-func debounceMulti(d *Debouncer, keys []string, count *atomic.Int32) {
+func debounceMulti(d *Debouncer, keys []DebounceKey, count *atomic.Int32) {
 	for _, key := range keys {
 		debounceAndCount(d, key, count)
 	}
@@ -115,35 +115,35 @@ func debounceMulti(d *Debouncer, keys []string, count *atomic.Int32) {
 
 func debounceGlobalMulti(d *GlobalDebouncer, count *atomic.Int32, times int) {
 	for range times {
-		d.Debounce("", func() { count.Add(1) })
+		d.Debounce(DebounceKey(""), func() { count.Add(1) })
 	}
 }
 
 func debounceGlobalSingle(d *GlobalDebouncer, count *atomic.Int32) {
-	d.Debounce("", func() { count.Add(1) })
+	d.Debounce(DebounceKey(""), func() { count.Add(1) })
 }
 
-func debounceNoCount(d *Debouncer, key string) {
+func debounceNoCount(d *Debouncer, key DebounceKey) {
 	d.Debounce(key, func() {})
 }
 
-func debounceMultiNoCount(d *Debouncer, keys []string) {
+func debounceMultiNoCount(d *Debouncer, keys []DebounceKey) {
 	for _, key := range keys {
 		debounceNoCount(d, key)
 	}
 }
 
 func debounceGlobalNoCount(d *GlobalDebouncer) {
-	d.Debounce("", func() {})
+	d.Debounce(DebounceKey(""), func() {})
 }
 
-func debounceSingle(d *Debouncer, key string, count *atomic.Int32) {
+func debounceSingle(d *Debouncer, key DebounceKey, count *atomic.Int32) {
 	d.Debounce(key, func() { count.Add(1) })
 }
 
-func createTestFile(t *testing.T, tmpDir, filename, content string) string {
+func createTestFile(t *testing.T, tmpDir TempDir, filename, content string) string {
 	t.Helper()
-	path := filepath.Join(tmpDir, filename)
+	path := filepath.Join(string(tmpDir), filename)
 	if err := os.WriteFile(path, []byte(content), testFilePermission); err != nil {
 		t.Fatal(err)
 	}

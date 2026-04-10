@@ -13,7 +13,7 @@ func TestDebouncer_Debounce(t *testing.T) {
 	var count atomic.Int32
 	d := NewDebouncer(50 * time.Millisecond)
 
-	debounceMulti(d, []string{"key1", "key1", "key1"}, &count)
+	debounceMulti(d, []DebounceKey{"key1", "key1", "key1"}, &count)
 
 	time.Sleep(100 * time.Millisecond)
 
@@ -26,7 +26,7 @@ func TestDebouncer_DifferentKeys(t *testing.T) {
 	var count atomic.Int32
 	d := NewDebouncer(50 * time.Millisecond)
 
-	debounceMulti(d, []string{"key1", "key2"}, &count)
+	debounceMulti(d, []DebounceKey{"key1", "key2"}, &count)
 
 	time.Sleep(100 * time.Millisecond)
 
@@ -39,7 +39,7 @@ func TestDebouncer_Flush(t *testing.T) {
 	var count atomic.Int32
 	d := NewDebouncer(200 * time.Millisecond)
 
-	debounceSingle(d, "key1", &count)
+	debounceSingle(d, DebounceKey("key1"), &count)
 	d.Flush()
 
 	time.Sleep(50 * time.Millisecond)
@@ -54,7 +54,7 @@ func TestDebouncer_Stop(t *testing.T) {
 	var count atomic.Int32
 	d := NewDebouncer(50 * time.Millisecond)
 
-	debounceSingle(d, "key1", &count)
+	debounceSingle(d, DebounceKey("key1"), &count)
 	d.Stop()
 
 	time.Sleep(100 * time.Millisecond)
@@ -67,7 +67,7 @@ func TestDebouncer_Pending(t *testing.T) {
 
 	d := NewDebouncer(200 * time.Millisecond)
 
-	debounceMultiNoCount(d, []string{"key1", "key2", "key3"})
+	debounceMultiNoCount(d, []DebounceKey{"key1", "key2", "key3"})
 
 	assertPending(t, d, 3)
 
@@ -108,7 +108,7 @@ func TestDebouncer_RapidCalls(t *testing.T) {
 	var count atomic.Int32
 	d := NewDebouncer(30 * time.Millisecond)
 
-	debounceSingle(d, "key1", &count)
+	debounceSingle(d, DebounceKey("key1"), &count)
 
 	time.Sleep(100 * time.Millisecond)
 
@@ -207,7 +207,7 @@ func BenchmarkDebouncer_DifferentKeys(b *testing.B) {
 
 	b.ResetTimer()
 	for i := range b.N {
-		d.Debounce(fmt.Sprintf("key-%d", i%100), func() {})
+		d.Debounce(DebounceKey(fmt.Sprintf("key-%d", i%100)), func() {})
 	}
 }
 

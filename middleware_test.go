@@ -186,8 +186,8 @@ func TestMiddlewareWriteFileLog(t *testing.T) {
 	}
 
 	content := string(data)
-	assertLogContains(t, content, "WRITE")
-	assertLogContains(t, content, "/tmp/test.go")
+	assertLogContains(t, content, LogSubstring("WRITE"))
+	assertLogContains(t, content, LogSubstring("/tmp/test.go"))
 }
 
 func TestMiddlewareWriteFileLog_Appends(t *testing.T) {

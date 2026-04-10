@@ -7,10 +7,16 @@ import (
 
 const defaultDebounceDelay = 500 * time.Millisecond // Default delay for debouncing when none is specified
 
-// debounceEntry holds a timer and its associated function.
-type debounceEntry struct {
-	timer *time.Timer
+// debounceMixin contains fields shared between debounceEntry and GlobalDebouncer.
+// Extracted as a mixin to reduce duplication and improve maintainability.
+type debounceMixin struct {
 	fn    func()
+	timer *time.Timer
+}
+
+// debounceEntry holds a timer and its associated function for per-key debouncing.
+type debounceEntry struct {
+	debounceMixin
 }
 
 // Debouncer prevents rapid successive function executions by coalescing
@@ -19,7 +25,7 @@ type debounceEntry struct {
 type Debouncer struct {
 	delay   time.Duration
 	mu      sync.Mutex
-	entries map[string]*debounceEntry
+	entries map[DebounceKey]*debounceEntry
 }
 
 // NewDebouncer creates a new Debouncer with the specified delay.
@@ -30,14 +36,14 @@ func NewDebouncer(delay time.Duration) *Debouncer {
 	return &Debouncer{
 		delay:   delay,
 		mu:      sync.Mutex{},
-		entries: make(map[string]*debounceEntry),
+		entries: make(map[DebounceKey]*debounceEntry),
 	}
 }
 
 // Debounce schedules fn to run after the delay, resetting any pending
 // execution for the same key. This ensures fn runs only once for a burst
 // of events sharing the same key.
-func (d *Debouncer) Debounce(key string, fn func()) {
+func (d *Debouncer) Debounce(key DebounceKey, fn func()) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 
@@ -46,8 +52,10 @@ func (d *Debouncer) Debounce(key string, fn func()) {
 	}
 
 	entry := &debounceEntry{
-		timer: nil,
-		fn:    fn,
+		debounceMixin: debounceMixin{
+			fn:    fn,
+			timer: nil,
+		},
 	}
 	entry.timer = time.AfterFunc(d.delay, func() {
 		fn()
@@ -93,8 +101,7 @@ func (d *Debouncer) Pending() int {
 type GlobalDebouncer struct {
 	delay time.Duration
 	mu    sync.Mutex
-	timer *time.Timer
-	fn    func()
+	debounceMixin
 }
 
 // NewGlobalDebouncer creates a new GlobalDebouncer with the specified delay.
@@ -105,14 +112,16 @@ func NewGlobalDebouncer(delay time.Duration) *GlobalDebouncer {
 	return &GlobalDebouncer{
 		delay: delay,
 		mu:    sync.Mutex{},
-		timer: nil,
-		fn:    nil,
+		debounceMixin: debounceMixin{
+			fn:    nil,
+			timer: nil,
+		},
 	}
 }
 
 // Debounce resets the global timer. fn runs only once after the delay
 // since the last call, regardless of how many times Debounce is called.
-func (g *GlobalDebouncer) Debounce(_ string, fn func()) {
+func (g *GlobalDebouncer) Debounce(_ DebounceKey, fn func()) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 

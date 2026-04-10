@@ -97,10 +97,12 @@ func New(paths []string, opts ...Option) (*Watcher, error) {
 		if resolveErr != nil {
 			return nil, fmt.Errorf("resolving path %q during validation: %w", p, resolveErr)
 		}
+
 		info, statErr := os.Stat(abs)
 		if statErr != nil {
 			return nil, fmt.Errorf("%w: path %q (resolved: %q)", ErrPathNotFound, p, abs)
 		}
+
 		if !info.IsDir() {
 			return nil, fmt.Errorf("%w: path %q must be a directory", ErrPathNotDir, p)
 		}
@@ -193,10 +195,13 @@ func (w *Watcher) Add(path string) error {
 		return fmt.Errorf("resolving path %q in Add(): %w", path, resolveErr)
 	}
 
-	if pathErr := w.addPath(abs); pathErr != nil {
+	pathErr := w.addPath(abs)
+	if pathErr != nil {
 		return fmt.Errorf("adding resolved path %q to watcher: %w", abs, pathErr)
 	}
+
 	w.watchList = append(w.watchList, abs)
+
 	return nil
 }
 
@@ -215,7 +220,8 @@ func (w *Watcher) Remove(path string) error {
 		return fmt.Errorf("resolving path %q in Remove(): %w", path, resolveErr)
 	}
 
-	if removeErr := w.fswatcher.Remove(abs); removeErr != nil {
+	removeErr := w.fswatcher.Remove(abs)
+	if removeErr != nil {
 		return fmt.Errorf("removing watch path %q from fsnotify: %w", abs, removeErr)
 	}
 
@@ -223,6 +229,7 @@ func (w *Watcher) Remove(path string) error {
 	for i, p := range w.watchList {
 		if p == abs {
 			w.watchList = append(w.watchList[:i], w.watchList[i+1:]...)
+
 			break
 		}
 	}
@@ -237,6 +244,7 @@ func (w *Watcher) WatchList() []string {
 
 	result := make([]string, len(w.watchList))
 	copy(result, w.watchList)
+
 	return result
 }
 
@@ -277,8 +285,10 @@ func (w *Watcher) Close() error {
 		w.debounceInterface.Stop()
 	}
 
-	if err := w.fswatcher.Close(); err != nil {
+	err := w.fswatcher.Close()
+	if err != nil {
 		return fmt.Errorf("closing fsnotify watcher: %w", err)
 	}
+
 	return nil
 }

@@ -14,6 +14,7 @@ func runFilterTests(t *testing.T, filterName string, f Filter, tests filterTests
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
 				t.Parallel()
+
 				if got := f(tt.event); got != tt.want {
 					t.Errorf("%s() = %v, want %v", filterName, got, tt.want)
 				}
@@ -24,9 +25,11 @@ func runFilterTests(t *testing.T, filterName string, f Filter, tests filterTests
 
 func runFilterTestsInline(t *testing.T, f Filter, tests filterTests) {
 	t.Helper()
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if got := f(tt.event); got != tt.want {
 				t.Errorf("got %v, want %v", got, tt.want)
 			}
@@ -151,6 +154,7 @@ func TestFilterNotOperations(t *testing.T) {
 	if f(testEvent("/tmp/test.txt", Remove)) {
 		t.Error("expected Remove to be filtered out")
 	}
+
 	if !f(testWriteEvent("/tmp/test.txt")) {
 		t.Error("expected Write to pass")
 	}
@@ -188,9 +192,11 @@ func TestFilterAnd(t *testing.T) {
 	if !f(testWriteEvent("main.go")) {
 		t.Error("expected .go Write to pass")
 	}
+
 	if f(testEvent("main.go", Remove)) {
 		t.Error("expected .go Remove to be filtered")
 	}
+
 	if f(testWriteEvent("main.txt")) {
 		t.Error("expected .txt Write to be filtered")
 	}
@@ -207,9 +213,11 @@ func TestFilterOr(t *testing.T) {
 	if !f(testWriteEvent("main.go")) {
 		t.Error("expected .go to pass")
 	}
+
 	if !f(testWriteEvent("readme.md")) {
 		t.Error("expected .md to pass")
 	}
+
 	if f(testWriteEvent("main.txt")) {
 		t.Error("expected .txt to be filtered")
 	}
@@ -223,6 +231,7 @@ func TestFilterNot(t *testing.T) {
 	if f(testWriteEvent("main.go")) {
 		t.Error("expected .go to be filtered after inversion")
 	}
+
 	if !f(testWriteEvent("main.txt")) {
 		t.Error("expected .txt to pass after inversion")
 	}
@@ -234,12 +243,14 @@ func TestFilterMinSize(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	smallFile := tmpDir + "/small.txt"
-	if err := os.WriteFile(smallFile, []byte("hi"), 0o600); err != nil {
+	err := os.WriteFile(smallFile, []byte("hi"), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
 	largeFile := tmpDir + "/large.txt"
-	if err := os.WriteFile(largeFile, make([]byte, 1000), 0o600); err != nil {
+	err := os.WriteFile(largeFile, make([]byte, 1000), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
@@ -289,6 +300,7 @@ func TestEvent_String(t *testing.T) {
 	if s == "" {
 		t.Error("expected non-empty string")
 	}
+
 	if !strings.Contains(s, "WRITE") {
 		t.Errorf("expected string to contain WRITE, got %q", s)
 	}
@@ -320,8 +332,10 @@ func BenchmarkFilterExtensions(b *testing.B) {
 	event := testWriteEvent("/tmp/main.go")
 
 	b.ResetTimer()
+
 	for i := range b.N {
 		f(event)
+
 		_ = i
 	}
 }
@@ -331,8 +345,10 @@ func BenchmarkFilterIgnoreDirs(b *testing.B) {
 	event := testWriteEvent("/tmp/vendor/pkg/lib.go")
 
 	b.ResetTimer()
+
 	for i := range b.N {
 		f(event)
+
 		_ = i
 	}
 }
@@ -342,8 +358,10 @@ func BenchmarkFilterGlob(b *testing.B) {
 	event := testWriteEvent("/tmp/main.go")
 
 	b.ResetTimer()
+
 	for i := range b.N {
 		f(event)
+
 		_ = i
 	}
 }
@@ -353,8 +371,10 @@ func BenchmarkFilterRegex(b *testing.B) {
 	event := testWriteEvent("/tmp/main.go")
 
 	b.ResetTimer()
+
 	for i := range b.N {
 		f(event)
+
 		_ = i
 	}
 }
@@ -367,8 +387,10 @@ func BenchmarkFilterAnd(b *testing.B) {
 	event := testWriteEvent("/tmp/main.go")
 
 	b.ResetTimer()
+
 	for i := range b.N {
 		f(event)
+
 		_ = i
 	}
 }
@@ -381,8 +403,10 @@ func BenchmarkFilterOr(b *testing.B) {
 	event := testWriteEvent("/tmp/main.go")
 
 	b.ResetTimer()
+
 	for i := range b.N {
 		f(event)
+
 		_ = i
 	}
 }

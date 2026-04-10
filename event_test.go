@@ -23,6 +23,7 @@ func TestOp_MarshalText(t *testing.T) {
 		if err != nil {
 			t.Errorf("Op(%d).MarshalText() error: %v", tt.op, err)
 		}
+
 		if string(got) != tt.want {
 			t.Errorf("Op(%d).MarshalText() = %q, want %q", tt.op, got, tt.want)
 		}
@@ -44,9 +45,11 @@ func TestOp_UnmarshalText(t *testing.T) {
 
 	for _, tt := range tests {
 		var op Op
-		if err := op.UnmarshalText([]byte(tt.input)); err != nil {
+		err := op.UnmarshalText([]byte(tt.input))
+		if err != nil {
 			t.Errorf("UnmarshalText(%q) error: %v", tt.input, err)
 		}
+
 		if op != tt.want {
 			t.Errorf("UnmarshalText(%q) = %d, want %d", tt.input, op, tt.want)
 		}
@@ -57,6 +60,7 @@ func TestOp_UnmarshalText_Invalid(t *testing.T) {
 	t.Parallel()
 
 	var op Op
+
 	err := op.UnmarshalText([]byte("INVALID"))
 	if err == nil {
 		t.Error("expected error for invalid operation")
@@ -81,12 +85,15 @@ func TestEvent_JSON(t *testing.T) {
 	if decoded.Path != event.Path {
 		t.Errorf("Path = %q, want %q", decoded.Path, event.Path)
 	}
+
 	if decoded.Op != event.Op {
 		t.Errorf("Op = %d, want %d", decoded.Op, event.Op)
 	}
+
 	if !decoded.Timestamp.Equal(event.Timestamp) {
 		t.Errorf("Timestamp = %v, want %v", decoded.Timestamp, event.Timestamp)
 	}
+
 	if decoded.IsDir != event.IsDir {
 		t.Errorf("IsDir = %v, want %v", decoded.IsDir, event.IsDir)
 	}

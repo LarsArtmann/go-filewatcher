@@ -30,6 +30,7 @@ func main() {
 	events, err := watcher.Watch(ctx)
 	if err != nil {
 		_ = watcher.Close()
+
 		cancel()
 		log.Fatal(err)
 	}

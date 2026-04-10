@@ -22,12 +22,14 @@ func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
 			if !ok {
 				return
 			}
+
 			w.processEvent(ctx, fsEvent, eventCh)
 
 		case err, ok := <-w.fswatcher.Errors:
 			if !ok {
 				return
 			}
+
 			w.handleError(err)
 		}
 	}
@@ -43,6 +45,7 @@ func (w *Watcher) processEvent(ctx context.Context, fsEvent fsnotify.Event, even
 
 	if !w.passesFilters(*event) {
 		w.handleFilteredEvent(fsEvent, *event)
+
 		return
 	}
 
@@ -92,6 +95,7 @@ func (w *Watcher) buildMiddlewareHandler(emit func(Event)) Handler {
 func wrapHandlerWithNilReturn(handler func(context.Context, Event)) Handler {
 	return func(ctx context.Context, e Event) error {
 		handler(ctx, e)
+
 		return nil
 	}
 }
@@ -102,8 +106,10 @@ func (w *Watcher) wrapWithMiddleware(
 	mw Middleware,
 ) func(context.Context, Event) {
 	wrapped := mw(wrapHandlerWithNilReturn(handler))
+
 	return func(ctx context.Context, e Event) {
-		if err := wrapped(ctx, e); err != nil {
+		err := wrapped(ctx, e)
+		if err != nil {
 			w.handleError(err)
 		}
 	}
@@ -112,13 +118,15 @@ func (w *Watcher) wrapWithMiddleware(
 // executeHandler runs the handler, applying debouncing if configured.
 func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handler) {
 	execute := func() {
-		if err := handler(ctx, event); err != nil {
+		err := handler(ctx, event)
+		if err != nil {
 			w.handleError(err)
 		}
 	}
 
 	if w.debounceInterface == nil {
 		execute()
+
 		return
 	}
 
@@ -130,6 +138,7 @@ func (w *Watcher) getDebounceKey(path string) DebounceKey {
 	if _, ok := w.debounceInterface.(*Debouncer); ok {
 		return DebounceKey(path)
 	}
+
 	return DebounceKey("")
 }
 
@@ -163,6 +172,7 @@ func (w *Watcher) passesFilters(event Event) bool {
 			return false
 		}
 	}
+
 	return true
 }
 
@@ -170,8 +180,10 @@ func (w *Watcher) passesFilters(event Event) bool {
 func (w *Watcher) handleError(err error) {
 	if w.errorHandler != nil {
 		w.errorHandler(err)
+
 		return
 	}
+
 	_, _ = fmt.Fprintf(os.Stderr, "filewatcher: %v\n", err)
 }
 

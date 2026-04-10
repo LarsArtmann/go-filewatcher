@@ -21,6 +21,7 @@ func TestNew_NoPaths(t *testing.T) {
 	if err == nil {
 		t.Fatal("expected error for empty paths")
 	}
+
 	if !errors.Is(err, ErrNoPaths) {
 		t.Errorf("expected ErrNoPaths, got %v", err)
 	}
@@ -33,6 +34,7 @@ func TestNew_NonexistentPath(t *testing.T) {
 	if err == nil {
 		t.Fatal("expected error for nonexistent path")
 	}
+
 	if !errors.Is(err, ErrPathNotFound) {
 		t.Errorf("expected ErrPathNotFound, got %v", err)
 	}
@@ -50,6 +52,7 @@ func TestNew_FilePath(t *testing.T) {
 	if err == nil {
 		t.Fatal("expected error for file path")
 	}
+
 	if !errors.Is(err, ErrPathNotDir) {
 		t.Errorf("expected ErrPathNotDir, got %v", err)
 	}
@@ -64,6 +67,7 @@ func TestNew_ValidPath(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	if w == nil {
@@ -75,13 +79,15 @@ func TestWatcher_Close_Twice(t *testing.T) {
 	t.Parallel()
 
 	tmpDir := t.TempDir()
+
 	w, err := New([]string{tmpDir})
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	for i := 1; i <= 2; i++ {
-		if err := w.Close(); err != nil {
+		err := w.Close()
+		if err != nil {
 			t.Fatalf("close attempt %d failed: %v", i, err)
 		}
 	}
@@ -91,6 +97,7 @@ func TestWatcher_Watch_AfterClose(t *testing.T) {
 	t.Parallel()
 
 	tmpDir := t.TempDir()
+
 	w, err := New([]string{tmpDir})
 	if err != nil {
 		t.Fatal(err)
@@ -102,6 +109,7 @@ func TestWatcher_Watch_AfterClose(t *testing.T) {
 	if err == nil {
 		t.Fatal("expected error when watching closed watcher")
 	}
+
 	if !errors.Is(err, ErrWatcherClosed) {
 		t.Errorf("expected ErrWatcherClosed, got %v", err)
 	}
@@ -116,6 +124,7 @@ func TestWatcher_Watch_DetectsWrite(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	ctx := setupTestContext(t, 5*time.Second)
@@ -131,6 +140,7 @@ func TestWatcher_Watch_DetectsWrite(t *testing.T) {
 	if event.Path != testFile {
 		t.Errorf("expected path %s, got %s", testFile, event.Path)
 	}
+
 	if event.Op != Write && event.Op != Create {
 		t.Errorf("expected Write or Create, got %s", event.Op.String())
 	}
@@ -145,6 +155,7 @@ func TestWatcher_Watch_FiltersExtensions(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	ctx := setupTestContext(t, 5*time.Second)
@@ -183,6 +194,7 @@ func TestWatcher_Watch_ContextCancellation(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -209,6 +221,7 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	ctx := setupTestContext(t, 10*time.Second)
@@ -249,6 +262,7 @@ func TestWatcher_Watch_WithMiddleware(t *testing.T) {
 		WithMiddleware(func(next Handler) Handler {
 			return func(ctx context.Context, event Event) error {
 				processed.Add(1)
+
 				return next(ctx, event)
 			}
 		}),
@@ -256,6 +270,7 @@ func TestWatcher_Watch_WithMiddleware(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	ctx := setupTestContext(t, 5*time.Second)
@@ -285,6 +300,7 @@ func TestWatcher_Watch_WithDebounce(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	ctx := setupTestContext(t, 5*time.Second)
@@ -297,13 +313,16 @@ func TestWatcher_Watch_WithDebounce(t *testing.T) {
 	testFile := filepath.Join(tmpDir, "test.txt")
 
 	for i := range 5 {
-		if err := os.WriteFile(testFile, []byte("test"+string(rune('0'+i))), 0o600); err != nil {
+		err := os.WriteFile(testFile, []byte("test"+string(rune('0'+i))), 0o600)
+		if err != nil {
 			t.Fatal(err)
 		}
+
 		time.Sleep(10 * time.Millisecond)
 	}
 
 	var eventCount atomic.Int32
+
 	timeout := time.After(2 * time.Second)
 
 collect:
@@ -332,6 +351,7 @@ func TestWatcher_Watch_WithPerPathDebounce(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	ctx := setupTestContext(t, 5*time.Second)
@@ -347,11 +367,13 @@ func TestWatcher_Watch_WithPerPathDebounce(t *testing.T) {
 	if err := os.WriteFile(file1, []byte("a"), 0o600); err != nil {
 		t.Fatal(err)
 	}
+
 	if err := os.WriteFile(file2, []byte("b"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
 	var paths []string
+
 	timeout := time.After(2 * time.Second)
 
 collect:
@@ -385,6 +407,7 @@ func TestWatcher_Watch_NewDirectory(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	ctx := setupTestContext(t, 5*time.Second)
@@ -427,6 +450,7 @@ func TestWatcher_Watch_ErrorHandler(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	var errorReceived atomic.Pointer[error]
+
 	w, err := New([]string{tmpDir},
 		WithErrorHandler(func(err error) {
 			errorReceived.Store(&err)
@@ -435,6 +459,7 @@ func TestWatcher_Watch_ErrorHandler(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	if errorReceived.Load() != nil {
@@ -451,6 +476,7 @@ func TestWatcher_Add(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	ctx := setupTestContext(t, 5*time.Second)
@@ -486,6 +512,7 @@ func TestWatcher_Remove(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	ctx := setupTestContext(t, 5*time.Second)
@@ -534,6 +561,7 @@ func TestWatcher_WatchList(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	ctx := setupTestContext(t, 5*time.Second)
@@ -563,6 +591,7 @@ func TestWatcher_WatchList_IsCopy(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	ctx := setupTestContext(t, 5*time.Second)
@@ -593,15 +622,18 @@ func TestWatcher_Stats(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	stats := w.Stats()
 	if stats.IsClosed {
 		t.Error("expected watcher not to be closed")
 	}
+
 	if stats.IsWatching {
 		t.Error("expected watcher not to be watching before Watch()")
 	}
+
 	if stats.WatchCount != 0 {
 		t.Errorf("expected 0 watch count before Watch(), got %d", stats.WatchCount)
 	}
@@ -617,9 +649,11 @@ func TestWatcher_Stats(t *testing.T) {
 	if stats.IsClosed {
 		t.Error("expected watcher not to be closed")
 	}
+
 	if !stats.IsWatching {
 		t.Error("expected watcher to be watching after Watch()")
 	}
+
 	if stats.WatchCount == 0 {
 		t.Error("expected non-zero watch count after Watch()")
 	}
@@ -636,6 +670,7 @@ func TestWatcher_IgnoreDirs(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	ctx := setupTestContext(t, 5*time.Second)
@@ -665,6 +700,7 @@ func TestWatcher_IgnoreDirs(t *testing.T) {
 			if event.Path == vendorFile {
 				t.Error("vendor file should have been filtered")
 			}
+
 			if event.Path != normalFile {
 				t.Errorf("expected normal file event, got %s", event.Path)
 			}
@@ -677,10 +713,12 @@ func TestWatcher_handleError_Default(t *testing.T) {
 	t.Parallel()
 
 	tmpDir := t.TempDir()
+
 	w, err := New([]string{tmpDir})
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	old := os.Stderr
@@ -693,6 +731,7 @@ func TestWatcher_handleError_Default(t *testing.T) {
 	os.Stderr = old
 
 	var buf bytes.Buffer
+
 	_, _ = io.Copy(&buf, r)
 
 	if !strings.Contains(buf.String(), "test stderr error") {
@@ -709,6 +748,7 @@ func TestWatcher_Watch_DoubleWatch(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	defer func() { _ = w.Close() }()
 
 	ctx, cancel := context.WithCancel(t.Context())
@@ -723,6 +763,7 @@ func TestWatcher_Watch_DoubleWatch(t *testing.T) {
 	if err == nil {
 		t.Fatal("expected error when watching already running watcher")
 	}
+
 	if !errors.Is(err, ErrWatcherRunning) {
 		t.Errorf("expected ErrWatcherRunning, got %v", err)
 	}

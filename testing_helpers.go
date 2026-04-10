@@ -31,6 +31,7 @@ func fixedTimeEvent(path string, op Op, hour int) Event {
 
 func assertCount(t *testing.T, count *atomic.Int32, want int32) {
 	t.Helper()
+
 	if got := count.Load(); got != want {
 		t.Errorf("expected count %d, got %d", want, got)
 	}
@@ -42,6 +43,7 @@ type pendingChecker interface {
 
 func assertPendingFunc(t *testing.T, p pendingChecker, want int) {
 	t.Helper()
+
 	if got := p.Pending(); got != want {
 		t.Errorf("expected pending %d, got %d", want, got)
 	}
@@ -60,6 +62,7 @@ func assertGlobalPending(t *testing.T, d *GlobalDebouncer, want int) {
 func countHandler(count *atomic.Int32) Handler {
 	return func(_ context.Context, _ Event) error {
 		count.Add(1)
+
 		return nil
 	}
 }
@@ -72,6 +75,7 @@ func noopHandler() Handler {
 
 func assertLogContains(t *testing.T, content string, substr LogSubstring) {
 	t.Helper()
+
 	if !strings.Contains(content, string(substr)) {
 		t.Errorf("expected log to contain %q, got %q", substr, content)
 	}
@@ -81,11 +85,13 @@ func setupTestContext(t *testing.T, timeout time.Duration) context.Context {
 	t.Helper()
 	ctx, cancel := context.WithTimeout(t.Context(), timeout)
 	t.Cleanup(cancel)
+
 	return ctx
 }
 
 func waitForEvent(t *testing.T, events <-chan Event, timeout time.Duration) *Event {
 	t.Helper()
+
 	select {
 	case event := <-events:
 		return &event
@@ -96,10 +102,12 @@ func waitForEvent(t *testing.T, events <-chan Event, timeout time.Duration) *Eve
 
 func waitForEventOrFail(t *testing.T, events <-chan Event, timeout time.Duration) Event {
 	t.Helper()
+
 	event := waitForEvent(t, events, timeout)
 	if event == nil {
 		t.Fatal("timed out waiting for event")
 	}
+
 	return *event
 }
 
@@ -107,6 +115,7 @@ func waitForEventOrFail(t *testing.T, events <-chan Event, timeout time.Duration
 // Returns true if an event was received, false if timeout occurred.
 func waitForEventOrTimeout(t *testing.T, events <-chan Event, timeout time.Duration) bool {
 	t.Helper()
+
 	select {
 	case <-events:
 		return true
@@ -117,6 +126,7 @@ func waitForEventOrTimeout(t *testing.T, events <-chan Event, timeout time.Durat
 
 func receiveEventOrTimeout(t *testing.T, events <-chan Event, timeout time.Duration) {
 	t.Helper()
+
 	if !waitForEventOrTimeout(t, events, timeout) {
 		t.Fatal("timed out waiting for event")
 	}
@@ -130,6 +140,7 @@ func receiveEventMatchingOrTimeout(
 	msg string,
 ) {
 	t.Helper()
+
 	select {
 	case event := <-events:
 		check(event)
@@ -170,9 +181,12 @@ func debounceGlobalNoCount(d *GlobalDebouncer) {
 
 func createTestFile(t *testing.T, tmpDir TempDir, filename, content string) string {
 	t.Helper()
+
 	path := filepath.Join(string(tmpDir), filename)
-	if err := os.WriteFile(path, []byte(content), testFilePermission); err != nil {
+	err := os.WriteFile(path, []byte(content), testFilePermission)
+	if err != nil {
 		t.Fatal(err)
 	}
+
 	return path
 }

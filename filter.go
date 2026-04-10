@@ -29,9 +29,11 @@ func makeExtFilter(exts []string, include bool) Filter {
 	for _, ext := range exts {
 		extSet[strings.ToLower(ext)] = struct{}{}
 	}
+
 	return func(event Event) bool {
 		ext := strings.ToLower(filepath.Ext(event.Path))
 		_, found := extSet[ext]
+
 		return found == include
 	}
 }
@@ -45,6 +47,7 @@ func FilterIgnoreDirs(dirs ...string) Filter {
 	for _, dir := range dirs {
 		dirSet[dir] = struct{}{}
 	}
+
 	return func(event Event) bool {
 		for part := range dirSet {
 			sep := string(filepath.Separator)
@@ -54,6 +57,7 @@ func FilterIgnoreDirs(dirs ...string) Filter {
 				return false
 			}
 		}
+
 		return true
 	}
 }
@@ -66,11 +70,13 @@ func FilterIgnoreHidden() Filter {
 		if strings.HasPrefix(base, ".") {
 			return false
 		}
+
 		for part := range strings.SplitSeq(event.Path, string(filepath.Separator)) {
 			if strings.HasPrefix(part, ".") && part != "." && part != ".." {
 				return false
 			}
 		}
+
 		return true
 	}
 }
@@ -92,8 +98,10 @@ func makeOpFilter(ops []Op, include bool) Filter {
 	for _, op := range ops {
 		opSet[op] = struct{}{}
 	}
+
 	return func(event Event) bool {
 		_, found := opSet[event.Op]
+
 		return found == include
 	}
 }
@@ -106,6 +114,7 @@ func FilterGlob(pattern string) Filter {
 		if err != nil {
 			return false
 		}
+
 		return matched
 	}
 }
@@ -115,6 +124,7 @@ func FilterGlob(pattern string) Filter {
 // pre-compiled at creation time for efficiency.
 func FilterRegex(pattern string) Filter {
 	re := regexp.MustCompile(pattern)
+
 	return func(event Event) bool {
 		return re.MatchString(event.Path)
 	}
@@ -128,10 +138,12 @@ func FilterMinSize(minSize int64) Filter {
 		if event.IsDir {
 			return true // Don't filter directories by size
 		}
+
 		info, err := os.Stat(event.Path)
 		if err != nil {
 			return false // If we can't stat, filter out
 		}
+
 		return info.Size() >= minSize
 	}
 }
@@ -145,6 +157,7 @@ func FilterAnd(filters ...Filter) Filter {
 				return false
 			}
 		}
+
 		return true
 	}
 }
@@ -158,6 +171,7 @@ func FilterOr(filters ...Filter) Filter {
 				return true
 			}
 		}
+
 		return false
 	}
 }

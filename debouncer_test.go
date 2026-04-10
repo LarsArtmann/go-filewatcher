@@ -11,6 +11,7 @@ func TestDebouncer_Debounce(t *testing.T) {
 	t.Parallel()
 
 	var count atomic.Int32
+
 	d := NewDebouncer(50 * time.Millisecond)
 
 	debounceMulti(d, []DebounceKey{"key1", "key1", "key1"}, &count)
@@ -24,6 +25,7 @@ func TestDebouncer_DifferentKeys(t *testing.T) {
 	t.Parallel()
 
 	var count atomic.Int32
+
 	d := NewDebouncer(50 * time.Millisecond)
 
 	debounceMulti(d, []DebounceKey{"key1", "key2"}, &count)
@@ -37,6 +39,7 @@ func TestDebouncer_Flush(t *testing.T) {
 	t.Parallel()
 
 	var count atomic.Int32
+
 	d := NewDebouncer(200 * time.Millisecond)
 
 	debounceSingle(d, DebounceKey("key1"), &count)
@@ -52,6 +55,7 @@ func TestDebouncer_Stop(t *testing.T) {
 	t.Parallel()
 
 	var count atomic.Int32
+
 	d := NewDebouncer(50 * time.Millisecond)
 
 	debounceSingle(d, DebounceKey("key1"), &count)
@@ -106,6 +110,7 @@ func TestDebouncer_RapidCalls(t *testing.T) {
 	t.Parallel()
 
 	var count atomic.Int32
+
 	d := NewDebouncer(30 * time.Millisecond)
 
 	debounceSingle(d, DebounceKey("key1"), &count)
@@ -119,6 +124,7 @@ func TestGlobalDebouncer_Flush(t *testing.T) {
 	t.Parallel()
 
 	var count atomic.Int32
+
 	d := NewGlobalDebouncer(200 * time.Millisecond)
 
 	debounceGlobalMulti(d, &count, 1)
@@ -137,6 +143,7 @@ func TestGlobalDebouncer_Stop(t *testing.T) {
 	t.Parallel()
 
 	var count atomic.Int32
+
 	d := NewGlobalDebouncer(50 * time.Millisecond)
 
 	debounceGlobalMulti(d, &count, 1)
@@ -151,6 +158,7 @@ func TestGlobalDebouncer_Debounce(t *testing.T) {
 	t.Parallel()
 
 	var count atomic.Int32
+
 	d := NewGlobalDebouncer(50 * time.Millisecond)
 
 	debounceGlobalMulti(d, &count, 3)
@@ -201,6 +209,7 @@ func BenchmarkDebouncer_DifferentKeys(b *testing.B) {
 	defer d.Stop()
 
 	b.ResetTimer()
+
 	for i := range b.N {
 		d.Debounce(DebounceKey(fmt.Sprintf("key-%d", i%100)), func() {})
 	}
@@ -216,8 +225,10 @@ func BenchmarkGlobalDebouncer_Debounce(b *testing.B) {
 func runDebouncerBenchmark(b *testing.B, d *Debouncer, key DebounceKey) {
 	b.Helper()
 	b.ResetTimer()
+
 	for i := range b.N {
 		d.Debounce(key, func() {})
+
 		_ = i
 	}
 }
@@ -225,8 +236,10 @@ func runDebouncerBenchmark(b *testing.B, d *Debouncer, key DebounceKey) {
 func runGlobalDebouncerBenchmark(b *testing.B, d *GlobalDebouncer) {
 	b.Helper()
 	b.ResetTimer()
+
 	for i := range b.N {
 		d.Debounce("", func() {})
+
 		_ = i
 	}
 }

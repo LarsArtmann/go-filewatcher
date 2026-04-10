@@ -33,6 +33,7 @@ func NewDebouncer(delay time.Duration) *Debouncer {
 	if delay <= 0 {
 		delay = defaultDebounceDelay
 	}
+
 	return &Debouncer{
 		delay:   delay,
 		mu:      sync.Mutex{},
@@ -93,6 +94,7 @@ func (d *Debouncer) Stop() {
 func (d *Debouncer) Pending() int {
 	d.mu.Lock()
 	defer d.mu.Unlock()
+
 	return len(d.entries)
 }
 
@@ -109,6 +111,7 @@ func NewGlobalDebouncer(delay time.Duration) *GlobalDebouncer {
 	if delay <= 0 {
 		delay = defaultDebounceDelay
 	}
+
 	return &GlobalDebouncer{
 		delay: delay,
 		mu:    sync.Mutex{},
@@ -140,6 +143,7 @@ func (g *GlobalDebouncer) Flush() {
 
 	if g.timer != nil {
 		g.timer.Stop()
+
 		g.timer = nil
 		if g.fn != nil {
 			g.fn()
@@ -157,6 +161,7 @@ func (g *GlobalDebouncer) Stop() {
 		g.timer.Stop()
 		g.timer = nil
 	}
+
 	g.fn = nil
 }
 
@@ -168,5 +173,6 @@ func (g *GlobalDebouncer) Pending() int {
 	if g.timer != nil {
 		return 1
 	}
+
 	return 0
 }

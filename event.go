@@ -69,6 +69,7 @@ func (op *Op) UnmarshalText(text []byte) error {
 	default:
 		return fmt.Errorf("unknown operation: %q", string(text))
 	}
+
 	return nil
 }
 
@@ -79,6 +80,7 @@ func (op *Op) UnmarshalJSON(data []byte) error {
 	if len(str) >= 2 && str[0] == '"' && str[len(str)-1] == '"' {
 		str = str[1 : len(str)-1]
 	}
+
 	return op.UnmarshalText([]byte(str))
 }
 

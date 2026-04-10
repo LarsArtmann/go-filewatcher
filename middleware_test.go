@@ -14,9 +14,11 @@ func TestMiddlewareLogging(t *testing.T) {
 	t.Parallel()
 
 	var called atomic.Int32
+
 	mw := func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
 			called.Add(1)
+
 			return next(ctx, event)
 		}
 	}
@@ -70,6 +72,7 @@ func TestMiddlewareRateLimit(t *testing.T) {
 	t.Parallel()
 
 	var count atomic.Int32
+
 	rateLimit := MiddlewareRateLimit(100 * time.Millisecond)
 
 	handler := rateLimit(countHandler(&count))
@@ -91,6 +94,7 @@ func TestMiddlewareFilter(t *testing.T) {
 	t.Parallel()
 
 	var count atomic.Int32
+
 	mw := MiddlewareFilter(FilterExtensions(".go"))
 
 	handler := mw(countHandler(&count))
@@ -104,8 +108,10 @@ func TestMiddlewareFilter(t *testing.T) {
 func TestMiddlewareOnError(t *testing.T) {
 	t.Parallel()
 
-	var gotEvent Event
-	var gotErr error
+	var (
+		gotEvent Event
+		gotErr   error
+	)
 
 	mw := MiddlewareOnError(func(event Event, err error) {
 		gotEvent = event
@@ -126,6 +132,7 @@ func TestMiddlewareOnError(t *testing.T) {
 	if gotEvent.Path != "test.go" {
 		t.Errorf("expected error handler to receive event path, got %q", gotEvent.Path)
 	}
+
 	if gotErr == nil {
 		t.Error("expected error handler to receive error")
 	}
@@ -146,6 +153,7 @@ func TestMiddlewareMetrics(t *testing.T) {
 	if metrics[Write] != 2 {
 		t.Errorf("expected 2 Write metrics, got %d", metrics[Write])
 	}
+
 	if metrics[Create] != 1 {
 		t.Errorf("expected 1 Create metric, got %d", metrics[Create])
 	}
@@ -175,6 +183,7 @@ func TestMiddlewareWriteFileLog(t *testing.T) {
 
 	ts := time.Date(2025, 1, 1, 12, 0, 0, 0, time.UTC)
 	e := Event{Path: "/tmp/test.go", Op: Write, Timestamp: ts, IsDir: false}
+
 	err := handler(context.Background(), e)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
@@ -207,6 +216,7 @@ func TestMiddlewareWriteFileLog_Appends(t *testing.T) {
 	}
 
 	content := string(data)
+
 	lines := strings.Split(strings.TrimSpace(content), "\n")
 	if len(lines) < 2 {
 		t.Errorf("expected at least 2 lines in log, got %d: %q", len(lines), content)
@@ -217,10 +227,12 @@ func TestMiddlewareChain(t *testing.T) {
 	t.Parallel()
 
 	var order []string
+
 	record := func(name string) Middleware {
 		return func(next Handler) Handler {
 			return func(ctx context.Context, event Event) error {
 				order = append(order, name)
+
 				return next(ctx, event)
 			}
 		}
@@ -240,6 +252,7 @@ func TestMiddlewareChain(t *testing.T) {
 	if len(order) != len(expected) {
 		t.Fatalf("expected %d calls, got %d: %v", len(expected), len(order), order)
 	}
+
 	for i, exp := range expected {
 		if order[i] != exp {
 			t.Errorf("position %d: expected %q, got %q", i, exp, order[i])
@@ -249,6 +262,7 @@ func TestMiddlewareChain(t *testing.T) {
 
 func BenchmarkMiddlewareLogging(b *testing.B) {
 	logger := slog.New(slog.DiscardHandler)
+
 	runMiddlewareBenchmark(b, func() Middleware { return MiddlewareLogging(logger) })
 }
 
@@ -266,11 +280,13 @@ func BenchmarkMiddlewareMetrics(b *testing.B) {
 
 func runMiddlewareBenchmark(b *testing.B, mwFunc func() Middleware) {
 	b.Helper()
+
 	handler := mwFunc()(noopHandler())
 	event := Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
 	ctx := context.Background()
 
 	b.ResetTimer()
+
 	for i := range b.N {
 		_ = handler(ctx, event)
 		_ = i

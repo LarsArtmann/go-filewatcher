@@ -21,9 +21,11 @@ func (w *Watcher) initDebouncer() {
 // addPath adds a directory (and optionally its subdirectories) to the fsnotify watcher.
 func (w *Watcher) addPath(root string) error {
 	if !w.recursive {
-		if err := w.fswatcher.Add(root); err != nil {
+		err := w.fswatcher.Add(root)
+		if err != nil {
 			return fmt.Errorf("adding watch path %q: %w", root, err)
 		}
+
 		return nil
 	}
 
@@ -32,11 +34,13 @@ func (w *Watcher) addPath(root string) error {
 
 // walkAndAddPaths walks a directory tree and adds all directories to the watcher.
 func (w *Watcher) walkAndAddPaths(root string) error {
-	if err := filepath.WalkDir(root, w.walkDirFunc); err != nil {
+	err := filepath.WalkDir(root, w.walkDirFunc)
+	if err != nil {
 		return fmt.Errorf("walking directory %q: %w", root, err)
 	}
 	// Track the root path
 	w.watchList = append(w.watchList, root)
+
 	return nil
 }
 
@@ -44,6 +48,7 @@ func (w *Watcher) walkAndAddPaths(root string) error {
 func (w *Watcher) walkDirFunc(path string, d os.DirEntry, walkErr error) error {
 	if walkErr != nil {
 		isDir := d != nil && d.IsDir()
+
 		return fmt.Errorf("walking directory entry %q (isDir=%v): %w", path, isDir, walkErr)
 	}
 
@@ -55,7 +60,8 @@ func (w *Watcher) walkDirFunc(path string, d os.DirEntry, walkErr error) error {
 		return filepath.SkipDir
 	}
 
-	if addErr := w.fswatcher.Add(path); addErr != nil {
+	addErr := w.fswatcher.Add(path)
+	if addErr != nil {
 		return fmt.Errorf("watching path %q: %w", path, addErr)
 	}
 
@@ -71,8 +77,10 @@ func (w *Watcher) shouldSkipDir(name string) bool {
 	if w.skipDotDirs && strings.HasPrefix(name, ".") && name != "." {
 		return true
 	}
+
 	if slices.Contains(DefaultIgnoreDirs, name) {
 		return true
 	}
+
 	return slices.Contains(w.ignoreDirNames, name)
 }

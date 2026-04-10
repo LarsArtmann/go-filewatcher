@@ -26,6 +26,7 @@ func main() {
 		//nolint:gocritic // log.Fatal exits immediately, defer won't run (intentional)
 		log.Fatal(err)
 	}
+
 	defer func() { _ = watcher.Close() }()
 
 	events, err := watcher.Watch(ctx)

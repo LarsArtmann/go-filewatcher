@@ -21,6 +21,7 @@ func ExampleNew() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func() { _ = watcher.Close() }()
 
 	fmt.Println("Watcher created successfully")
@@ -31,11 +32,11 @@ func ExampleNew() {
 func ExampleWatcher_Watch() {
 	// This example shows the pattern for consuming events.
 	// In real usage, you would run this in a goroutine.
-
 	watcher, err := filewatcher.New([]string{"."})
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func() { _ = watcher.Close() }()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -62,6 +63,7 @@ func ExampleWithFilter() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func() { _ = watcher.Close() }()
 
 	fmt.Println("Watcher with minimum size filter created")
@@ -80,6 +82,7 @@ func ExampleWithMiddleware() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func() { _ = watcher.Close() }()
 
 	fmt.Println("Watcher with middleware created")
@@ -96,6 +99,7 @@ func ExampleWithBuffer() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func() { _ = watcher.Close() }()
 
 	fmt.Println("Watcher with custom buffer created")
@@ -108,6 +112,7 @@ func ExampleWatcher_Remove() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func() { _ = watcher.Close() }()
 
 	// Start watching
@@ -134,6 +139,7 @@ func ExampleWatcher_WatchList() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func() { _ = watcher.Close() }()
 
 	// Get the list of paths currently being watched
@@ -147,6 +153,7 @@ func ExampleWatcher_Stats() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func() { _ = watcher.Close() }()
 
 	// Get current statistics
@@ -166,6 +173,7 @@ func ExampleFilterExtensions() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func() { _ = watcher.Close() }()
 
 	fmt.Println("Watcher filtering .go and .md files")
@@ -182,6 +190,7 @@ func ExampleFilterRegex() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func() { _ = watcher.Close() }()
 
 	fmt.Println("Watcher filtering with regex pattern")
@@ -197,6 +206,7 @@ func ExampleFilterAnd() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func() { _ = watcher.Close() }()
 
 	fmt.Println("Watcher with combined filters created")
@@ -215,6 +225,7 @@ func ExampleMiddlewareRateLimit() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func() { _ = watcher.Close() }()
 
 	fmt.Println("Watcher with rate limiting created")
@@ -237,6 +248,7 @@ func ExampleMiddlewareMetrics() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func() { _ = watcher.Close() }()
 
 	fmt.Println("Watcher with metrics created")

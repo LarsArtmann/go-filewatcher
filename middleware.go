@@ -27,12 +27,14 @@ func MiddlewareLogging(logger *slog.Logger) Middleware {
 	if logger == nil {
 		logger = slog.Default()
 	}
+
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
 			logger.Info("filewatcher event",
 				slog.String("op", event.Op.String()),
 				slog.String("path", event.Path),
 			)
+
 			return next(ctx, event)
 		}
 	}
@@ -52,6 +54,7 @@ func MiddlewareRecovery() Middleware {
 					)
 				}
 			}()
+
 			return next(ctx, event)
 		}
 	}
@@ -61,16 +64,20 @@ func MiddlewareRecovery() Middleware {
 // processing to at most one event per minInterval.
 func MiddlewareRateLimit(minInterval time.Duration) Middleware {
 	var lastEvent int64 // stores UnixNano for atomic operations
+
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
 			now := time.Now().UnixNano()
+
 			last := atomic.LoadInt64(&lastEvent)
 			if now-last < minInterval.Nanoseconds() {
 				return nil
 			}
+
 			if atomic.CompareAndSwapInt64(&lastEvent, last, now) {
 				return next(ctx, event)
 			}
+
 			return nil
 		}
 	}
@@ -84,6 +91,7 @@ func MiddlewareFilter(f Filter) Middleware {
 			if !f(event) {
 				return nil
 			}
+
 			return next(ctx, event)
 		}
 	}
@@ -94,10 +102,13 @@ func MiddlewareFilter(f Filter) Middleware {
 func MiddlewareOnError(handler func(event Event, err error)) Middleware {
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			if err := next(ctx, event); err != nil {
+			err := next(ctx, event)
+			if err != nil {
 				handler(event, err)
+
 				return err
 			}
+
 			return nil
 		}
 	}
@@ -113,6 +124,7 @@ func MiddlewareMetrics(counter func(op Op)) Middleware {
 			if err == nil {
 				counter(event.Op)
 			}
+
 			return err
 		}
 	}
@@ -133,6 +145,7 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
 			cf.mu.Lock()
+
 			var writeErr error
 			if cf.f == nil {
 				//nolint:gosec // filePath is user-provided, intentional design for log file location
@@ -142,6 +155,7 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 					logFilePermission,
 				)
 			}
+
 			if writeErr == nil && cf.f != nil {
 				_, _ = fmt.Fprintf(
 					cf.f,
@@ -152,6 +166,7 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 				)
 			}
 			cf.mu.Unlock()
+
 			return next(ctx, event)
 		}
 	}

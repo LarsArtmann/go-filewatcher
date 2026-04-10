@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -547,13 +548,7 @@ func TestWatcher_WatchList(t *testing.T) {
 		t.Fatal("expected non-empty watch list after Watch()")
 	}
 
-	found := false
-	for _, p := range list {
-		if p == tmpDir {
-			found = true
-			break
-		}
-	}
+	found := slices.Contains(list, tmpDir)
 	if !found {
 		t.Errorf("expected %q in watch list, got %v", tmpDir, list)
 	}

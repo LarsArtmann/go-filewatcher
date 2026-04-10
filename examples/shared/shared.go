@@ -1,5 +1,4 @@
 // Package demo provides helper functions for examples.
-
 package demo
 
 import (

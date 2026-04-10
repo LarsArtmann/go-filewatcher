@@ -1,0 +1,1281 @@
+{
+  "statistics": {
+    "detectionDate": "2026-04-10T06:58:30.697Z",
+    "formats": {
+      "go": {
+        "sources": {
+          "examples/shared/shared.go": {
+            "lines": 29,
+            "tokens": 170,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "examples/per-path-debounce/main.go": {
+            "lines": 45,
+            "tokens": 272,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "examples/middleware/main.go": {
+            "lines": 70,
+            "tokens": 437,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "examples/basic/main.go": {
+            "lines": 42,
+            "tokens": 258,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "watcher_walk.go": {
+            "lines": 77,
+            "tokens": 612,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "watcher_test.go": {
+            "lines": 745,
+            "tokens": 6199,
+            "sources": 1,
+            "clones": 34,
+            "duplicatedLines": 452,
+            "duplicatedTokens": 3874,
+            "percentage": 60.67,
+            "percentageTokens": 62.49,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "watcher_internal.go": {
+            "lines": 212,
+            "tokens": 1582,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "watcher.go": {
+            "lines": 283,
+            "tokens": 1872,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "testing_helpers.go": {
+            "lines": 177,
+            "tokens": 1548,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "phantom_types.go": {
+            "lines": 12,
+            "tokens": 34,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "options.go": {
+            "lines": 113,
+            "tokens": 673,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "middleware_test.go": {
+            "lines": 277,
+            "tokens": 2332,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "middleware.go": {
+            "lines": 157,
+            "tokens": 1126,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "filter_test.go": {
+            "lines": 387,
+            "tokens": 2776,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "filter.go": {
+            "lines": 169,
+            "tokens": 1230,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "example_test.go": {
+            "lines": 283,
+            "tokens": 1960,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "event_test.go": {
+            "lines": 92,
+            "tokens": 761,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "event.go": {
+            "lines": 99,
+            "tokens": 654,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "errors.go": {
+            "lines": 17,
+            "tokens": 87,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "doc.go": {
+            "lines": 60,
+            "tokens": 122,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "debouncer_test.go": {
+            "lines": 231,
+            "tokens": 1683,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "debouncer.go": {
+            "lines": 171,
+            "tokens": 1120,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 3748,
+          "tokens": 27508,
+          "sources": 22,
+          "clones": 17,
+          "duplicatedLines": 226,
+          "duplicatedTokens": 1937,
+          "percentage": 6.03,
+          "percentageTokens": 7.04,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "markdown": {
+        "sources": {
+          "docs/status/2026-04-10_06-43_branching-flow-improvements.md": {
+            "lines": 254,
+            "tokens": 2021,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-10_06-33_branching-flow-analysis-plan.md": {
+            "lines": 269,
+            "tokens": 2343,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-05_12-30_comprehensive-retrospective.md": {
+            "lines": 150,
+            "tokens": 2755,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-05_06-36_comprehensive-status-report.md": {
+            "lines": 361,
+            "tokens": 5870,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-05_03-09_comprehensive-status-report.md": {
+            "lines": 199,
+            "tokens": 3441,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-05_01-09_comprehensive-status-report.md": {
+            "lines": 231,
+            "tokens": 3213,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-04_20-40_comprehensive-sprint-status.md": {
+            "lines": 249,
+            "tokens": 3628,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-04_19-32_improvement-sprint-analysis.md": {
+            "lines": 149,
+            "tokens": 3202,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-04_18-59_full-status-report.md": {
+            "lines": 344,
+            "tokens": 4130,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-04_18-12_linter-compliance-cleanup.md": {
+            "lines": 96,
+            "tokens": 1754,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-04_17-03_comprehensive-status.md": {
+            "lines": 284,
+            "tokens": 2862,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 15,
+            "duplicatedTokens": 219,
+            "percentage": 5.28,
+            "percentageTokens": 7.65,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-04_16-16_critical-bugs-fixed-production-ready.md": {
+            "lines": 397,
+            "tokens": 4176,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-04_07-00_comprehensive-sdk-review.md": {
+            "lines": 384,
+            "tokens": 5508,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-04_06-56_project-status.md": {
+            "lines": 248,
+            "tokens": 2211,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 15,
+            "duplicatedTokens": 219,
+            "percentage": 6.05,
+            "percentageTokens": 9.91,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-04_05-02_initial-implementation.md": {
+            "lines": 226,
+            "tokens": 2700,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/adr/2026-04-04_samber-do-v2-integration.md": {
+            "lines": 154,
+            "tokens": 2179,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "examples/README.md": {
+            "lines": 21,
+            "tokens": 117,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "README.md": {
+            "lines": 86,
+            "tokens": 632,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "CHANGELOG.md": {
+            "lines": 36,
+            "tokens": 431,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "AGENTS.md": {
+            "lines": 151,
+            "tokens": 872,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 4289,
+          "tokens": 54045,
+          "sources": 20,
+          "clones": 2,
+          "duplicatedLines": 15,
+          "duplicatedTokens": 219,
+          "percentage": 0.35,
+          "percentageTokens": 0.41,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "yaml": {
+        "sources": {
+          ".github/workflows/ci.yml": {
+            "lines": 38,
+            "tokens": 265,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          ".golangci.yml": {
+            "lines": 86,
+            "tokens": 430,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 124,
+          "tokens": 695,
+          "sources": 2,
+          "clones": 0,
+          "duplicatedLines": 0,
+          "duplicatedTokens": 0,
+          "percentage": 0,
+          "percentageTokens": 0,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      }
+    },
+    "total": {
+      "lines": 8161,
+      "tokens": 82248,
+      "sources": 44,
+      "clones": 19,
+      "duplicatedLines": 241,
+      "duplicatedTokens": 2156,
+      "percentage": 2.95,
+      "percentageTokens": 2.62,
+      "newDuplicatedLines": 0,
+      "newClones": 0
+    }
+  },
+  "duplicates": [
+    {
+      "format": "markdown",
+      "lines": 10,
+      "fragment": "xtensions, IgnoreExtensions, IgnoreDirs, IgnoreHidden, Operations, NotOperations, Glob, And, Or, Not)\n- [x] 7 middleware (Logging, Recovery, RateLimit, Filter, OnError, Metrics, WriteFileLog)\n- [x] Per-path debouncer (`Debouncer`) and global debouncer (`GlobalDebouncer`)\n- [x] Recursive directory watching with dynamic new-dir detection\n- [x] Context-based cancell",
+      "tokens": 0,
+      "firstFile": {
+        "name": "docs/status/2026-04-04_06-56_project-status.md",
+        "start": 47,
+        "end": 56,
+        "startLoc": {
+          "line": 47,
+          "column": 1,
+          "position": 398
+        },
+        "endLoc": {
+          "line": 56,
+          "column": 4,
+          "position": 497
+        }
+      },
+      "secondFile": {
+        "name": "docs/status/2026-04-04_17-03_comprehensive-status.md",
+        "start": 52,
+        "end": 58,
+        "startLoc": {
+          "line": 52,
+          "column": 1,
+          "position": 462
+        },
+        "endLoc": {
+          "line": 58,
+          "column": 8,
+          "position": 558
+        }
+      }
+    },
+    {
+      "format": "markdown",
+      "lines": 7,
+      "fragment": ", but `PerPathDebounce` option name suggests per-path behavior\n- `GlobalDebouncer.Debounce(_, fn)` - ignores key, always global\n\n**Possible bug:** If per-path debouncing is intended, `getDebounceKey()` should return `event.Path` from `executeHandler()`, but the `Debouncer` struct already stores per-key timers without needing explicit key passing.\n\n---\n\n## 📁 Commit History (Recent)\n\n| Commit  | Message                                                                                    |\n| ------- | -------------------------",
+      "tokens": 0,
+      "firstFile": {
+        "name": "docs/status/2026-04-04_06-56_project-status.md",
+        "start": 239,
+        "end": 245,
+        "startLoc": {
+          "line": 239,
+          "column": 2,
+          "position": 1993
+        },
+        "endLoc": {
+          "line": 245,
+          "column": 2,
+          "position": 2113
+        }
+      },
+      "secondFile": {
+        "name": "docs/status/2026-04-04_17-03_comprehensive-status.md",
+        "start": 249,
+        "end": 256,
+        "startLoc": {
+          "line": 249,
+          "column": 25,
+          "position": 2484
+        },
+        "endLoc": {
+          "line": 256,
+          "column": 4,
+          "position": 2605
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 19,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir}, WithExtensions(\".go\"))\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\ttxtFile",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 139,
+        "end": 157,
+        "startLoc": {
+          "line": 139,
+          "column": 36,
+          "position": 1105
+        },
+        "endLoc": {
+          "line": 157,
+          "column": 8,
+          "position": 1266
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 110,
+        "end": 128,
+        "startLoc": {
+          "line": 110,
+          "column": 31,
+          "position": 821
+        },
+        "endLoc": {
+          "line": 128,
+          "column": 9,
+          "position": 982
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 12,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx :=",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 203,
+        "end": 214,
+        "startLoc": {
+          "line": 203,
+          "column": 26,
+          "position": 1658
+        },
+        "endLoc": {
+          "line": 214,
+          "column": 3,
+          "position": 1756
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 177,
+        "end": 188,
+        "startLoc": {
+          "line": 177,
+          "column": 38,
+          "position": 1461
+        },
+        "endLoc": {
+          "line": 188,
+          "column": 2,
+          "position": 1558
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 14,
+      "fragment": ")\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\t_",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 255,
+        "end": 268,
+        "startLoc": {
+          "line": 255,
+          "column": 2,
+          "position": 2095
+        },
+        "endLoc": {
+          "line": 268,
+          "column": 2,
+          "position": 2203
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 115,
+        "end": 128,
+        "startLoc": {
+          "line": 115,
+          "column": 2,
+          "position": 874
+        },
+        "endLoc": {
+          "line": 128,
+          "column": 9,
+          "position": 982
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 15,
+      "fragment": "),\n\t)\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\ttestFile := filepath",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 283,
+        "end": 297,
+        "startLoc": {
+          "line": 283,
+          "column": 12,
+          "position": 2341
+        },
+        "endLoc": {
+          "line": 297,
+          "column": 9,
+          "position": 2457
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 254,
+        "end": 128,
+        "startLoc": {
+          "line": 254,
+          "column": 2,
+          "position": 2091
+        },
+        "endLoc": {
+          "line": 128,
+          "column": 15,
+          "position": 986
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 15,
+      "fragment": "*time.Millisecond),\n\t)\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tfile1",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 330,
+        "end": 344,
+        "startLoc": {
+          "line": 330,
+          "column": 3,
+          "position": 2725
+        },
+        "endLoc": {
+          "line": 344,
+          "column": 6,
+          "position": 2841
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 283,
+        "end": 128,
+        "startLoc": {
+          "line": 283,
+          "column": 4,
+          "position": 2337
+        },
+        "endLoc": {
+          "line": 128,
+          "column": 9,
+          "position": 982
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 14,
+      "fragment": "))\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tnewDir",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 384,
+        "end": 397,
+        "startLoc": {
+          "line": 384,
+          "column": 5,
+          "position": 3171
+        },
+        "endLoc": {
+          "line": 397,
+          "column": 7,
+          "position": 3280
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 115,
+        "end": 128,
+        "startLoc": {
+          "line": 115,
+          "column": 6,
+          "position": 873
+        },
+        "endLoc": {
+          "line": 128,
+          "column": 9,
+          "position": 982
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 12,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 445,
+        "end": 456,
+        "startLoc": {
+          "line": 445,
+          "column": 16,
+          "position": 3678
+        },
+        "endLoc": {
+          "line": 456,
+          "column": 2,
+          "position": 3783
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 177,
+        "end": 214,
+        "startLoc": {
+          "line": 177,
+          "column": 38,
+          "position": 1461
+        },
+        "endLoc": {
+          "line": 214,
+          "column": 3,
+          "position": 1763
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 14,
+      "fragment": ")\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tnewDir := t",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 450,
+        "end": 463,
+        "startLoc": {
+          "line": 450,
+          "column": 2,
+          "position": 3725
+        },
+        "endLoc": {
+          "line": 463,
+          "column": 2,
+          "position": 3837
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 115,
+        "end": 397,
+        "startLoc": {
+          "line": 115,
+          "column": 2,
+          "position": 874
+        },
+        "endLoc": {
+          "line": 397,
+          "column": 9,
+          "position": 3284
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 19,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tif",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 480,
+        "end": 498,
+        "startLoc": {
+          "line": 480,
+          "column": 19,
+          "position": 3976
+        },
+        "endLoc": {
+          "line": 498,
+          "column": 3,
+          "position": 4131
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 177,
+        "end": 128,
+        "startLoc": {
+          "line": 177,
+          "column": 38,
+          "position": 1461
+        },
+        "endLoc": {
+          "line": 128,
+          "column": 9,
+          "position": 982
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 13,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\t_ = w.Close()\n\n\tif",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 511,
+        "end": 523,
+        "startLoc": {
+          "line": 511,
+          "column": 33,
+          "position": 4245
+        },
+        "endLoc": {
+          "line": 523,
+          "column": 3,
+          "position": 4330
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 90,
+        "end": 101,
+        "startLoc": {
+          "line": 90,
+          "column": 29,
+          "position": 661
+        },
+        "endLoc": {
+          "line": 101,
+          "column": 2,
+          "position": 745
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 14,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\t_",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 528,
+        "end": 541,
+        "startLoc": {
+          "line": 528,
+          "column": 22,
+          "position": 4369
+        },
+        "endLoc": {
+          "line": 541,
+          "column": 2,
+          "position": 4483
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 177,
+        "end": 458,
+        "startLoc": {
+          "line": 177,
+          "column": 38,
+          "position": 1461
+        },
+        "endLoc": {
+          "line": 458,
+          "column": 7,
+          "position": 3792
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 19,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\t_, err = w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tlist1",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 557,
+        "end": 575,
+        "startLoc": {
+          "line": 557,
+          "column": 29,
+          "position": 4606
+        },
+        "endLoc": {
+          "line": 575,
+          "column": 6,
+          "position": 4761
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 177,
+        "end": 546,
+        "startLoc": {
+          "line": 177,
+          "column": 38,
+          "position": 1461
+        },
+        "endLoc": {
+          "line": 546,
+          "column": 5,
+          "position": 4524
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 12,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tstats",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 587,
+        "end": 598,
+        "startLoc": {
+          "line": 587,
+          "column": 18,
+          "position": 4848
+        },
+        "endLoc": {
+          "line": 598,
+          "column": 6,
+          "position": 4944
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 177,
+        "end": 188,
+        "startLoc": {
+          "line": 177,
+          "column": 38,
+          "position": 1461
+        },
+        "endLoc": {
+          "line": 188,
+          "column": 4,
+          "position": 1557
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 15,
+      "fragment": "),\n\t)\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tvendorDir",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 634,
+        "end": 648,
+        "startLoc": {
+          "line": 634,
+          "column": 9,
+          "position": 5218
+        },
+        "endLoc": {
+          "line": 648,
+          "column": 10,
+          "position": 5330
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 254,
+        "end": 128,
+        "startLoc": {
+          "line": 254,
+          "column": 2,
+          "position": 2091
+        },
+        "endLoc": {
+          "line": 128,
+          "column": 9,
+          "position": 982
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 11,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\told",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 676,
+        "end": 686,
+        "startLoc": {
+          "line": 676,
+          "column": 32,
+          "position": 5603
+        },
+        "endLoc": {
+          "line": 686,
+          "column": 4,
+          "position": 5698
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 177,
+        "end": 188,
+        "startLoc": {
+          "line": 177,
+          "column": 38,
+          "position": 1461
+        },
+        "endLoc": {
+          "line": 188,
+          "column": 4,
+          "position": 1557
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 12,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx, cancel := context.WithCancel(t",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 703,
+        "end": 714,
+        "startLoc": {
+          "line": 703,
+          "column": 30,
+          "position": 5841
+        },
+        "endLoc": {
+          "line": 714,
+          "column": 2,
+          "position": 5948
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 177,
+        "end": 188,
+        "startLoc": {
+          "line": 177,
+          "column": 38,
+          "position": 1461
+        },
+        "endLoc": {
+          "line": 188,
+          "column": 8,
+          "position": 1568
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 13,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\t_ = w.Close()\n\n\tif err := w.Add",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 731,
+        "end": 743,
+        "startLoc": {
+          "line": 731,
+          "column": 30,
+          "position": 6077
+        },
+        "endLoc": {
+          "line": 743,
+          "column": 4,
+          "position": 6170
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 90,
+        "end": 523,
+        "startLoc": {
+          "line": 90,
+          "column": 29,
+          "position": 661
+        },
+        "endLoc": {
+          "line": 523,
+          "column": 7,
+          "position": 4338
+        }
+      }
+    }
+  ]
+}

@@ -8,13 +8,13 @@ import (
 	"time"
 
 	filewatcher "github.com/larsartmann/go-filewatcher"
-	"github.com/larsartmann/go-filewatcher/examples/shared"
+	demo "github.com/larsartmann/go-filewatcher/examples/shared"
 )
 
 const debounceDelay = 300 * time.Millisecond // Delay for coalescing rapid file events
 
 func main() {
-	ctx, cancel := shared.WithDefaultTimeout()
+	ctx, cancel := demo.WithDefaultTimeout()
 	defer cancel()
 
 	watcher, err := filewatcher.New(
@@ -36,7 +36,7 @@ func main() {
 	fmt.Println("Watching for .go and .md file changes (10s timeout)...")
 
 	for event := range events {
-		shared.PrintEvent(event)
+		demo.PrintEvent(event)
 	}
 
 	fmt.Println("Done.")

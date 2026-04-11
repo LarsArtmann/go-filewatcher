@@ -1,24 +1,12 @@
 {
   "statistics": {
-    "detectionDate": "2026-04-10T06:58:30.697Z",
+    "detectionDate": "2026-04-11T18:00:36.264Z",
     "formats": {
       "go": {
         "sources": {
-          "examples/shared/shared.go": {
-            "lines": 29,
-            "tokens": 170,
-            "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
-            "newDuplicatedLines": 0,
-            "newClones": 0
-          },
           "examples/per-path-debounce/main.go": {
-            "lines": 45,
-            "tokens": 272,
+            "lines": 46,
+            "tokens": 273,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -40,9 +28,21 @@
             "newDuplicatedLines": 0,
             "newClones": 0
           },
+          "examples/demo/shared.go": {
+            "lines": 29,
+            "tokens": 170,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
           "examples/basic/main.go": {
-            "lines": 42,
-            "tokens": 258,
+            "lines": 43,
+            "tokens": 259,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -53,8 +53,8 @@
             "newClones": 0
           },
           "watcher_walk.go": {
-            "lines": 77,
-            "tokens": 612,
+            "lines": 85,
+            "tokens": 617,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -65,20 +65,20 @@
             "newClones": 0
           },
           "watcher_test.go": {
-            "lines": 745,
-            "tokens": 6199,
+            "lines": 787,
+            "tokens": 6241,
             "sources": 1,
             "clones": 34,
-            "duplicatedLines": 452,
-            "duplicatedTokens": 3874,
-            "percentage": 60.67,
-            "percentageTokens": 62.49,
+            "duplicatedLines": 484,
+            "duplicatedTokens": 3906,
+            "percentage": 61.5,
+            "percentageTokens": 62.59,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "watcher_internal.go": {
-            "lines": 212,
-            "tokens": 1582,
+            "lines": 224,
+            "tokens": 1592,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -89,8 +89,8 @@
             "newClones": 0
           },
           "watcher.go": {
-            "lines": 283,
-            "tokens": 1872,
+            "lines": 278,
+            "tokens": 1849,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -101,8 +101,8 @@
             "newClones": 0
           },
           "testing_helpers.go": {
-            "lines": 177,
-            "tokens": 1548,
+            "lines": 192,
+            "tokens": 1562,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -137,8 +137,8 @@
             "newClones": 0
           },
           "middleware_test.go": {
-            "lines": 277,
-            "tokens": 2332,
+            "lines": 293,
+            "tokens": 2350,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -149,8 +149,8 @@
             "newClones": 0
           },
           "middleware.go": {
-            "lines": 157,
-            "tokens": 1126,
+            "lines": 173,
+            "tokens": 1143,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -161,20 +161,20 @@
             "newClones": 0
           },
           "filter_test.go": {
-            "lines": 387,
-            "tokens": 2776,
+            "lines": 413,
+            "tokens": 2800,
             "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
+            "clones": 2,
+            "duplicatedLines": 10,
+            "duplicatedTokens": 150,
+            "percentage": 2.42,
+            "percentageTokens": 5.36,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "filter.go": {
-            "lines": 169,
-            "tokens": 1230,
+            "lines": 183,
+            "tokens": 1244,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -185,8 +185,8 @@
             "newClones": 0
           },
           "example_test.go": {
-            "lines": 283,
-            "tokens": 1960,
+            "lines": 302,
+            "tokens": 1986,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -197,8 +197,8 @@
             "newClones": 0
           },
           "event_test.go": {
-            "lines": 92,
-            "tokens": 761,
+            "lines": 100,
+            "tokens": 768,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -209,8 +209,8 @@
             "newClones": 0
           },
           "event.go": {
-            "lines": 99,
-            "tokens": 654,
+            "lines": 101,
+            "tokens": 656,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -221,8 +221,8 @@
             "newClones": 0
           },
           "errors.go": {
-            "lines": 17,
-            "tokens": 87,
+            "lines": 20,
+            "tokens": 103,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -245,8 +245,8 @@
             "newClones": 0
           },
           "debouncer_test.go": {
-            "lines": 231,
-            "tokens": 1683,
+            "lines": 244,
+            "tokens": 1696,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -257,8 +257,8 @@
             "newClones": 0
           },
           "debouncer.go": {
-            "lines": 171,
-            "tokens": 1120,
+            "lines": 178,
+            "tokens": 1127,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -270,20 +270,44 @@
           }
         },
         "total": {
-          "lines": 3748,
-          "tokens": 27508,
+          "lines": 3946,
+          "tokens": 27702,
           "sources": 22,
-          "clones": 17,
-          "duplicatedLines": 226,
-          "duplicatedTokens": 1937,
-          "percentage": 6.03,
-          "percentageTokens": 7.04,
+          "clones": 18,
+          "duplicatedLines": 247,
+          "duplicatedTokens": 2028,
+          "percentage": 6.26,
+          "percentageTokens": 7.32,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
       },
       "markdown": {
         "sources": {
+          "docs/status/2026-04-11_19-54_FULL-STATUS-UPDATE.md": {
+            "lines": 371,
+            "tokens": 3722,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-11_19-52_comprehensive-status-report.md": {
+            "lines": 283,
+            "tokens": 2830,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
           "docs/status/2026-04-10_06-43_branching-flow-improvements.md": {
             "lines": 254,
             "tokens": 2021,
@@ -526,14 +550,14 @@
           }
         },
         "total": {
-          "lines": 4289,
-          "tokens": 54045,
-          "sources": 20,
+          "lines": 4943,
+          "tokens": 60597,
+          "sources": 22,
           "clones": 2,
           "duplicatedLines": 15,
           "duplicatedTokens": 219,
-          "percentage": 0.35,
-          "percentageTokens": 0.41,
+          "percentage": 0.3,
+          "percentageTokens": 0.36,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -553,8 +577,8 @@
             "newClones": 0
           },
           ".golangci.yml": {
-            "lines": 86,
-            "tokens": 430,
+            "lines": 154,
+            "tokens": 762,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -566,8 +590,8 @@
           }
         },
         "total": {
-          "lines": 124,
-          "tokens": 695,
+          "lines": 192,
+          "tokens": 1027,
           "sources": 2,
           "clones": 0,
           "duplicatedLines": 0,
@@ -580,14 +604,14 @@
       }
     },
     "total": {
-      "lines": 8161,
-      "tokens": 82248,
-      "sources": 44,
-      "clones": 19,
-      "duplicatedLines": 241,
-      "duplicatedTokens": 2156,
-      "percentage": 2.95,
-      "percentageTokens": 2.62,
+      "lines": 9081,
+      "tokens": 89326,
+      "sources": 46,
+      "clones": 20,
+      "duplicatedLines": 262,
+      "duplicatedTokens": 2247,
+      "percentage": 2.89,
+      "percentageTokens": 2.52,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -667,325 +691,325 @@
     },
     {
       "format": "go",
-      "lines": 19,
-      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir}, WithExtensions(\".go\"))\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\ttxtFile",
+      "lines": 20,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir}, WithExtensions(\".go\"))\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\ttxtFile",
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 139,
-        "end": 157,
+        "start": 149,
+        "end": 168,
         "startLoc": {
-          "line": 139,
+          "line": 149,
           "column": 36,
-          "position": 1105
+          "position": 1114
         },
         "endLoc": {
-          "line": 157,
+          "line": 168,
           "column": 8,
-          "position": 1266
+          "position": 1276
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 110,
-        "end": 128,
+        "start": 118,
+        "end": 137,
         "startLoc": {
-          "line": 110,
+          "line": 118,
           "column": 31,
-          "position": 821
+          "position": 828
         },
         "endLoc": {
-          "line": 128,
+          "line": 137,
           "column": 9,
-          "position": 982
+          "position": 990
         }
       }
     },
     {
       "format": "go",
-      "lines": 12,
-      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx :=",
+      "lines": 13,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tctx :=",
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 203,
-        "end": 214,
+        "start": 215,
+        "end": 227,
         "startLoc": {
-          "line": 203,
+          "line": 215,
           "column": 26,
-          "position": 1658
+          "position": 1669
         },
         "endLoc": {
-          "line": 214,
+          "line": 227,
           "column": 3,
-          "position": 1756
+          "position": 1768
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 177,
-        "end": 188,
+        "start": 188,
+        "end": 200,
         "startLoc": {
-          "line": 177,
+          "line": 188,
           "column": 38,
-          "position": 1461
+          "position": 1471
         },
         "endLoc": {
-          "line": 188,
+          "line": 200,
           "column": 2,
-          "position": 1558
+          "position": 1569
         }
       }
     },
     {
       "format": "go",
-      "lines": 14,
-      "fragment": ")\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\t_",
+      "lines": 15,
+      "fragment": ")\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\t_",
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 255,
-        "end": 268,
+        "start": 269,
+        "end": 283,
         "startLoc": {
-          "line": 255,
+          "line": 269,
           "column": 2,
-          "position": 2095
+          "position": 2108
         },
         "endLoc": {
+          "line": 283,
+          "column": 2,
+          "position": 2217
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 123,
+        "end": 137,
+        "startLoc": {
+          "line": 123,
+          "column": 2,
+          "position": 881
+        },
+        "endLoc": {
+          "line": 137,
+          "column": 9,
+          "position": 990
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 16,
+      "fragment": "),\n\t)\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\ttestFile := filepath",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 298,
+        "end": 313,
+        "startLoc": {
+          "line": 298,
+          "column": 12,
+          "position": 2355
+        },
+        "endLoc": {
+          "line": 313,
+          "column": 9,
+          "position": 2472
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 268,
+        "end": 137,
+        "startLoc": {
           "line": 268,
           "column": 2,
-          "position": 2203
-        }
-      },
-      "secondFile": {
-        "name": "watcher_test.go",
-        "start": 115,
-        "end": 128,
-        "startLoc": {
-          "line": 115,
-          "column": 2,
-          "position": 874
+          "position": 2104
         },
         "endLoc": {
-          "line": 128,
-          "column": 9,
-          "position": 982
-        }
-      }
-    },
-    {
-      "format": "go",
-      "lines": 15,
-      "fragment": "),\n\t)\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\ttestFile := filepath",
-      "tokens": 0,
-      "firstFile": {
-        "name": "watcher_test.go",
-        "start": 283,
-        "end": 297,
-        "startLoc": {
-          "line": 283,
-          "column": 12,
-          "position": 2341
-        },
-        "endLoc": {
-          "line": 297,
-          "column": 9,
-          "position": 2457
-        }
-      },
-      "secondFile": {
-        "name": "watcher_test.go",
-        "start": 254,
-        "end": 128,
-        "startLoc": {
-          "line": 254,
-          "column": 2,
-          "position": 2091
-        },
-        "endLoc": {
-          "line": 128,
+          "line": 137,
           "column": 15,
-          "position": 986
+          "position": 994
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 16,
+      "fragment": "*time.Millisecond),\n\t)\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tfile1",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 349,
+        "end": 364,
+        "startLoc": {
+          "line": 349,
+          "column": 3,
+          "position": 2742
+        },
+        "endLoc": {
+          "line": 364,
+          "column": 6,
+          "position": 2859
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 298,
+        "end": 137,
+        "startLoc": {
+          "line": 298,
+          "column": 4,
+          "position": 2351
+        },
+        "endLoc": {
+          "line": 137,
+          "column": 9,
+          "position": 990
         }
       }
     },
     {
       "format": "go",
       "lines": 15,
-      "fragment": "*time.Millisecond),\n\t)\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tfile1",
+      "fragment": "))\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tnewDir",
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 330,
-        "end": 344,
+        "start": 406,
+        "end": 420,
         "startLoc": {
-          "line": 330,
-          "column": 3,
-          "position": 2725
-        },
-        "endLoc": {
-          "line": 344,
-          "column": 6,
-          "position": 2841
-        }
-      },
-      "secondFile": {
-        "name": "watcher_test.go",
-        "start": 283,
-        "end": 128,
-        "startLoc": {
-          "line": 283,
-          "column": 4,
-          "position": 2337
-        },
-        "endLoc": {
-          "line": 128,
-          "column": 9,
-          "position": 982
-        }
-      }
-    },
-    {
-      "format": "go",
-      "lines": 14,
-      "fragment": "))\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tnewDir",
-      "tokens": 0,
-      "firstFile": {
-        "name": "watcher_test.go",
-        "start": 384,
-        "end": 397,
-        "startLoc": {
-          "line": 384,
+          "line": 406,
           "column": 5,
-          "position": 3171
+          "position": 3191
         },
         "endLoc": {
-          "line": 397,
+          "line": 420,
           "column": 7,
-          "position": 3280
+          "position": 3301
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 115,
-        "end": 128,
+        "start": 123,
+        "end": 137,
         "startLoc": {
-          "line": 115,
+          "line": 123,
           "column": 6,
-          "position": 873
+          "position": 880
         },
         "endLoc": {
-          "line": 128,
+          "line": 137,
           "column": 9,
-          "position": 982
+          "position": 990
         }
       }
     },
     {
       "format": "go",
-      "lines": 12,
-      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5",
+      "lines": 13,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5",
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 445,
-        "end": 456,
+        "start": 470,
+        "end": 482,
         "startLoc": {
-          "line": 445,
+          "line": 470,
           "column": 16,
-          "position": 3678
+          "position": 3701
         },
         "endLoc": {
-          "line": 456,
+          "line": 482,
           "column": 2,
-          "position": 3783
+          "position": 3807
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 177,
-        "end": 214,
+        "start": 188,
+        "end": 227,
         "startLoc": {
-          "line": 177,
+          "line": 188,
           "column": 38,
-          "position": 1461
+          "position": 1471
         },
         "endLoc": {
-          "line": 214,
+          "line": 227,
           "column": 3,
-          "position": 1763
+          "position": 1775
         }
       }
     },
     {
       "format": "go",
-      "lines": 14,
-      "fragment": ")\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tnewDir := t",
+      "lines": 15,
+      "fragment": ")\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tnewDir := t",
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 450,
-        "end": 463,
+        "start": 475,
+        "end": 489,
         "startLoc": {
-          "line": 450,
+          "line": 475,
           "column": 2,
-          "position": 3725
+          "position": 3748
         },
         "endLoc": {
-          "line": 463,
+          "line": 489,
           "column": 2,
-          "position": 3837
+          "position": 3861
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 115,
-        "end": 397,
+        "start": 123,
+        "end": 420,
         "startLoc": {
-          "line": 115,
+          "line": 123,
           "column": 2,
-          "position": 874
+          "position": 881
         },
         "endLoc": {
-          "line": 397,
+          "line": 420,
           "column": 9,
-          "position": 3284
+          "position": 3305
         }
       }
     },
     {
       "format": "go",
-      "lines": 19,
-      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tif",
+      "lines": 20,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tif",
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 480,
-        "end": 498,
+        "start": 506,
+        "end": 525,
         "startLoc": {
-          "line": 480,
+          "line": 506,
           "column": 19,
-          "position": 3976
+          "position": 4000
         },
         "endLoc": {
-          "line": 498,
+          "line": 525,
           "column": 3,
-          "position": 4131
+          "position": 4156
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 177,
-        "end": 128,
+        "start": 188,
+        "end": 137,
         "startLoc": {
-          "line": 177,
+          "line": 188,
           "column": 38,
-          "position": 1461
+          "position": 1471
         },
         "endLoc": {
-          "line": 128,
+          "line": 137,
           "column": 9,
-          "position": 982
+          "position": 990
         }
       }
     },
@@ -996,248 +1020,248 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 511,
-        "end": 523,
+        "start": 538,
+        "end": 550,
         "startLoc": {
-          "line": 511,
+          "line": 538,
           "column": 33,
-          "position": 4245
+          "position": 4270
         },
         "endLoc": {
-          "line": 523,
+          "line": 550,
           "column": 3,
-          "position": 4330
+          "position": 4355
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 90,
-        "end": 101,
+        "start": 96,
+        "end": 108,
         "startLoc": {
-          "line": 90,
+          "line": 96,
           "column": 29,
-          "position": 661
+          "position": 666
         },
         "endLoc": {
-          "line": 101,
+          "line": 108,
           "column": 2,
-          "position": 745
-        }
-      }
-    },
-    {
-      "format": "go",
-      "lines": 14,
-      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\t_",
-      "tokens": 0,
-      "firstFile": {
-        "name": "watcher_test.go",
-        "start": 528,
-        "end": 541,
-        "startLoc": {
-          "line": 528,
-          "column": 22,
-          "position": 4369
-        },
-        "endLoc": {
-          "line": 541,
-          "column": 2,
-          "position": 4483
-        }
-      },
-      "secondFile": {
-        "name": "watcher_test.go",
-        "start": 177,
-        "end": 458,
-        "startLoc": {
-          "line": 177,
-          "column": 38,
-          "position": 1461
-        },
-        "endLoc": {
-          "line": 458,
-          "column": 7,
-          "position": 3792
-        }
-      }
-    },
-    {
-      "format": "go",
-      "lines": 19,
-      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\t_, err = w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tlist1",
-      "tokens": 0,
-      "firstFile": {
-        "name": "watcher_test.go",
-        "start": 557,
-        "end": 575,
-        "startLoc": {
-          "line": 557,
-          "column": 29,
-          "position": 4606
-        },
-        "endLoc": {
-          "line": 575,
-          "column": 6,
-          "position": 4761
-        }
-      },
-      "secondFile": {
-        "name": "watcher_test.go",
-        "start": 177,
-        "end": 546,
-        "startLoc": {
-          "line": 177,
-          "column": 38,
-          "position": 1461
-        },
-        "endLoc": {
-          "line": 546,
-          "column": 5,
-          "position": 4524
-        }
-      }
-    },
-    {
-      "format": "go",
-      "lines": 12,
-      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tstats",
-      "tokens": 0,
-      "firstFile": {
-        "name": "watcher_test.go",
-        "start": 587,
-        "end": 598,
-        "startLoc": {
-          "line": 587,
-          "column": 18,
-          "position": 4848
-        },
-        "endLoc": {
-          "line": 598,
-          "column": 6,
-          "position": 4944
-        }
-      },
-      "secondFile": {
-        "name": "watcher_test.go",
-        "start": 177,
-        "end": 188,
-        "startLoc": {
-          "line": 177,
-          "column": 38,
-          "position": 1461
-        },
-        "endLoc": {
-          "line": 188,
-          "column": 4,
-          "position": 1557
+          "position": 751
         }
       }
     },
     {
       "format": "go",
       "lines": 15,
-      "fragment": "),\n\t)\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tvendorDir",
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\t_",
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 634,
-        "end": 648,
+        "start": 555,
+        "end": 569,
         "startLoc": {
-          "line": 634,
-          "column": 9,
-          "position": 5218
+          "line": 555,
+          "column": 22,
+          "position": 4394
         },
         "endLoc": {
-          "line": 648,
-          "column": 10,
-          "position": 5330
+          "line": 569,
+          "column": 2,
+          "position": 4509
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 254,
-        "end": 128,
+        "start": 188,
+        "end": 484,
         "startLoc": {
-          "line": 254,
-          "column": 2,
-          "position": 2091
+          "line": 188,
+          "column": 38,
+          "position": 1471
         },
         "endLoc": {
-          "line": 128,
-          "column": 9,
-          "position": 982
+          "line": 484,
+          "column": 7,
+          "position": 3816
         }
       }
     },
     {
       "format": "go",
-      "lines": 11,
-      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\told",
+      "lines": 20,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\t_, err = w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tlist1",
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 676,
-        "end": 686,
+        "start": 585,
+        "end": 604,
         "startLoc": {
-          "line": 676,
-          "column": 32,
-          "position": 5603
+          "line": 585,
+          "column": 29,
+          "position": 4632
         },
         "endLoc": {
-          "line": 686,
-          "column": 4,
-          "position": 5698
+          "line": 604,
+          "column": 6,
+          "position": 4788
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 177,
-        "end": 188,
+        "start": 188,
+        "end": 574,
         "startLoc": {
-          "line": 177,
+          "line": 188,
           "column": 38,
-          "position": 1461
+          "position": 1471
         },
         "endLoc": {
-          "line": 188,
-          "column": 4,
-          "position": 1557
+          "line": 574,
+          "column": 5,
+          "position": 4550
         }
       }
     },
     {
       "format": "go",
-      "lines": 12,
-      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer func() { _ = w.Close() }()\n\n\tctx, cancel := context.WithCancel(t",
+      "lines": 13,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tstats",
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 703,
-        "end": 714,
+        "start": 616,
+        "end": 628,
         "startLoc": {
-          "line": 703,
-          "column": 30,
-          "position": 5841
+          "line": 616,
+          "column": 18,
+          "position": 4875
         },
         "endLoc": {
-          "line": 714,
-          "column": 2,
-          "position": 5948
+          "line": 628,
+          "column": 6,
+          "position": 4972
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 177,
-        "end": 188,
+        "start": 188,
+        "end": 200,
         "startLoc": {
-          "line": 177,
+          "line": 188,
           "column": 38,
-          "position": 1461
+          "position": 1471
         },
         "endLoc": {
-          "line": 188,
-          "column": 8,
+          "line": 200,
+          "column": 4,
           "position": 1568
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 16,
+      "fragment": "),\n\t)\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tvendorDir",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 668,
+        "end": 683,
+        "startLoc": {
+          "line": 668,
+          "column": 9,
+          "position": 5250
+        },
+        "endLoc": {
+          "line": 683,
+          "column": 10,
+          "position": 5363
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 268,
+        "end": 137,
+        "startLoc": {
+          "line": 268,
+          "column": 2,
+          "position": 2104
+        },
+        "endLoc": {
+          "line": 137,
+          "column": 9,
+          "position": 990
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 13,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\told",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 712,
+        "end": 724,
+        "startLoc": {
+          "line": 712,
+          "column": 32,
+          "position": 5637
+        },
+        "endLoc": {
+          "line": 724,
+          "column": 4,
+          "position": 5734
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 188,
+        "end": 200,
+        "startLoc": {
+          "line": 188,
+          "column": 38,
+          "position": 1471
+        },
+        "endLoc": {
+          "line": 200,
+          "column": 4,
+          "position": 1568
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 13,
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tctx, cancel := context.WithCancel(t",
+      "tokens": 0,
+      "firstFile": {
+        "name": "watcher_test.go",
+        "start": 743,
+        "end": 755,
+        "startLoc": {
+          "line": 743,
+          "column": 30,
+          "position": 5881
+        },
+        "endLoc": {
+          "line": 755,
+          "column": 2,
+          "position": 5989
+        }
+      },
+      "secondFile": {
+        "name": "watcher_test.go",
+        "start": 188,
+        "end": 200,
+        "startLoc": {
+          "line": 188,
+          "column": 38,
+          "position": 1471
+        },
+        "endLoc": {
+          "line": 200,
+          "column": 8,
+          "position": 1579
         }
       }
     },
@@ -1248,32 +1272,68 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 731,
-        "end": 743,
+        "start": 773,
+        "end": 785,
         "startLoc": {
-          "line": 731,
+          "line": 773,
           "column": 30,
-          "position": 6077
+          "position": 6119
         },
         "endLoc": {
-          "line": 743,
+          "line": 785,
           "column": 4,
-          "position": 6170
+          "position": 6212
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 90,
-        "end": 523,
+        "start": 96,
+        "end": 550,
         "startLoc": {
-          "line": 90,
+          "line": 96,
           "column": 29,
-          "position": 661
+          "position": 666
         },
         "endLoc": {
-          "line": 523,
+          "line": 550,
           "column": 7,
-          "position": 4338
+          "position": 4363
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 6,
+      "fragment": "for _, tt := range tests {\n\t\tt.Run(tt.name, func(t *testing.T) {\n\t\t\tt.Parallel()\n\n\t\t\tif got := f(tt.event); got != tt.want {\n\t\t\t\tt.Errorf(\"got %v, want %v\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "filter_test.go",
+        "start": 29,
+        "end": 34,
+        "startLoc": {
+          "line": 29,
+          "column": 2,
+          "position": 222
+        },
+        "endLoc": {
+          "line": 34,
+          "column": 18,
+          "position": 297
+        }
+      },
+      "secondFile": {
+        "name": "filter_test.go",
+        "start": 14,
+        "end": 19,
+        "startLoc": {
+          "line": 14,
+          "column": 3,
+          "position": 83
+        },
+        "endLoc": {
+          "line": 19,
+          "column": 21,
+          "position": 158
         }
       }
     }

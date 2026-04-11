@@ -67,7 +67,7 @@ func (op *Op) UnmarshalText(text []byte) error {
 	case "RENAME":
 		*op = Rename
 	default:
-		return fmt.Errorf("unknown operation: %q", string(text))
+		return fmt.Errorf("unknown operation: %q: %w", text, ErrUnknownOp)
 	}
 
 	return nil

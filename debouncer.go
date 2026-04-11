@@ -101,9 +101,9 @@ func (d *Debouncer) Pending() int {
 // GlobalDebouncer coalesces all events into a single timer, regardless of key.
 // Useful when you want to batch all file changes into one action.
 type GlobalDebouncer struct {
+	debounceMixin
 	delay time.Duration
 	mu    sync.Mutex
-	debounceMixin
 }
 
 // NewGlobalDebouncer creates a new GlobalDebouncer with the specified delay.

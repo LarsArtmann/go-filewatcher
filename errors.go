@@ -16,3 +16,6 @@ var ErrPathNotDir = errors.New("path is not a directory")
 
 // ErrWatcherRunning is returned when Watch() is called on an already running watcher.
 var ErrWatcherRunning = errors.New("watcher is already running")
+
+// ErrUnknownOp is returned when parsing an unknown operation string.
+var ErrUnknownOp = errors.New("unknown operation")

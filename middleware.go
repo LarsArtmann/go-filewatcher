@@ -47,6 +47,7 @@ func MiddlewareRecovery() Middleware {
 		return func(ctx context.Context, event Event) (err error) {
 			defer func() {
 				if r := recover(); r != nil {
+					//nolint:err113 // panic value and stack are inherently dynamic
 					err = fmt.Errorf(
 						"recovered from panic in event handler: %v\n%s",
 						r,

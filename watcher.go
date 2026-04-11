@@ -1,18 +1,3 @@
-// Package filewatcher provides a high-level, composable file system watcher
-// built on top of fsnotify. It eliminates the boilerplate of raw fsnotify
-// usage by providing sensible defaults for common patterns:
-//   - Automatic recursive directory watching
-//   - Configurable debounce (global or per-path)
-//   - Composable event filters (extension, directory, glob)
-//   - Middleware chains for cross-cutting concerns
-//   - Graceful shutdown via context cancellation
-//
-// Design principles:
-//   - Functional options for configuration
-//   - Sentinel errors with fmt.Errorf wrapping
-//   - No panics, explicit error handling
-//   - Context as first parameter
-//   - Channel-based event streaming
 package filewatcher
 
 import (

@@ -725,6 +725,7 @@ func TestWatcher_handleError_Default(t *testing.T) {
 	r, w2, _ := os.Pipe()
 	os.Stderr = w2
 
+	//nolint:err113 // test-only error for stderr validation
 	w.handleError(errors.New("test stderr error"))
 
 	_ = w2.Close()

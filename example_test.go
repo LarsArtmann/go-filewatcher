@@ -29,6 +29,7 @@ func ExampleNew() {
 }
 
 // ExampleWatcher_Watch demonstrates watching for file events.
+// Output is non-deterministic (depends on filesystem events), so no output comment.
 func ExampleWatcher_Watch() {
 	// This example shows the pattern for consuming events.
 	// In real usage, you would run this in a goroutine.
@@ -134,6 +135,8 @@ func ExampleWatcher_Remove() {
 }
 
 // ExampleWatcher_WatchList demonstrates inspecting watched paths.
+// Output:
+// Watching 0 paths
 func ExampleWatcher_WatchList() {
 	watcher, err := filewatcher.New([]string{"."})
 	if err != nil {
@@ -275,6 +278,10 @@ func ExampleDebouncer() {
 }
 
 // ExampleEvent demonstrates event structure.
+// Output:
+// Event: WRITE
+// Operation: WRITE
+// Is directory: false
 func ExampleEvent() {
 	event := filewatcher.Event{
 		Path:      "/path/to/file.go",

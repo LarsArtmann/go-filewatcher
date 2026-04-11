@@ -45,6 +45,7 @@ func TestOp_UnmarshalText(t *testing.T) {
 
 	for _, tt := range tests {
 		var op Op
+
 		err := op.UnmarshalText([]byte(tt.input))
 		if err != nil {
 			t.Errorf("UnmarshalText(%q) error: %v", tt.input, err)

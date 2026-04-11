@@ -123,9 +123,9 @@ func NewGlobalDebouncer(delay time.Duration) *GlobalDebouncer {
 	}
 }
 
-// Debounce resets the global timer. fn runs only once after the delay
+// Debounce resets the global timer. callback runs only once after the delay
 // since the last call, regardless of how many times Debounce is called.
-func (g *GlobalDebouncer) Debounce(_ DebounceKey, fn func()) {
+func (g *GlobalDebouncer) Debounce(_ DebounceKey, callback func()) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
@@ -133,8 +133,8 @@ func (g *GlobalDebouncer) Debounce(_ DebounceKey, fn func()) {
 		g.timer.Stop()
 	}
 
-	g.fn = fn
-	g.timer = time.AfterFunc(g.delay, fn)
+	g.fn = callback
+	g.timer = time.AfterFunc(g.delay, callback)
 }
 
 // Flush executes the pending function immediately and clears the timer.

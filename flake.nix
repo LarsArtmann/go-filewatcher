@@ -1,57 +1,56 @@
 {
   description = "go-filewatcher - A Go file watching library with debouncing and middleware support";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  # This flake provides a reproducible development environment.
+  # Go 1.26.1 and golangci-lint are provided by the system nixpkgs.
+
+  inputs.nixpkgs.url = "nixpkgs";
 
   outputs = { self, nixpkgs }:
     let
-      systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+      supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
 
-      forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f {
-        pkgs = nixpkgs.legacyPackages.${system};
+      forEachSystem = f: nixpkgs.lib.genAttrs supportedSystems (system: f {
         inherit system;
+        pkgs = nixpkgs.legacyPackages.${system};
       });
     in
     {
-      devShells = forAllSystems ({ pkgs, system }:
-        let
-          go = pkgs.go_1_24;
-        in
-        {
-          default = pkgs.mkShell {
-            name = "go-filewatcher-dev";
+      devShells = forEachSystem ({ pkgs, system }: {
+        default = pkgs.mkShell {
+          name = "go-filewatcher";
 
-            packages = [
-              go
-              pkgs.gofumpt
-              pkgs.gotools
-              pkgs.golangci-lint
-              pkgs.git
-            ];
+          packages = with pkgs; [
+            go_1_24
+            golangci-lint
+            gofumpt
+            git
+          ];
 
-            shellHook = ''
-              echo "go-filewatcher development environment"
-              ${go}/bin/go version
-              echo ""
-              echo "Available commands:"
-              echo "  go build ./...                        - Build the project"
-              echo "  go test -race ./...                   - Run tests with race detector"
-              echo "  go test -v -race ./...                - Run tests with verbose output"
-              echo "  go test -race -coverprofile=coverage.out ./..."
-              echo "                                        - Run tests with coverage report"
-              echo "  golangci-lint run ./...               - Run linter"
-              echo "  golangci-lint run --fix ./...         - Run linter with auto-fix"
-              echo "  go vet ./...                          - Run go vet"
-              echo "  go mod tidy                           - Tidy dependencies"
-              echo "  go fmt ./...                          - Format code"
-              echo "  go test -bench=. -benchmem ./...      - Run benchmarks"
-              echo "  go test -coverprofile=coverage.out ./... && go tool cover -func=coverage.out"
-              echo "                                        - Generate test coverage report"
-              echo "  go test -cover ./...                  - Show test coverage summary"
-              echo ""
-            '';
-          };
-        }
-      );
+          shellHook = ''
+            echo "go-filewatcher development shell"
+            echo "Go version: $(go version)"
+            echo "golangci-lint version: $(golangci-lint --version)"
+            echo ""
+            echo "Available commands (GOWORK=off is set automatically):"
+            echo "  build              - go build ./..."
+            echo "  test               - go test -race ./..."
+            echo "  test-v             - go test -v -race ./..."
+            echo "  test-cover         - Generate coverage report"
+            echo "  lint               - golangci-lint run ./..."
+            echo "  lint-fix           - golangci-lint run --fix ./..."
+            echo "  vet                - go vet ./..."
+            echo "  tidy               - go mod tidy"
+            echo "  fmt                - go fmt ./..."
+            echo "  bench              - go test -bench=. -benchmem ./..."
+            echo "  coverage           - go test -coverprofile=coverage.out ./..."
+            echo "  coverage-summary   - go test -cover ./..."
+            echo "  check              - vet + lint + test"
+            echo "  ci                 - tidy + fmt + vet + lint + test"
+          '';
+
+          GOWORK = "off";
+        };
+      });
     };
 }

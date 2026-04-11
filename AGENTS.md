@@ -7,9 +7,18 @@
 ## Critical Commands
 
 ```bash
-just check    # Full quality: tidy, fmt, vet, lint, test
-just ci       # Same as check
-just lint-fix # Auto-fix linter issues
+# Using Nix flake (recommended)
+nix develop          # Enter development shell with Go and tools
+direnv allow         # Auto-load environment on cd (requires direnv)
+
+# Inside dev shell or with Go installed:
+check       # Full quality: vet + lint + test
+ci          # Full CI: tidy + fmt + vet + lint + test
+lint-fix    # Auto-fix linter issues
+
+# Direct Go commands
+GOWORK=off go test -race ./...
+GOWORK=off golangci-lint run ./...
 ```
 
 ---

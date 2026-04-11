@@ -136,7 +136,7 @@ func ExampleWatcher_Remove() {
 
 // ExampleWatcher_WatchList demonstrates inspecting watched paths.
 // Output:
-// Watching 0 paths
+// Watching 0 paths.
 func ExampleWatcher_WatchList() {
 	watcher, err := filewatcher.New([]string{"."})
 	if err != nil {
@@ -281,7 +281,7 @@ func ExampleDebouncer() {
 // Output:
 // Event: WRITE
 // Operation: WRITE
-// Is directory: false
+// Is directory: false.
 func ExampleEvent() {
 	event := filewatcher.Event{
 		Path:      "/path/to/file.go",

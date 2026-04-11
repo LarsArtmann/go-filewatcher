@@ -102,6 +102,7 @@ func (d *Debouncer) Pending() int {
 // Useful when you want to batch all file changes into one action.
 type GlobalDebouncer struct {
 	debounceMixin
+
 	delay time.Duration
 	mu    sync.Mutex
 }

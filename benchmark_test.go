@@ -279,8 +279,7 @@ func BenchmarkShouldSkipDir_Allowed(b *testing.B) {
 func BenchmarkStats_Empty(b *testing.B) {
 	w := &Watcher{
 		watchList: []string{},
-		watching:  false,
-		closed:    false,
+		state:     0,
 		mu:        sync.RWMutex{},
 	}
 
@@ -300,8 +299,7 @@ func BenchmarkStats_WithPaths(b *testing.B) {
 
 	w := &Watcher{
 		watchList: paths,
-		watching:  true,
-		closed:    false,
+		state:     flagWatching,
 		mu:        sync.RWMutex{},
 	}
 

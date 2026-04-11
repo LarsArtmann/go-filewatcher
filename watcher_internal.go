@@ -162,7 +162,7 @@ func (w *Watcher) handleNewDirectory(path string) {
 	}
 
 	w.mu.RLock()
-	closed := w.closed
+	closed := w.state&flagClosed != 0
 	w.mu.RUnlock()
 
 	if closed {

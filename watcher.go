@@ -15,6 +15,15 @@ import (
 
 const defaultEventBufferSize = 64 // Default capacity for the event channel buffer
 
+// WatcherStateFlags holds state booleans as bit flags for memory efficiency.
+// 4 bools (4 bytes) → 1 byte with 4 bit flags.
+type WatcherStateFlags byte
+
+const (
+	flagClosed WatcherStateFlags = 1 << iota
+	flagWatching
+)
+
 // DefaultIgnoreDirs contains commonly ignored directory names.
 //
 //nolint:gochecknoglobals // Exported for user reference in configuration.
@@ -45,12 +54,47 @@ type Watcher struct {
 
 	// Internal state
 	mu        sync.RWMutex
-	closed    bool
-	watching  bool
-	watchList []string // tracked paths currently being watched
+	state     WatcherStateFlags // bit flags: closed, watching
+	watchList []string          // tracked paths currently being watched
 
 	// Debouncer (initialized based on config)
 	debounceInterface DebouncerInterface
+}
+
+// isClosed reports if the watcher is closed (thread-safe).
+func (w *Watcher) isClosed() bool {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	return w.state&flagClosed != 0
+}
+
+// setClosed marks the watcher as closed (thread-safe).
+func (w *Watcher) setClosed() {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	w.state |= flagClosed
+}
+
+// isWatching reports if the watcher is currently watching (thread-safe).
+func (w *Watcher) isWatching() bool {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	return w.state&flagWatching != 0
+}
+
+// setWatching sets the watching state (thread-safe).
+func (w *Watcher) setWatching(v bool) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	if v {
+		w.state |= flagWatching
+	} else {
+		w.state &^= flagWatching
+	}
 }
 
 // Compile-time interface check: Watcher implements io.Closer.
@@ -113,8 +157,7 @@ func New(paths []string, opts ...Option) (*Watcher, error) {
 		onAdd:             nil,
 		ignoreDirNames:    nil,
 		mu:                sync.RWMutex{},
-		closed:            false,
-		watching:          false,
+		state:             0,
 		watchList:         make([]string, 0, len(paths)),
 		debounceInterface: nil,
 	}
@@ -143,11 +186,11 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	if w.closed {
+	if w.state&flagClosed != 0 {
 		return nil, fmt.Errorf("%w: cannot start watch on closed watcher", ErrWatcherClosed)
 	}
 
-	if w.watching {
+	if w.state&flagWatching != 0 {
 		return nil, fmt.Errorf("%w: watcher is already running", ErrWatcherRunning)
 	}
 
@@ -161,7 +204,7 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 
 	eventCh := make(chan Event, w.bufferSize)
 
-	w.watching = true
+	w.state |= flagWatching
 	go w.watchLoop(ctx, eventCh)
 
 	return eventCh, nil
@@ -172,7 +215,7 @@ func (w *Watcher) Add(path string) error {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	if w.closed {
+	if w.state&flagClosed != 0 {
 		return fmt.Errorf("%w: cannot add path to closed watcher", ErrWatcherClosed)
 	}
 
@@ -197,7 +240,7 @@ func (w *Watcher) Remove(path string) error {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	if w.closed {
+	if w.state&flagClosed != 0 {
 		return fmt.Errorf("%w: cannot remove path from closed watcher", ErrWatcherClosed)
 	}
 
@@ -248,8 +291,8 @@ func (w *Watcher) Stats() Stats {
 
 	return Stats{
 		WatchCount: len(w.watchList),
-		IsWatching: w.watching,
-		IsClosed:   w.closed,
+		IsWatching: w.state&flagWatching != 0,
+		IsClosed:   w.state&flagClosed != 0,
 	}
 }
 
@@ -259,12 +302,12 @@ func (w *Watcher) Close() error {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	if w.closed {
+	if w.state&flagClosed != 0 {
 		return nil
 	}
 
-	w.closed = true
-	w.watching = false
+	w.state |= flagClosed
+	w.state &^= flagWatching
 	w.watchList = w.watchList[:0]
 
 	if w.debounceInterface != nil {

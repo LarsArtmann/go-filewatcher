@@ -1,4 +1,4 @@
-//nolint:testpackage // Tests need internal access to unexported symbols
+//nolint:testpackage,varnamelen,exhaustruct,err113,goconst // Tests need internal access; idiomatic short names; partial initialization acceptable; dynamic errors for testing; repeated literals in tests
 package filewatcher
 
 import (
@@ -197,17 +197,17 @@ func TestIsTransientError(t *testing.T) {
 			"transient watcher error",
 			&WatcherError{Err: errors.New("test"), Category: CategoryTransient},
 			true,
-		}, //nolint:err113
+		},
 		{
 			"permanent watcher error",
 			&WatcherError{Err: errors.New("test"), Category: CategoryPermanent},
 			false,
-		}, //nolint:err113
+		},
 		{
 			"unknown watcher error",
 			&WatcherError{Err: errors.New("test"), Category: CategoryUnknown},
 			false,
-		}, //nolint:err113
+		},
 	}
 
 	for _, tt := range tests {
@@ -236,17 +236,17 @@ func TestIsPermanentError(t *testing.T) {
 			"permanent watcher error",
 			&WatcherError{Err: errors.New("test"), Category: CategoryPermanent},
 			true,
-		}, //nolint:err113
+		},
 		{
 			"transient watcher error",
 			&WatcherError{Err: errors.New("test"), Category: CategoryTransient},
 			false,
-		}, //nolint:err113
+		},
 		{
 			"unknown watcher error",
 			&WatcherError{Err: errors.New("test"), Category: CategoryUnknown},
 			false,
-		}, //nolint:err113
+		},
 	}
 
 	for _, tt := range tests {
@@ -312,10 +312,14 @@ func TestErrorHandler_WithContext(t *testing.T) {
 
 	testErr := errors.New("test error") //nolint:err113
 
-	w.handleError(testErr)
+	w.handleError(ErrorContext{Operation: "test", Path: "/test/path", Retryable: false}, testErr)
 
-	if receivedCtx.Operation == "" {
-		t.Error("expected non-empty operation")
+	if receivedCtx.Operation != "test" {
+		t.Errorf("Operation = %q, want %q", receivedCtx.Operation, "test")
+	}
+
+	if receivedCtx.Path != "/test/path" {
+		t.Errorf("Path = %q, want %q", receivedCtx.Path, "/test/path")
 	}
 
 	if !errors.Is(receivedErr, testErr) {
@@ -339,7 +343,7 @@ func TestErrorHandler_DefaultLogsToStderr(t *testing.T) {
 	r, wPipe, _ := os.Pipe()
 	os.Stderr = wPipe
 
-	w.handleError(errors.New("test error")) //nolint:err113
+	w.handleError(ErrorContext{Operation: "test"}, errors.New("test error")) //nolint:err113
 
 	_ = wPipe.Close()
 	os.Stderr = old
@@ -370,7 +374,7 @@ func TestErrorHandler_DefaultWithoutPath(t *testing.T) {
 	r, wPipe, _ := os.Pipe()
 	os.Stderr = wPipe
 
-	w.handleError(errors.New("fsnotify error")) //nolint:err113
+	w.handleError(ErrorContext{Operation: "fsnotify"}, errors.New("fsnotify error")) //nolint:err113
 
 	_ = wPipe.Close()
 	os.Stderr = old

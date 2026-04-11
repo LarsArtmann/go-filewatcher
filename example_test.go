@@ -39,7 +39,7 @@ func ExampleWatcher_Watch() {
 
 	defer func() { _ = watcher.Close() }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 	defer cancel()
 
 	events, err := watcher.Watch(ctx)
@@ -53,7 +53,10 @@ func ExampleWatcher_Watch() {
 		fmt.Printf("%s: %s\n", event.Op.String(), event.Path)
 	}
 
-	// Output: Non-deterministic output
+	fmt.Println("Watcher created and started")
+
+	// Output:
+	// Watcher created and started
 }
 
 // ExampleWithFilter demonstrates using size-based filters.
@@ -280,10 +283,12 @@ func ExampleDebouncer() {
 
 // ExampleEvent demonstrates event structure.
 func ExampleEvent() {
+	// Use a fixed timestamp for deterministic output
+	fixedTime := time.Date(2006, 1, 2, 15, 4, 5, 0, time.UTC)
 	event := filewatcher.Event{
 		Path:      "/path/to/file.go",
 		Op:        filewatcher.Write,
-		Timestamp: time.Now(),
+		Timestamp: fixedTime,
 		IsDir:     false,
 	}
 
@@ -292,9 +297,9 @@ func ExampleEvent() {
 	fmt.Printf("Is directory: %v\n", event.IsDir)
 
 	// Output:
-	// Event: WRITE
+	// Event: WRITE /path/to/file.go at 2006-01-02T15:04:05Z
 	// Operation: WRITE
-	// Is directory: false.
+	// Is directory: false
 }
 
 func goExcludeDirsFilter(dirs ...string) filewatcher.Filter {

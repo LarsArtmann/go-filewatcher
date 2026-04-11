@@ -31,7 +31,7 @@ func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
 				return
 			}
 
-			w.handleError(err)
+			w.handleError(ErrorContext{Operation: "fsnotify", Retryable: true}, err)
 		}
 	}
 }
@@ -111,7 +111,10 @@ func (w *Watcher) wrapWithMiddleware(
 	return func(ctx context.Context, e Event) {
 		err := wrapped(ctx, e)
 		if err != nil {
-			w.handleError(fmt.Errorf("middleware error: %w", err))
+			w.handleError(
+				ErrorContext{Operation: "middleware", Path: e.Path, Retryable: false},
+				fmt.Errorf("middleware error: %w", err),
+			)
 		}
 	}
 }
@@ -121,7 +124,10 @@ func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handl
 	execute := func() {
 		err := handler(ctx, event)
 		if err != nil {
-			w.handleError(fmt.Errorf("handler error: %w", err))
+			w.handleError(
+				ErrorContext{Operation: "handler", Path: event.Path, Retryable: false},
+				fmt.Errorf("handler error: %w", err),
+			)
 		}
 	}
 

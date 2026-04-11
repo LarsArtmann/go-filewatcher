@@ -1,4 +1,4 @@
-//nolint:testpackage,varnamelen // Tests need internal access; idiomatic short names in tests
+//nolint:testpackage,varnamelen,exhaustruct // Tests need internal access; idiomatic short names; partial struct initialization acceptable
 package filewatcher
 
 import (
@@ -752,7 +752,7 @@ func TestWatcher_handleError_Default(t *testing.T) {
 	os.Stderr = w2
 
 	//nolint:err113 // test-only error for stderr validation
-	w.handleError(errors.New("test stderr error"))
+	w.handleError(ErrorContext{Operation: "test"}, errors.New("test stderr error"))
 
 	_ = w2.Close()
 	os.Stderr = old

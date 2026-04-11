@@ -1,3 +1,4 @@
+//nolint:cyclop // High cyclomatic complexity is acceptable for error categorization logic
 package filewatcher
 
 import (

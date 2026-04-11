@@ -132,6 +132,9 @@ linters:
           allow:
             - "$EXAMPLES"
             - "$HOME"
+            - "$gostd"
+            - "github.com/fsnotify/fsnotify"
+            - "github.com/larsartmann/go-filewatcher"
           files:
             - "!examples/"
     forbidigo:

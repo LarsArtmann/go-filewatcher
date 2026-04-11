@@ -9,3 +9,6 @@ node_modules/
 .crush/
 Copy/paste detection report
 /report/jscpd-report.json
+# Nix
+.direnv/
+.envrc.local

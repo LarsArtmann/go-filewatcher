@@ -76,9 +76,9 @@ func WithMiddleware(m ...Middleware) Option {
 }
 
 // WithErrorHandler sets a callback for watcher errors that occur during
-// the event loop. Errors are passed to this handler instead of being
-// silently dropped. If not set, errors are logged to stderr.
-func WithErrorHandler(handler func(error)) Option {
+// the event loop. Errors are passed to this handler with context about
+// what operation was being performed. If not set, errors are logged to stderr.
+func WithErrorHandler(handler ErrorHandler) Option {
 	return func(w *Watcher) {
 		w.errorHandler = handler
 	}

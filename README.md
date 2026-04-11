@@ -125,20 +125,20 @@ watcher, err := filewatcher.New(
 
 ## Configuration Options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `WithDebounce(d)` | Global debounce — all events coalesced into one emission after delay | `0` (disabled) |
-| `WithPerPathDebounce(d)` | Per-path debounce — each file debounced independently | `0` (disabled) |
-| `WithFilter(f)` | Add a custom filter function | — |
-| `WithExtensions(exts...)` | Only emit events for given file extensions | — |
-| `WithIgnoreDirs(dirs...)` | Discard events from given directory names | — |
-| `WithIgnoreHidden()` | Discard events for hidden files/dirs (dot prefix) | `true` (dot dirs skipped during walk) |
-| `WithRecursive(b)` | Enable/disable recursive directory watching | `true` |
-| `WithMiddleware(m...)` | Add middleware to the event processing pipeline | — |
-| `WithErrorHandler(fn)` | Set custom error handler for watcher errors | `stderr` logging |
-| `WithSkipDotDirs(skip)` | Skip directories starting with a dot during walking | `true` |
-| `WithBuffer(size)` | Event channel buffer size for handling bursts | `64` |
-| `WithOnAdd(fn)` | Callback invoked when a new path is added to the watcher | — |
+| Option                    | Description                                                          | Default                               |
+| ------------------------- | -------------------------------------------------------------------- | ------------------------------------- |
+| `WithDebounce(d)`         | Global debounce — all events coalesced into one emission after delay | `0` (disabled)                        |
+| `WithPerPathDebounce(d)`  | Per-path debounce — each file debounced independently                | `0` (disabled)                        |
+| `WithFilter(f)`           | Add a custom filter function                                         | —                                     |
+| `WithExtensions(exts...)` | Only emit events for given file extensions                           | —                                     |
+| `WithIgnoreDirs(dirs...)` | Discard events from given directory names                            | —                                     |
+| `WithIgnoreHidden()`      | Discard events for hidden files/dirs (dot prefix)                    | `true` (dot dirs skipped during walk) |
+| `WithRecursive(b)`        | Enable/disable recursive directory watching                          | `true`                                |
+| `WithMiddleware(m...)`    | Add middleware to the event processing pipeline                      | —                                     |
+| `WithErrorHandler(fn)`    | Set custom error handler for watcher errors                          | `stderr` logging                      |
+| `WithSkipDotDirs(skip)`   | Skip directories starting with a dot during walking                  | `true`                                |
+| `WithBuffer(size)`        | Event channel buffer size for handling bursts                        | `64`                                  |
+| `WithOnAdd(fn)`           | Callback invoked when a new path is added to the watcher             | —                                     |
 
 ---
 
@@ -148,25 +148,25 @@ Filters determine which events are emitted. Return `true` to keep, `false` to di
 
 ### Built-in Filters
 
-| Filter | Description |
-|--------|-------------|
-| `FilterExtensions(exts...)` | Only files with given extensions |
-| `FilterIgnoreExtensions(exts...)` | Exclude files with given extensions |
-| `FilterIgnoreDirs(dirs...)` | Exclude files within given directories |
-| `FilterIgnoreHidden()` | Exclude hidden files/directories |
-| `FilterOperations(ops...)` | Only given operation types |
-| `FilterNotOperations(ops...)` | Exclude given operation types |
-| `FilterGlob(pattern)` | Match file name against glob pattern |
-| `FilterRegex(pattern)` | Match path against regex pattern |
-| `FilterMinSize(bytes)` | Only files ≥ given size |
+| Filter                            | Description                            |
+| --------------------------------- | -------------------------------------- |
+| `FilterExtensions(exts...)`       | Only files with given extensions       |
+| `FilterIgnoreExtensions(exts...)` | Exclude files with given extensions    |
+| `FilterIgnoreDirs(dirs...)`       | Exclude files within given directories |
+| `FilterIgnoreHidden()`            | Exclude hidden files/directories       |
+| `FilterOperations(ops...)`        | Only given operation types             |
+| `FilterNotOperations(ops...)`     | Exclude given operation types          |
+| `FilterGlob(pattern)`             | Match file name against glob pattern   |
+| `FilterRegex(pattern)`            | Match path against regex pattern       |
+| `FilterMinSize(bytes)`            | Only files ≥ given size                |
 
 ### Composition Filters
 
-| Filter | Description |
-|--------|-------------|
-| `FilterAnd(filters...)` | All filters must pass (AND) |
-| `FilterOr(filters...)` | At least one filter must pass (OR) |
-| `FilterNot(filter)` | Invert the filter (NOT) |
+| Filter                  | Description                        |
+| ----------------------- | ---------------------------------- |
+| `FilterAnd(filters...)` | All filters must pass (AND)        |
+| `FilterOr(filters...)`  | At least one filter must pass (OR) |
+| `FilterNot(filter)`     | Invert the filter (NOT)            |
 
 ### Filter Examples
 
@@ -212,15 +212,15 @@ Middleware wraps event handlers for cross-cutting concerns. Applied in **reverse
 
 ### Built-in Middleware
 
-| Middleware | Description |
-|------------|-------------|
-| `MiddlewareLogging(logger)` | Log all events with structured logging (slog) |
-| `MiddlewareRecovery()` | Recover from panics, log stack trace |
-| `MiddlewareRateLimit(interval)` | Limit to one event per interval |
-| `MiddlewareFilter(filter)` | Filter events (same as WithFilter) |
-| `MiddlewareOnError(handler)` | Handle errors from downstream handlers |
-| `MiddlewareMetrics(counter)` | Count processed events by operation |
-| `MiddlewareWriteFileLog(path)` | Write events to file for audit trail |
+| Middleware                      | Description                                   |
+| ------------------------------- | --------------------------------------------- |
+| `MiddlewareLogging(logger)`     | Log all events with structured logging (slog) |
+| `MiddlewareRecovery()`          | Recover from panics, log stack trace          |
+| `MiddlewareRateLimit(interval)` | Limit to one event per interval               |
+| `MiddlewareFilter(filter)`      | Filter events (same as WithFilter)            |
+| `MiddlewareOnError(handler)`    | Handle errors from downstream handlers        |
+| `MiddlewareMetrics(counter)`    | Count processed events by operation           |
+| `MiddlewareWriteFileLog(path)`  | Write events to file for audit trail          |
 
 ### Middleware Examples
 
@@ -323,10 +323,10 @@ type Event struct {
 
 ### Operations
 
-| Op | Description |
-|----|-------------|
+| Op       | Description               |
+| -------- | ------------------------- |
 | `Create` | File or directory created |
-| `Write` | File modified |
+| `Write`  | File modified             |
 | `Remove` | File or directory removed |
 | `Rename` | File or directory renamed |
 
@@ -487,11 +487,11 @@ go run ./examples/per-path-debounce
 go run ./examples/middleware
 ```
 
-| Example | Description |
-|---------|-------------|
-| [basic](./examples/basic) | Simplest usage with extensions filter and global debounce |
-| [per-path-debounce](./examples/per-path-debounce) | Each file debounced independently |
-| [middleware](./examples/middleware) | Logging, recovery, and metrics middleware |
+| Example                                           | Description                                               |
+| ------------------------------------------------- | --------------------------------------------------------- |
+| [basic](./examples/basic)                         | Simplest usage with extensions filter and global debounce |
+| [per-path-debounce](./examples/per-path-debounce) | Each file debounced independently                         |
+| [middleware](./examples/middleware)               | Logging, recovery, and metrics middleware                 |
 
 ---
 

@@ -28,12 +28,12 @@ Overall assessment: **Good quality code with minor recommendations**
 
 10 medium-severity findings detected, all related to context variable visibility in error messages. These are **false positives** for this codebase:
 
-| Location | Finding | Assessment |
-|----------|---------|------------|
-| `watcher.go:76` | `opts` not in error | Intentional - options are internal config |
-| `watcher.go:83-98` | `opts` not in error | Intentional - validation errors use path context |
-| `watcher.go:175-210` | `path` not in error | Intentional - path already in error message |
-| `watcher_walk.go:52-65` | Variables not wrapped | Intentional - sufficient context provided |
+| Location                | Finding               | Assessment                                       |
+| ----------------------- | --------------------- | ------------------------------------------------ |
+| `watcher.go:76`         | `opts` not in error   | Intentional - options are internal config        |
+| `watcher.go:83-98`      | `opts` not in error   | Intentional - validation errors use path context |
+| `watcher.go:175-210`    | `path` not in error   | Intentional - path already in error message      |
+| `watcher_walk.go:52-65` | Variables not wrapped | Intentional - sufficient context provided        |
 
 **Recommendation:** Current error handling is idiomatic Go. The tool suggests wrapping context variables that are already adequately represented in error messages.
 
@@ -44,21 +44,23 @@ Overall assessment: **Good quality code with minor recommendations**
 **Status:** Already well-implemented
 
 Existing phantom types:
+
 - `DebounceKey` - For debouncer keys (file paths)
 - `LogSubstring` - For test assertions
 - `TempDir` - For temporary directory paths
 
 **Newly Added:**
+
 - `RootPath` - For root directory parameters in `watcher_walk.go`
 
 **Remaining Suggestions (Intentionally Not Implemented):**
 
-| Type | Reason for Not Implementing |
-|------|----------------------------|
-| `BufferSize` | Internal config field, not API boundary |
-| `WatchCount` | Stats field, not used for type safety |
-| `Hour`, `WantInt` | Test helpers only, low value |
-| `minSize` → `uint` | Would break existing API |
+| Type               | Reason for Not Implementing             |
+| ------------------ | --------------------------------------- |
+| `BufferSize`       | Internal config field, not API boundary |
+| `WatchCount`       | Stats field, not used for type safety   |
+| `Hour`, `WantInt`  | Test helpers only, low value            |
+| `minSize` → `uint` | Would break existing API                |
 
 ---
 
@@ -67,6 +69,7 @@ Existing phantom types:
 **Status:** ✅ No panics detected
 
 All potential panic conditions are properly handled:
+
 - `watcher_internal.go:52` - `handleNewDirectory` is safe (returns on error)
 - `watcher_internal.go:145` - `w.mu.RLock()` deferred properly
 - `watcher.go:165` - goroutine starts only after validation
@@ -88,6 +91,7 @@ The codebase already uses `DebounceKey` instead of raw strings for ID-like param
 `Watcher` struct has 4 bool fields that could be bit flags.
 
 **Assessment:** Intentional design decision. These bools represent independent configuration options:
+
 - `recursive` - User-configurable option
 - `skipDotDirs` - User-configurable option
 - `closed` - State tracking
@@ -102,6 +106,7 @@ Converting to bit flags would reduce clarity for minimal memory savings (3 bytes
 **Finding:** `Watcher` struct has 17 fields (threshold: 15)
 
 **Assessment:** Intentional. The struct is large because it:
+
 1. Encapsulates complete watcher configuration
 2. Contains both user-provided options AND internal state
 3. Uses mutex-protected fields for thread safety

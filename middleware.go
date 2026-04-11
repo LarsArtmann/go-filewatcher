@@ -1,3 +1,4 @@
+//nolint:varnamelen // Idiomatic short names: cf (cached file)
 package filewatcher
 
 import (

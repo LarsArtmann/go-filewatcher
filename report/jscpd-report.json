@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-04-11T18:00:36.264Z",
+    "detectionDate": "2026-04-11T18:16:19.719Z",
     "formats": {
       "go": {
         "sources": {
@@ -65,20 +65,20 @@
             "newClones": 0
           },
           "watcher_test.go": {
-            "lines": 787,
-            "tokens": 6241,
+            "lines": 812,
+            "tokens": 6252,
             "sources": 1,
             "clones": 34,
             "duplicatedLines": 484,
-            "duplicatedTokens": 3906,
-            "percentage": 61.5,
-            "percentageTokens": 62.59,
+            "duplicatedTokens": 3902,
+            "percentage": 59.61,
+            "percentageTokens": 62.41,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "watcher_internal.go": {
-            "lines": 224,
-            "tokens": 1592,
+            "lines": 226,
+            "tokens": 1593,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -89,8 +89,8 @@
             "newClones": 0
           },
           "watcher.go": {
-            "lines": 278,
-            "tokens": 1849,
+            "lines": 279,
+            "tokens": 1856,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -113,8 +113,8 @@
             "newClones": 0
           },
           "phantom_types.go": {
-            "lines": 12,
-            "tokens": 34,
+            "lines": 15,
+            "tokens": 43,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -137,8 +137,8 @@
             "newClones": 0
           },
           "middleware_test.go": {
-            "lines": 293,
-            "tokens": 2350,
+            "lines": 294,
+            "tokens": 2352,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -161,14 +161,14 @@
             "newClones": 0
           },
           "filter_test.go": {
-            "lines": 413,
-            "tokens": 2800,
+            "lines": 421,
+            "tokens": 2815,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 10,
             "duplicatedTokens": 150,
-            "percentage": 2.42,
-            "percentageTokens": 5.36,
+            "percentage": 2.38,
+            "percentageTokens": 5.33,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -185,8 +185,8 @@
             "newClones": 0
           },
           "example_test.go": {
-            "lines": 302,
-            "tokens": 1986,
+            "lines": 304,
+            "tokens": 1993,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -197,8 +197,8 @@
             "newClones": 0
           },
           "event_test.go": {
-            "lines": 100,
-            "tokens": 768,
+            "lines": 103,
+            "tokens": 771,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -221,8 +221,8 @@
             "newClones": 0
           },
           "errors.go": {
-            "lines": 20,
-            "tokens": 103,
+            "lines": 187,
+            "tokens": 1016,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -245,8 +245,8 @@
             "newClones": 0
           },
           "debouncer_test.go": {
-            "lines": 244,
-            "tokens": 1696,
+            "lines": 245,
+            "tokens": 1698,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -267,23 +267,47 @@
             "percentageTokens": 0,
             "newDuplicatedLines": 0,
             "newClones": 0
+          },
+          "benchmark_test.go": {
+            "lines": 368,
+            "tokens": 2718,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 50,
+            "duplicatedTokens": 384,
+            "percentage": 13.59,
+            "percentageTokens": 14.13,
+            "newDuplicatedLines": 0,
+            "newClones": 0
           }
         },
         "total": {
-          "lines": 3946,
-          "tokens": 27702,
-          "sources": 22,
-          "clones": 18,
-          "duplicatedLines": 247,
-          "duplicatedTokens": 2028,
-          "percentage": 6.26,
-          "percentageTokens": 7.32,
+          "lines": 4527,
+          "tokens": 31390,
+          "sources": 23,
+          "clones": 20,
+          "duplicatedLines": 272,
+          "duplicatedTokens": 2218,
+          "percentage": 6.01,
+          "percentageTokens": 7.07,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
       },
       "markdown": {
         "sources": {
+          "docs/status/2026-04-11_branching-flow-analysis.md": {
+            "lines": 154,
+            "tokens": 1305,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
           "docs/status/2026-04-11_19-54_FULL-STATUS-UPDATE.md": {
             "lines": 371,
             "tokens": 3722,
@@ -513,8 +537,8 @@
             "newClones": 0
           },
           "README.md": {
-            "lines": 86,
-            "tokens": 632,
+            "lines": 509,
+            "tokens": 2839,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -550,14 +574,14 @@
           }
         },
         "total": {
-          "lines": 4943,
-          "tokens": 60597,
-          "sources": 22,
+          "lines": 5520,
+          "tokens": 64109,
+          "sources": 23,
           "clones": 2,
           "duplicatedLines": 15,
           "duplicatedTokens": 219,
-          "percentage": 0.3,
-          "percentageTokens": 0.36,
+          "percentage": 0.27,
+          "percentageTokens": 0.34,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -577,8 +601,8 @@
             "newClones": 0
           },
           ".golangci.yml": {
-            "lines": 154,
-            "tokens": 762,
+            "lines": 157,
+            "tokens": 777,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -590,8 +614,8 @@
           }
         },
         "total": {
-          "lines": 192,
-          "tokens": 1027,
+          "lines": 195,
+          "tokens": 1042,
           "sources": 2,
           "clones": 0,
           "duplicatedLines": 0,
@@ -604,13 +628,13 @@
       }
     },
     "total": {
-      "lines": 9081,
-      "tokens": 89326,
-      "sources": 46,
-      "clones": 20,
-      "duplicatedLines": 262,
-      "duplicatedTokens": 2247,
-      "percentage": 2.89,
+      "lines": 10242,
+      "tokens": 96541,
+      "sources": 48,
+      "clones": 22,
+      "duplicatedLines": 287,
+      "duplicatedTokens": 2437,
+      "percentage": 2.8,
       "percentageTokens": 2.52,
       "newDuplicatedLines": 0,
       "newClones": 0
@@ -696,32 +720,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 149,
-        "end": 168,
+        "start": 152,
+        "end": 171,
         "startLoc": {
-          "line": 149,
+          "line": 152,
           "column": 36,
-          "position": 1114
+          "position": 1117
         },
         "endLoc": {
-          "line": 168,
+          "line": 171,
           "column": 8,
-          "position": 1276
+          "position": 1279
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 118,
-        "end": 137,
+        "start": 121,
+        "end": 140,
         "startLoc": {
-          "line": 118,
+          "line": 121,
           "column": 31,
-          "position": 828
+          "position": 831
         },
         "endLoc": {
-          "line": 137,
+          "line": 140,
           "column": 9,
-          "position": 990
+          "position": 993
         }
       }
     },
@@ -732,32 +756,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 215,
-        "end": 227,
+        "start": 222,
+        "end": 234,
         "startLoc": {
-          "line": 215,
+          "line": 222,
           "column": 26,
-          "position": 1669
+          "position": 1674
         },
         "endLoc": {
-          "line": 227,
+          "line": 234,
           "column": 3,
-          "position": 1768
+          "position": 1773
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 188,
-        "end": 200,
+        "start": 195,
+        "end": 207,
         "startLoc": {
-          "line": 188,
+          "line": 195,
           "column": 38,
-          "position": 1471
+          "position": 1476
         },
         "endLoc": {
-          "line": 200,
+          "line": 207,
           "column": 2,
-          "position": 1569
+          "position": 1574
         }
       }
     },
@@ -768,32 +792,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 269,
-        "end": 283,
+        "start": 277,
+        "end": 291,
         "startLoc": {
-          "line": 269,
+          "line": 277,
           "column": 2,
-          "position": 2108
+          "position": 2113
         },
         "endLoc": {
-          "line": 283,
+          "line": 291,
           "column": 2,
-          "position": 2217
+          "position": 2222
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 123,
-        "end": 137,
+        "start": 126,
+        "end": 140,
         "startLoc": {
-          "line": 123,
+          "line": 126,
           "column": 2,
-          "position": 881
+          "position": 884
         },
         "endLoc": {
-          "line": 137,
+          "line": 140,
           "column": 9,
-          "position": 990
+          "position": 993
         }
       }
     },
@@ -804,32 +828,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 298,
-        "end": 313,
+        "start": 306,
+        "end": 321,
         "startLoc": {
-          "line": 298,
+          "line": 306,
           "column": 12,
-          "position": 2355
+          "position": 2360
         },
         "endLoc": {
-          "line": 313,
+          "line": 321,
           "column": 9,
-          "position": 2472
+          "position": 2477
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 268,
-        "end": 137,
+        "start": 276,
+        "end": 140,
         "startLoc": {
-          "line": 268,
+          "line": 276,
           "column": 2,
-          "position": 2104
+          "position": 2109
         },
         "endLoc": {
-          "line": 137,
+          "line": 140,
           "column": 15,
-          "position": 994
+          "position": 997
         }
       }
     },
@@ -840,32 +864,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 349,
-        "end": 364,
+        "start": 357,
+        "end": 372,
         "startLoc": {
-          "line": 349,
+          "line": 357,
           "column": 3,
-          "position": 2742
+          "position": 2747
         },
         "endLoc": {
-          "line": 364,
+          "line": 372,
           "column": 6,
-          "position": 2859
+          "position": 2864
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 298,
-        "end": 137,
+        "start": 306,
+        "end": 140,
         "startLoc": {
-          "line": 298,
+          "line": 306,
           "column": 4,
-          "position": 2351
+          "position": 2356
         },
         "endLoc": {
-          "line": 137,
+          "line": 140,
           "column": 9,
-          "position": 990
+          "position": 993
         }
       }
     },
@@ -876,32 +900,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 406,
-        "end": 420,
+        "start": 416,
+        "end": 430,
         "startLoc": {
-          "line": 406,
+          "line": 416,
           "column": 5,
-          "position": 3191
+          "position": 3196
         },
         "endLoc": {
-          "line": 420,
+          "line": 430,
           "column": 7,
-          "position": 3301
+          "position": 3306
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 123,
-        "end": 137,
+        "start": 126,
+        "end": 140,
         "startLoc": {
-          "line": 123,
+          "line": 126,
           "column": 6,
-          "position": 880
+          "position": 883
         },
         "endLoc": {
-          "line": 137,
+          "line": 140,
           "column": 9,
-          "position": 990
+          "position": 993
         }
       }
     },
@@ -912,32 +936,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 470,
-        "end": 482,
+        "start": 484,
+        "end": 496,
         "startLoc": {
-          "line": 470,
+          "line": 484,
           "column": 16,
-          "position": 3701
+          "position": 3708
         },
         "endLoc": {
-          "line": 482,
+          "line": 496,
           "column": 2,
-          "position": 3807
+          "position": 3814
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 188,
-        "end": 227,
+        "start": 195,
+        "end": 234,
         "startLoc": {
-          "line": 188,
+          "line": 195,
           "column": 38,
-          "position": 1471
+          "position": 1476
         },
         "endLoc": {
-          "line": 227,
+          "line": 234,
           "column": 3,
-          "position": 1775
+          "position": 1780
         }
       }
     },
@@ -948,104 +972,104 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 475,
-        "end": 489,
+        "start": 489,
+        "end": 503,
         "startLoc": {
-          "line": 475,
-          "column": 2,
-          "position": 3748
-        },
-        "endLoc": {
           "line": 489,
           "column": 2,
-          "position": 3861
+          "position": 3755
+        },
+        "endLoc": {
+          "line": 503,
+          "column": 2,
+          "position": 3868
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 123,
-        "end": 420,
+        "start": 126,
+        "end": 430,
         "startLoc": {
-          "line": 123,
+          "line": 126,
           "column": 2,
-          "position": 881
+          "position": 884
         },
         "endLoc": {
-          "line": 420,
+          "line": 430,
           "column": 9,
-          "position": 3305
+          "position": 3310
         }
       }
     },
     {
       "format": "go",
       "lines": 20,
-      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\tif",
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\tdefer func() { _ = w.Close() }()\n\n\tctx := setupTestContext(t, 5*time.Second)\n\n\tevents, err := w.Watch(ctx)\n\tif err != nil {\n\t\tt.Fatalf(\"Watch failed: %v\", err)\n\t}\n\n\terr",
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 506,
-        "end": 525,
+        "start": 522,
+        "end": 541,
         "startLoc": {
-          "line": 506,
+          "line": 522,
           "column": 19,
-          "position": 4000
+          "position": 4008
         },
         "endLoc": {
-          "line": 525,
-          "column": 3,
-          "position": 4156
+          "line": 541,
+          "column": 4,
+          "position": 4164
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 188,
-        "end": 137,
+        "start": 195,
+        "end": 140,
         "startLoc": {
-          "line": 188,
+          "line": 195,
           "column": 38,
-          "position": 1471
+          "position": 1476
         },
         "endLoc": {
-          "line": 137,
+          "line": 140,
           "column": 9,
-          "position": 990
+          "position": 993
         }
       }
     },
     {
       "format": "go",
       "lines": 13,
-      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\t_ = w.Close()\n\n\tif",
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\t_ = w.Close()\n\n\terr",
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 538,
-        "end": 550,
+        "start": 555,
+        "end": 567,
         "startLoc": {
-          "line": 538,
+          "line": 555,
           "column": 33,
-          "position": 4270
+          "position": 4278
         },
         "endLoc": {
-          "line": 550,
-          "column": 3,
-          "position": 4355
+          "line": 567,
+          "column": 4,
+          "position": 4363
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 96,
-        "end": 108,
+        "start": 99,
+        "end": 111,
         "startLoc": {
-          "line": 96,
+          "line": 99,
           "column": 29,
-          "position": 666
+          "position": 669
         },
         "endLoc": {
-          "line": 108,
+          "line": 111,
           "column": 2,
-          "position": 751
+          "position": 754
         }
       }
     },
@@ -1056,32 +1080,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 555,
-        "end": 569,
+        "start": 573,
+        "end": 587,
         "startLoc": {
-          "line": 555,
+          "line": 573,
           "column": 22,
-          "position": 4394
+          "position": 4402
         },
         "endLoc": {
-          "line": 569,
+          "line": 587,
           "column": 2,
-          "position": 4509
+          "position": 4517
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 188,
-        "end": 484,
+        "start": 195,
+        "end": 498,
         "startLoc": {
-          "line": 188,
+          "line": 195,
           "column": 38,
-          "position": 1471
+          "position": 1476
         },
         "endLoc": {
-          "line": 484,
+          "line": 498,
           "column": 7,
-          "position": 3816
+          "position": 3823
         }
       }
     },
@@ -1092,32 +1116,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 585,
-        "end": 604,
+        "start": 603,
+        "end": 622,
         "startLoc": {
-          "line": 585,
+          "line": 603,
           "column": 29,
-          "position": 4632
+          "position": 4640
         },
         "endLoc": {
-          "line": 604,
+          "line": 622,
           "column": 6,
-          "position": 4788
+          "position": 4796
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 188,
-        "end": 574,
+        "start": 195,
+        "end": 592,
         "startLoc": {
-          "line": 188,
+          "line": 195,
           "column": 38,
-          "position": 1471
+          "position": 1476
         },
         "endLoc": {
-          "line": 574,
+          "line": 592,
           "column": 5,
-          "position": 4550
+          "position": 4558
         }
       }
     },
@@ -1128,32 +1152,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 616,
-        "end": 628,
+        "start": 634,
+        "end": 646,
         "startLoc": {
-          "line": 616,
+          "line": 634,
           "column": 18,
-          "position": 4875
+          "position": 4883
         },
         "endLoc": {
-          "line": 628,
+          "line": 646,
           "column": 6,
-          "position": 4972
+          "position": 4980
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 188,
-        "end": 200,
+        "start": 195,
+        "end": 207,
         "startLoc": {
-          "line": 188,
+          "line": 195,
           "column": 38,
-          "position": 1471
+          "position": 1476
         },
         "endLoc": {
-          "line": 200,
+          "line": 207,
           "column": 4,
-          "position": 1568
+          "position": 1573
         }
       }
     },
@@ -1164,32 +1188,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 668,
-        "end": 683,
+        "start": 686,
+        "end": 701,
         "startLoc": {
-          "line": 668,
+          "line": 686,
           "column": 9,
-          "position": 5250
+          "position": 5258
         },
         "endLoc": {
-          "line": 683,
+          "line": 701,
           "column": 10,
-          "position": 5363
+          "position": 5371
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 268,
-        "end": 137,
+        "start": 276,
+        "end": 140,
         "startLoc": {
-          "line": 268,
+          "line": 276,
           "column": 2,
-          "position": 2104
+          "position": 2109
         },
         "endLoc": {
-          "line": 137,
+          "line": 140,
           "column": 9,
-          "position": 990
+          "position": 993
         }
       }
     },
@@ -1200,32 +1224,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 712,
-        "end": 724,
+        "start": 736,
+        "end": 748,
         "startLoc": {
-          "line": 712,
+          "line": 736,
           "column": 32,
-          "position": 5637
+          "position": 5648
         },
         "endLoc": {
-          "line": 724,
+          "line": 748,
           "column": 4,
-          "position": 5734
+          "position": 5745
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 188,
-        "end": 200,
+        "start": 195,
+        "end": 207,
         "startLoc": {
-          "line": 188,
+          "line": 195,
           "column": 38,
-          "position": 1471
+          "position": 1476
         },
         "endLoc": {
-          "line": 200,
+          "line": 207,
           "column": 4,
-          "position": 1568
+          "position": 1573
         }
       }
     },
@@ -1236,68 +1260,68 @@
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 743,
-        "end": 755,
+        "start": 767,
+        "end": 779,
         "startLoc": {
-          "line": 743,
+          "line": 767,
           "column": 30,
-          "position": 5881
+          "position": 5892
         },
         "endLoc": {
-          "line": 755,
+          "line": 779,
           "column": 2,
-          "position": 5989
+          "position": 6000
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 188,
-        "end": 200,
+        "start": 195,
+        "end": 207,
         "startLoc": {
-          "line": 188,
+          "line": 195,
           "column": 38,
-          "position": 1471
+          "position": 1476
         },
         "endLoc": {
-          "line": 200,
+          "line": 207,
           "column": 8,
-          "position": 1579
+          "position": 1584
         }
       }
     },
     {
       "format": "go",
       "lines": 13,
-      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\t_ = w.Close()\n\n\tif err := w.Add",
+      "fragment": "(t *testing.T) {\n\tt.Parallel()\n\n\ttmpDir := t.TempDir()\n\n\tw, err := New([]string{tmpDir})\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\n\t_ = w.Close()\n\n\terr = w.Add",
       "tokens": 0,
       "firstFile": {
         "name": "watcher_test.go",
-        "start": 773,
-        "end": 785,
+        "start": 797,
+        "end": 809,
         "startLoc": {
-          "line": 773,
+          "line": 797,
           "column": 30,
-          "position": 6119
+          "position": 6130
         },
         "endLoc": {
-          "line": 785,
+          "line": 809,
           "column": 4,
-          "position": 6212
+          "position": 6221
         }
       },
       "secondFile": {
         "name": "watcher_test.go",
-        "start": 96,
-        "end": 550,
+        "start": 99,
+        "end": 567,
         "startLoc": {
-          "line": 96,
+          "line": 99,
           "column": 29,
-          "position": 666
+          "position": 669
         },
         "endLoc": {
-          "line": 550,
+          "line": 567,
           "column": 7,
-          "position": 4363
+          "position": 4369
         }
       }
     },
@@ -1308,32 +1332,104 @@
       "tokens": 0,
       "firstFile": {
         "name": "filter_test.go",
-        "start": 29,
-        "end": 34,
+        "start": 31,
+        "end": 36,
         "startLoc": {
-          "line": 29,
+          "line": 31,
           "column": 2,
-          "position": 222
+          "position": 225
         },
         "endLoc": {
-          "line": 34,
+          "line": 36,
           "column": 18,
-          "position": 297
+          "position": 300
         }
       },
       "secondFile": {
         "name": "filter_test.go",
-        "start": 14,
-        "end": 19,
+        "start": 16,
+        "end": 21,
         "startLoc": {
-          "line": 14,
+          "line": 16,
           "column": 3,
-          "position": 83
+          "position": 86
         },
         "endLoc": {
-          "line": 19,
+          "line": 21,
           "column": 21,
-          "position": 158
+          "position": 161
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 13,
+      "fragment": ",\n\t\tdebounceInterface: nil,\n\t}\n\tevent := Event{Op: Write, Path: \"/tmp/test.go\"}\n\tctx := context.Background()\n\teventCh := make(chan Event, 1)\n\n\tfor b.Loop() {\n\t\tw.emitEvent(ctx, event, eventCh)\n\t}\n}\n\nfunc BenchmarkEmitEvent_WithGlobalDebounce",
+      "tokens": 0,
+      "firstFile": {
+        "name": "benchmark_test.go",
+        "start": 290,
+        "end": 302,
+        "startLoc": {
+          "line": 290,
+          "column": 2,
+          "position": 2136
+        },
+        "endLoc": {
+          "line": 302,
+          "column": 38,
+          "position": 2227
+        }
+      },
+      "secondFile": {
+        "name": "benchmark_test.go",
+        "start": 273,
+        "end": 285,
+        "startLoc": {
+          "line": 273,
+          "column": 4,
+          "position": 1992
+        },
+        "endLoc": {
+          "line": 285,
+          "column": 34,
+          "position": 2083
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 14,
+      "fragment": "(time.Hour), // Never fires during benchmark\n\t}\n\tdefer w.debounceInterface.Stop()\n\n\tevent := Event{Op: Write, Path: \"/tmp/test.go\"}\n\tctx := context.Background()\n\teventCh := make(chan Event, 1)\n\n\tfor b.Loop() {\n\t\tw.emitEvent(ctx, event, eventCh)\n\t}\n}\n\n// ============================================================================",
+      "tokens": 0,
+      "firstFile": {
+        "name": "benchmark_test.go",
+        "start": 321,
+        "end": 334,
+        "startLoc": {
+          "line": 321,
+          "column": 13,
+          "position": 2396
+        },
+        "endLoc": {
+          "line": 334,
+          "column": 80,
+          "position": 2497
+        }
+      },
+      "secondFile": {
+        "name": "benchmark_test.go",
+        "start": 305,
+        "end": 318,
+        "startLoc": {
+          "line": 305,
+          "column": 19,
+          "position": 2260
+        },
+        "endLoc": {
+          "line": 318,
+          "column": 5,
+          "position": 2361
         }
       }
     }

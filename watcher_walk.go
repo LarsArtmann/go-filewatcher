@@ -1,3 +1,4 @@
+//nolint:varnamelen // Idiomatic short names: d (DirEntry), op (operation)
 package filewatcher
 
 import (

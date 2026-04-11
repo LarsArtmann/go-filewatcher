@@ -1,4 +1,4 @@
-//nolint:testpackage // Tests need internal access to unexported symbols
+//nolint:testpackage,varnamelen // Tests need internal access; idiomatic short names in tests
 package filewatcher
 
 import (
@@ -466,7 +466,9 @@ func TestWatcher_Watch_ErrorHandler(t *testing.T) {
 	var errorReceived atomic.Pointer[error]
 
 	w, err := New([]string{tmpDir},
-		WithErrorHandler(func(err error) {
+		WithErrorHandler(func(ctx ErrorContext, err error) {
+			_ = ctx
+
 			errorReceived.Store(&err)
 		}),
 	)
@@ -750,7 +752,7 @@ func TestWatcher_handleError_Default(t *testing.T) {
 	os.Stderr = w2
 
 	//nolint:err113 // test-only error for stderr validation
-	w.handleError(errors.New("test stderr error"))
+	w.handleError(ErrorContext{Operation: "test"}, errors.New("test stderr error"))
 
 	_ = w2.Close()
 	os.Stderr = old

@@ -1,3 +1,4 @@
+//nolint:varnamelen,exhaustruct // Idiomatic short names: op (operation); partial ErrorContext initialization acceptable
 package filewatcher
 
 import (
@@ -179,7 +180,7 @@ func (w *Watcher) passesFilters(event Event) bool {
 // handleError dispatches errors to the configured handler or stderr.
 func (w *Watcher) handleError(err error) {
 	if w.errorHandler != nil {
-		w.errorHandler(err)
+		w.errorHandler(ErrorContext{Operation: "watcher", Retryable: true}, err)
 
 		return
 	}

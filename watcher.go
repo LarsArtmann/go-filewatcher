@@ -1,3 +1,4 @@
+//nolint:varnamelen // Idiomatic short names: p (path), w (watcher)
 package filewatcher
 
 import (
@@ -36,11 +37,11 @@ type Watcher struct {
 	recursive       bool
 	globalDebounce  time.Duration
 	perPathDebounce time.Duration
-	errorHandler    func(error)
 	skipDotDirs     bool
 	bufferSize      int
 	onAdd           func(path string) // callback when a path is added
 	ignoreDirNames  []string          // user-configured dir names to skip during walk
+	errorHandler    ErrorHandler      // callback for errors during event processing
 
 	// Internal state
 	mu        sync.RWMutex

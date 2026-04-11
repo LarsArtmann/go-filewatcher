@@ -54,12 +54,12 @@ func (d *Debouncer) Debounce(key DebounceKey, callback func()) {
 
 	entry := &debounceEntry{
 		debounceMixin: debounceMixin{
-			fn:    fn,
+			fn:    callback,
 			timer: nil,
 		},
 	}
 	entry.timer = time.AfterFunc(d.delay, func() {
-		fn()
+		callback()
 		d.mu.Lock()
 		delete(d.entries, key)
 		d.mu.Unlock()

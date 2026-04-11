@@ -111,7 +111,7 @@ func (w *Watcher) wrapWithMiddleware(
 	return func(ctx context.Context, e Event) {
 		err := wrapped(ctx, e)
 		if err != nil {
-			w.handleError(err)
+			w.handleError(fmt.Errorf("middleware error: %w", err))
 		}
 	}
 }
@@ -121,7 +121,7 @@ func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handl
 	execute := func() {
 		err := handler(ctx, event)
 		if err != nil {
-			w.handleError(err)
+			w.handleError(fmt.Errorf("handler error: %w", err))
 		}
 	}
 
@@ -178,14 +178,18 @@ func (w *Watcher) passesFilters(event Event) bool {
 }
 
 // handleError dispatches errors to the configured handler or stderr.
-func (w *Watcher) handleError(err error) {
+func (w *Watcher) handleError(ctx ErrorContext, err error) {
 	if w.errorHandler != nil {
-		w.errorHandler(ErrorContext{Operation: "watcher", Retryable: true}, err)
+		w.errorHandler(ctx, err)
 
 		return
 	}
 
-	_, _ = fmt.Fprintf(os.Stderr, "filewatcher: %v\n", err)
+	if ctx.Path != "" {
+		_, _ = fmt.Fprintf(os.Stderr, "filewatcher: %s: %s: %v\n", ctx.Operation, ctx.Path, err)
+	} else {
+		_, _ = fmt.Fprintf(os.Stderr, "filewatcher: %s: %v\n", ctx.Operation, err)
+	}
 }
 
 // convertEvent converts an fsnotify.Event to a filewatcher.Event.

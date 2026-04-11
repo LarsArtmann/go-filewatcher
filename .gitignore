@@ -7,3 +7,5 @@ node_modules/
 /go-filewatcher
 # Crush
 .crush/
+Copy/paste detection report
+/report/jscpd-report.json

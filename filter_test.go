@@ -244,14 +244,12 @@ func TestFilterMinSize(t *testing.T) {
 
 	smallFile := tmpDir + "/small.txt"
 	err := os.WriteFile(smallFile, []byte("hi"), 0o600)
-
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	largeFile := tmpDir + "/large.txt"
 	err = os.WriteFile(largeFile, make([]byte, 1000), 0o600)
-
 	if err != nil {
 		t.Fatal(err)
 	}

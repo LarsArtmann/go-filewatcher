@@ -184,7 +184,6 @@ func createTestFile(t *testing.T, tmpDir TempDir, filename, content string) stri
 
 	path := filepath.Join(string(tmpDir), filename)
 	err := os.WriteFile(path, []byte(content), testFilePermission)
-
 	if err != nil {
 		t.Fatal(err)
 	}

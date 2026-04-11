@@ -1,3 +1,4 @@
+//nolint:testpackage // Tests need internal access to unexported symbols
 package filewatcher
 
 import (
@@ -79,7 +80,9 @@ func TestEvent_JSON(t *testing.T) {
 	}
 
 	var decoded Event
-	if err := json.Unmarshal(data, &decoded); err != nil {
+
+	err = json.Unmarshal(data, &decoded)
+	if err != nil {
 		t.Fatalf("json.Unmarshal() error: %v", err)
 	}
 

@@ -42,9 +42,9 @@ func NewDebouncer(delay time.Duration) *Debouncer {
 }
 
 // Debounce schedules fn to run after the delay, resetting any pending
-// execution for the same key. This ensures fn runs only once for a burst
+// execution for the same key. This ensures callback runs only once for a burst
 // of events sharing the same key.
-func (d *Debouncer) Debounce(key DebounceKey, fn func()) {
+func (d *Debouncer) Debounce(key DebounceKey, callback func()) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 

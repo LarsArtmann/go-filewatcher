@@ -1,3 +1,4 @@
+//nolint:testpackage // Tests need internal access to unexported symbols
 package filewatcher
 
 import (
@@ -8,6 +9,7 @@ import (
 )
 
 // runFilterTests is a helper function that runs table-driven filter tests.
+
 func runFilterTests(t *testing.T, filterName string, f Filter, tests filterTests) {
 	t.Helper()
 	t.Run(filterName, func(t *testing.T) {
@@ -86,11 +88,13 @@ func extensionsTestCases() filterTests {
 	}
 }
 
+//nolint:tparallel // Subtests call t.Parallel() inside runFilterTests helper
 func TestFilterExtensions(t *testing.T) {
 	t.Parallel()
 	runFilterTests(t, "FilterExtensions", FilterExtensions(".go", ".md"), extensionsTestCases())
 }
 
+//nolint:tparallel // Subtests call t.Parallel() inside runFilterTests helper
 func TestFilterIgnoreExtensions(t *testing.T) {
 	t.Parallel()
 	runFilterTests(
@@ -101,6 +105,7 @@ func TestFilterIgnoreExtensions(t *testing.T) {
 	)
 }
 
+//nolint:tparallel // Subtests call t.Parallel() inside runFilterTests helper
 func TestFilterIgnoreDirs(t *testing.T) {
 	t.Parallel()
 	runFilterTests(
@@ -111,11 +116,13 @@ func TestFilterIgnoreDirs(t *testing.T) {
 	)
 }
 
+//nolint:tparallel // Subtests call t.Parallel() inside runFilterTests helper
 func TestFilterIgnoreHidden(t *testing.T) {
 	t.Parallel()
 	runFilterTests(t, "FilterIgnoreHidden", FilterIgnoreHidden(), ignoreHiddenTestCases())
 }
 
+//nolint:tparallel // Subtests call t.Parallel() inside runFilterTests helper
 func TestFilterOperations(t *testing.T) {
 	t.Parallel()
 	runFilterTests(t, "FilterOperations", FilterOperations(Write, Create), []struct {
@@ -160,6 +167,7 @@ func TestFilterNotOperations(t *testing.T) {
 	}
 }
 
+//nolint:tparallel // Subtests call t.Parallel() inside runFilterTests helper
 func TestFilterGlob(t *testing.T) {
 	t.Parallel()
 

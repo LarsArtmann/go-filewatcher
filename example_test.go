@@ -29,7 +29,6 @@ func ExampleNew() {
 }
 
 // ExampleWatcher_Watch demonstrates watching for file events.
-// Output is non-deterministic (depends on filesystem events), so no output comment.
 func ExampleWatcher_Watch() {
 	// This example shows the pattern for consuming events.
 	// In real usage, you would run this in a goroutine.
@@ -53,6 +52,8 @@ func ExampleWatcher_Watch() {
 	for event := range events {
 		fmt.Printf("%s: %s\n", event.Op.String(), event.Path)
 	}
+
+	// Output: Non-deterministic output
 }
 
 // ExampleWithFilter demonstrates using size-based filters.
@@ -135,8 +136,6 @@ func ExampleWatcher_Remove() {
 }
 
 // ExampleWatcher_WatchList demonstrates inspecting watched paths.
-// Output:
-// Watching 0 paths.
 func ExampleWatcher_WatchList() {
 	watcher, err := filewatcher.New([]string{"."})
 	if err != nil {
@@ -147,7 +146,9 @@ func ExampleWatcher_WatchList() {
 
 	// Get the list of paths currently being watched
 	paths := watcher.WatchList()
-	fmt.Printf("Watching %d paths\n", len(paths))
+	fmt.Printf("Watching %d paths.\n", len(paths))
+
+	// Output: Watching 0 paths.
 }
 
 // ExampleWatcher_Stats demonstrates getting watcher statistics.
@@ -278,10 +279,6 @@ func ExampleDebouncer() {
 }
 
 // ExampleEvent demonstrates event structure.
-// Output:
-// Event: WRITE
-// Operation: WRITE
-// Is directory: false.
 func ExampleEvent() {
 	event := filewatcher.Event{
 		Path:      "/path/to/file.go",
@@ -293,6 +290,11 @@ func ExampleEvent() {
 	fmt.Printf("Event: %s\n", event.String())
 	fmt.Printf("Operation: %s\n", event.Op.String())
 	fmt.Printf("Is directory: %v\n", event.IsDir)
+
+	// Output:
+	// Event: WRITE
+	// Operation: WRITE
+	// Is directory: false.
 }
 
 func goExcludeDirsFilter(dirs ...string) filewatcher.Filter {

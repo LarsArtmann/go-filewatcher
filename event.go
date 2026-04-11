@@ -93,7 +93,7 @@ type Event struct {
 	// Timestamp is when the event was detected.
 	Timestamp time.Time `json:"timestamp"`
 	// IsDir indicates whether the event is for a directory (true) or file (false).
-	IsDir bool `json:"is_dir"`
+	IsDir bool `json:"isDir"`
 }
 
 // String returns a human-readable representation of the event.

@@ -1,3 +1,4 @@
+//nolint:testpackage // Tests need internal access to unexported symbols
 package filewatcher
 
 import (
@@ -44,11 +45,13 @@ func TestNew_FilePath(t *testing.T) {
 	t.Parallel()
 
 	tmpFile := filepath.Join(t.TempDir(), "test.txt")
-	if err := os.WriteFile(tmpFile, []byte("test"), 0o600); err != nil {
+
+	err := os.WriteFile(tmpFile, []byte("test"), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
-	_, err := New([]string{tmpFile})
+	_, err = New([]string{tmpFile})
 	if err == nil {
 		t.Fatal("expected error for file path")
 	}
@@ -166,12 +169,16 @@ func TestWatcher_Watch_FiltersExtensions(t *testing.T) {
 	}
 
 	txtFile := filepath.Join(tmpDir, "test.txt")
-	if err := os.WriteFile(txtFile, []byte("text"), 0o600); err != nil {
+
+	err = os.WriteFile(txtFile, []byte("text"), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
 	goFile := filepath.Join(tmpDir, "test.go")
-	if err := os.WriteFile(goFile, []byte("package test"), 0o600); err != nil {
+
+	err = os.WriteFile(goFile, []byte("package test"), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
@@ -237,7 +244,8 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 	for waitForEventOrTimeout(t, events, 500*time.Millisecond) {
 	}
 
-	if err := os.Remove(testFile); err != nil {
+	err = os.Remove(testFile)
+	if err != nil {
 		t.Fatal(err)
 	}
 
@@ -364,11 +372,13 @@ func TestWatcher_Watch_WithPerPathDebounce(t *testing.T) {
 	file1 := filepath.Join(tmpDir, "a.txt")
 	file2 := filepath.Join(tmpDir, "b.txt")
 
-	if err := os.WriteFile(file1, []byte("a"), 0o600); err != nil {
+	err = os.WriteFile(file1, []byte("a"), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
-	if err := os.WriteFile(file2, []byte("b"), 0o600); err != nil {
+	err = os.WriteFile(file2, []byte("b"), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
@@ -418,7 +428,9 @@ func TestWatcher_Watch_NewDirectory(t *testing.T) {
 	}
 
 	newDir := filepath.Join(tmpDir, "subdir")
-	if err := os.Mkdir(newDir, 0o750); err != nil {
+
+	err = os.Mkdir(newDir, 0o750)
+	if err != nil {
 		t.Fatal(err)
 	}
 
@@ -430,7 +442,9 @@ func TestWatcher_Watch_NewDirectory(t *testing.T) {
 
 	// Now create a file in the new subdirectory
 	nestedFile := filepath.Join(newDir, "nested.txt")
-	if err := os.WriteFile(nestedFile, []byte("nested"), 0o600); err != nil {
+
+	err = os.WriteFile(nestedFile, []byte("nested"), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
@@ -487,7 +501,9 @@ func TestWatcher_Add(t *testing.T) {
 	}
 
 	newDir := t.TempDir()
-	if err := w.Add(newDir); err != nil {
+
+	err = w.Add(newDir)
+	if err != nil {
 		t.Fatalf("Add failed: %v", err)
 	}
 
@@ -522,7 +538,8 @@ func TestWatcher_Remove(t *testing.T) {
 		t.Fatalf("Watch failed: %v", err)
 	}
 
-	if err := w.Remove(tmpDir); err != nil {
+	err = w.Remove(tmpDir)
+	if err != nil {
 		t.Fatalf("Remove failed: %v", err)
 	}
 
@@ -547,7 +564,8 @@ func TestWatcher_Remove_ClosedWatcher(t *testing.T) {
 
 	_ = w.Close()
 
-	if err := w.Remove(tmpDir); err == nil {
+	err = w.Remove(tmpDir)
+	if err == nil {
 		t.Fatal("expected error when removing from closed watcher")
 	}
 }
@@ -681,17 +699,23 @@ func TestWatcher_IgnoreDirs(t *testing.T) {
 	}
 
 	vendorDir := filepath.Join(tmpDir, "vendor")
-	if err := os.Mkdir(vendorDir, 0o750); err != nil {
+
+	err = os.Mkdir(vendorDir, 0o750)
+	if err != nil {
 		t.Fatal(err)
 	}
 
 	vendorFile := filepath.Join(vendorDir, "lib.go")
-	if err := os.WriteFile(vendorFile, []byte("package vendor"), 0o600); err != nil {
+
+	err = os.WriteFile(vendorFile, []byte("package vendor"), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
 	normalFile := filepath.Join(tmpDir, "main.go")
-	if err := os.WriteFile(normalFile, []byte("package main"), 0o600); err != nil {
+
+	err = os.WriteFile(normalFile, []byte("package main"), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
@@ -782,7 +806,8 @@ func TestWatcher_Add_ClosedWatcher(t *testing.T) {
 
 	_ = w.Close()
 
-	if err := w.Add(t.TempDir()); err == nil {
+	err = w.Add(t.TempDir())
+	if err == nil {
 		t.Fatal("expected error when adding to closed watcher")
 	}
 }

@@ -212,7 +212,9 @@ func convertEvent(fsEvent fsnotify.Event) *Event {
 	// Check if path is a directory. For Remove events, the file may already
 	// be gone, so we ignore stat errors in that case.
 	isDir := false
-	if info, err := os.Stat(fsEvent.Name); err == nil {
+
+	info, err := os.Stat(fsEvent.Name)
+	if err == nil {
 		isDir = info.IsDir()
 	}
 

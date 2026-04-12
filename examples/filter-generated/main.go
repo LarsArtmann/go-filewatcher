@@ -41,7 +41,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := os.RemoveAll(watchDir); err != nil {
+	err = os.RemoveAll(watchDir)
+	if err != nil {
 		log.Printf("Failed to cleanup watch dir: %v", err)
 	}
 
@@ -87,14 +88,17 @@ func demonstrateSpecificFilters(watchDir string) {
 	if err != nil {
 		log.Fatalf("Failed to create watcher: %v", err)
 	}
+
 	defer func() {
-		if closeErr := watcher.Close(); closeErr != nil {
+		closeErr := watcher.Close()
+		if closeErr != nil {
 			log.Printf("Failed to close watcher: %v", closeErr)
 		}
 	}()
 
 	// Start watching with a timeout
 	ctx, cancel := context.WithTimeout(context.Background(), watchTimeout)
+	//nolint:gocritic // log.Fatalf exits, cancel() runs via defer on success path
 	defer cancel()
 
 	events, err := watcher.Watch(ctx)
@@ -153,14 +157,17 @@ func demonstrateAllFilters(watchDir string) {
 	if err != nil {
 		log.Fatalf("Failed to create watcher: %v", err)
 	}
+
 	defer func() {
-		if closeErr := watcher.Close(); closeErr != nil {
+		closeErr := watcher.Close()
+		if closeErr != nil {
 			log.Printf("Failed to close watcher: %v", closeErr)
 		}
 	}()
 
 	// Start watching with a timeout
 	ctx, cancel := context.WithTimeout(context.Background(), watchTimeout)
+	//nolint:gocritic // log.Fatalf exits, cancel() runs via defer on success path
 	defer cancel()
 
 	events, err := watcher.Watch(ctx)

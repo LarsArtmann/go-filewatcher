@@ -189,16 +189,16 @@ func TestFilterGeneratedCode_MultipleOptions(t *testing.T) {
 		gogenfilter.FilterProtobuf,
 	)
 
-	for _, tc := range multipleOptionsTestCases {
-		t.Run(tc.name, func(t *testing.T) {
+	for _, testCase := range multipleOptionsTestCases {
+		t.Run(testCase.name, func(t *testing.T) {
 			if multiFilter(
-				Event{Path: tc.path, Op: Op(0), Timestamp: time.Time{}, IsDir: false},
-			) != tc.expected {
+				Event{Path: testCase.path, Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			) != testCase.expected {
 				t.Errorf(
 					"FilterGeneratedCode() = %v, want %v for path %s",
-					!tc.expected,
-					tc.expected,
-					tc.path,
+					!testCase.expected,
+					testCase.expected,
+					testCase.path,
 				)
 			}
 		})

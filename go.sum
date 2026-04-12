@@ -1,3 +1,5 @@
+github.com/LarsArtmann/gogenfilter v0.1.0 h1:YnEUgxHQFR6QBVy4CJ1VnleKMcu5hPXnt1cnyuBK6cU=
+github.com/LarsArtmann/gogenfilter v0.1.0/go.mod h1:G/Xu5M8wnk1x5A/DLrTMFkFiMWPvuPhq+IsP4N1HK6I=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/fsnotify/fsnotify v1.9.0 h1:2Ml+OJNzbYCTzsxtv8vKSFD9PbJjmhYF14k/jKC7S9k=

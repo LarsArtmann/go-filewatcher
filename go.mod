@@ -15,5 +15,3 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/sys v0.43.0 // indirect
 )
-
-replace github.com/LarsArtmann/gogenfilter => ../gogenfilter

@@ -105,12 +105,12 @@ The internal `Watcher` struct now uses bit flags for state management:
 
 ## Quick Reference
 
-| Aspect                | v1.x                    | v2.0                               |
-| --------------------- | ----------------------- | ---------------------------------- |
-| ErrorHandler          | `func(error)`           | `func(ErrorContext, error)`        |
-| Error information     | Error message only      | Operation, Path, Event, Retryable  |
-| Error categorization  | Not available           | `IsTransientError()`, `IsPermanentError()` |
-| Public API stability  | Stable                  | Stable (only ErrorHandler changed) |
+| Aspect               | v1.x               | v2.0                                       |
+| -------------------- | ------------------ | ------------------------------------------ |
+| ErrorHandler         | `func(error)`      | `func(ErrorContext, error)`                |
+| Error information    | Error message only | Operation, Path, Event, Retryable          |
+| Error categorization | Not available      | `IsTransientError()`, `IsPermanentError()` |
+| Public API stability | Stable             | Stable (only ErrorHandler changed)         |
 
 ---
 

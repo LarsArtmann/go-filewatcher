@@ -42,6 +42,7 @@ func main() {
 		err := os.MkdirAll(filepath.Join(watchDir, dir), 0o755)
 		if err != nil {
 			log.Printf("Failed to create directory %s: %v", dir, err)
+
 			return
 		}
 	}
@@ -76,6 +77,7 @@ func demonstrateSpecificFilters(watchDir string) {
 	)
 	if err != nil {
 		_ = watcher.Close()
+
 		log.Fatalf("Failed to create watcher: %v", err)
 	}
 	defer watcher.Close()
@@ -140,6 +142,7 @@ func demonstrateAllFilters(watchDir string) {
 	)
 	if err != nil {
 		_ = watcher.Close()
+
 		log.Fatalf("Failed to create watcher: %v", err)
 	}
 	defer watcher.Close()
@@ -227,6 +230,7 @@ func demonstrateDetector(watchDir string) {
 // createTestFile creates a test file with the given content.
 func createTestFile(dir, filename, content string) {
 	path := filepath.Join(dir, filename)
+
 	err := os.MkdirAll(filepath.Dir(path), 0o755)
 	if err != nil {
 		log.Printf("Failed to create directory for %s: %v", filename, err)

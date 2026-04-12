@@ -18,6 +18,7 @@ The project is in a **TRANSITIONAL STATE** following a major error handling refa
 ## a) FULLY DONE ✅
 
 ### 1. GitHub Actions CI Review & Fix
+
 - **Status:** COMPLETE
 - **Work:** Reviewed CI workflow using `gh` CLI tool
 - **Issue Found:** Node.js 20 deprecation warnings
@@ -26,6 +27,7 @@ The project is in a **TRANSITIONAL STATE** following a major error handling refa
 - **Impact:** CI will now use Node.js 24, avoiding breakage on Sept 16, 2026
 
 ### 2. Error Handling Refactoring - Phase 1
+
 - **Status:** COMPLETE
 - **Work:** Changed `ErrorHandler` from `func(error)` to `func(ErrorContext, error)`
 - **Files Modified:**
@@ -38,12 +40,14 @@ The project is in a **TRANSITIONAL STATE** following a major error handling refa
 - **Impact:** BREAKING CHANGE - Users must update their error handler functions
 
 ### 3. Build System Integrity
+
 - **Status:** PASSING
 - **Command:** `go build ./...`
 - **Result:** SUCCESS - No compilation errors
 - **Package Count:** 5 (main + 4 examples)
 
 ### 4. Basic Test Execution
+
 - **Status:** PASSING (without race detector)
 - **Command:** `go test -count=1 ./...`
 - **Result:** SUCCESS - All tests pass
@@ -51,6 +55,7 @@ The project is in a **TRANSITIONAL STATE** following a major error handling refa
 - **Coverage:** Comprehensive (unit, integration, examples)
 
 ### 5. Status Report Documentation
+
 - **Status:** 21 reports archived
 - **Latest:** `2026-04-11_20-37_error-handling-improvements.md`
 - **Pattern:** Consistent naming and structure
@@ -60,6 +65,7 @@ The project is in a **TRANSITIONAL STATE** following a major error handling refa
 ## b) PARTIALLY DONE ⚠️
 
 ### 1. Error Handling Migration
+
 - **Status:** API CHANGED, MIGRATION PATH UNCLEAR
 - **Completion:** 85%
 - **What's Done:**
@@ -74,12 +80,14 @@ The project is in a **TRANSITIONAL STATE** following a major error handling refa
   - Deprecation notice for old signature
 
 ### 2. Test Suite Race Safety
+
 - **Status:** FAILING with race detector
 - **Completion:** 60%
 - **Pattern:** Tests pass individually, fail when run concurrently with -race
 - **Root Cause:** `os.Stderr` manipulation in parallel tests
 
 ### 3. Documentation Updates
+
 - **Status:** IN PROGRESS
 - **Completion:** 70%
 - **README.md:** Updated with error handling patterns
@@ -87,6 +95,7 @@ The project is in a **TRANSITIONAL STATE** following a major error handling refa
 - **Missing:** Migration guide, breaking changes doc
 
 ### 4. Benchmark Suite
+
 - **Status:** EXISTS BUT NOT ANALYZED
 - **File:** `benchmark_test.go`
 - **Completion:** 50%
@@ -97,26 +106,31 @@ The project is in a **TRANSITIONAL STATE** following a major error handling refa
 ## c) NOT STARTED ❌
 
 ### 1. Race Condition Resolution
+
 - **Priority:** CRITICAL
 - **Impact:** Blocks CI reliability
 - **Scope:** ~20+ tests affected
 
 ### 2. Production Readiness Assessment
+
 - **Priority:** HIGH
 - **Need:** Formal checklist completion
 - **Blockers:** Race conditions, API stability
 
 ### 3. Performance Regression Testing
+
 - **Priority:** MEDIUM
 - **Tooling:** Needs benchmark comparison
 - **CI Integration:** Not implemented
 
 ### 4. Error Recovery Mechanisms
+
 - **Priority:** MEDIUM
 - **Feature:** Automatic retry for transient errors
 - **Status:** Defined types exist, not implemented
 
 ### 5. Observability Integration
+
 - **Priority:** LOW
 - **Features:** Metrics, tracing, structured logging
 - **Status:** Not started
@@ -126,6 +140,7 @@ The project is in a **TRANSITIONAL STATE** following a major error handling refa
 ## d) TOTALLY FUCKED UP 🔥
 
 ### 1. Race Detector Test Suite
+
 - **Severity:** CRITICAL
 - **Status:** COMPLETELY BROKEN
 - **Command:** `go test -race ./...`
@@ -133,6 +148,7 @@ The project is in a **TRANSITIONAL STATE** following a major error handling refa
 - **Affected Tests:** ~20+ tests fail with race detector
 
 **Race Condition Manifestations:**
+
 ```
 WARNING: DATA RACE
 Read at errors_test.go:342 - TestErrorHandler_DefaultLogsToStderr
@@ -143,30 +159,35 @@ Write at watcher_test.go:758 - os.Stderr manipulation
 
 **Root Cause Analysis:**
 Multiple parallel tests manipulate the global `os.Stderr` variable:
+
 - `TestErrorHandler_DefaultLogsToStderr`
 - `TestErrorHandler_DefaultWithoutPath`
 - `TestWatcher_handleError_Default`
 - All filter tests (via shared test infrastructure)
 
 **Why It's Fucked:**
+
 1. `t.Parallel()` runs tests concurrently
 2. Tests capture `os.Stderr` by reassignment
 3. Global state mutation without synchronization
 4. Tests read/write `os.Stderr` at the same time
 
 **Impact:**
+
 - CI unreliable
 - Cannot trust test results
 - Blocks production deployment
 - Developer confidence erosion
 
 ### 2. API Breaking Change Without Migration Path
+
 - **Severity:** HIGH
 - **Change:** `WithErrorHandler(func(error))` → `WithErrorHandler(func(ErrorContext, error))`
 - **Problem:** Users have no upgrade guide
 - **Risk:** User code breakage on update
 
 ### 3. Flaky Middleware Test (Historical)
+
 - **Severity:** MEDIUM
 - **Test:** `TestWatcher_Watch_WithMiddleware`
 - **Issue:** Expected 1 middleware call, got 2
@@ -285,6 +306,7 @@ Multiple parallel tests manipulate the global `os.Stderr` variable:
 ### Context:
 
 We have tests that:
+
 1. Use `t.Parallel()` for speed
 2. Capture stderr by doing `old := os.Stderr; os.Stderr = wPipe; defer restore`
 3. Fail race detector because multiple tests manipulate the global `os.Stderr`
@@ -304,6 +326,7 @@ We have tests that:
 ### Why This Matters:
 
 This is blocking the race detector from being useful in CI. Every test run with `-race` fails, which means:
+
 - We can't catch actual race conditions in production code
 - CI is unreliable
 - Developer trust in tests erodes
@@ -311,6 +334,7 @@ This is blocking the race detector from being useful in CI. Every test run with 
 ### What I Need:
 
 A concrete code example of how to either:
+
 1. Test stderr output safely in parallel, OR
 2. Refactor the code to not need stderr capture
 
@@ -321,13 +345,15 @@ A concrete code example of how to either:
 ### Current Code State
 
 **Last 3 Commits:**
+
 ```
 83d142f feat(errors): comprehensive error handling improvements with structured types
-94895ca ci: add FORCE_JAVASCRIPT_ACTIONS_TO_NODE24 to address Node.js 20 deprecation  
+94895ca ci: add FORCE_JAVASCRIPT_ACTIONS_TO_NODE24 to address Node.js 20 deprecation
 8210c40 docs: add comprehensive status report for 2026-04-11 20:20
 ```
 
 **Files Changed (Last 3 Commits):**
+
 - `.github/workflows/ci.yml` (+3 lines)
 - `errors.go` (+1 line)
 - `errors_test.go` (+28/-17 lines)
@@ -339,12 +365,14 @@ A concrete code example of how to either:
 ### Test Results
 
 **Without Race Detector:**
+
 ```
 ok  	github.com/larsartmann/go-filewatcher	2.915s
 PASS
 ```
 
 **With Race Detector:**
+
 ```
 FAIL	github.com/larsartmann/go-filewatcher	2.779s
 Multiple DATA RACE warnings on os.Stderr

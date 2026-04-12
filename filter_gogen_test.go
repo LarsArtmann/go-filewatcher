@@ -1,3 +1,4 @@
+//nolint:testpackage // Tests internal functions, must be in same package
 package filewatcher
 
 import (
@@ -18,69 +19,124 @@ func TestFilterGeneratedCode_SingleFilters(t *testing.T) {
 		expected bool
 	}{
 		{
-			name:     "sqlc models.go - filtered",
-			options:  []gogenfilter.FilterOption{gogenfilter.FilterSQLC},
-			event:    Event{Path: "/project/db/models.go", Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			name:    "sqlc models.go - filtered",
+			options: []gogenfilter.FilterOption{gogenfilter.FilterSQLC},
+			event: Event{
+				Path:      "/project/db/models.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     false,
+			},
 			expected: false,
 		},
 		{
-			name:     "sqlc query.sql.go - filtered",
-			options:  []gogenfilter.FilterOption{gogenfilter.FilterSQLC},
-			event:    Event{Path: "/project/db/query.sql.go", Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			name:    "sqlc query.sql.go - filtered",
+			options: []gogenfilter.FilterOption{gogenfilter.FilterSQLC},
+			event: Event{
+				Path:      "/project/db/query.sql.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     false,
+			},
 			expected: false,
 		},
 		{
-			name:     "sqlc custom.sql.go - filtered",
-			options:  []gogenfilter.FilterOption{gogenfilter.FilterSQLC},
-			event:    Event{Path: "/project/db/users.sql.go", Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			name:    "sqlc custom.sql.go - filtered",
+			options: []gogenfilter.FilterOption{gogenfilter.FilterSQLC},
+			event: Event{
+				Path:      "/project/db/users.sql.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     false,
+			},
 			expected: false,
 		},
 		{
-			name:     "regular .go file - not filtered",
-			options:  []gogenfilter.FilterOption{gogenfilter.FilterSQLC},
-			event:    Event{Path: "/project/main.go", Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			name:    "regular .go file - not filtered",
+			options: []gogenfilter.FilterOption{gogenfilter.FilterSQLC},
+			event: Event{
+				Path:      "/project/main.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     false,
+			},
 			expected: true,
 		},
 		{
-			name:     "templ generated file - filtered",
-			options:  []gogenfilter.FilterOption{gogenfilter.FilterTempl},
-			event:    Event{Path: "/project/components/page_templ.go", Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			name:    "templ generated file - filtered",
+			options: []gogenfilter.FilterOption{gogenfilter.FilterTempl},
+			event: Event{
+				Path:      "/project/components/page_templ.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     false,
+			},
 			expected: false,
 		},
 		{
-			name:     "go-enum generated file - filtered",
-			options:  []gogenfilter.FilterOption{gogenfilter.FilterGoEnum},
-			event:    Event{Path: "/project/types/status_enum.go", Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			name:    "go-enum generated file - filtered",
+			options: []gogenfilter.FilterOption{gogenfilter.FilterGoEnum},
+			event: Event{
+				Path:      "/project/types/status_enum.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     false,
+			},
 			expected: false,
 		},
 		{
-			name:     "protobuf generated file - filtered",
-			options:  []gogenfilter.FilterOption{gogenfilter.FilterProtobuf},
-			event:    Event{Path: "/project/api/user.pb.go", Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			name:    "protobuf generated file - filtered",
+			options: []gogenfilter.FilterOption{gogenfilter.FilterProtobuf},
+			event: Event{
+				Path:      "/project/api/user.pb.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     false,
+			},
 			expected: false,
 		},
 		{
-			name:     "protobuf grpc file - filtered",
-			options:  []gogenfilter.FilterOption{gogenfilter.FilterProtobuf},
-			event:    Event{Path: "/project/api/user_grpc.pb.go", Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			name:    "protobuf grpc file - filtered",
+			options: []gogenfilter.FilterOption{gogenfilter.FilterProtobuf},
+			event: Event{
+				Path:      "/project/api/user_grpc.pb.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     false,
+			},
 			expected: false,
 		},
 		{
-			name:     "mockgen file with suffix - filtered",
-			options:  []gogenfilter.FilterOption{gogenfilter.FilterMockgen},
-			event:    Event{Path: "/project/mocks/service_mock.go", Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			name:    "mockgen file with suffix - filtered",
+			options: []gogenfilter.FilterOption{gogenfilter.FilterMockgen},
+			event: Event{
+				Path:      "/project/mocks/service_mock.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     false,
+			},
 			expected: false,
 		},
 		{
-			name:     "mockgen file with prefix - filtered",
-			options:  []gogenfilter.FilterOption{gogenfilter.FilterMockgen},
-			event:    Event{Path: "/project/mocks/mock_service.go", Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			name:    "mockgen file with prefix - filtered",
+			options: []gogenfilter.FilterOption{gogenfilter.FilterMockgen},
+			event: Event{
+				Path:      "/project/mocks/mock_service.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     false,
+			},
 			expected: false,
 		},
 		{
-			name:     "directories are never filtered",
-			options:  []gogenfilter.FilterOption{gogenfilter.FilterSQLC},
-			event:    Event{Path: "/project/db/models.go", Op: Op(0), Timestamp: time.Time{}, IsDir: true},
+			name:    "directories are never filtered",
+			options: []gogenfilter.FilterOption{gogenfilter.FilterSQLC},
+			event: Event{
+				Path:      "/project/db/models.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     true,
+			},
 			expected: true,
 		},
 	}
@@ -117,7 +173,12 @@ func TestFilterGeneratedCode_MultipleOptions(t *testing.T) {
 				gogenfilter.FilterTempl,
 				gogenfilter.FilterProtobuf,
 			},
-			event:    Event{Path: "/project/db/models.go", Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			event: Event{
+				Path:      "/project/db/models.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     false,
+			},
 			expected: false,
 		},
 		{
@@ -127,7 +188,12 @@ func TestFilterGeneratedCode_MultipleOptions(t *testing.T) {
 				gogenfilter.FilterTempl,
 				gogenfilter.FilterProtobuf,
 			},
-			event:    Event{Path: "/project/page_templ.go", Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			event: Event{
+				Path:      "/project/page_templ.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     false,
+			},
 			expected: false,
 		},
 		{
@@ -137,7 +203,12 @@ func TestFilterGeneratedCode_MultipleOptions(t *testing.T) {
 				gogenfilter.FilterTempl,
 				gogenfilter.FilterProtobuf,
 			},
-			event:    Event{Path: "/project/api/user.pb.go", Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			event: Event{
+				Path:      "/project/api/user.pb.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     false,
+			},
 			expected: false,
 		},
 		{
@@ -147,7 +218,12 @@ func TestFilterGeneratedCode_MultipleOptions(t *testing.T) {
 				gogenfilter.FilterTempl,
 				gogenfilter.FilterProtobuf,
 			},
-			event:    Event{Path: "/project/main.go", Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			event: Event{
+				Path:      "/project/main.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     false,
+			},
 			expected: true,
 		},
 		{
@@ -157,7 +233,12 @@ func TestFilterGeneratedCode_MultipleOptions(t *testing.T) {
 				gogenfilter.FilterTempl,
 				gogenfilter.FilterProtobuf,
 			},
-			event:    Event{Path: "/project/status_enum.go", Op: Op(0), Timestamp: time.Time{}, IsDir: false},
+			event: Event{
+				Path:      "/project/status_enum.go",
+				Op:        Op(0),
+				Timestamp: time.Time{},
+				IsDir:     false,
+			},
 			expected: true,
 		},
 	}
@@ -245,7 +326,12 @@ func TestFilterGeneratedCodeFull_WithContent(t *testing.T) {
 	// File with sqlc filename pattern is filtered even without sqlc content
 	// because filename-based detection happens first
 	// Filter returns false to discard, so we expect false here
-	sqlcFilenameEvent := Event{Path: sqlcFilenameRegularContent, Op: Op(0), Timestamp: time.Time{}, IsDir: false}
+	sqlcFilenameEvent := Event{
+		Path:      sqlcFilenameRegularContent,
+		Op:        Op(0),
+		Timestamp: time.Time{},
+		IsDir:     false,
+	}
 	if filter(sqlcFilenameEvent) {
 		t.Errorf("Expected sqlc filename pattern file to be filtered (return false)")
 	}
@@ -316,7 +402,12 @@ func TestGeneratedCodeDetector(t *testing.T) {
 		t.Run(testCase.path, func(t *testing.T) {
 			result := detector.IsGenerated(testCase.path)
 			if result != testCase.expected {
-				t.Errorf("IsGenerated() = %v, want %v for path %s", result, testCase.expected, testCase.path)
+				t.Errorf(
+					"IsGenerated() = %v, want %v for path %s",
+					result,
+					testCase.expected,
+					testCase.path,
+				)
 			}
 		})
 	}
@@ -340,7 +431,12 @@ func TestGeneratedCodeDetector_GetReason(t *testing.T) {
 		t.Run(testCase.path, func(t *testing.T) {
 			reason := detector.GetReason(testCase.path)
 			if reason != testCase.expected {
-				t.Errorf("GetReason() = %v, want %v for path %s", reason, testCase.expected, testCase.path)
+				t.Errorf(
+					"GetReason() = %v, want %v for path %s",
+					reason,
+					testCase.expected,
+					testCase.path,
+				)
 			}
 		})
 	}

@@ -133,6 +133,7 @@ linters:
             - "$EXAMPLES"
             - "$HOME"
             - "$gostd"
+            - "github.com/LarsArtmann/gogenfilter"
             - "github.com/fsnotify/fsnotify"
             - "github.com/larsartmann/go-filewatcher"
           files:

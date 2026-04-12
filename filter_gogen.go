@@ -170,7 +170,7 @@ func (d *GeneratedCodeDetector) IsGenerated(filePath string) bool {
 
 // IsGeneratedWithContent checks if a file is generated using both
 // filename and content detection.
-func (d *GeneratedCodeDetector) IsGeneratedWithContent(filePath string, content string) bool {
+func (d *GeneratedCodeDetector) IsGeneratedWithContent(filePath, content string) bool {
 	reason := gogenfilter.DetectReason(filePath, content, d.options)
 
 	return reason != gogenfilter.ReasonNotFiltered

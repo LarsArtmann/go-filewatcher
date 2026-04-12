@@ -20,13 +20,15 @@ This session completed a comprehensive overhaul of the error handling system in 
 **Status:** ✅ COMPLETE
 
 **New Sentinel Errors Added:**
+
 - `ErrFsnotifyFailed` - underlying fsnotify watcher failures
-- `ErrWalkFailed` - directory traversal failures  
+- `ErrWalkFailed` - directory traversal failures
 - `ErrPathResolveFailed` - path resolution failures
 - `ErrEventProcessingFailed` - event processing failures
 - `ErrMiddlewareFailed` - middleware execution failures
 
 **Structured Error Type:**
+
 ```go
 type WatcherError struct {
     Op       string        // Operation being performed
@@ -37,12 +39,14 @@ type WatcherError struct {
 ```
 
 **Methods Implemented:**
+
 - `Error()` - formatted error string with path context
 - `Unwrap()` - errors.Is/As support
 - `IsTransient()` - check if retryable
 - `IsPermanent()` - check if non-retryable
 
 **Error Classification System:**
+
 - `CategoryUnknown` - undetermined
 - `CategoryTransient` - may resolve on retry (fsnotify, walk, processing)
 - `CategoryPermanent` - won't resolve (closed, not found, not dir, etc.)
@@ -52,6 +56,7 @@ type WatcherError struct {
 **Status:** ✅ COMPLETE
 
 **New `ErrorContext` struct:**
+
 ```go
 type ErrorContext struct {
     Operation string   // What was happening
@@ -62,6 +67,7 @@ type ErrorContext struct {
 ```
 
 **Updated `ErrorHandler` signature:**
+
 ```go
 type ErrorHandler func(ErrorContext, error)
 ```
@@ -74,13 +80,14 @@ This provides consumers with rich context about what operation failed, enabling 
 
 All internal error handling now passes rich context:
 
-| Location | Context Operation | Context Path | Retryable |
-|----------|------------------|--------------|-----------|
-| fsnotify error channel | `"fsnotify"` | - | true |
-| middleware execution | `"middleware"` | event.Path | false |
-| handler execution | `"handler"` | event.Path | false |
+| Location               | Context Operation | Context Path | Retryable |
+| ---------------------- | ----------------- | ------------ | --------- |
+| fsnotify error channel | `"fsnotify"`      | -            | true      |
+| middleware execution   | `"middleware"`    | event.Path   | false     |
+| handler execution      | `"handler"`       | event.Path   | false     |
 
 **Default stderr output improved:**
+
 ```go
 // Before: filewatcher: <error message>
 // After:  filewatcher: <operation>: <path>: <error message>
@@ -91,6 +98,7 @@ All internal error handling now passes rich context:
 **Status:** ✅ COMPLETE
 
 **14 New Test Functions:**
+
 1. `TestWatcherError_Error` - string formatting with/without path
 2. `TestWatcherError_Unwrap` - errors.Is/As support
 3. `TestWatcherError_IsTransient` - transient detection
@@ -127,6 +135,7 @@ All internal error handling now passes rich context:
 **Issue:** `TestWatcher_Watch_WithMiddleware` intermittently fails with "expected middleware to be called once, got 2"
 
 **Analysis:**
+
 - This is a pre-existing race condition in event delivery, not related to error handling changes
 - The test creates a file and expects exactly one middleware call
 - File creation triggers both CREATE and WRITE events, both passing filters
@@ -185,6 +194,7 @@ All work completed successfully. No broken functionality, no API incompatibiliti
 **Current:** Default handler prints to stderr with fmt.Fprintf
 **Improvement:** Provide structured logging handler using slog
 **Example:**
+
 ```go
 func StructuredErrorHandler(logger *slog.Logger) ErrorHandler {
     return func(ctx ErrorContext, err error) {
@@ -197,6 +207,7 @@ func StructuredErrorHandler(logger *slog.Logger) ErrorHandler {
     }
 }
 ```
+
 **Effort:** ~20 minutes
 
 ### 3. Error Rate Limiting (Low Priority)
@@ -269,6 +280,7 @@ func StructuredErrorHandler(logger *slog.Logger) ErrorHandler {
 ### Context:
 
 The ErrorHandler signature changed from:
+
 ```go
 // Old (before this commit)
 type ErrorHandler func(error)
@@ -280,6 +292,7 @@ type ErrorHandler func(ErrorContext, error)
 ### Trade-offs I've Considered:
 
 **Clean Break (Current Approach):**
+
 - ✅ Simpler code - no adapter layers
 - ✅ Forces users to adopt better practices
 - ✅ No runtime overhead
@@ -287,6 +300,7 @@ type ErrorHandler func(ErrorContext, error)
 - ❌ Requires major version bump
 
 **Backward Compatibility (Alternative):**
+
 - ✅ No breaking changes
 - ✅ Can deprecate gradually
 - ❌ More complex code
@@ -302,6 +316,7 @@ type ErrorHandler func(ErrorContext, error)
 ### What I Need:
 
 **Decision:** Should we:
+
 - A) Keep current clean break approach (update major version)
 - B) Add backward compatibility shim (maintain both signatures)
 - C) Revert and use different approach (e.g., keep old signature, add context via error wrapping)
@@ -309,11 +324,13 @@ type ErrorHandler func(ErrorContext, error)
 ### My Recommendation:
 
 **Option A (Clean Break)** - The ErrorContext provides significantly more value than the old signature, and Go libraries typically accept breaking changes for clear improvements. However, this requires:
+
 1. Updating version to v2.0.0
 2. Writing clear migration guide
 3. Updating all examples
 
 **Alternative Option C** - If backward compatibility is critical, we could:
+
 ```go
 // Keep old signature but wrap errors with context
 type ErrorHandler func(error)
@@ -398,4 +415,4 @@ The only open question is the backward compatibility strategy for the ErrorHandl
 
 ---
 
-*Report generated at 2026-04-11 20:37 by Kimi K2.5 via Crush*
+_Report generated at 2026-04-11 20:37 by Kimi K2.5 via Crush_

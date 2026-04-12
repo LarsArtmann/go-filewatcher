@@ -98,11 +98,12 @@ func demonstrateSpecificFilters(watchDir string) {
 
 	// Start watching with a timeout
 	ctx, cancel := context.WithTimeout(context.Background(), watchTimeout)
-	//nolint:gocritic // log.Fatalf exits, cancel() runs via defer on success path
+
 	defer cancel()
 
 	events, err := watcher.Watch(ctx)
 	if err != nil {
+		//nolint:gocritic // log.Fatalf exits, cancel() runs via defer on success path
 		log.Fatalf("Failed to watch: %v", err)
 	}
 
@@ -167,11 +168,12 @@ func demonstrateAllFilters(watchDir string) {
 
 	// Start watching with a timeout
 	ctx, cancel := context.WithTimeout(context.Background(), watchTimeout)
-	//nolint:gocritic // log.Fatalf exits, cancel() runs via defer on success path
+
 	defer cancel()
 
 	events, err := watcher.Watch(ctx)
 	if err != nil {
+		//nolint:gocritic // log.Fatalf exits, cancel() runs via defer on success path
 		log.Fatalf("Failed to watch: %v", err)
 	}
 

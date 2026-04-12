@@ -23,7 +23,7 @@ func TestWatcherError_Error(t *testing.T) {
 		{
 			name: "with path",
 			err: &WatcherError{
-				Op:       "watch",
+				Op:       OpString("watch"),
 				Path:     "/test/path",
 				Err:      ErrPathNotFound,
 				Category: CategoryPermanent,
@@ -33,7 +33,7 @@ func TestWatcherError_Error(t *testing.T) {
 		{
 			name: "without path",
 			err: &WatcherError{
-				Op:       "init",
+				Op:       OpString("init"),
 				Err:      ErrNoPaths,
 				Category: CategoryPermanent,
 			},
@@ -56,7 +56,7 @@ func TestWatcherError_Unwrap(t *testing.T) {
 	t.Parallel()
 
 	err := &WatcherError{
-		Op:       "test",
+		Op:       OpString("test"),
 		Err:      ErrWatcherClosed,
 		Category: CategoryPermanent,
 	}
@@ -84,7 +84,7 @@ func TestWatcherError_IsTransient(t *testing.T) {
 			t.Parallel()
 
 			err := &WatcherError{
-				Op:       "test",
+				Op:       OpString("test"),
 				Err:      errors.New("test"),
 				Category: tt.category,
 			}
@@ -114,7 +114,7 @@ func TestWatcherError_IsPermanent(t *testing.T) {
 			t.Parallel()
 
 			err := &WatcherError{
-				Op:       "test",
+				Op:       OpString("test"),
 				Err:      errors.New("test"),
 				Category: tt.category,
 			}
@@ -129,10 +129,10 @@ func TestWatcherError_IsPermanent(t *testing.T) {
 func TestNewWatcherError(t *testing.T) {
 	t.Parallel()
 
-	err := NewWatcherError("test_op", "/test/path", ErrPathNotFound)
+	err := NewWatcherError(OpString("test_op"), "/test/path", ErrPathNotFound)
 
-	if err.Op != "test_op" {
-		t.Errorf("Op = %q, want %q", err.Op, "test_op")
+	if err.Op != OpString("test_op") {
+		t.Errorf("Op = %q, want %q", err.Op, OpString("test_op"))
 	}
 
 	if err.Path != "/test/path" {

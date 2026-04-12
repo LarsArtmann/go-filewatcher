@@ -61,7 +61,7 @@ const (
 // WatcherError provides structured error information with context.
 type WatcherError struct {
 	// Op is the operation being performed when the error occurred.
-	Op string
+	Op OpString
 
 	// Path is the file path involved, if any.
 	Path string
@@ -76,10 +76,10 @@ type WatcherError struct {
 // Error implements the error interface.
 func (e *WatcherError) Error() string {
 	if e.Path != "" {
-		return fmt.Sprintf("%s: path %q: %v", e.Op, e.Path, e.Err)
+		return fmt.Sprintf("%s: path %q: %v", string(e.Op), e.Path, e.Err)
 	}
 
-	return fmt.Sprintf("%s: %v", e.Op, e.Err)
+	return fmt.Sprintf("%s: %v", string(e.Op), e.Err)
 }
 
 // Unwrap returns the underlying error for errors.Is/As support.
@@ -99,7 +99,7 @@ func (e *WatcherError) IsPermanent() bool {
 
 // NewWatcherError creates a new WatcherError with the given parameters.
 // It automatically categorizes common error types.
-func NewWatcherError(op, path string, err error) *WatcherError {
+func NewWatcherError(op OpString, path string, err error) *WatcherError {
 	return &WatcherError{
 		Op:       op,
 		Path:     path,

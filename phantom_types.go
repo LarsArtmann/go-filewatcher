@@ -14,3 +14,12 @@ type LogSubstring string
 
 // TempDir is a phantom type for temporary directory paths in tests.
 type TempDir string
+
+// OpString is a phantom type for operation names (e.g., "fsnotify", "middleware").
+type OpString string
+
+// WatchDirString is a phantom type for watch directory paths.
+type WatchDirString string
+
+// RootString is a phantom type for root directory paths.
+type RootString string

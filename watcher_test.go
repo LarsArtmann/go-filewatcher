@@ -309,8 +309,6 @@ func TestWatcher_Watch_WithDebounce(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	defer func() { _ = w.Close() }()
-
 	ctx := setupTestContext(t, 5*time.Second)
 
 	events, err := w.Watch(ctx)
@@ -343,6 +341,10 @@ collect:
 		}
 	}
 
+	// Close watcher explicitly after collecting events to avoid race
+	// between debouncer callbacks and channel closure.
+	_ = w.Close()
+
 	if got := eventCount.Load(); got != 1 {
 		t.Errorf("expected 1 debounced event from 5 rapid writes, got %d", got)
 	}
@@ -359,8 +361,6 @@ func TestWatcher_Watch_WithPerPathDebounce(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer func() { _ = w.Close() }()
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -398,6 +398,9 @@ collect:
 			break collect
 		}
 	}
+
+	// Close watcher explicitly after collecting events to avoid race.
+	_ = w.Close()
 
 	if len(paths) != 2 {
 		t.Errorf(

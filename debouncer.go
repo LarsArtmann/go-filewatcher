@@ -2,6 +2,7 @@ package filewatcher
 
 import (
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -26,6 +27,7 @@ type Debouncer struct {
 	delay   time.Duration
 	mu      sync.Mutex
 	entries map[DebounceKey]*debounceEntry
+	stopped atomic.Bool
 }
 
 // NewDebouncer creates a new Debouncer with the specified delay.
@@ -38,6 +40,7 @@ func NewDebouncer(delay time.Duration) *Debouncer {
 		delay:   delay,
 		mu:      sync.Mutex{},
 		entries: make(map[DebounceKey]*debounceEntry),
+		stopped: atomic.Bool{},
 	}
 }
 
@@ -47,6 +50,10 @@ func NewDebouncer(delay time.Duration) *Debouncer {
 func (d *Debouncer) Debounce(key DebounceKey, callback func()) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
+
+	if d.stopped.Load() {
+		return
+	}
 
 	if entry, exists := d.entries[key]; exists {
 		entry.timer.Stop()
@@ -59,10 +66,16 @@ func (d *Debouncer) Debounce(key DebounceKey, callback func()) {
 		},
 	}
 	entry.timer = time.AfterFunc(d.delay, func() {
-		callback()
 		d.mu.Lock()
 		delete(d.entries, key)
+		stopped := d.stopped.Load()
 		d.mu.Unlock()
+
+		if stopped {
+			return
+		}
+
+		callback()
 	})
 	d.entries[key] = entry
 }
@@ -70,24 +83,33 @@ func (d *Debouncer) Debounce(key DebounceKey, callback func()) {
 // Flush executes all pending functions immediately and clears all timers.
 func (d *Debouncer) Flush() {
 	d.mu.Lock()
-	defer d.mu.Unlock()
+
+	callbacks := make([]func(), 0, len(d.entries))
 
 	for key, entry := range d.entries {
 		entry.timer.Stop()
-		entry.fn()
+		callbacks = append(callbacks, entry.fn)
+
 		delete(d.entries, key)
+	}
+
+	d.mu.Unlock()
+
+	for _, fn := range callbacks {
+		fn()
 	}
 }
 
 // Stop cancels all pending executions without running them.
 func (d *Debouncer) Stop() {
 	d.mu.Lock()
-	defer d.mu.Unlock()
+	d.stopped.Store(true)
 
 	for key, entry := range d.entries {
 		entry.timer.Stop()
 		delete(d.entries, key)
 	}
+	d.mu.Unlock()
 }
 
 // Pending returns the number of keys with pending executions.
@@ -103,8 +125,9 @@ func (d *Debouncer) Pending() int {
 type GlobalDebouncer struct {
 	debounceMixin
 
-	delay time.Duration
-	mu    sync.Mutex
+	delay   time.Duration
+	mu      sync.Mutex
+	stopped atomic.Bool
 }
 
 // NewGlobalDebouncer creates a new GlobalDebouncer with the specified delay.
@@ -114,8 +137,9 @@ func NewGlobalDebouncer(delay time.Duration) *GlobalDebouncer {
 	}
 
 	return &GlobalDebouncer{
-		delay: delay,
-		mu:    sync.Mutex{},
+		delay:   delay,
+		mu:      sync.Mutex{},
+		stopped: atomic.Bool{},
 		debounceMixin: debounceMixin{
 			fn:    nil,
 			timer: nil,
@@ -129,34 +153,54 @@ func (g *GlobalDebouncer) Debounce(_ DebounceKey, callback func()) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
+	if g.stopped.Load() {
+		return
+	}
+
 	if g.timer != nil {
 		g.timer.Stop()
 	}
 
 	g.fn = callback
-	g.timer = time.AfterFunc(g.delay, callback)
+	g.timer = time.AfterFunc(g.delay, func() {
+		g.mu.Lock()
+		g.timer = nil
+		g.fn = nil
+		stopped := g.stopped.Load()
+		g.mu.Unlock()
+
+		if stopped {
+			return
+		}
+
+		callback()
+	})
 }
 
 // Flush executes the pending function immediately and clears the timer.
 func (g *GlobalDebouncer) Flush() {
 	g.mu.Lock()
-	defer g.mu.Unlock()
+
+	var callback func()
 
 	if g.timer != nil {
 		g.timer.Stop()
-
 		g.timer = nil
-		if g.fn != nil {
-			g.fn()
-			g.fn = nil
-		}
+		callback = g.fn
+		g.fn = nil
+	}
+
+	g.mu.Unlock()
+
+	if callback != nil {
+		callback()
 	}
 }
 
 // Stop cancels the pending execution.
 func (g *GlobalDebouncer) Stop() {
 	g.mu.Lock()
-	defer g.mu.Unlock()
+	g.stopped.Store(true)
 
 	if g.timer != nil {
 		g.timer.Stop()
@@ -164,6 +208,8 @@ func (g *GlobalDebouncer) Stop() {
 	}
 
 	g.fn = nil
+
+	g.mu.Unlock()
 }
 
 // Pending returns whether there is a pending execution.

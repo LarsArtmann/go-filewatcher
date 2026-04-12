@@ -71,10 +71,16 @@ func (w *Watcher) emitEvent(ctx context.Context, event Event, eventCh chan<- Eve
 // buildEmitFunc creates the emit function for sending events.
 func (w *Watcher) buildEmitFunc(ctx context.Context, eventCh chan<- Event) func(Event) {
 	return func(e Event) {
+		// Use recover to handle the race between send and close.
+		// This is the safest way to handle the debouncer callback race
+		// because there's no way to atomically check if a channel is closed.
+		defer func() {
+			_ = recover() // Ignore panic from sending on closed channel
+		}()
+
 		select {
 		case eventCh <- e:
 		case <-ctx.Done():
-		default:
 		}
 	}
 }

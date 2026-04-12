@@ -77,6 +77,7 @@ func (w *Watcher) IsClosed() bool {
 type DebouncerInterface interface {
 	Debounce(key DebounceKey, fn func())
 	Stop()
+	Flush()
 }
 
 // Compile-time interface checks.
@@ -283,13 +284,17 @@ func (w *Watcher) Close() error {
 	w.state &^= flagWatching
 	w.watchList = w.watchList[:0]
 
-	if w.debounceInterface != nil {
-		w.debounceInterface.Stop()
-	}
-
+	// Close fsnotify watcher (causes watchLoop to exit and close eventCh)
 	err := w.fswatcher.Close()
 	if err != nil {
 		return fmt.Errorf("closing fsnotify watcher: %w", err)
+	}
+
+	// Stop the debouncer after closing fsnotify.
+	// There's a potential race where a debounced callback could try to send
+	// on the closed channel. buildEmitFunc handles this with recover().
+	if w.debounceInterface != nil {
+		w.debounceInterface.Stop()
 	}
 
 	return nil

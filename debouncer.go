@@ -8,16 +8,10 @@ import (
 
 const defaultDebounceDelay = 500 * time.Millisecond // Default delay for debouncing when none is specified
 
-// debounceMixin contains fields shared between debounceEntry and GlobalDebouncer.
-// Extracted as a mixin to reduce duplication and improve maintainability.
-type debounceMixin struct {
-	fn    func()
-	timer *time.Timer
-}
-
 // debounceEntry holds a timer and its associated function for per-key debouncing.
 type debounceEntry struct {
-	debounceMixin
+	fn    func()
+	timer *time.Timer
 }
 
 // Debouncer prevents rapid successive function executions by coalescing
@@ -28,6 +22,7 @@ type Debouncer struct {
 	mu      sync.Mutex
 	entries map[DebounceKey]*debounceEntry
 	stopped atomic.Bool
+	wg      sync.WaitGroup // tracks in-flight callbacks
 }
 
 // NewDebouncer creates a new Debouncer with the specified delay.
@@ -41,6 +36,7 @@ func NewDebouncer(delay time.Duration) *Debouncer {
 		mu:      sync.Mutex{},
 		entries: make(map[DebounceKey]*debounceEntry),
 		stopped: atomic.Bool{},
+		wg:      sync.WaitGroup{},
 	}
 }
 
@@ -60,10 +56,8 @@ func (d *Debouncer) Debounce(key DebounceKey, callback func()) {
 	}
 
 	entry := &debounceEntry{
-		debounceMixin: debounceMixin{
-			fn:    callback,
-			timer: nil,
-		},
+		fn:    callback,
+		timer: nil,
 	}
 	entry.timer = time.AfterFunc(d.delay, func() {
 		d.mu.Lock()
@@ -76,8 +70,10 @@ func (d *Debouncer) Debounce(key DebounceKey, callback func()) {
 		}
 
 		callback()
+		d.wg.Done()
 	})
 	d.entries[key] = entry
+	d.wg.Add(1)
 }
 
 // Flush executes all pending functions immediately and clears all timers.
@@ -101,6 +97,7 @@ func (d *Debouncer) Flush() {
 }
 
 // Stop cancels all pending executions without running them.
+// Waits for any in-flight callbacks to complete before returning.
 func (d *Debouncer) Stop() {
 	d.mu.Lock()
 	d.stopped.Store(true)
@@ -110,6 +107,9 @@ func (d *Debouncer) Stop() {
 		delete(d.entries, key)
 	}
 	d.mu.Unlock()
+
+	// Wait for any in-flight callbacks to complete
+	d.wg.Wait()
 }
 
 // Pending returns the number of keys with pending executions.
@@ -123,11 +123,12 @@ func (d *Debouncer) Pending() int {
 // GlobalDebouncer coalesces all events into a single timer, regardless of key.
 // Useful when you want to batch all file changes into one action.
 type GlobalDebouncer struct {
-	debounceMixin
-
+	fn      func()
+	timer   *time.Timer
 	delay   time.Duration
 	mu      sync.Mutex
 	stopped atomic.Bool
+	wg      sync.WaitGroup // tracks in-flight callbacks
 }
 
 // NewGlobalDebouncer creates a new GlobalDebouncer with the specified delay.
@@ -140,10 +141,9 @@ func NewGlobalDebouncer(delay time.Duration) *GlobalDebouncer {
 		delay:   delay,
 		mu:      sync.Mutex{},
 		stopped: atomic.Bool{},
-		debounceMixin: debounceMixin{
-			fn:    nil,
-			timer: nil,
-		},
+		wg:      sync.WaitGroup{},
+		fn:      nil,
+		timer:   nil,
 	}
 }
 
@@ -174,7 +174,9 @@ func (g *GlobalDebouncer) Debounce(_ DebounceKey, callback func()) {
 		}
 
 		callback()
+		g.wg.Done()
 	})
+	g.wg.Add(1)
 }
 
 // Flush executes the pending function immediately and clears the timer.
@@ -198,6 +200,7 @@ func (g *GlobalDebouncer) Flush() {
 }
 
 // Stop cancels the pending execution.
+// Waits for any in-flight callback to complete before returning.
 func (g *GlobalDebouncer) Stop() {
 	g.mu.Lock()
 	g.stopped.Store(true)
@@ -210,6 +213,9 @@ func (g *GlobalDebouncer) Stop() {
 	g.fn = nil
 
 	g.mu.Unlock()
+
+	// Wait for any in-flight callback to complete
+	g.wg.Wait()
 }
 
 // Pending returns whether there is a pending execution.

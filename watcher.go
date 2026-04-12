@@ -274,9 +274,10 @@ func (w *Watcher) Stats() Stats {
 // It is safe to call Close multiple times.
 func (w *Watcher) Close() error {
 	w.mu.Lock()
-	defer w.mu.Unlock()
 
 	if w.state&flagClosed != 0 {
+		w.mu.Unlock()
+
 		return nil
 	}
 
@@ -284,15 +285,17 @@ func (w *Watcher) Close() error {
 	w.state &^= flagWatching
 	w.watchList = w.watchList[:0]
 
-	// Close fsnotify watcher (causes watchLoop to exit and close eventCh)
+	w.mu.Unlock()
+
+	// Close fsnotify watcher FIRST - this causes watchLoop to exit
+	// and ensures no new events will be processed.
 	err := w.fswatcher.Close()
 	if err != nil {
 		return fmt.Errorf("closing fsnotify watcher: %w", err)
 	}
 
-	// Stop the debouncer after closing fsnotify.
-	// There's a potential race where a debounced callback could try to send
-	// on the closed channel. buildEmitFunc handles this with recover().
+	// Stop the debouncer AFTER closing fsnotify to wait for any
+	// in-flight debounced callbacks to complete before we return.
 	if w.debounceInterface != nil {
 		w.debounceInterface.Stop()
 	}

@@ -736,8 +736,7 @@ func TestWatcher_IgnoreDirs(t *testing.T) {
 }
 
 func TestWatcher_handleError_Default(t *testing.T) {
-	t.Parallel()
-
+	//nolint:paralleltest // Not parallel: manipulates global os.Stderr
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir})

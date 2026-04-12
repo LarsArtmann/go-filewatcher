@@ -328,8 +328,7 @@ func TestErrorHandler_WithContext(t *testing.T) {
 }
 
 func TestErrorHandler_DefaultLogsToStderr(t *testing.T) {
-	t.Parallel()
-
+	//nolint:paralleltest // Not parallel: manipulates global os.Stderr
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir})
@@ -359,8 +358,7 @@ func TestErrorHandler_DefaultLogsToStderr(t *testing.T) {
 }
 
 func TestErrorHandler_DefaultWithoutPath(t *testing.T) {
-	t.Parallel()
-
+	//nolint:paralleltest // Not parallel: manipulates global os.Stderr
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir})

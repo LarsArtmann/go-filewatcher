@@ -28,18 +28,27 @@ import (
 	filewatcher "github.com/larsartmann/go-filewatcher"
 )
 
+const (
+	debounceDelay = 100 * time.Millisecond
+	watchTimeout  = 2 * time.Second
+	filePerms     = 0o600
+	dirPerms      = 0o750
+)
+
 func main() {
-	// Create a temporary directory to watch
 	watchDir, err := os.MkdirTemp("", "filewatcher-example-*")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer os.RemoveAll(watchDir)
+
+	if err := os.RemoveAll(watchDir); err != nil {
+		log.Printf("Failed to cleanup watch dir: %v", err)
+	}
 
 	// Create subdirectories to demonstrate filtering
 	dirs := []string{"db", "api", "web", "mocks"}
 	for _, dir := range dirs {
-		err := os.MkdirAll(filepath.Join(watchDir, dir), 0o755)
+		err := os.MkdirAll(filepath.Join(watchDir, dir), dirPerms)
 		if err != nil {
 			log.Printf("Failed to create directory %s: %v", dir, err)
 
@@ -73,22 +82,23 @@ func demonstrateSpecificFilters(watchDir string) {
 			gogenfilter.FilterSQLC,
 			gogenfilter.FilterProtobuf,
 		)),
-		filewatcher.WithDebounce(100*time.Millisecond),
+		filewatcher.WithDebounce(debounceDelay),
 	)
 	if err != nil {
-		_ = watcher.Close()
-
 		log.Fatalf("Failed to create watcher: %v", err)
 	}
-	defer watcher.Close()
+	defer func() {
+		if closeErr := watcher.Close(); closeErr != nil {
+			log.Printf("Failed to close watcher: %v", closeErr)
+		}
+	}()
 
 	// Start watching with a timeout
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), watchTimeout)
 	defer cancel()
 
 	events, err := watcher.Watch(ctx)
 	if err != nil {
-		cancel()
 		log.Fatalf("Failed to watch: %v", err)
 	}
 
@@ -138,22 +148,23 @@ func demonstrateAllFilters(watchDir string) {
 	watcher, err := filewatcher.New(
 		[]string{watchDir},
 		filewatcher.WithFilter(filewatcher.FilterGeneratedCode()), // Defaults to FilterAll
-		filewatcher.WithDebounce(100*time.Millisecond),
+		filewatcher.WithDebounce(debounceDelay),
 	)
 	if err != nil {
-		_ = watcher.Close()
-
 		log.Fatalf("Failed to create watcher: %v", err)
 	}
-	defer watcher.Close()
+	defer func() {
+		if closeErr := watcher.Close(); closeErr != nil {
+			log.Printf("Failed to close watcher: %v", closeErr)
+		}
+	}()
 
 	// Start watching with a timeout
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), watchTimeout)
 	defer cancel()
 
 	events, err := watcher.Watch(ctx)
 	if err != nil {
-		cancel()
 		log.Fatalf("Failed to watch: %v", err)
 	}
 
@@ -231,14 +242,14 @@ func demonstrateDetector(watchDir string) {
 func createTestFile(dir, filename, content string) {
 	path := filepath.Join(dir, filename)
 
-	err := os.MkdirAll(filepath.Dir(path), 0o755)
+	err := os.MkdirAll(filepath.Dir(path), dirPerms)
 	if err != nil {
 		log.Printf("Failed to create directory for %s: %v", filename, err)
 
 		return
 	}
 
-	err = os.WriteFile(path, []byte(content), 0o600)
+	err = os.WriteFile(path, []byte(content), filePerms)
 	if err != nil {
 		log.Printf("Failed to create file %s: %v", filename, err)
 

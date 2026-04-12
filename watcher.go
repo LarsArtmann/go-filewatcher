@@ -61,44 +61,17 @@ type Watcher struct {
 	debounceInterface DebouncerInterface
 }
 
-// isClosed reports if the watcher is closed (thread-safe).
-func (w *Watcher) isClosed() bool {
+// Compile-time interface check: Watcher implements io.Closer.
+var _ io.Closer = (*Watcher)(nil)
+
+// IsClosed reports if the watcher has been closed.
+// This is safe to call concurrently with other methods.
+func (w *Watcher) IsClosed() bool {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
 	return w.state&flagClosed != 0
 }
-
-// setClosed marks the watcher as closed (thread-safe).
-func (w *Watcher) setClosed() {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-
-	w.state |= flagClosed
-}
-
-// isWatching reports if the watcher is currently watching (thread-safe).
-func (w *Watcher) isWatching() bool {
-	w.mu.RLock()
-	defer w.mu.RUnlock()
-
-	return w.state&flagWatching != 0
-}
-
-// setWatching sets the watching state (thread-safe).
-func (w *Watcher) setWatching(v bool) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-
-	if v {
-		w.state |= flagWatching
-	} else {
-		w.state &^= flagWatching
-	}
-}
-
-// Compile-time interface check: Watcher implements io.Closer.
-var _ io.Closer = (*Watcher)(nil)
 
 // DebouncerInterface is the interface for debouncer implementations.
 type DebouncerInterface interface {
@@ -196,7 +169,7 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 
 	// Add initial paths to the fsnotify watcher
 	for _, p := range w.paths {
-		addErr := w.addPath(p)
+		addErr := w.addPath(RootPath(p))
 		if addErr != nil {
 			return nil, fmt.Errorf("adding watch path %q during Watch(): %w", p, addErr)
 		}
@@ -224,7 +197,7 @@ func (w *Watcher) Add(path string) error {
 		return fmt.Errorf("resolving path %q in Add(): %w", path, resolveErr)
 	}
 
-	pathErr := w.addPath(abs)
+	pathErr := w.addPath(RootPath(abs))
 	if pathErr != nil {
 		return fmt.Errorf("adding resolved path %q to watcher: %w", abs, pathErr)
 	}

@@ -735,8 +735,8 @@ func TestWatcher_IgnoreDirs(t *testing.T) {
 	)
 }
 
+//nolint:paralleltest // Not parallel: captures os.Stderr, which is a global resource.
 func TestWatcher_handleError_Default(t *testing.T) {
-	//nolint:paralleltest // Not parallel: manipulates global os.Stderr
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir})
@@ -806,6 +806,10 @@ func TestWatcher_Add_ClosedWatcher(t *testing.T) {
 	}
 
 	_ = w.Close()
+
+	if !w.IsClosed() {
+		t.Error("expected IsClosed() to return true after Close()")
+	}
 
 	err = w.Add(t.TempDir())
 	if err == nil {

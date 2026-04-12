@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- Public `IsClosed() bool` method on `Watcher` for checking closed state
 - Core watcher: `New()`, `Watch(ctx)→<-chan Event`, `Add()`, `Remove()`, `WatchList()`, `Stats()`, `Close()`
 - 9 functional options: debounce, per-path debounce, filter, extensions, ignore dirs, ignore hidden, recursive, middleware, error handler
 - 13 composable filters: Extensions, IgnoreExtensions, IgnoreDirs, IgnoreHidden, Operations, NotOperations, Glob, Regex, MinSize, And, Or, Not

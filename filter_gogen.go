@@ -48,6 +48,7 @@ func FilterGeneratedCodeFull(checkContent bool, options ...gogenfilter.FilterOpt
 
 	// Build the options map for detection
 	optMap := make(map[gogenfilter.FilterOption]bool)
+
 	for _, opt := range opts {
 		if opt == gogenfilter.FilterAll {
 			// Enable all specific options
@@ -61,6 +62,7 @@ func FilterGeneratedCodeFull(checkContent bool, options ...gogenfilter.FilterOpt
 			} {
 				optMap[specific] = true
 			}
+
 			optMap[gogenfilter.FilterGeneric] = true
 		} else {
 			optMap[opt] = true
@@ -102,13 +104,13 @@ func FilterGeneratedCodeFull(checkContent bool, options ...gogenfilter.FilterOpt
 //
 // Example:
 //
-//	gf := gogenfilter.NewFilter(true, []gogenfilter.FilterOption{gogenfilter.FilterAll})
-//	gf.WithExcludePatterns([]string{"*_custom.go"})
+//	genFilter := gogenfilter.NewFilter(true, []gogenfilter.FilterOption{gogenfilter.FilterAll})
+//	genFilter.WithExcludePatterns([]string{"*_custom.go"})
 //
 //	watcher, _ := filewatcher.New("./src",
-//	    filewatcher.WithFilter(filewatcher.FilterGeneratedCodeWithFilter(gf)),
+//	    filewatcher.WithFilter(filewatcher.FilterGeneratedCodeWithFilter(genFilter)),
 //	)
-func FilterGeneratedCodeWithFilter(gf *gogenfilter.Filter) Filter {
+func FilterGeneratedCodeWithFilter(genFilter *gogenfilter.Filter) Filter {
 	return func(event Event) bool {
 		// Directories are not filtered by generated code detection
 		if event.IsDir {
@@ -117,7 +119,7 @@ func FilterGeneratedCodeWithFilter(gf *gogenfilter.Filter) Filter {
 
 		// Use gogenfilter's ShouldFilter method
 		// Returns true if file should be filtered (excluded)
-		return !gf.ShouldFilter(event.Path)
+		return !genFilter.ShouldFilter(event.Path)
 	}
 }
 
@@ -135,6 +137,7 @@ func NewGeneratedCodeDetector(options ...gogenfilter.FilterOption) *GeneratedCod
 	}
 
 	optMap := make(map[gogenfilter.FilterOption]bool)
+
 	for _, opt := range opts {
 		if opt == gogenfilter.FilterAll {
 			for _, specific := range []gogenfilter.FilterOption{
@@ -147,6 +150,7 @@ func NewGeneratedCodeDetector(options ...gogenfilter.FilterOption) *GeneratedCod
 			} {
 				optMap[specific] = true
 			}
+
 			optMap[gogenfilter.FilterGeneric] = true
 		} else {
 			optMap[opt] = true
@@ -160,6 +164,7 @@ func NewGeneratedCodeDetector(options ...gogenfilter.FilterOption) *GeneratedCod
 // filename-based detection only (zero I/O).
 func (d *GeneratedCodeDetector) IsGenerated(filePath string) bool {
 	reason := gogenfilter.DetectReason(filePath, "", d.options)
+
 	return reason != gogenfilter.ReasonNotFiltered
 }
 
@@ -167,6 +172,7 @@ func (d *GeneratedCodeDetector) IsGenerated(filePath string) bool {
 // filename and content detection.
 func (d *GeneratedCodeDetector) IsGeneratedWithContent(filePath string, content string) bool {
 	reason := gogenfilter.DetectReason(filePath, content, d.options)
+
 	return reason != gogenfilter.ReasonNotFiltered
 }
 

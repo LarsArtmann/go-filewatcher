@@ -33,7 +33,11 @@ func runFilterTestsInline(t *testing.T, f Filter, tests filterTests) {
 			t.Parallel()
 
 			if got := f(tt.event); got != tt.want {
-				t.Errorf("got %v, want %v", got, tt.want)
+				t.Errorf(
+					"got %v, want %v",
+					got,
+					tt.want,
+				)
 			}
 		})
 	}

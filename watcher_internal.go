@@ -150,7 +150,7 @@ func (w *Watcher) getDebounceKey(path string) DebounceKey {
 }
 
 // handleNewDirectory adds newly created directories to the watcher
-// when recursive mode is enabled.
+// when recursive mode is enabled. Called from watchLoop without holding lock.
 func (w *Watcher) handleNewDirectory(path string) {
 	if !w.recursive {
 		return
@@ -169,7 +169,11 @@ func (w *Watcher) handleNewDirectory(path string) {
 		return
 	}
 
-	_ = w.addPath(path)
+	// Acquire write lock for addPath
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	_ = w.addPath(RootPath(path))
 }
 
 // passesFilters checks if an event passes all registered filters.

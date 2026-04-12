@@ -39,8 +39,10 @@ func main() {
 	// Create subdirectories to demonstrate filtering
 	dirs := []string{"db", "api", "web", "mocks"}
 	for _, dir := range dirs {
-		if err := os.MkdirAll(filepath.Join(watchDir, dir), 0o755); err != nil {
-			log.Fatal(err)
+		err := os.MkdirAll(filepath.Join(watchDir, dir), 0o755)
+		if err != nil {
+			log.Printf("Failed to create directory %s: %v", dir, err)
+			return
 		}
 	}
 
@@ -73,7 +75,8 @@ func demonstrateSpecificFilters(watchDir string) {
 		filewatcher.WithDebounce(100*time.Millisecond),
 	)
 	if err != nil {
-		log.Fatal(err)
+		_ = watcher.Close()
+		log.Fatalf("Failed to create watcher: %v", err)
 	}
 	defer watcher.Close()
 
@@ -83,23 +86,27 @@ func demonstrateSpecificFilters(watchDir string) {
 
 	events, err := watcher.Watch(ctx)
 	if err != nil {
-		log.Fatal(err)
+		cancel()
+		log.Fatalf("Failed to watch: %v", err)
 	}
 
 	// Create test files
 	createTestFile(watchDir, "main.go", "package main")
-	createTestFile(watchDir, "db/models.go", "package db")          // sqlc - filtered
-	createTestFile(watchDir, "api/user.pb.go", "package api")       // protobuf - filtered
-	createTestFile(watchDir, "web/page_templ.go", "package web")    // templ - NOT filtered
+	createTestFile(watchDir, "db/models.go", "package db")             // sqlc - filtered
+	createTestFile(watchDir, "api/user.pb.go", "package api")          // protobuf - filtered
+	createTestFile(watchDir, "web/page_templ.go", "package web")       // templ - NOT filtered
 	createTestFile(watchDir, "mocks/service_mock.go", "package mocks") // mockgen - NOT filtered
 
 	// Collect events
 	var receivedEvents []string
+
 	eventDone := make(chan struct{})
+
 	go func() {
 		for event := range events {
 			receivedEvents = append(receivedEvents, filepath.Base(event.Path))
 		}
+
 		close(eventDone)
 	}()
 
@@ -108,9 +115,11 @@ func demonstrateSpecificFilters(watchDir string) {
 	<-eventDone
 
 	fmt.Println("Files that triggered events:")
+
 	for _, name := range receivedEvents {
 		fmt.Printf("  - %s\n", name)
 	}
+
 	fmt.Println()
 	fmt.Println("Filtered (no events):")
 	fmt.Println("  - models.go (sqlc)")
@@ -130,7 +139,8 @@ func demonstrateAllFilters(watchDir string) {
 		filewatcher.WithDebounce(100*time.Millisecond),
 	)
 	if err != nil {
-		log.Fatal(err)
+		_ = watcher.Close()
+		log.Fatalf("Failed to create watcher: %v", err)
 	}
 	defer watcher.Close()
 
@@ -140,7 +150,8 @@ func demonstrateAllFilters(watchDir string) {
 
 	events, err := watcher.Watch(ctx)
 	if err != nil {
-		log.Fatal(err)
+		cancel()
+		log.Fatalf("Failed to watch: %v", err)
 	}
 
 	// Create more test files
@@ -149,11 +160,14 @@ func demonstrateAllFilters(watchDir string) {
 
 	// Collect events
 	var receivedEvents []string
+
 	eventDone := make(chan struct{})
+
 	go func() {
 		for event := range events {
 			receivedEvents = append(receivedEvents, filepath.Base(event.Path))
 		}
+
 		close(eventDone)
 	}()
 
@@ -162,9 +176,11 @@ func demonstrateAllFilters(watchDir string) {
 	<-eventDone
 
 	fmt.Println("Files that triggered events:")
+
 	for _, name := range receivedEvents {
 		fmt.Printf("  - %s\n", name)
 	}
+
 	fmt.Println()
 	fmt.Println("All generated files are filtered!")
 	fmt.Println()
@@ -192,27 +208,36 @@ func demonstrateDetector(watchDir string) {
 	}
 
 	fmt.Println("Checking files with detector:")
+
 	for _, path := range testFiles {
 		isGenerated := detector.IsGenerated(path)
 		reason := detector.GetReason(path)
+
 		status := "regular"
 		if isGenerated {
 			status = string(reason)
 		}
+
 		fmt.Printf("  - %s: %s\n", filepath.Base(path), status)
 	}
+
 	fmt.Println()
 }
 
 // createTestFile creates a test file with the given content.
 func createTestFile(dir, filename, content string) {
 	path := filepath.Join(dir, filename)
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+	err := os.MkdirAll(filepath.Dir(path), 0o755)
+	if err != nil {
 		log.Printf("Failed to create directory for %s: %v", filename, err)
+
 		return
 	}
-	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+
+	err = os.WriteFile(path, []byte(content), 0o600)
+	if err != nil {
 		log.Printf("Failed to create file %s: %v", filename, err)
+
 		return
 	}
 }

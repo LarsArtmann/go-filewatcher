@@ -327,8 +327,8 @@ func TestErrorHandler_WithContext(t *testing.T) {
 	}
 }
 
+//nolint:paralleltest // Not parallel: captures os.Stderr, which is a global resource.
 func TestErrorHandler_DefaultLogsToStderr(t *testing.T) {
-	//nolint:paralleltest // Not parallel: manipulates global os.Stderr
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir})
@@ -357,8 +357,8 @@ func TestErrorHandler_DefaultLogsToStderr(t *testing.T) {
 	}
 }
 
+//nolint:paralleltest // Not parallel: captures os.Stderr, which is a global resource.
 func TestErrorHandler_DefaultWithoutPath(t *testing.T) {
-	//nolint:paralleltest // Not parallel: manipulates global os.Stderr
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir})
@@ -445,9 +445,8 @@ func TestCategorizeError_Nil(t *testing.T) {
 	}
 }
 
+//nolint:paralleltest // Not parallel: captures error handler state.
 func TestErrorHandler_Async(t *testing.T) {
-	t.Parallel()
-
 	var callCount atomic.Int32
 
 	handler := func(ctx ErrorContext, err error) {

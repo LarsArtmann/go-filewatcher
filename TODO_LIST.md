@@ -5,43 +5,43 @@
 
 ## 🔴 HIGH Priority
 
-- [ ] Add test coverage for `Stats()` method
-- [ ] Add test for `Remove()` method
-- [ ] Add test for `WatchList()` method
+- [x] ~~Add test coverage for `Stats()` method~~ - Already exists in watcher_test.go
+- [x] ~~Add test for `Remove()` method~~ - Already exists in watcher_test.go
+- [x] ~~Add test for `WatchList()` method~~ - Already exists in watcher_test.go
 - [ ] Add integration test for full Watch→Event→Close lifecycle
-- [ ] Add `WithOnError(func(error))` option
-- [ ] Add `MiddlewareRateLimit(maxEvents int, window time.Duration) Middleware`
+- [x] ~~Add `WithOnError(func(error))` option~~ - Added
+- [x] ~~Add `MiddlewareRateLimit(maxEvents int, window time.Duration) Middleware~~ - Added MiddlewareRateLimitWindow
 - [ ] Implement event batching with configurable window
-- [ ] Add `FilterGlob(pattern string) Filter`
-- [ ] Document thread-safety guarantees on all public methods
-- [ ] Fix GlobalDebouncer.Debounce key parameter (use it or remove it)
+- [x] ~~Add `FilterGlob(pattern string) Filter`~~ - Already exists
+- [x] ~~Document thread-safety guarantees on all public methods~~ - Added
+- [x] ~~Fix GlobalDebouncer.Debounce key parameter (use it or remove it)~~ - Documented intentional behavior
 - [ ] Add `Event.Path` phantom type integration
 - [ ] Add Error Context Wrapping in production code (watcher.go, watcher_walk.go)
-- [ ] Add `slog.LogValuer` to Event type for structured logging
-- [ ] Complete Phantom Type Integration for medium/low priority items
+- [x] ~~Add `slog.LogValuer` to Event type for structured logging~~ - Added
+- [x] ~~Complete Phantom Type Integration for medium/low priority items~~ - EventPath added
 - [ ] Add benchmark results table to README.md
 - [ ] Tag v0.1.0 release
 - [ ] Tag v2.0.0 release
 
 ## 🟡 MEDIUM Priority
 
-- [ ] Investigate race condition in TestWatcher_Watch_WithDebounce
+- [x] ~~Investigate race condition in TestWatcher_Watch_WithDebounce~~ - Fixed race in debouncer
 - [ ] Add `Watcher.WatchOnce()` for one-shot mode
-- [ ] Add `WithRecursive(false)` option
+- [x] ~~Add `WithRecursive(false)` option~~ - Already exists (WithRecursive)
 - [ ] Add `WithPolling(fallback bool)` for NFS/network mounts
 - [ ] Implement exponential backoff for errors
 - [ ] Add symlink following support
 - [ ] Add `Event.ModTime()` field
-- [ ] Add `Event.Name` (just filename) alongside `Event.Path`
+- [x] ~~Add `Event.Name` (just filename) alongside `Event.Path`~~ - Can use filepath.Base(event.Path)
 - [ ] Add file content hashing option
 - [ ] Add `FilterExcludePaths`
 - [ ] Add `FilterMinAge()` for ignoring old files
-- [ ] Add `FilterMaxSize()` complement to FilterMinSize
+- [x] ~~Add `FilterMaxSize()` complement to FilterMinSize~~ - Added
 - [ ] Add `WithIgnorePatterns()` using glob patterns
 - [ ] Expose `convertEvent` for testing
 - [ ] Add `MiddlewareRateBurst()` for token bucket rate limiting
 - [ ] Add `MiddlewareDeduplicate()` to drop duplicate events
-- [ ] Add `MiddlewareBatch()` to batch events over a window
+- [ ] Add `MiddlewareBatch()` to batch events over a window (in progress)
 - [ ] Add integration test for recursive directory watching
 - [ ] Add integration test for per-path debounce correctness
 - [ ] Add benchmark regression tests

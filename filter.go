@@ -148,6 +148,24 @@ func FilterMinSize(minSize int64) Filter {
 	}
 }
 
+// FilterMaxSize creates a filter that only passes events for files
+// with size less than or equal to the given maximum size in bytes.
+// Directory events are not filtered by size.
+func FilterMaxSize(maxSize int64) Filter {
+	return func(event Event) bool {
+		if event.IsDir {
+			return true // Don't filter directories by size
+		}
+
+		info, err := os.Stat(event.Path)
+		if err != nil {
+			return false // If we can't stat, filter out
+		}
+
+		return info.Size() <= maxSize
+	}
+}
+
 // FilterAnd combines multiple filters with AND logic.
 // All filters must return true for the event to pass.
 func FilterAnd(filters ...Filter) Filter {

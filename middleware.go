@@ -197,6 +197,90 @@ func MiddlewareMetrics(counter func(op Op)) Middleware {
 	}
 }
 
+// defaultBatchWindow is the default time window for batching events.
+const defaultBatchWindow = 100 * time.Millisecond
+
+// defaultBatchSize is the default maximum number of events in a batch.
+const defaultBatchSize = 100
+
+// MiddlewareBatch returns a middleware that batches events over a window
+// and emits them all at once. The flush function is called with all batched
+// events when the window expires or the batch reaches max size.
+//
+// The flush function receives the batched events and should process them.
+// If it returns an error, the error is passed to the next handler.
+// If it returns nil, processing continues normally.
+//
+//nolint:funlen // Complex middleware requiring inline logic
+func MiddlewareBatch(window time.Duration, maxSize int, flush func([]Event) error) Middleware {
+	if window <= 0 {
+		window = defaultBatchWindow
+	}
+
+	if maxSize <= 0 {
+		maxSize = defaultBatchSize
+	}
+
+	type batchState struct {
+		mu     sync.Mutex
+		events []Event
+		timer  *time.Timer
+	}
+
+	state := &batchState{
+		events: make([]Event, 0, maxSize),
+		mu:     sync.Mutex{},
+		timer:  nil,
+	}
+
+	return func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			state.mu.Lock()
+
+			state.events = append(state.events, event)
+
+			// If batch is full, flush immediately
+			if len(state.events) >= maxSize {
+				events := state.events
+				state.events = make([]Event, 0, maxSize)
+
+				if state.timer != nil {
+					state.timer.Stop()
+					state.timer = nil
+				}
+
+				state.mu.Unlock()
+
+				err := flush(events)
+				if err != nil {
+					return err
+				}
+
+				return next(ctx, event)
+			}
+
+			// Start or reset timer
+			if state.timer == nil {
+				state.timer = time.AfterFunc(window, func() {
+					state.mu.Lock()
+					events := state.events
+					state.events = make([]Event, 0, maxSize)
+					state.timer = nil
+					state.mu.Unlock()
+
+					if len(events) > 0 {
+						_ = flush(events)
+					}
+				})
+			}
+
+			state.mu.Unlock()
+
+			return next(ctx, event)
+		}
+	}
+}
+
 // MiddlewareWriteFileLog returns a middleware that appends event logs
 // to a file at the given path. This is useful for audit trails.
 // The file handle is cached for the lifetime of the middleware.

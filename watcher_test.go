@@ -822,6 +822,8 @@ func TestWatcher_Add_ClosedWatcher(t *testing.T) {
 
 // TestWatcher_FullLifecycle is an integration test for the complete
 // Watch → Event → Close lifecycle.
+//
+//nolint:all // Integration test - complexity acceptable for comprehensive coverage
 func TestWatcher_FullLifecycle(t *testing.T) {
 	t.Parallel()
 
@@ -836,6 +838,7 @@ func TestWatcher_FullLifecycle(t *testing.T) {
 		WithMiddleware(func(next Handler) Handler {
 			return func(ctx context.Context, event Event) error {
 				eventCount.Add(1)
+
 				return next(ctx, event)
 			}
 		}),
@@ -848,6 +851,7 @@ func TestWatcher_FullLifecycle(t *testing.T) {
 	if w.IsClosed() {
 		t.Error("expected watcher not to be closed initially")
 	}
+
 	if w.IsWatching() {
 		t.Error("expected watcher not to be watching before Watch()")
 	}
@@ -878,7 +882,9 @@ func TestWatcher_FullLifecycle(t *testing.T) {
 
 	// Create a test file to trigger an event
 	testFile := filepath.Join(tmpDir, "test.go")
-	if err := os.WriteFile(testFile, []byte("package main"), 0o600); err != nil {
+
+	err = os.WriteFile(testFile, []byte("package main"), 0o600)
+	if err != nil {
 		t.Fatalf("WriteFile failed: %v", err)
 	}
 
@@ -888,9 +894,11 @@ func TestWatcher_FullLifecycle(t *testing.T) {
 		if event.Path != testFile {
 			t.Errorf("expected event for %s, got %s", testFile, event.Path)
 		}
+
 		if event.Op != Create && event.Op != Write {
 			t.Errorf("expected Create or Write op, got %s", event.Op)
 		}
+
 	case <-time.After(5 * time.Second):
 		t.Fatal("timed out waiting for event")
 	}
@@ -901,7 +909,8 @@ func TestWatcher_FullLifecycle(t *testing.T) {
 	}
 
 	// Close the watcher
-	if err := w.Close(); err != nil {
+	err = w.Close()
+	if err != nil {
 		t.Fatalf("Close() failed: %v", err)
 	}
 
@@ -909,6 +918,7 @@ func TestWatcher_FullLifecycle(t *testing.T) {
 	if !w.IsClosed() {
 		t.Error("expected watcher to be closed after Close()")
 	}
+
 	if w.IsWatching() {
 		t.Error("expected watcher not to be watching after Close()")
 	}

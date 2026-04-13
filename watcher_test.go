@@ -819,3 +819,117 @@ func TestWatcher_Add_ClosedWatcher(t *testing.T) {
 		t.Fatal("expected error when adding to closed watcher")
 	}
 }
+
+// TestWatcher_FullLifecycle is an integration test for the complete
+// Watch → Event → Close lifecycle.
+func TestWatcher_FullLifecycle(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	// Create watcher with filters and middleware
+	var eventCount atomic.Int32
+
+	w, err := New([]string{tmpDir},
+		WithExtensions(".go"),
+		WithDebounce(50*time.Millisecond),
+		WithMiddleware(func(next Handler) Handler {
+			return func(ctx context.Context, event Event) error {
+				eventCount.Add(1)
+				return next(ctx, event)
+			}
+		}),
+	)
+	if err != nil {
+		t.Fatalf("New() failed: %v", err)
+	}
+
+	// Verify initial state
+	if w.IsClosed() {
+		t.Error("expected watcher not to be closed initially")
+	}
+	if w.IsWatching() {
+		t.Error("expected watcher not to be watching before Watch()")
+	}
+
+	stats := w.Stats()
+	if stats.IsClosed || stats.IsWatching || stats.WatchCount != 0 {
+		t.Errorf("unexpected initial stats: %+v", stats)
+	}
+
+	// Start watching
+	ctx, cancel := context.WithTimeout(t.Context(), 10*time.Second)
+	defer cancel()
+
+	events, err := w.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch() failed: %v", err)
+	}
+
+	// Verify watching state
+	if !w.IsWatching() {
+		t.Error("expected watcher to be watching after Watch()")
+	}
+
+	stats = w.Stats()
+	if !stats.IsWatching {
+		t.Error("expected stats.IsWatching to be true")
+	}
+
+	// Create a test file to trigger an event
+	testFile := filepath.Join(tmpDir, "test.go")
+	if err := os.WriteFile(testFile, []byte("package main"), 0o600); err != nil {
+		t.Fatalf("WriteFile failed: %v", err)
+	}
+
+	// Wait for event with timeout
+	select {
+	case event := <-events:
+		if event.Path != testFile {
+			t.Errorf("expected event for %s, got %s", testFile, event.Path)
+		}
+		if event.Op != Create && event.Op != Write {
+			t.Errorf("expected Create or Write op, got %s", event.Op)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("timed out waiting for event")
+	}
+
+	// Verify event was processed by middleware
+	if eventCount.Load() != 1 {
+		t.Errorf("expected middleware to process 1 event, got %d", eventCount.Load())
+	}
+
+	// Close the watcher
+	if err := w.Close(); err != nil {
+		t.Fatalf("Close() failed: %v", err)
+	}
+
+	// Verify closed state
+	if !w.IsClosed() {
+		t.Error("expected watcher to be closed after Close()")
+	}
+	if w.IsWatching() {
+		t.Error("expected watcher not to be watching after Close()")
+	}
+
+	stats = w.Stats()
+	if !stats.IsClosed || stats.IsWatching {
+		t.Errorf("unexpected final stats: %+v", stats)
+	}
+
+	// Verify channel is closed
+	select {
+	case _, ok := <-events:
+		if ok {
+			t.Error("expected event channel to be closed after Close()")
+		}
+	case <-time.After(time.Second):
+		t.Error("timed out waiting for channel close")
+	}
+
+	// Verify WatchList is empty after close
+	if len(w.WatchList()) != 0 {
+		t.Errorf("expected empty watch list after close, got %v", w.WatchList())
+	}
+}

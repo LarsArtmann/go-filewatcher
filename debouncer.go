@@ -53,8 +53,9 @@ func (d *Debouncer) Debounce(key DebounceKey, callback func()) {
 
 	if entry, exists := d.entries[key]; exists {
 		entry.timer.Stop()
-		// Timer was cancelled, so its callback won't run - no wg.Done() needed
-		// because we haven't added to wg yet for this debounce
+		// Timer was cancelled, so its callback won't run.
+		// Decrement wg since we added for the previous debounce.
+		d.wg.Done()
 	}
 
 	d.wg.Add(1)

@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 )
 
 // Filter determines whether a file event should be processed.
@@ -163,6 +164,42 @@ func FilterMaxSize(maxSize int64) Filter {
 		}
 
 		return info.Size() <= maxSize
+	}
+}
+
+// FilterModifiedSince creates a filter that only passes events for files
+// modified after the given time. Directory events are not filtered by time.
+// Useful for ignoring old files during initial scan.
+func FilterModifiedSince(minTime time.Time) Filter {
+	return func(event Event) bool {
+		if event.IsDir {
+			return true // Don't filter directories by time
+		}
+
+		info, err := os.Stat(event.Path)
+		if err != nil {
+			return false // If we can't stat, filter out
+		}
+
+		return info.ModTime().After(minTime)
+	}
+}
+
+// FilterMinAge creates a filter that only passes events for files
+// that are at least the given age old. Directory events are not filtered.
+// Useful for ignoring recently modified files (e.g., during save operations).
+func FilterMinAge(age time.Duration) Filter {
+	return func(event Event) bool {
+		if event.IsDir {
+			return true // Don't filter directories by age
+		}
+
+		info, err := os.Stat(event.Path)
+		if err != nil {
+			return false // If we can't stat, filter out
+		}
+
+		return time.Since(info.ModTime()) >= age
 	}
 }
 

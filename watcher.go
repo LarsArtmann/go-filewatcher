@@ -81,6 +81,15 @@ func (w *Watcher) IsClosed() bool {
 	return w.state&flagClosed != 0
 }
 
+// IsWatching reports if the watcher is currently running and watching for events.
+// This is safe to call concurrently with other methods.
+func (w *Watcher) IsWatching() bool {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	return w.state&flagWatching != 0
+}
+
 // DebouncerInterface is the interface for debouncer implementations.
 type DebouncerInterface interface {
 	Debounce(key DebounceKey, fn func())

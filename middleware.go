@@ -65,22 +65,87 @@ func MiddlewareRecovery() Middleware {
 // MiddlewareRateLimit returns a middleware that limits the rate of event
 // processing to at most one event per minInterval.
 func MiddlewareRateLimit(minInterval time.Duration) Middleware {
-	var lastEvent int64 // stores UnixNano for atomic operations
+	var lastEvent atomic.Int64 // stores UnixNano for atomic operations
 
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
 			now := time.Now().UnixNano()
 
-			last := atomic.LoadInt64(&lastEvent)
+			last := lastEvent.Load()
 			if now-last < minInterval.Nanoseconds() {
 				return nil
 			}
 
-			if atomic.CompareAndSwapInt64(&lastEvent, last, now) {
+			if lastEvent.CompareAndSwap(last, now) {
 				return next(ctx, event)
 			}
 
 			return nil
+		}
+	}
+}
+
+// rateLimiter implements a simple token bucket rate limiter.
+type rateLimiter struct {
+	maxEvents int
+	window    time.Duration
+	events    []time.Time
+	mu        sync.Mutex
+}
+
+// allow checks if a new event is allowed under the rate limit.
+func (rl *rateLimiter) allow() bool {
+	rl.mu.Lock()
+	defer rl.mu.Unlock()
+
+	now := time.Now()
+	cutoff := now.Add(-rl.window)
+
+	// Remove events outside the window
+	validEvents := make([]time.Time, 0, len(rl.events))
+	for _, t := range rl.events {
+		if t.After(cutoff) {
+			validEvents = append(validEvents, t)
+		}
+	}
+
+	rl.events = validEvents
+
+	// Check if we can add a new event
+	if len(rl.events) < rl.maxEvents {
+		rl.events = append(rl.events, now)
+
+		return true
+	}
+
+	return false
+}
+
+// MiddlewareRateLimitWindow returns a middleware that limits the rate of event
+// processing to maxEvents per window duration using a sliding window algorithm.
+func MiddlewareRateLimitWindow(maxEvents int, window time.Duration) Middleware {
+	if maxEvents <= 0 {
+		maxEvents = 1
+	}
+
+	if window <= 0 {
+		window = time.Second
+	}
+
+	limiter := &rateLimiter{
+		maxEvents: maxEvents,
+		window:    window,
+		events:    make([]time.Time, 0, maxEvents),
+		mu:        sync.Mutex{},
+	}
+
+	return func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			if !limiter.allow() {
+				return nil
+			}
+
+			return next(ctx, event)
 		}
 	}
 }

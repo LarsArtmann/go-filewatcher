@@ -514,6 +514,27 @@ filewatcher.DefaultIgnoreDirs
 
 ---
 
+## Benchmarks
+
+Performance characteristics on Apple M2 (arm64):
+
+| Benchmark | Operations/sec | Time/op | Allocations |
+|-----------|---------------|---------|-------------|
+| `New/SinglePath` | 53,822 | 30.9 µs | 18 allocs |
+| `New/WithOptions` | 31,879 | 34.3 µs | 28 allocs |
+| `ConvertEvent/Create` | 179,262 | 7.5 µs | 3 allocs |
+| `ConvertEvent/Chmod` | 178,305,804 | 10.8 ns | 0 allocs |
+| `PassesFilters/Single` | 26,671,284 | 61.4 ns | 0 allocs |
+| `PassesFilters/Complex` | 2,325,330 | 595 ns | 0 allocs |
+| `BuildMiddleware/None` | 7,333,308 | 302 ns | 2 allocs |
+| `BuildMiddleware/Three` | 1,000,000 | 1.37 µs | 11 allocs |
+| `Stats/Empty` | 21,545,258 | 51.0 ns | 0 allocs |
+| `WatchList/Copy` | 444,613 | 6.4 µs | 1 alloc |
+
+Run benchmarks: `go test -bench=. -benchmem`
+
+---
+
 ## Design Principles
 
 - **Functional Options** — Clean, extensible configuration API

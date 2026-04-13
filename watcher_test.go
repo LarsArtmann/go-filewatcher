@@ -943,3 +943,82 @@ func TestWatcher_FullLifecycle(t *testing.T) {
 		t.Errorf("expected empty watch list after close, got %v", w.WatchList())
 	}
 }
+
+func TestWatcher_Errors(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	// Get errors channel
+	errorsCh := w.Errors()
+	if errorsCh == nil {
+		t.Fatal("expected non-nil errors channel")
+	}
+
+	// Verify we can receive from the channel
+	select {
+	case <-errorsCh:
+		// No errors expected yet
+	default:
+		// Channel is empty, which is expected
+	}
+}
+
+//nolint:paralleltest // Not parallel: uses os.Pipe which has global effects
+func TestWatcher_Errors_ReceivesErrors(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Get errors channel BEFORE starting watch
+	errorsCh := w.Errors()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err = w.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	// Trigger an error by sending to a closed watcher (simulated via handleError)
+	//nolint:err113 // test-only error
+	testErr := errors.New("test error from handler")
+	w.handleError(ErrorContext{Operation: "test_op", Path: tmpDir}, testErr)
+
+	// Wait for error on channel
+	select {
+	case err := <-errorsCh:
+		if err == nil {
+			t.Fatal("expected non-nil error")
+		}
+
+		if !errors.Is(err, testErr) {
+			t.Errorf("expected error %v, got %v", testErr, err)
+		}
+	case <-time.After(2 * time.Second):
+		t.Error("timed out waiting for error on channel")
+	}
+
+	_ = w.Close()
+
+	// Verify channel is closed
+	select {
+	case _, ok := <-errorsCh:
+		if ok {
+			t.Error("expected errors channel to be closed after Close()")
+		}
+	case <-time.After(time.Second):
+		t.Error("timed out waiting for errors channel close")
+	}
+}

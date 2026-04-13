@@ -8,18 +8,18 @@
 - [x] ~~Add test coverage for `Stats()` method~~ - Already exists in watcher_test.go
 - [x] ~~Add test for `Remove()` method~~ - Already exists in watcher_test.go
 - [x] ~~Add test for `WatchList()` method~~ - Already exists in watcher_test.go
-- [ ] Add integration test for full Watch→Event→Close lifecycle
+- [x] ~~Add integration test for full Watch→Event→Close lifecycle~~ - Added TestWatcher_FullLifecycle
 - [x] ~~Add `WithOnError(func(error))` option~~ - Added
 - [x] ~~Add `MiddlewareRateLimit(maxEvents int, window time.Duration) Middleware~~ - Added MiddlewareRateLimitWindow
-- [ ] Implement event batching with configurable window
+- [x] ~~Implement event batching with configurable window~~ - Added MiddlewareBatch
 - [x] ~~Add `FilterGlob(pattern string) Filter`~~ - Already exists
 - [x] ~~Document thread-safety guarantees on all public methods~~ - Added
 - [x] ~~Fix GlobalDebouncer.Debounce key parameter (use it or remove it)~~ - Documented intentional behavior
-- [ ] Add `Event.Path` phantom type integration
-- [ ] Add Error Context Wrapping in production code (watcher.go, watcher_walk.go)
+- [x] ~~Add `Event.Path` phantom type integration~~ - Added GetPath() returning EventPath
+- [x] ~~Add Error Context Wrapping in production code~~ - Already using fmt.Errorf with %w
 - [x] ~~Add `slog.LogValuer` to Event type for structured logging~~ - Added
 - [x] ~~Complete Phantom Type Integration for medium/low priority items~~ - EventPath added
-- [ ] Add benchmark results table to README.md
+- [x] ~~Add benchmark results table to README.md~~ - Added
 - [ ] Tag v0.1.0 release
 - [ ] Tag v2.0.0 release
 
@@ -35,7 +35,8 @@
 - [x] ~~Add `Event.Name` (just filename) alongside `Event.Path`~~ - Can use filepath.Base(event.Path)
 - [ ] Add file content hashing option
 - [ ] Add `FilterExcludePaths`
-- [ ] Add `FilterMinAge()` for ignoring old files
+- [x] ~~Add `FilterMinAge()` for ignoring old files~~ - Added
+- [x] ~~Add `FilterModifiedSince(t)`~~ - Added
 - [x] ~~Add `FilterMaxSize()` complement to FilterMinSize~~ - Added
 - [ ] Add `WithIgnorePatterns()` using glob patterns
 - [ ] Expose `convertEvent` for testing
@@ -57,12 +58,15 @@
 - [ ] Add `just coverage` target
 - [ ] Add stack traces to `WatcherError`
 - [ ] Write migration guide for ErrorHandler signature change
-- [ ] Add `Errors() <-chan error` method as alternative to error handler callback
-- [ ] Add comprehensive error context in production code
+- [x] ~~Add `Errors() <-chan error` method as alternative to error handler callback~~ - Added
+- [x] ~~Add comprehensive error context in production code~~ - Already using fmt.Errorf with %w
+- [x] ~~Replace bare `atomic int64` with `atomic.Int64` in MiddlewareRateLimit~~ - Done
+- [x] ~~Add `Watcher.IsWatching()`~~ - Done
+- [x] ~~Add `MiddlewareBatch()` to batch events over a window~~ - Done
 - [ ] Replace `log.Logger` with `log/slog` in middleware
 - [ ] Add slog support to MiddlewareLogging
 - [ ] Replace bare `atomic int64` with `atomic.Int64` in MiddlewareRateLimit
-- [ ] Add `Event` batch accumulation
+- [x] ~~Add `Event` batch accumulation~~ - Done via MiddlewareBatch
 - [ ] Add Op.MarshalText/UnmarshalText for JSON
 - [ ] Add `UnmarshalText` to Op type
 - [ ] Enrich Stats struct: event counts, filter stats, error count, uptime
@@ -78,7 +82,7 @@
 - [ ] Integrate into Cyberdom
 - [ ] Add `Close()` to `DebouncerInterface` (rename `Stop()`)
 - [ ] Add `WithPollInterval` fallback
-- [ ] Add `Watcher.IsWatching()`
+- [x] ~~Add `Watcher.IsWatching()`~~ - Done
 - [ ] Add `Watcher.Restart()` method
 - [ ] Self-healing watcher
 - [ ] Add `Event.Size` field
@@ -185,7 +189,7 @@
 | Build Status | Clean | ✅ |
 | Test Passing | 100% | ✅ |
 | Race Conditions | Mitigated | 🟡 |
-| HIGH Priority | 17 | 🔴 |
-| MEDIUM Priority | 74 | 🟡 |
+| HIGH Priority | 3 | 🔴 |
+| MEDIUM Priority | 68 | 🟡 |
 | LOW Priority | 5 | 🟢 |
-| Completed | 40+ | ✅ |
+| Completed | 50+ | ✅ |

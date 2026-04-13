@@ -40,9 +40,10 @@ var DefaultIgnoreDirs = []string{
 // Thread-safety guarantees:
 //   - New() is not safe for concurrent use during creation
 //   - Watch() is safe to call concurrently with Close()
-//   - Add(), Remove(), WatchList(), Stats(), IsClosed() are safe for concurrent use
+//   - Add(), Remove(), WatchList(), Stats(), IsClosed(), Errors() are safe for concurrent use
 //   - Close() is safe to call multiple times and concurrently with other methods
 //   - The event channel returned by Watch() is closed when the watcher stops
+//   - The error channel returned by Errors() is closed when the watcher stops
 //   - All callbacks (errorHandler, onAdd) may be called concurrently
 type Watcher struct {
 	fswatcher *fsnotify.Watcher
@@ -64,9 +65,15 @@ type Watcher struct {
 	mu        sync.RWMutex
 	state     WatcherStateFlags // bit flags: closed, watching
 	watchList []string          // tracked paths currently being watched
+	eventCh   chan Event        // event channel, closed in Close()
 
 	// Debouncer (initialized based on config)
 	debounceInterface DebouncerInterface
+
+	// Error channel - lazily initialized when Errors() is first called
+	errorsMu   sync.Mutex
+	errorsCh   chan error
+	errorsOnce sync.Once
 }
 
 // Compile-time interface check: Watcher implements io.Closer.
@@ -150,7 +157,11 @@ func New(paths []string, opts ...Option) (*Watcher, error) {
 		mu:                sync.RWMutex{},
 		state:             0,
 		watchList:         make([]string, 0, len(paths)),
+		eventCh:           nil,
 		debounceInterface: nil,
+		errorsCh:          nil,
+		errorsMu:          sync.Mutex{},
+		errorsOnce:        sync.Once{},
 	}
 
 	for _, opt := range opts {
@@ -197,6 +208,9 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 
 	w.state |= flagWatching
 	go w.watchLoop(ctx, eventCh)
+
+	// Store eventCh so Close() can close it after debouncer stops
+	w.eventCh = eventCh
 
 	return eventCh, nil
 }
@@ -291,6 +305,20 @@ func (w *Watcher) Stats() Stats {
 	}
 }
 
+// Errors returns a receive-only channel that receives errors from the watcher.
+// This provides an alternative to the error handler callback. If both are
+// configured, errors are sent to the channel AND passed to the error handler.
+// The channel is closed when the watcher is closed.
+//
+// This method is safe for concurrent use with other methods.
+func (w *Watcher) Errors() <-chan error {
+	w.errorsOnce.Do(func() {
+		w.errorsCh = make(chan error, w.bufferSize)
+	})
+
+	return w.errorsCh
+}
+
 // Close stops the watcher and releases all resources.
 // It is safe to call Close multiple times.
 func (w *Watcher) Close() error {
@@ -316,10 +344,27 @@ func (w *Watcher) Close() error {
 	}
 
 	// Stop the debouncer AFTER closing fsnotify to wait for any
-	// in-flight debounced callbacks to complete before we return.
+	// in-flight debounced callbacks to complete before we close eventCh.
 	if w.debounceInterface != nil {
 		w.debounceInterface.Stop()
 	}
+
+	// Close eventCh AFTER debouncer stops to ensure all callbacks complete
+	// before we close the channel. watchLoop just exits, doesn't close it.
+	w.mu.RLock()
+	eventCh := w.eventCh
+	w.mu.RUnlock()
+
+	if eventCh != nil {
+		close(eventCh)
+	}
+
+	// Close the errors channel if it was created
+	w.errorsMu.Lock()
+	if w.errorsCh != nil {
+		close(w.errorsCh)
+	}
+	w.errorsMu.Unlock()
 
 	return nil
 }

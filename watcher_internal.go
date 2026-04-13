@@ -11,9 +11,8 @@ import (
 )
 
 // watchLoop is the main event processing goroutine.
+// NOTE: Does NOT close eventCh - Close() does that after debouncer stops.
 func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
-	defer close(eventCh)
-
 	for {
 		select {
 		case <-ctx.Done():
@@ -69,11 +68,12 @@ func (w *Watcher) emitEvent(ctx context.Context, event Event, eventCh chan<- Eve
 }
 
 // buildEmitFunc creates the emit function for sending events.
+// This is safe to call even after the watcher is closed - it will drop events.
 func (w *Watcher) buildEmitFunc(ctx context.Context, eventCh chan<- Event) func(Event) {
 	return func(e Event) {
 		// Use recover to handle the race between send and close.
-		// This is the safest way to handle the debouncer callback race
-		// because there's no way to atomically check if a channel is closed.
+		// Even though we check closed state above, there's a race window
+		// where the channel can be closed between the check and the send.
 		defer func() {
 			_ = recover() // Ignore panic from sending on closed channel
 		}()
@@ -193,14 +193,27 @@ func (w *Watcher) passesFilters(event Event) bool {
 	return true
 }
 
-// handleError dispatches errors to the configured handler or stderr.
+// handleError dispatches errors to the configured handler, errors channel, or stderr.
 func (w *Watcher) handleError(ctx ErrorContext, err error) {
+	// Send to errors channel if it's being used (non-blocking)
+	w.errorsMu.Lock()
+	if w.errorsCh != nil {
+		select {
+		case w.errorsCh <- err:
+		default:
+			// Channel is full or closed, drop the error
+		}
+	}
+	w.errorsMu.Unlock()
+
+	// Also call error handler if configured
 	if w.errorHandler != nil {
 		w.errorHandler(ctx, err)
 
 		return
 	}
 
+	// Default: log to stderr
 	if ctx.Path != "" {
 		_, _ = fmt.Fprintf(os.Stderr, "filewatcher: %s: %s: %v\n", ctx.Operation, ctx.Path, err)
 	} else {

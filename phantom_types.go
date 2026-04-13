@@ -23,3 +23,12 @@ type WatchDirString string
 
 // RootString is a phantom type for root directory paths.
 type RootString string
+
+// EventPath is a phantom type for event file/directory paths.
+// Used to distinguish event paths from other string parameters.
+type EventPath string
+
+// String returns the string representation of EventPath.
+func (ep EventPath) String() string {
+	return string(ep)
+}

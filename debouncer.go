@@ -53,13 +53,19 @@ func (d *Debouncer) Debounce(key DebounceKey, callback func()) {
 
 	if entry, exists := d.entries[key]; exists {
 		entry.timer.Stop()
+		// Timer was cancelled, so its callback won't run - no wg.Done() needed
+		// because we haven't added to wg yet for this debounce
 	}
+
+	d.wg.Add(1)
 
 	entry := &debounceEntry{
 		fn:    callback,
 		timer: nil,
 	}
 	entry.timer = time.AfterFunc(d.delay, func() {
+		defer d.wg.Done()
+
 		d.mu.Lock()
 		delete(d.entries, key)
 		stopped := d.stopped.Load()
@@ -70,10 +76,8 @@ func (d *Debouncer) Debounce(key DebounceKey, callback func()) {
 		}
 
 		callback()
-		d.wg.Done()
 	})
 	d.entries[key] = entry
-	d.wg.Add(1)
 }
 
 // Flush executes all pending functions immediately and clears all timers.
@@ -87,12 +91,15 @@ func (d *Debouncer) Flush() {
 		callbacks = append(callbacks, entry.fn)
 
 		delete(d.entries, key)
+		d.wg.Done()
 	}
 
 	d.mu.Unlock()
 
 	for _, fn := range callbacks {
+		d.wg.Add(1)
 		fn()
+		d.wg.Done()
 	}
 }
 
@@ -105,6 +112,9 @@ func (d *Debouncer) Stop() {
 	for key, entry := range d.entries {
 		entry.timer.Stop()
 		delete(d.entries, key)
+		// Each cancelled timer means we called wg.Add(1) but callback won't run
+		// so we need to decrement
+		d.wg.Done()
 	}
 	d.mu.Unlock()
 
@@ -149,6 +159,8 @@ func NewGlobalDebouncer(delay time.Duration) *GlobalDebouncer {
 
 // Debounce resets the global timer. callback runs only once after the delay
 // since the last call, regardless of how many times Debounce is called.
+// The key parameter is intentionally ignored — GlobalDebouncer coalesces all
+// events into a single timer regardless of their key.
 func (g *GlobalDebouncer) Debounce(_ DebounceKey, callback func()) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
@@ -159,10 +171,16 @@ func (g *GlobalDebouncer) Debounce(_ DebounceKey, callback func()) {
 
 	if g.timer != nil {
 		g.timer.Stop()
+		// Timer was cancelled, callback won't run, compensate for wg.Add(1)
+		g.wg.Done()
 	}
+
+	g.wg.Add(1)
 
 	g.fn = callback
 	g.timer = time.AfterFunc(g.delay, func() {
+		defer g.wg.Done()
+
 		g.mu.Lock()
 		g.timer = nil
 		g.fn = nil
@@ -174,9 +192,7 @@ func (g *GlobalDebouncer) Debounce(_ DebounceKey, callback func()) {
 		}
 
 		callback()
-		g.wg.Done()
 	})
-	g.wg.Add(1)
 }
 
 // Flush executes the pending function immediately and clears the timer.
@@ -190,12 +206,16 @@ func (g *GlobalDebouncer) Flush() {
 		g.timer = nil
 		callback = g.fn
 		g.fn = nil
+		// Cancelled timer means we called wg.Add(1) but callback won't run
+		g.wg.Done()
 	}
 
 	g.mu.Unlock()
 
 	if callback != nil {
+		g.wg.Add(1)
 		callback()
+		g.wg.Done()
 	}
 }
 
@@ -208,9 +228,10 @@ func (g *GlobalDebouncer) Stop() {
 	if g.timer != nil {
 		g.timer.Stop()
 		g.timer = nil
+		g.fn = nil
+		// Cancelled timer means we called wg.Add(1) but callback won't run
+		g.wg.Done()
 	}
-
-	g.fn = nil
 
 	g.mu.Unlock()
 

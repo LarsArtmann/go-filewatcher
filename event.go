@@ -3,6 +3,7 @@ package filewatcher
 import (
 	"encoding"
 	"fmt"
+	"log/slog"
 	"time"
 )
 
@@ -99,4 +100,19 @@ type Event struct {
 // String returns a human-readable representation of the event.
 func (e Event) String() string {
 	return fmt.Sprintf("%s %s at %s", e.Op, e.Path, e.Timestamp.Format(time.RFC3339))
+}
+
+// LogValue implements slog.LogValuer for structured logging.
+func (e Event) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.String("path", e.Path),
+		slog.String("op", e.Op.String()),
+		slog.Time("timestamp", e.Timestamp),
+		slog.Bool("isDir", e.IsDir),
+	)
+}
+
+// GetPath returns the event path as a phantom type for type-safe usage.
+func (e Event) GetPath() EventPath {
+	return EventPath(e.Path)
 }

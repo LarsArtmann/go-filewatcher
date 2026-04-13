@@ -36,6 +36,14 @@ var DefaultIgnoreDirs = []string{
 
 // Watcher watches file system paths for changes and emits filtered,
 // debounced events through a channel.
+//
+// Thread-safety guarantees:
+//   - New() is not safe for concurrent use during creation
+//   - Watch() is safe to call concurrently with Close()
+//   - Add(), Remove(), WatchList(), Stats(), IsClosed() are safe for concurrent use
+//   - Close() is safe to call multiple times and concurrently with other methods
+//   - The event channel returned by Watch() is closed when the watcher stops
+//   - All callbacks (errorHandler, onAdd) may be called concurrently
 type Watcher struct {
 	fswatcher *fsnotify.Watcher
 
@@ -185,6 +193,7 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 }
 
 // Add adds a new path to the watcher. The path must be an existing directory.
+// This method is safe for concurrent use with other methods.
 func (w *Watcher) Add(path string) error {
 	w.mu.Lock()
 	defer w.mu.Unlock()
@@ -210,6 +219,7 @@ func (w *Watcher) Add(path string) error {
 
 // Remove removes a path from the watcher. The watcher stops monitoring
 // this path and all its subdirectories (if recursive).
+// This method is safe for concurrent use with other methods.
 func (w *Watcher) Remove(path string) error {
 	w.mu.Lock()
 	defer w.mu.Unlock()
@@ -241,6 +251,7 @@ func (w *Watcher) Remove(path string) error {
 }
 
 // WatchList returns a copy of the list of paths currently being watched.
+// This method is safe for concurrent use with other methods.
 func (w *Watcher) WatchList() []string {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
@@ -259,6 +270,7 @@ type Stats struct {
 }
 
 // Stats returns current statistics about the watcher.
+// This method is safe for concurrent use with other methods.
 func (w *Watcher) Stats() Stats {
 	w.mu.RLock()
 	defer w.mu.RUnlock()

@@ -177,6 +177,10 @@ func New(paths []string, opts ...Option) (*Watcher, error) {
 		errorsCh:          nil,
 		errorsMu:          sync.Mutex{},
 		errorsOnce:        sync.Once{},
+		eventsProcessed:   atomic.Uint64{},
+		eventsFilteredOut: atomic.Uint64{},
+		errorsEncountered: atomic.Uint64{},
+		startTime:         time.Time{},
 	}
 
 	for _, opt := range opts {

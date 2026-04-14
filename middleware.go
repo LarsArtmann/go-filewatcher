@@ -146,7 +146,10 @@ func MiddlewareSlidingWindowRateLimit(maxEvents int, window time.Duration) Middl
 		events []time.Time
 	}
 
-	state := &windowState{}
+	state := &windowState{
+		mu:     sync.Mutex{},
+		events: nil,
+	}
 
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {

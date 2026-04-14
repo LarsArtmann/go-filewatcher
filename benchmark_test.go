@@ -205,7 +205,7 @@ func BenchmarkBuildMiddlewareHandler_ThreeMiddleware(b *testing.B) {
 		middleware: []Middleware{
 			MiddlewareRecovery(),
 			MiddlewareMetrics(func(_ Op) {}),
-			MiddlewareRateLimit(time.Millisecond),
+			MiddlewareRateLimit(100),
 		},
 	}
 

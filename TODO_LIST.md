@@ -34,7 +34,7 @@
 - [ ] Add `Event.ModTime()` field
 - [x] ~~Add `Event.Name` (just filename) alongside `Event.Path`~~ - Can use filepath.Base(event.Path)
 - [ ] Add file content hashing option
-- [ ] Add `FilterExcludePaths`
+- [x] ~~Add `FilterExcludePaths`~~ - Done: FilterExcludePaths added with test coverage
 - [x] ~~Add `FilterMinAge()` for ignoring old files~~ - Added
 - [x] ~~Add `FilterModifiedSince(t)`~~ - Added
 - [x] ~~Add `FilterMaxSize()` complement to FilterMinSize~~ - Added

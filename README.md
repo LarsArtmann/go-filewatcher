@@ -271,7 +271,7 @@ Middleware wraps event handlers for cross-cutting concerns. Applied in **reverse
 | ------------------------------- | --------------------------------------------- |
 | `MiddlewareLogging(logger)`     | Log all events with structured logging (slog) |
 | `MiddlewareRecovery()`          | Recover from panics, log stack trace          |
-| `MiddlewareRateLimit(interval)` | Limit to one event per interval               |
+| `MiddlewareRateLimit(maxEvents)` | Limit to maxEvents events per second       |
 | `MiddlewareFilter(filter)`      | Filter events (same as WithFilter)            |
 | `MiddlewareOnError(handler)`    | Handle errors from downstream handlers        |
 | `MiddlewareMetrics(counter)`    | Count processed events by operation           |
@@ -309,7 +309,7 @@ watcher, _ := filewatcher.New(paths,
 // Rate limiting (max 1 event per second)
 watcher, _ := filewatcher.New(paths,
     filewatcher.WithMiddleware(
-        filewatcher.MiddlewareRateLimit(time.Second),
+        filewatcher.MiddlewareRateLimit(100),
     ),
 )
 

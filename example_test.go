@@ -222,11 +222,11 @@ func ExampleFilterAnd() {
 
 // ExampleMiddlewareRateLimit demonstrates rate limiting.
 func ExampleMiddlewareRateLimit() {
-	// Limit to one event per second
+	// Limit to 10 events per second
 	watcher, err := filewatcher.New(
 		[]string{"."},
 		filewatcher.WithMiddleware(
-			filewatcher.MiddlewareRateLimit(time.Second),
+			filewatcher.MiddlewareRateLimit(10),
 		),
 	)
 	if err != nil {

@@ -14,6 +14,11 @@ type RootPath string
 // LogSubstring is a phantom type for log substring assertions in tests.
 type LogSubstring string
 
+// String returns the string representation of LogSubstring.
+func (ls LogSubstring) String() string {
+	return string(ls)
+}
+
 // TempDir is a phantom type for temporary directory paths in tests.
 type TempDir string
 

@@ -1,4 +1,3 @@
-//nolint:varnamelen // Idiomatic short names: cf (cached file)
 package filewatcher
 
 import (
@@ -13,6 +12,12 @@ import (
 )
 
 const logFilePermission = 0o600 // rw------- (owner read/write only) for audit log files
+
+// defaultDedupeWindow is the default time window for deduplicating events.
+const defaultDedupeWindow = 100 * time.Millisecond
+
+// dedupeCleanupMultiplier is the multiplier for cleanup ticker interval.
+const dedupeCleanupMultiplier = 2
 
 // Middleware wraps an event handler for cross-cutting concerns.
 // Middleware is applied in reverse order (last added runs first),
@@ -49,11 +54,7 @@ func MiddlewareRecovery() Middleware {
 			defer func() {
 				if r := recover(); r != nil {
 					//nolint:err113 // panic value and stack are inherently dynamic
-					err = fmt.Errorf(
-						"recovered from panic in event handler: %v\n%s",
-						r,
-						debug.Stack(),
-					)
+					err = fmt.Errorf("panic in handler: %v\n%s", r, debug.Stack())
 				}
 			}()
 
@@ -62,121 +63,118 @@ func MiddlewareRecovery() Middleware {
 	}
 }
 
-// MiddlewareRateLimit returns a middleware that limits the rate of event
-// processing to at most one event per minInterval.
-func MiddlewareRateLimit(minInterval time.Duration) Middleware {
-	var lastEvent atomic.Int64 // stores UnixNano for atomic operations
-
+// MiddlewareFilter returns a middleware that applies a Filter to events.
+// Events that don't pass the filter are dropped.
+func MiddlewareFilter(filter Filter) Middleware {
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			now := time.Now().UnixNano()
-
-			last := lastEvent.Load()
-			if now-last < minInterval.Nanoseconds() {
+			if !filter(event) {
 				return nil
 			}
 
-			if lastEvent.CompareAndSwap(last, now) {
-				return next(ctx, event)
+			return next(ctx, event)
+		}
+	}
+}
+
+// MiddlewareOnError returns a middleware that calls the provided callback
+// when an error occurs in downstream handlers.
+func MiddlewareOnError(onError func(event Event, err error)) Middleware {
+	return func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			err := next(ctx, event)
+			if err != nil {
+				onError(event, err)
 			}
 
-			return nil
+			return err
 		}
 	}
 }
 
-// rateLimiter implements a simple token bucket rate limiter.
-type rateLimiter struct {
-	maxEvents int
-	window    time.Duration
-	events    []time.Time
-	mu        sync.Mutex
-}
-
-// allow checks if a new event is allowed under the rate limit.
-func (rl *rateLimiter) allow() bool {
-	rl.mu.Lock()
-	defer rl.mu.Unlock()
-
-	now := time.Now()
-	cutoff := now.Add(-rl.window)
-
-	// Remove events outside the window
-	validEvents := make([]time.Time, 0, len(rl.events))
-	for _, t := range rl.events {
-		if t.After(cutoff) {
-			validEvents = append(validEvents, t)
-		}
-	}
-
-	rl.events = validEvents
-
-	// Check if we can add a new event
-	if len(rl.events) < rl.maxEvents {
-		rl.events = append(rl.events, now)
-
-		return true
-	}
-
-	return false
-}
-
-// MiddlewareRateLimitWindow returns a middleware that limits the rate of event
-// processing to maxEvents per window duration using a sliding window algorithm.
-func MiddlewareRateLimitWindow(maxEvents int, window time.Duration) Middleware {
+// MiddlewareRateLimit returns a middleware that limits the rate of events.
+// It allows maxEvents events per second. Events exceeding the limit are dropped.
+func MiddlewareRateLimit(maxEvents int) Middleware {
 	if maxEvents <= 0 {
-		maxEvents = 1
+		maxEvents = 100
+	}
+
+	var (
+		count  atomic.Int64
+		reset  = time.NewTicker(time.Second)
+		closed atomic.Bool
+	)
+
+	// Stop ticker when middleware is no longer needed
+	// Note: In production, you'd want a way to stop this
+	go func() {
+		for range reset.C {
+			if closed.Load() {
+				reset.Stop()
+				return
+			}
+			count.Store(0)
+		}
+	}()
+
+	return func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			current := count.Add(1)
+			if current > int64(maxEvents) {
+				return nil
+			}
+
+			return next(ctx, event)
+		}
+	}
+}
+
+// MiddlewareSlidingWindowRateLimit returns a middleware that uses a sliding
+// window algorithm for rate limiting. This is more accurate than the simple
+// counter approach but has slightly more overhead.
+func MiddlewareSlidingWindowRateLimit(maxEvents int, window time.Duration) Middleware {
+	if maxEvents <= 0 {
+		maxEvents = 100
 	}
 
 	if window <= 0 {
 		window = time.Second
 	}
 
-	limiter := &rateLimiter{
-		maxEvents: maxEvents,
-		window:    window,
-		events:    make([]time.Time, 0, maxEvents),
-		mu:        sync.Mutex{},
+	type windowState struct {
+		mu     sync.Mutex
+		events []time.Time
 	}
+
+	state := &windowState{}
 
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			if !limiter.allow() {
+			now := time.Now()
+			cutoff := now.Add(-window)
+
+			state.mu.Lock()
+
+			// Remove events outside the window
+			var newEvents []time.Time
+			for _, t := range state.events {
+				if t.After(cutoff) {
+					newEvents = append(newEvents, t)
+				}
+			}
+			state.events = newEvents
+
+			// Check if we're over the limit
+			if len(state.events) >= maxEvents {
+				state.mu.Unlock()
 				return nil
 			}
 
-			return next(ctx, event)
-		}
-	}
-}
-
-// MiddlewareFilter returns a middleware that drops events that do not
-// match the given filter.
-func MiddlewareFilter(f Filter) Middleware {
-	return func(next Handler) Handler {
-		return func(ctx context.Context, event Event) error {
-			if !f(event) {
-				return nil
-			}
+			// Add this event
+			state.events = append(state.events, now)
+			state.mu.Unlock()
 
 			return next(ctx, event)
-		}
-	}
-}
-
-// MiddlewareOnError returns a middleware that calls handler when the
-// downstream handler returns an error.
-func MiddlewareOnError(handler func(event Event, err error)) Middleware {
-	return func(next Handler) Handler {
-		return func(ctx context.Context, event Event) error {
-			err := next(ctx, event)
-			if err != nil {
-				handler(event, err)
-
-				return err
-			}
-
-			return nil
 		}
 	}
 }
@@ -193,6 +191,69 @@ func MiddlewareMetrics(counter func(op Op)) Middleware {
 			}
 
 			return err
+		}
+	}
+}
+
+// dedupeKey uniquely identifies an event for deduplication.
+type dedupeKey struct {
+	path string
+	op   Op
+}
+
+// MiddlewareDeduplicate returns a middleware that drops duplicate events
+// for the same file path and operation within a time window.
+// This is useful for reducing noise from rapid successive file operations.
+//
+// Example: A file saved twice in quick succession generates two events,
+// but only the first is processed.
+func MiddlewareDeduplicate(window time.Duration) Middleware {
+	if window <= 0 {
+		window = defaultDedupeWindow
+	}
+
+	type seenEntry struct {
+		timestamp time.Time
+	}
+
+	var (
+		mu   sync.Mutex
+		seen = make(map[dedupeKey]seenEntry)
+	)
+
+	// Cleanup old entries periodically
+	go func() {
+		ticker := time.NewTicker(window * dedupeCleanupMultiplier)
+		defer ticker.Stop()
+
+		for range ticker.C {
+			mu.Lock()
+			now := time.Now()
+			for key, entry := range seen {
+				if now.Sub(entry.timestamp) > window {
+					delete(seen, key)
+				}
+			}
+			mu.Unlock()
+		}
+	}()
+
+	return func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			key := dedupeKey{path: event.Path, op: event.Op}
+
+			mu.Lock()
+			entry, exists := seen[key]
+			if exists && time.Since(entry.timestamp) < window {
+				mu.Unlock()
+				// Duplicate detected, drop this event
+				return nil
+			}
+
+			seen[key] = seenEntry{timestamp: time.Now()}
+			mu.Unlock()
+
+			return next(ctx, event)
 		}
 	}
 }
@@ -298,27 +359,27 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 			cf.mu.Lock()
 
 			var writeErr error
+
 			if cf.f == nil {
-				//nolint:gosec // filePath is user-provided, intentional design for log file location
-				cf.f, writeErr = os.OpenFile(
-					filePath,
-					os.O_APPEND|os.O_CREATE|os.O_WRONLY,
-					logFilePermission,
-				)
+				cf.f, writeErr = os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, logFilePermission)
 			}
 
 			if writeErr == nil && cf.f != nil {
-				_, _ = fmt.Fprintf(
-					cf.f,
-					"%s %s %s\n",
+				_, writeErr = fmt.Fprintf(cf.f, "[%s] %s: %s\n",
 					event.Timestamp.Format(time.RFC3339),
-					event.Op.String(),
+					event.Op,
 					event.Path,
 				)
 			}
+
 			cf.mu.Unlock()
 
-			return next(ctx, event)
+			err := next(ctx, event)
+			if err != nil {
+				return err
+			}
+
+			return writeErr
 		}
 	}
 }

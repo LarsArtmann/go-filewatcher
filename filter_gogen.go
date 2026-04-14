@@ -38,25 +38,15 @@ func FilterGeneratedCode(options ...gogenfilter.FilterOption) Filter {
 	return FilterGeneratedCodeFull(ContentCheckDisabled, options...)
 }
 
-// FilterGeneratedCodeFull creates a filter with configurable content checking.
-//
-// Use ContentCheckDisabled for only filename-based detection (zero I/O).
-// Use ContentCheckEnabled for filename + content detection (may read files).
-//
-// Content checking is more accurate but requires file I/O. For file watching
-// scenarios, filename-only detection is usually sufficient since generated
-// files typically have distinctive naming patterns.
-//
-// The filter returns true to keep (non-generated) files, false to discard
-// (generated) files.
-func FilterGeneratedCodeFull(mode ContentCheckMode, options ...gogenfilter.FilterOption) Filter {
+// buildGogenFilterOptions converts filter options slice to a lookup map.
+// Handles FilterAll expansion and applies defaults when no options provided.
+func buildGogenFilterOptions(options []gogenfilter.FilterOption) map[gogenfilter.FilterOption]bool {
 	// Default to all generators if none specified
 	opts := options
 	if len(opts) == 0 {
 		opts = []gogenfilter.FilterOption{gogenfilter.FilterAll}
 	}
 
-	// Build the options map for detection
 	optMap := make(map[gogenfilter.FilterOption]bool)
 
 	for _, opt := range opts {
@@ -78,6 +68,23 @@ func FilterGeneratedCodeFull(mode ContentCheckMode, options ...gogenfilter.Filte
 			optMap[opt] = true
 		}
 	}
+
+	return optMap
+}
+
+// FilterGeneratedCodeFull creates a filter with configurable content checking.
+//
+// Use ContentCheckDisabled for only filename-based detection (zero I/O).
+// Use ContentCheckEnabled for filename + content detection (may read files).
+//
+// Content checking is more accurate but requires file I/O. For file watching
+// scenarios, filename-only detection is usually sufficient since generated
+// files typically have distinctive naming patterns.
+//
+// The filter returns true to keep (non-generated) files, false to discard
+// (generated) files.
+func FilterGeneratedCodeFull(mode ContentCheckMode, options ...gogenfilter.FilterOption) Filter {
+	optMap := buildGogenFilterOptions(options)
 
 	return func(event Event) bool {
 		// Directories are not filtered by generated code detection
@@ -141,33 +148,7 @@ type GeneratedCodeDetector struct {
 
 // NewGeneratedCodeDetector creates a new detector with the specified options.
 func NewGeneratedCodeDetector(options ...gogenfilter.FilterOption) *GeneratedCodeDetector {
-	opts := options
-	if len(opts) == 0 {
-		opts = []gogenfilter.FilterOption{gogenfilter.FilterAll}
-	}
-
-	optMap := make(map[gogenfilter.FilterOption]bool)
-
-	for _, opt := range opts {
-		if opt == gogenfilter.FilterAll {
-			for _, specific := range []gogenfilter.FilterOption{
-				gogenfilter.FilterSQLC,
-				gogenfilter.FilterTempl,
-				gogenfilter.FilterGoEnum,
-				gogenfilter.FilterProtobuf,
-				gogenfilter.FilterMockgen,
-				gogenfilter.FilterStringer,
-			} {
-				optMap[specific] = true
-			}
-
-			optMap[gogenfilter.FilterGeneric] = true
-		} else {
-			optMap[opt] = true
-		}
-	}
-
-	return &GeneratedCodeDetector{options: optMap}
+	return &GeneratedCodeDetector{options: buildGogenFilterOptions(options)}
 }
 
 // IsGenerated checks if a file path represents generated code using

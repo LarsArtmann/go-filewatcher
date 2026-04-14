@@ -682,6 +682,104 @@ func TestWatcher_Stats(t *testing.T) {
 	}
 }
 
+func TestWatcher_Stats_Metrics(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir},
+		WithExtensions(".go"),
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	// Verify initial metrics are zero
+	stats := w.Stats()
+	if stats.EventsProcessed != 0 {
+		t.Errorf("expected 0 events processed initially, got %d", stats.EventsProcessed)
+	}
+
+	if stats.EventsFilteredOut != 0 {
+		t.Errorf("expected 0 events filtered initially, got %d", stats.EventsFilteredOut)
+	}
+
+	if stats.ErrorsEncountered != 0 {
+		t.Errorf("expected 0 errors initially, got %d", stats.ErrorsEncountered)
+	}
+
+	if stats.Uptime != 0 {
+		t.Error("expected 0 uptime before Watch()")
+	}
+
+	// Start watching
+	ctx := setupTestContext(t, 5*time.Second)
+
+	events, err := w.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	// Create a .go file (should pass filter)
+	testFile := filepath.Join(tmpDir, "test.go")
+
+	err = os.WriteFile(testFile, []byte("package main"), 0o600)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Wait for event
+	event := waitForEventOrFail(t, events, 2*time.Second)
+	if event.Path != testFile {
+		t.Errorf("expected event for %s, got %s", testFile, event.Path)
+	}
+
+	// Create a .txt file (should be filtered)
+	txtFile := filepath.Join(tmpDir, "test.txt")
+
+	err = os.WriteFile(txtFile, []byte("text"), 0o600)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Wait a bit for potential events
+	time.Sleep(100 * time.Millisecond)
+
+	// Check stats
+	stats = w.Stats()
+
+	// Should have processed the .go file
+	if stats.EventsProcessed != 1 {
+		t.Errorf("expected 1 event processed, got %d", stats.EventsProcessed)
+	}
+
+	// Should have filtered the .txt file
+	if stats.EventsFilteredOut == 0 {
+		t.Error("expected some events to be filtered out")
+	}
+
+	// Should have uptime
+	if stats.Uptime == 0 {
+		t.Error("expected non-zero uptime after Watch()")
+	}
+
+	// No errors expected
+	if stats.ErrorsEncountered != 0 {
+		t.Errorf("expected 0 errors, got %d", stats.ErrorsEncountered)
+	}
+
+	// Drain remaining events
+	for {
+		select {
+		case <-events:
+		default:
+			return
+		}
+	}
+}
+
 func TestWatcher_IgnoreDirs(t *testing.T) {
 	t.Parallel()
 

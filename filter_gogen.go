@@ -6,12 +6,22 @@ import (
 	"github.com/LarsArtmann/gogenfilter"
 )
 
+// ContentCheckMode controls whether generated code detection reads file content.
+// This eliminates boolean blindness at call sites.
+type ContentCheckMode int
+
+const (
+	// ContentCheckDisabled uses only filename-based detection (zero I/O).
+	ContentCheckDisabled ContentCheckMode = iota
+	// ContentCheckEnabled uses filename + content detection (may read files).
+	ContentCheckEnabled
+)
+
 // FilterGeneratedCode creates a filewatcher filter that excludes auto-generated
-// Go code files detected by gogenfilter. It supports two-phase detection:
-// filename-based (zero I/O) and content-based (reads file).
+// Go code files detected by gogenfilter using filename-based detection only.
+// This is zero-I/O and suitable for most file watching scenarios.
 //
-// Use FilterGeneratedCodeOptions for zero-I/O detection (filename patterns only),
-// or FilterGeneratedCodeFull for detection that also reads file content.
+// For content-based detection, use FilterGeneratedCodeFull with ContentCheckEnabled.
 //
 // Example:
 //
@@ -25,13 +35,13 @@ import (
 // This filter returns false for generated files (excluding them from events),
 // and true for non-generated files (allowing them through).
 func FilterGeneratedCode(options ...gogenfilter.FilterOption) Filter {
-	return FilterGeneratedCodeFull(false, options...)
+	return FilterGeneratedCodeFull(ContentCheckDisabled, options...)
 }
 
 // FilterGeneratedCodeFull creates a filter with configurable content checking.
 //
-// If checkContent is false: only filename-based detection (zero I/O).
-// If checkContent is true: filename + content detection (may read files).
+// Use ContentCheckDisabled for only filename-based detection (zero I/O).
+// Use ContentCheckEnabled for filename + content detection (may read files).
 //
 // Content checking is more accurate but requires file I/O. For file watching
 // scenarios, filename-only detection is usually sufficient since generated
@@ -39,7 +49,7 @@ func FilterGeneratedCode(options ...gogenfilter.FilterOption) Filter {
 //
 // The filter returns true to keep (non-generated) files, false to discard
 // (generated) files.
-func FilterGeneratedCodeFull(checkContent bool, options ...gogenfilter.FilterOption) Filter {
+func FilterGeneratedCodeFull(mode ContentCheckMode, options ...gogenfilter.FilterOption) Filter {
 	// Default to all generators if none specified
 	opts := options
 	if len(opts) == 0 {
@@ -82,7 +92,7 @@ func FilterGeneratedCodeFull(checkContent bool, options ...gogenfilter.FilterOpt
 		}
 
 		// Phase 2: Content-based detection (if requested)
-		if checkContent {
+		if mode == ContentCheckEnabled {
 			content, err := os.ReadFile(event.Path)
 			if err == nil {
 				reason = gogenfilter.DetectReason(event.Path, string(content), optMap)

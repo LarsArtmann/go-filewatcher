@@ -266,7 +266,7 @@ func TestFilterGeneratedCodeFull_WithContent(t *testing.T) {
 	}
 
 	// Test with content checking enabled
-	filter := FilterGeneratedCodeFull(true, gogenfilter.FilterSQLC)
+	filter := FilterGeneratedCodeFull(ContentCheckEnabled, gogenfilter.FilterSQLC)
 
 	// File with sqlc filename pattern is filtered even without sqlc content
 	// because filename-based detection happens first

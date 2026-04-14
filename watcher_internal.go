@@ -46,7 +46,7 @@ func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
 // processEvent converts an fsnotify event, applies filters and debounce,
 // and emits it to the channel.
 func (w *Watcher) processEvent(ctx context.Context, fsEvent fsnotify.Event, eventCh chan<- Event) {
-	event := convertEvent(fsEvent)
+	event := convertEvent(fsEvent, w.lazyIsDir)
 	if event == nil {
 		return
 	}
@@ -259,7 +259,9 @@ func (w *Watcher) handleError(ctx ErrorContext, err error) {
 // Priority of combined operations: Create > Write > Remove > Rename.
 // This ensures the most meaningful operation is reported when multiple
 // operations occur simultaneously.
-func convertEvent(fsEvent fsnotify.Event) *Event {
+//
+// If lazyIsDir is true, skips the os.Stat call and always returns IsDir=false.
+func convertEvent(fsEvent fsnotify.Event, lazyIsDir bool) *Event {
 	var op Op
 
 	switch {
@@ -277,11 +279,14 @@ func convertEvent(fsEvent fsnotify.Event) *Event {
 
 	// Check if path is a directory. For Remove events, the file may already
 	// be gone, so we ignore stat errors in that case.
+	// If lazyIsDir is true, skip the stat call for performance.
 	isDir := false
 
-	info, err := os.Stat(fsEvent.Name)
-	if err == nil {
-		isDir = info.IsDir()
+	if !lazyIsDir {
+		info, err := os.Stat(fsEvent.Name)
+		if err == nil {
+			isDir = info.IsDir()
+		}
 	}
 
 	return &Event{

@@ -61,6 +61,7 @@ type Watcher struct {
 	onAdd           func(path string) // callback when a path is added
 	ignoreDirNames  []string          // user-configured dir names to skip during walk
 	errorHandler    ErrorHandler      // callback for errors during event processing
+	lazyIsDir       bool              // skip os.Stat calls in convertEvent for performance
 
 	// Internal state
 	mu        sync.RWMutex
@@ -181,6 +182,7 @@ func New(paths []string, opts ...Option) (*Watcher, error) {
 		eventsFilteredOut: atomic.Uint64{},
 		errorsEncountered: atomic.Uint64{},
 		startTime:         time.Time{},
+		lazyIsDir:         false,
 	}
 
 	for _, opt := range opts {

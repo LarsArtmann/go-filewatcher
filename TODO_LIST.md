@@ -64,11 +64,11 @@
 - [x] ~~Add `Watcher.IsWatching()`~~ - Done
 - [x] ~~Add `MiddlewareBatch()` to batch events over a window~~ - Done
 - [x] ~~Fix race condition between event emission and channel close~~ - Fixed with emitWg
-- [ ] Replace `log.Logger` with `log/slog` in middleware
-- [ ] Add slog support to MiddlewareLogging
+- [x] ~~Replace `log.Logger` with `log/slog` in middleware~~ - Done: MiddlewareLogging already uses slog.Logger
+- [x] ~~Add slog support to MiddlewareLogging~~ - Done: Already implemented, accepts *slog.Logger
 - [x] ~~Add `Event` batch accumulation~~ - Done via MiddlewareBatch
-- [ ] Add Op.MarshalText/UnmarshalText for JSON
-- [ ] Add `UnmarshalText` to Op type
+- [x] ~~Add Op.MarshalText/UnmarshalText for JSON~~ - Done: Already implemented
+- [x] ~~Add `UnmarshalText` to Op type~~ - Done: Already implemented
 - [x] ~~Enrich Stats struct: event counts, filter stats, error count, uptime~~ - Done: Added atomic counters for eventsProcessed, eventsFilteredOut, errorsEncountered, and startTime for uptime
 - [ ] Make convertEvent's os.Stat optional or cacheable
 - [ ] Goreleaser configuration

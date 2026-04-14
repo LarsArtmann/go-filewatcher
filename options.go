@@ -122,3 +122,13 @@ func WithOnError(fn func(error)) Option {
 		}
 	}
 }
+
+// WithLazyIsDir skips the os.Stat call in convertEvent for better performance.
+// When enabled, Event.IsDir will always be false. This is useful when you
+// don't need directory information and want to minimize filesystem calls.
+// Default is false (IsDir is populated accurately).
+func WithLazyIsDir() Option {
+	return func(w *Watcher) {
+		w.lazyIsDir = true
+	}
+}

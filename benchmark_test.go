@@ -88,7 +88,7 @@ func BenchmarkConvertEvent_Create(b *testing.B) {
 	b.ResetTimer()
 
 	for range b.N {
-		_ = convertEvent(fsEvent)
+		_ = convertEvent(fsEvent, false)
 	}
 }
 
@@ -101,7 +101,7 @@ func BenchmarkConvertEvent_Write(b *testing.B) {
 	b.ResetTimer()
 
 	for range b.N {
-		_ = convertEvent(fsEvent)
+		_ = convertEvent(fsEvent, false)
 	}
 }
 
@@ -114,7 +114,20 @@ func BenchmarkConvertEvent_Chmod(b *testing.B) {
 	b.ResetTimer()
 
 	for range b.N {
-		_ = convertEvent(fsEvent)
+		_ = convertEvent(fsEvent, false)
+	}
+}
+
+func BenchmarkConvertEvent_LazyIsDir(b *testing.B) {
+	tmpFile := filepath.Join(b.TempDir(), "test.go")
+	_ = os.WriteFile(tmpFile, []byte("test"), 0o600)
+
+	fsEvent := fsnotify.Event{Name: tmpFile, Op: fsnotify.Create}
+
+	b.ResetTimer()
+
+	for range b.N {
+		_ = convertEvent(fsEvent, true) // lazyIsDir=true for performance
 	}
 }
 

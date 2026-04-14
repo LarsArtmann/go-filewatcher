@@ -80,7 +80,7 @@
 - [ ] Integrate into dynamic-markdown-site
 - [ ] Integrate into auto-deduplicate
 - [ ] Integrate into Cyberdom
-- [ ] Add `Close()` to `DebouncerInterface` (rename `Stop()`)
+- [x] ~~Add `Close()` to `DebouncerInterface`~~ - Done: Close() added as alias for Stop()
 - [ ] Add `WithPollInterval` fallback
 - [x] ~~Add `Watcher.IsWatching()`~~ - Done
 - [x] ~~Add `Watcher.Restart()` method~~ - Can be done via Close + New + Watch
@@ -152,8 +152,8 @@
 - [ ] Make `just check` pass with race detector
 - [ ] Address flaky middleware test `TestWatcher_Watch_WithMiddleware`
 - [ ] Raise test coverage from 77% → 90%+
-- [ ] Add test for `FilterMinSize()` filter
-- [ ] Add test for `MiddlewareWriteFileLog()`
+- [x] ~~Add test for `FilterMinSize()` filter~~ - Done: TestFilterMinSize exists
+- [x] ~~Add test for `MiddlewareWriteFileLog()`~~ - Done: Tests exist (TestMiddlewareWriteFileLog, TestMiddlewareWriteFileLog_Appends)
 - [ ] Add test for `handleError()` stderr path
 - [ ] Add test for `GlobalDebouncer.Flush()`
 - [ ] Add test for `handleError` with ErrorContext

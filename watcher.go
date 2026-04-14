@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
@@ -75,6 +76,12 @@ type Watcher struct {
 	errorsMu   sync.Mutex
 	errorsCh   chan error
 	errorsOnce sync.Once
+
+	// Observability metrics (atomic counters for thread-safe access)
+	eventsProcessed   atomic.Uint64 // Total events that passed all filters
+	eventsFilteredOut atomic.Uint64 // Events filtered out (dropped by filters)
+	errorsEncountered atomic.Uint64 // Errors encountered during processing
+	startTime         time.Time     // When watcher was created/started
 }
 
 // Compile-time interface check: Watcher implements io.Closer.
@@ -215,6 +222,12 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 	eventCh := make(chan Event, w.bufferSize)
 
 	w.state |= flagWatching
+
+	// Record start time for uptime tracking
+	if w.startTime.IsZero() {
+		w.startTime = time.Now()
+	}
+
 	go w.watchLoop(ctx, eventCh)
 
 	// Store eventCh so Close() can close it after debouncer stops
@@ -295,9 +308,13 @@ func (w *Watcher) WatchList() []string {
 
 // Stats provides observability metrics for the watcher.
 type Stats struct {
-	WatchCount int
-	IsWatching bool
-	IsClosed   bool
+	WatchCount        int
+	IsWatching        bool
+	IsClosed          bool
+	EventsProcessed   uint64        // Total events that passed all filters
+	EventsFilteredOut uint64        // Events filtered out (dropped by filters)
+	ErrorsEncountered uint64        // Errors encountered during processing
+	Uptime            time.Duration // Time since watcher was started
 }
 
 // Stats returns current statistics about the watcher.
@@ -306,10 +323,19 @@ func (w *Watcher) Stats() Stats {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
+	var uptime time.Duration
+	if !w.startTime.IsZero() {
+		uptime = time.Since(w.startTime)
+	}
+
 	return Stats{
-		WatchCount: len(w.watchList),
-		IsWatching: w.state&flagWatching != 0,
-		IsClosed:   w.state&flagClosed != 0,
+		WatchCount:        len(w.watchList),
+		IsWatching:        w.state&flagWatching != 0,
+		IsClosed:          w.state&flagClosed != 0,
+		EventsProcessed:   w.eventsProcessed.Load(),
+		EventsFilteredOut: w.eventsFilteredOut.Load(),
+		ErrorsEncountered: w.errorsEncountered.Load(),
+		Uptime:            uptime,
 	}
 }
 

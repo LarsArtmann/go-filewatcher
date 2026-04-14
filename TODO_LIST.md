@@ -41,7 +41,7 @@
 - [ ] Add `WithIgnorePatterns()` using glob patterns
 - [ ] Expose `convertEvent` for testing
 - [ ] Add `MiddlewareRateBurst()` for token bucket rate limiting
-- [ ] Add `MiddlewareDeduplicate()` to drop duplicate events
+- [x] ~~Add `MiddlewareDeduplicate()` to drop duplicate events~~ - Done: Implemented with background cleanup goroutine
 - [ ] Add `MiddlewareBatch()` to batch events over a window (in progress)
 - [ ] Add integration test for recursive directory watching
 - [ ] Add integration test for per-path debounce correctness

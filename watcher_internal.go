@@ -52,6 +52,7 @@ func (w *Watcher) processEvent(ctx context.Context, fsEvent fsnotify.Event, even
 	}
 
 	if !w.passesFilters(*event) {
+		w.eventsFilteredOut.Add(1)
 		w.handleFilteredEvent(fsEvent, *event)
 
 		return
@@ -66,6 +67,12 @@ func (w *Watcher) handleFilteredEvent(fsEvent fsnotify.Event, event Event) {
 	if event.Op == Create {
 		w.handleNewDirectory(fsEvent.Name)
 	}
+}
+
+// incrementProcessedEvent increments the eventsProcessed counter.
+// Called from emitEvent when an event successfully passes through.
+func (w *Watcher) incrementProcessedEvent() {
+	w.eventsProcessed.Add(1)
 }
 
 // emitEvent handles the actual event emission with middleware and debouncing.
@@ -161,7 +168,12 @@ func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handl
 			ErrorContext{Operation: "handler", Path: event.Path, Retryable: false},
 			fmt.Errorf("handler error: %w", err),
 		)
+
+		return
 	}
+
+	// Event was successfully processed
+	w.incrementProcessedEvent()
 }
 
 func (w *Watcher) getDebounceKey(path string) DebounceKey {
@@ -212,6 +224,9 @@ func (w *Watcher) passesFilters(event Event) bool {
 
 // handleError dispatches errors to the configured handler, errors channel, or stderr.
 func (w *Watcher) handleError(ctx ErrorContext, err error) {
+	// Increment error counter
+	w.errorsEncountered.Add(1)
+
 	// Send to errors channel if it's being used (non-blocking)
 	w.errorsMu.Lock()
 	if w.errorsCh != nil {

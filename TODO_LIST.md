@@ -70,7 +70,7 @@
 - [x] ~~Add Op.MarshalText/UnmarshalText for JSON~~ - Done: Already implemented
 - [x] ~~Add `UnmarshalText` to Op type~~ - Done: Already implemented
 - [x] ~~Enrich Stats struct: event counts, filter stats, error count, uptime~~ - Done: Added atomic counters for eventsProcessed, eventsFilteredOut, errorsEncountered, and startTime for uptime
-- [ ] Make convertEvent's os.Stat optional or cacheable
+- [x] ~~Make convertEvent's os.Stat optional or cacheable~~ - Done: Added WithLazyIsDir() option to skip os.Stat calls
 - [ ] Goreleaser configuration
 - [ ] Configure semantic-release
 - [ ] Add coverage threshold enforcement in CI (>=90%)

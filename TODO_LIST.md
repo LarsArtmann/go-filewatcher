@@ -63,9 +63,9 @@
 - [x] ~~Replace bare `atomic int64` with `atomic.Int64` in MiddlewareRateLimit~~ - Done
 - [x] ~~Add `Watcher.IsWatching()`~~ - Done
 - [x] ~~Add `MiddlewareBatch()` to batch events over a window~~ - Done
+- [x] ~~Fix race condition between event emission and channel close~~ - Fixed with emitWg
 - [ ] Replace `log.Logger` with `log/slog` in middleware
 - [ ] Add slog support to MiddlewareLogging
-- [ ] Replace bare `atomic int64` with `atomic.Int64` in MiddlewareRateLimit
 - [x] ~~Add `Event` batch accumulation~~ - Done via MiddlewareBatch
 - [ ] Add Op.MarshalText/UnmarshalText for JSON
 - [ ] Add `UnmarshalText` to Op type
@@ -83,10 +83,11 @@
 - [ ] Add `Close()` to `DebouncerInterface` (rename `Stop()`)
 - [ ] Add `WithPollInterval` fallback
 - [x] ~~Add `Watcher.IsWatching()`~~ - Done
-- [ ] Add `Watcher.Restart()` method
+- [x] ~~Add `Watcher.Restart()` method~~ - Can be done via Close + New + Watch
+- [ ] Add `Watcher.WatchOnce()` for one-shot mode
 - [ ] Self-healing watcher
 - [ ] Add `Event.Size` field
-- [ ] Add `FilterModifiedSince(t)`
+- [x] ~~Add `FilterModifiedSince(t)`~~ - Done
 - [ ] Filter func type could return match metadata
 - [ ] Add `MiddlewareThrottle`
 - [ ] Error rate limiting middleware
@@ -189,7 +190,7 @@
 | Build Status | Clean | ✅ |
 | Test Passing | 100% | ✅ |
 | Race Conditions | Mitigated | 🟡 |
-| HIGH Priority | 3 | 🔴 |
-| MEDIUM Priority | 68 | 🟡 |
+| HIGH Priority | 2 | 🔴 |
+| MEDIUM Priority | 65 | 🟡 |
 | LOW Priority | 5 | 🟢 |
-| Completed | 50+ | ✅ |
+| Completed | 55+ | ✅ |

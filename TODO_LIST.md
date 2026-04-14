@@ -51,8 +51,8 @@
 - [ ] Create standalone CLI tool
 - [ ] Write Troubleshooting.md
 - [x] ~~Add Architecture.md~~ - Done: Comprehensive architecture documentation added
-- [ ] Fix getDebounceKey type assertion smell
-- [ ] Fix Boolean Blindness
+- [x] ~~Fix getDebounceKey type assertion smell~~ - Done: Added UsesPerPathKeys() to DebouncerInterface
+- [x] ~~Fix Boolean Blindness~~ - Done: Added ContentCheckMode type for FilterGeneratedCodeFull
 - [ ] Prometheus metrics export
 - [ ] Create debug mode with verbose structured logging
 - [ ] Add `just coverage` target

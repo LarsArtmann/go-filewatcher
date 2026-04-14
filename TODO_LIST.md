@@ -69,7 +69,7 @@
 - [x] ~~Add `Event` batch accumulation~~ - Done via MiddlewareBatch
 - [ ] Add Op.MarshalText/UnmarshalText for JSON
 - [ ] Add `UnmarshalText` to Op type
-- [ ] Enrich Stats struct: event counts, filter stats, error count, uptime
+- [x] ~~Enrich Stats struct: event counts, filter stats, error count, uptime~~ - Done: Added atomic counters for eventsProcessed, eventsFilteredOut, errorsEncountered, and startTime for uptime
 - [ ] Make convertEvent's os.Stat optional or cacheable
 - [ ] Goreleaser configuration
 - [ ] Configure semantic-release

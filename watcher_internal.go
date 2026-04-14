@@ -165,7 +165,7 @@ func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handl
 }
 
 func (w *Watcher) getDebounceKey(path string) DebounceKey {
-	if _, ok := w.debounceInterface.(*Debouncer); ok {
+	if w.debounceInterface.UsesPerPathKeys() {
 		return DebounceKey(path)
 	}
 

@@ -170,6 +170,11 @@ func (d *Debouncer) Pending() int {
 	return len(d.entries)
 }
 
+// UsesPerPathKeys returns true because Debouncer tracks each key independently.
+func (d *Debouncer) UsesPerPathKeys() bool {
+	return true
+}
+
 // GlobalDebouncer coalesces all events into a single timer, regardless of key.
 // Useful when you want to batch all file changes into one action.
 type GlobalDebouncer struct {
@@ -279,4 +284,9 @@ func (g *GlobalDebouncer) Pending() int {
 	}
 
 	return 0
+}
+
+// UsesPerPathKeys returns false because GlobalDebouncer coalesces all events.
+func (g *GlobalDebouncer) UsesPerPathKeys() bool {
+	return false
 }

@@ -66,7 +66,7 @@ type Watcher struct {
 	state     WatcherStateFlags // bit flags: closed, watching
 	watchList []string          // tracked paths currently being watched
 	eventCh   chan Event        // event channel, closed in Close()
-	emitWg    sync.WaitGroup     // tracks in-flight event emissions
+	emitWg    sync.WaitGroup    // tracks in-flight event emissions
 
 	// Debouncer (initialized based on config)
 	debounceInterface DebouncerInterface

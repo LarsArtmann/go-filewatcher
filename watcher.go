@@ -338,30 +338,15 @@ func (w *Watcher) Close() error {
 
 	w.mu.Unlock()
 
-	// Close fsnotify watcher FIRST - this causes watchLoop to exit.
-	// No new events will be processed after this.
-	err := w.fswatcher.Close()
-	if err != nil {
-		return fmt.Errorf("closing fsnotify watcher: %w", err)
-	}
-
-	// Wait for watchLoop to exit by draining any pending event emissions.
-	// This ensures no one is writing to eventCh when we close it.
-	w.emitWg.Wait()
-
-	// Stop the debouncer to cancel any pending debounced callbacks.
+	// Stop the debouncer FIRST to cancel pending callbacks and prevent new ones.
 	if w.debounceInterface != nil {
 		w.debounceInterface.Stop()
 	}
 
-	// Close eventCh AFTER all event emissions have completed.
-	// No one should be writing to it at this point.
-	w.mu.RLock()
-	eventCh := w.eventCh
-	w.mu.RUnlock()
-
-	if eventCh != nil {
-		close(eventCh)
+	// Close fsnotify watcher - this causes watchLoop to exit and close eventCh.
+	err := w.fswatcher.Close()
+	if err != nil {
+		return fmt.Errorf("closing fsnotify watcher: %w", err)
 	}
 
 	// Close the errors channel if it was created

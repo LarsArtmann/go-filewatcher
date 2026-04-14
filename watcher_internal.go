@@ -11,8 +11,16 @@ import (
 )
 
 // watchLoop is the main event processing goroutine.
-// NOTE: Does NOT close eventCh - Close() does that after debouncer stops.
+// Closes eventCh when ctx is cancelled or fsnotify watcher is closed.
+// Uses emitWg to ensure all in-flight emissions complete before closing.
 func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
+	defer func() {
+		// Wait for all event emissions to complete before closing.
+		// This prevents race between send on eventCh and close(eventCh).
+		w.emitWg.Wait()
+		close(eventCh)
+	}()
+
 	for {
 		select {
 		case <-ctx.Done():
@@ -62,9 +70,12 @@ func (w *Watcher) handleFilteredEvent(fsEvent fsnotify.Event, event Event) {
 
 // emitEvent handles the actual event emission with middleware and debouncing.
 func (w *Watcher) emitEvent(ctx context.Context, event Event, eventCh chan<- Event) {
-	w.emitWg.Add(1)
-
+	// execute is the callback that runs (either immediately or after debounce).
+	// emitWg.Add/Done are tracked INSIDE execute so we only count when
+	// the callback actually runs, not when it's scheduled. This prevents
+	// deadlock when Close() cancels pending debounced callbacks.
 	execute := func() {
+		w.emitWg.Add(1)
 		defer w.emitWg.Done()
 
 		emit := w.buildEmitFunc(ctx, eventCh)

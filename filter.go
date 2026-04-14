@@ -63,6 +63,53 @@ func FilterIgnoreDirs(dirs ...string) Filter {
 	}
 }
 
+// FilterExcludePaths creates a filter that discards events for files
+// matching any of the given exact paths. Paths are matched after
+// normalization (absolute path conversion).
+//
+// This differs from FilterIgnoreDirs which matches directory names anywhere
+// in the path. FilterExcludePaths requires exact path matches.
+//
+// Example:
+//
+//	// Exclude specific files
+//	watcher, _ := filewatcher.New("./src",
+//	    filewatcher.WithFilter(filewatcher.FilterExcludePaths(
+//	        "/home/user/project/src/generated.go",
+//	        "/home/user/project/src/vendor",
+//	    )),
+//	)
+func FilterExcludePaths(paths ...string) Filter {
+	pathSet := make(map[string]struct{}, len(paths))
+	for _, path := range paths {
+		// Normalize to absolute path for consistent matching
+		abs, err := filepath.Abs(path)
+		if err == nil {
+			pathSet[abs] = struct{}{}
+		} else {
+			// Fall back to original path if Abs fails
+			pathSet[path] = struct{}{}
+		}
+	}
+
+	return func(event Event) bool {
+		// Check exact path match
+		if _, excluded := pathSet[event.Path]; excluded {
+			return false
+		}
+
+		// Also check normalized path
+		abs, err := filepath.Abs(event.Path)
+		if err == nil {
+			if _, excluded := pathSet[abs]; excluded {
+				return false
+			}
+		}
+
+		return true
+	}
+}
+
 // FilterIgnoreHidden creates a filter that discards events for hidden
 // files and directories (those starting with a dot).
 func FilterIgnoreHidden() Filter {

@@ -157,6 +157,41 @@ func TestFilterOperations(t *testing.T) {
 	})
 }
 
+func TestFilterExcludePaths(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	// Create test paths
+	specificFile := tmpDir + "/specific.go"
+	specificDir := tmpDir + "/excluded_dir"
+	otherFile := tmpDir + "/other.go"
+
+	filter := FilterExcludePaths(specificFile, specificDir)
+
+	cases := []struct {
+		name string
+		path string
+		want bool
+	}{
+		{"excluded file", specificFile, false},
+		{"excluded dir", specificDir, false},
+		{"other file", otherFile, true},
+		{"nonexistent path", tmpDir + "/nonexistent", true},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			event := Event{Path: tc.path, Op: Write, Timestamp: time.Now(), IsDir: false}
+			if got := filter(event); got != tc.want {
+				t.Errorf("FilterExcludePaths(%q) = %v, want %v", tc.path, got, tc.want)
+			}
+		})
+	}
+}
+
 func TestFilterNotOperations(t *testing.T) {
 	t.Parallel()
 

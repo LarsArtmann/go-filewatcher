@@ -62,21 +62,38 @@ func (w *Watcher) handleFilteredEvent(fsEvent fsnotify.Event, event Event) {
 
 // emitEvent handles the actual event emission with middleware and debouncing.
 func (w *Watcher) emitEvent(ctx context.Context, event Event, eventCh chan<- Event) {
-	emit := w.buildEmitFunc(ctx, eventCh)
-	handler := w.buildMiddlewareHandler(emit)
-	w.executeHandler(ctx, event, handler)
+	w.emitWg.Add(1)
+
+	execute := func() {
+		defer w.emitWg.Done()
+
+		emit := w.buildEmitFunc(ctx, eventCh)
+		handler := w.buildMiddlewareHandler(emit)
+		w.executeHandler(ctx, event, handler)
+	}
+
+	if w.debounceInterface == nil {
+		execute()
+
+		return
+	}
+
+	key := w.getDebounceKey(event.Path)
+	w.debounceInterface.Debounce(key, execute)
 }
 
 // buildEmitFunc creates the emit function for sending events.
 // This is safe to call even after the watcher is closed - it will drop events.
 func (w *Watcher) buildEmitFunc(ctx context.Context, eventCh chan<- Event) func(Event) {
 	return func(e Event) {
-		// Use recover to handle the race between send and close.
-		// Even though we check closed state above, there's a race window
-		// where the channel can be closed between the check and the send.
-		defer func() {
-			_ = recover() // Ignore panic from sending on closed channel
-		}()
+		// Check if watcher is closed before sending
+		w.mu.RLock()
+		closed := w.state&flagClosed != 0
+		w.mu.RUnlock()
+
+		if closed {
+			return
+		}
 
 		select {
 		case eventCh <- e:
@@ -125,26 +142,15 @@ func (w *Watcher) wrapWithMiddleware(
 	}
 }
 
-// executeHandler runs the handler, applying debouncing if configured.
+// executeHandler runs the handler.
 func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handler) {
-	execute := func() {
-		err := handler(ctx, event)
-		if err != nil {
-			w.handleError(
-				ErrorContext{Operation: "handler", Path: event.Path, Retryable: false},
-				fmt.Errorf("handler error: %w", err),
-			)
-		}
+	err := handler(ctx, event)
+	if err != nil {
+		w.handleError(
+			ErrorContext{Operation: "handler", Path: event.Path, Retryable: false},
+			fmt.Errorf("handler error: %w", err),
+		)
 	}
-
-	if w.debounceInterface == nil {
-		execute()
-
-		return
-	}
-
-	key := w.getDebounceKey(event.Path)
-	w.debounceInterface.Debounce(key, execute)
 }
 
 func (w *Watcher) getDebounceKey(path string) DebounceKey {

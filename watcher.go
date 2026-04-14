@@ -66,6 +66,7 @@ type Watcher struct {
 	state     WatcherStateFlags // bit flags: closed, watching
 	watchList []string          // tracked paths currently being watched
 	eventCh   chan Event        // event channel, closed in Close()
+	emitWg    sync.WaitGroup     // tracks in-flight event emissions
 
 	// Debouncer (initialized based on config)
 	debounceInterface DebouncerInterface
@@ -158,6 +159,7 @@ func New(paths []string, opts ...Option) (*Watcher, error) {
 		state:             0,
 		watchList:         make([]string, 0, len(paths)),
 		eventCh:           nil,
+		emitWg:            sync.WaitGroup{},
 		debounceInterface: nil,
 		errorsCh:          nil,
 		errorsMu:          sync.Mutex{},
@@ -336,21 +338,24 @@ func (w *Watcher) Close() error {
 
 	w.mu.Unlock()
 
-	// Close fsnotify watcher FIRST - this causes watchLoop to exit
-	// and ensures no new events will be processed.
+	// Close fsnotify watcher FIRST - this causes watchLoop to exit.
+	// No new events will be processed after this.
 	err := w.fswatcher.Close()
 	if err != nil {
 		return fmt.Errorf("closing fsnotify watcher: %w", err)
 	}
 
-	// Stop the debouncer AFTER closing fsnotify to wait for any
-	// in-flight debounced callbacks to complete before we close eventCh.
+	// Wait for watchLoop to exit by draining any pending event emissions.
+	// This ensures no one is writing to eventCh when we close it.
+	w.emitWg.Wait()
+
+	// Stop the debouncer to cancel any pending debounced callbacks.
 	if w.debounceInterface != nil {
 		w.debounceInterface.Stop()
 	}
 
-	// Close eventCh AFTER debouncer stops to ensure all callbacks complete
-	// before we close the channel. watchLoop just exits, doesn't close it.
+	// Close eventCh AFTER all event emissions have completed.
+	// No one should be writing to it at this point.
 	w.mu.RLock()
 	eventCh := w.eventCh
 	w.mu.RUnlock()

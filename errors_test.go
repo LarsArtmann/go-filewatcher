@@ -329,61 +329,34 @@ func TestErrorHandler_WithContext(t *testing.T) {
 
 //nolint:paralleltest // Not parallel: captures os.Stderr, which is a global resource.
 func TestErrorHandler_DefaultLogsToStderr(t *testing.T) {
-	tmpDir := t.TempDir()
-
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
+	tests := []struct {
+		name      string
+		operation string
+		errMsg    string
+	}{
+		{"with operation", "test", "test error"},
+		{"without path", "fsnotify", "fsnotify error"},
 	}
 
-	defer func() { _ = w.Close() }()
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tmpDir := t.TempDir()
 
-	old := os.Stderr
-	r, wPipe, _ := os.Pipe()
-	os.Stderr = wPipe
+			w, err := New([]string{tmpDir})
+			if err != nil {
+				t.Fatal(err)
+			}
 
-	w.handleError(ErrorContext{Operation: "test"}, errors.New("test error")) //nolint:err113
+			defer func() { _ = w.Close() }()
 
-	_ = wPipe.Close()
-	os.Stderr = old
+			output := captureStderr(t, func() {
+				w.handleError(ErrorContext{Operation: tt.operation}, errors.New(tt.errMsg)) //nolint:err113
+			})
 
-	var buf bytes.Buffer
-
-	_, _ = io.Copy(&buf, r)
-
-	output := buf.String()
-	if !strings.Contains(output, "test error") {
-		t.Errorf("expected error message in stderr, got %q", output)
-	}
-}
-
-//nolint:paralleltest // Not parallel: captures os.Stderr, which is a global resource.
-func TestErrorHandler_DefaultWithoutPath(t *testing.T) {
-	tmpDir := t.TempDir()
-
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
-
-	old := os.Stderr
-	r, wPipe, _ := os.Pipe()
-	os.Stderr = wPipe
-
-	w.handleError(ErrorContext{Operation: "fsnotify"}, errors.New("fsnotify error")) //nolint:err113
-
-	_ = wPipe.Close()
-	os.Stderr = old
-
-	var buf bytes.Buffer
-
-	_, _ = io.Copy(&buf, r)
-
-	output := buf.String()
-	if !strings.Contains(output, "fsnotify error") {
-		t.Errorf("expected error message in stderr, got %q", output)
+			if !strings.Contains(output, tt.errMsg) {
+				t.Errorf("expected error message in stderr, got %q", output)
+			}
+		})
 	}
 }
 
@@ -472,4 +445,27 @@ func TestErrorHandler_Async(t *testing.T) {
 
 	// Wait for handlers to complete (in production they'd be async)
 	// This is a best-effort test for thread safety
+}
+
+// captureStderr captures stderr output from running a function.
+// Returns the captured output string.
+func captureStderr(t *testing.T, fn func()) string {
+	t.Helper()
+
+	old := os.Stderr
+	r, wPipe, err := os.Pipe()
+	if err != nil {
+		t.Fatalf("Failed to create pipe: %v", err)
+	}
+	os.Stderr = wPipe
+
+	fn()
+
+	_ = wPipe.Close()
+	os.Stderr = old
+
+	var buf bytes.Buffer
+	_, _ = io.Copy(&buf, r)
+
+	return buf.String()
 }

@@ -210,10 +210,7 @@ func TestFilterGeneratedCode_DefaultAll(t *testing.T) {
 	// When no options are provided, all generators should be checked
 	filter := FilterGeneratedCode()
 
-	tests := []struct {
-		path     string
-		expected bool
-	}{
+	runFilterSubtests(t, []filterTestCase{
 		{"/project/db/models.go", false},          // sqlc
 		{"/project/page_templ.go", false},         // templ
 		{"/project/status_enum.go", false},        // go-enum
@@ -221,23 +218,7 @@ func TestFilterGeneratedCode_DefaultAll(t *testing.T) {
 		{"/project/mocks/service_mock.go", false}, // mockgen
 		{"/project/main.go", true},                // regular
 		{"/project/utils.go", true},               // regular
-	}
-
-	for _, testCase := range tests {
-		t.Run(testCase.path, func(t *testing.T) {
-			event := Event{Path: testCase.path, Op: Op(0), Timestamp: time.Time{}, IsDir: false}
-
-			result := filter(event)
-			if result != testCase.expected {
-				t.Errorf(
-					"FilterGeneratedCode() = %v, want %v for path %s",
-					result,
-					testCase.expected,
-					testCase.path,
-				)
-			}
-		})
-	}
+	}, filter)
 }
 
 //nolint:paralleltest // Test files cannot be parallel due to file system operations
@@ -296,31 +277,12 @@ func TestFilterGeneratedCodeWithFilter(t *testing.T) {
 
 	filter := FilterGeneratedCodeWithFilter(genFilter)
 
-	tests := []struct {
-		path     string
-		expected bool
-	}{
+	runFilterSubtests(t, []filterTestCase{
 		{"/project/db/models.go", false},  // filtered
 		{"/project/page_templ.go", false}, // filtered
 		{"/project/main.go", true},        // not filtered
 		{"/project/vendor/lib.go", true},  // not filtered (no vendor pattern)
-	}
-
-	for _, testCase := range tests {
-		t.Run(testCase.path, func(t *testing.T) {
-			event := Event{Path: testCase.path, Op: Op(0), Timestamp: time.Time{}, IsDir: false}
-
-			result := filter(event)
-			if result != testCase.expected {
-				t.Errorf(
-					"FilterGeneratedCodeWithFilter() = %v, want %v for path %s",
-					result,
-					testCase.expected,
-					testCase.path,
-				)
-			}
-		})
-	}
+	}, filter)
 
 	// Check metrics were recorded
 	stats := genFilter.GetStats()
@@ -412,4 +374,28 @@ func writeFile(path string, content []byte) error {
 	}
 
 	return nil
+}
+
+// filterTestCase represents a test case for filter testing.
+type filterTestCase struct {
+	path     string
+	expected bool
+}
+
+// runFilterSubtests runs subtests for a filter function with the given test cases.
+func runFilterSubtests(t *testing.T, tests []filterTestCase, filter func(Event) bool) {
+	for _, tc := range tests {
+		t.Run(tc.path, func(t *testing.T) {
+			event := Event{Path: tc.path, Op: Op(0), Timestamp: time.Time{}, IsDir: false}
+			result := filter(event)
+			if result != tc.expected {
+				t.Errorf(
+					"filter() = %v, want %v for path %s",
+					result,
+					tc.expected,
+					tc.path,
+				)
+			}
+		})
+	}
 }

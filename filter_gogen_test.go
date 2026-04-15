@@ -41,18 +41,26 @@ var (
 		{name: "templ with multiple options", path: "/project/page_templ.go", expected: false},
 		{name: "protobuf with multiple options", path: "/project/api/user.pb.go", expected: false},
 		{name: "regular file with multiple options", path: "/project/main.go", expected: true},
-		{name: "go-enum with multiple options (not in list)", path: "/project/status_enum.go", expected: true},
+		{
+			name:     "go-enum with multiple options (not in list)",
+			path:     "/project/status_enum.go",
+			expected: true,
+		},
 	}
 )
 
 var (
 	protobufEventCases = twoTestCases(
-		"user.pb.go", "/project/api/user.pb.go",
-		"user_grpc.pb.go", "/project/api/user_grpc.pb.go",
+		"user.pb.go",
+		"/project/api/user.pb.go",
+		"user_grpc.pb.go",
+		"/project/api/user_grpc.pb.go",
 	)
 	mockgenEventCases = twoTestCases(
-		"service_mock.go", "/project/mocks/service_mock.go",
-		"mock_service.go", "/project/mocks/mock_service.go",
+		"service_mock.go",
+		"/project/mocks/service_mock.go",
+		"mock_service.go",
+		"/project/mocks/mock_service.go",
 	)
 )
 

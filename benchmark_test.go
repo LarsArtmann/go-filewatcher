@@ -13,66 +13,88 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
+//nolint:gochecknoglobals // Benchmark helper - intentionally package level for reuse
+var (
+	benchmarkTestEvent = Event{
+		Path:      "/tmp/test.go",
+		Op:        Write,
+		Timestamp: time.Now(),
+		IsDir:     false,
+	}
+)
+
+// newBenchmarkEvent creates a new Event for benchmarking purposes.
+func newBenchmarkEvent() Event {
+	return Event{
+		Path:      "/tmp/test.go",
+		Op:        Write,
+		Timestamp: time.Now(),
+		IsDir:     false,
+	}
+}
+
+// benchmarkMiddlewareHandler runs the middleware handler benchmark with the given watcher.
+func benchmarkMiddlewareHandler(b *testing.B, w *Watcher) {
+	b.Helper()
+
+	for range b.N {
+		_ = w.buildMiddlewareHandler(func(_ Event) {})
+	}
+}
+
+// benchmarkNewWatcher creates and closes a watcher repeatedly for benchmarking.
+func benchmarkNewWatcher(b *testing.B, opts ...Option) {
+	b.Helper()
+
+	for range b.N {
+		w, err := New([]string{b.TempDir()}, opts...)
+		if err != nil {
+			b.Fatal(err)
+		}
+
+		_ = w.Close()
+	}
+}
+
+// benchmarkShouldSkipDir runs shouldSkipDir repeatedly for benchmarking.
+func benchmarkShouldSkipDir(b *testing.B, skipDotDirs bool, ignoreDirNames []string, path string) {
+	b.Helper()
+
+	w := &Watcher{
+		skipDotDirs:    skipDotDirs,
+		ignoreDirNames: ignoreDirNames,
+	}
+
+	for range b.N {
+		_ = w.shouldSkipDir(path)
+	}
+}
+
 // ============================================================================
 // Watcher Creation Benchmarks
 // ============================================================================
 
 func BenchmarkNew_SinglePath(b *testing.B) {
-	tmpDir := b.TempDir()
-
-	b.ResetTimer()
-
-	for range b.N {
-		w, err := New([]string{tmpDir})
-		if err != nil {
-			b.Fatal(err)
-		}
-
-		_ = w.Close()
-	}
+	benchmarkNewWatcher(b)
 }
 
 func BenchmarkNew_WithOptions(b *testing.B) {
-	tmpDir := b.TempDir()
-	opts := []Option{
+	benchmarkNewWatcher(b,
 		WithExtensions(".go", ".md"),
 		WithIgnoreDirs("vendor", "node_modules"),
-		WithDebounce(100 * time.Millisecond),
+		WithDebounce(100*time.Millisecond),
 		WithRecursive(true),
 		WithBuffer(128),
-	}
-
-	b.ResetTimer()
-
-	for range b.N {
-		w, err := New([]string{tmpDir}, opts...)
-		if err != nil {
-			b.Fatal(err)
-		}
-
-		_ = w.Close()
-	}
+	)
 }
 
 func BenchmarkNew_WithMiddleware(b *testing.B) {
-	tmpDir := b.TempDir()
-	opts := []Option{
+	benchmarkNewWatcher(b,
 		WithMiddleware(
 			MiddlewareRecovery(),
 			MiddlewareMetrics(func(_ Op) {}),
 		),
-	}
-
-	b.ResetTimer()
-
-	for range b.N {
-		w, err := New([]string{tmpDir}, opts...)
-		if err != nil {
-			b.Fatal(err)
-		}
-
-		_ = w.Close()
-	}
+	)
 }
 
 // ============================================================================
@@ -192,41 +214,23 @@ func BenchmarkPassesFilters_ComplexFilterChain(b *testing.B) {
 // ============================================================================
 
 func BenchmarkBuildMiddlewareHandler_NoMiddleware(b *testing.B) {
-	w := &Watcher{}
-
-	b.ResetTimer()
-
-	for range b.N {
-		_ = w.buildMiddlewareHandler(func(_ Event) {})
-	}
+	benchmarkMiddlewareHandler(b, &Watcher{})
 }
 
 func BenchmarkBuildMiddlewareHandler_SingleMiddleware(b *testing.B) {
-	w := &Watcher{
+	benchmarkMiddlewareHandler(b, &Watcher{
 		middleware: []Middleware{MiddlewareRecovery()},
-	}
-
-	b.ResetTimer()
-
-	for range b.N {
-		_ = w.buildMiddlewareHandler(func(_ Event) {})
-	}
+	})
 }
 
 func BenchmarkBuildMiddlewareHandler_ThreeMiddleware(b *testing.B) {
-	w := &Watcher{
+	benchmarkMiddlewareHandler(b, &Watcher{
 		middleware: []Middleware{
 			MiddlewareRecovery(),
 			MiddlewareMetrics(func(_ Op) {}),
 			MiddlewareRateLimit(100),
 		},
-	}
-
-	b.ResetTimer()
-
-	for range b.N {
-		_ = w.buildMiddlewareHandler(func(_ Event) {})
-	}
+	})
 }
 
 // ============================================================================
@@ -234,55 +238,19 @@ func BenchmarkBuildMiddlewareHandler_ThreeMiddleware(b *testing.B) {
 // ============================================================================
 
 func BenchmarkShouldSkipDir_DotDir(b *testing.B) {
-	w := &Watcher{
-		skipDotDirs:    true,
-		ignoreDirNames: nil,
-	}
-
-	b.ResetTimer()
-
-	for range b.N {
-		_ = w.shouldSkipDir(".git")
-	}
+	benchmarkShouldSkipDir(b, true, nil, ".git")
 }
 
 func BenchmarkShouldSkipDir_DefaultIgnore(b *testing.B) {
-	w := &Watcher{
-		skipDotDirs:    true,
-		ignoreDirNames: nil,
-	}
-
-	b.ResetTimer()
-
-	for range b.N {
-		_ = w.shouldSkipDir("vendor")
-	}
+	benchmarkShouldSkipDir(b, true, nil, "vendor")
 }
 
 func BenchmarkShouldSkipDir_CustomIgnore(b *testing.B) {
-	w := &Watcher{
-		skipDotDirs:    true,
-		ignoreDirNames: []string{"custom", "dist", "build"},
-	}
-
-	b.ResetTimer()
-
-	for range b.N {
-		_ = w.shouldSkipDir("custom")
-	}
+	benchmarkShouldSkipDir(b, true, []string{"custom", "dist", "build"}, "custom")
 }
 
 func BenchmarkShouldSkipDir_Allowed(b *testing.B) {
-	w := &Watcher{
-		skipDotDirs:    true,
-		ignoreDirNames: []string{"custom"},
-	}
-
-	b.ResetTimer()
-
-	for range b.N {
-		_ = w.shouldSkipDir("src")
-	}
+	benchmarkShouldSkipDir(b, true, []string{"custom"}, "src")
 }
 
 // ============================================================================
@@ -424,29 +392,17 @@ func BenchmarkEventAllocation(b *testing.B) {
 	b.ResetTimer()
 
 	for range b.N {
-		e := Event{
-			Path:      "/tmp/test.go",
-			Op:        Write,
-			Timestamp: time.Now(),
-			IsDir:     false,
-		}
+		e := newBenchmarkEvent()
 
 		_ = e
 	}
 }
 
 func BenchmarkEventString(b *testing.B) {
-	e := Event{
-		Path:      "/tmp/test.go",
-		Op:        Write,
-		Timestamp: time.Now(),
-		IsDir:     false,
-	}
-
 	b.ResetTimer()
 
 	for range b.N {
-		_ = e.String()
+		_ = benchmarkTestEvent.String()
 	}
 }
 

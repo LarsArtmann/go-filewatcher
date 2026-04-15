@@ -70,6 +70,25 @@ func main() {
 	demonstrateDetector(watchDir)
 }
 
+// collectEvents collects events from a channel until context is done.
+func collectEvents(ctx context.Context, events <-chan filewatcher.Event) []string {
+	var receivedEvents []string
+	eventDone := make(chan struct{})
+
+	go func() {
+		for event := range events {
+			receivedEvents = append(receivedEvents, filepath.Base(event.Path))
+		}
+
+		close(eventDone)
+	}()
+
+	<-ctx.Done()
+	<-eventDone
+
+	return receivedEvents
+}
+
 // demonstrateSpecificFilters shows filtering specific generator types.
 func demonstrateSpecificFilters(watchDir string) {
 	fmt.Println("=== Example 1: Filter Specific Generator Types ===")
@@ -89,16 +108,10 @@ func demonstrateSpecificFilters(watchDir string) {
 		log.Fatalf("Failed to create watcher: %v", err)
 	}
 
-	defer func() {
-		closeErr := watcher.Close()
-		if closeErr != nil {
-			log.Printf("Failed to close watcher: %v", closeErr)
-		}
-	}()
+	defer func() { _ = watcher.Close() }()
 
 	// Start watching with a timeout
 	ctx, cancel := context.WithTimeout(context.Background(), watchTimeout)
-
 	defer cancel()
 
 	events, err := watcher.Watch(ctx)
@@ -114,22 +127,7 @@ func demonstrateSpecificFilters(watchDir string) {
 	createTestFile(watchDir, "web/page_templ.go", "package web")       // templ - NOT filtered
 	createTestFile(watchDir, "mocks/service_mock.go", "package mocks") // mockgen - NOT filtered
 
-	// Collect events
-	var receivedEvents []string
-
-	eventDone := make(chan struct{})
-
-	go func() {
-		for event := range events {
-			receivedEvents = append(receivedEvents, filepath.Base(event.Path))
-		}
-
-		close(eventDone)
-	}()
-
-	// Wait for timeout or context cancellation
-	<-ctx.Done()
-	<-eventDone
+	receivedEvents := collectEvents(ctx, events)
 
 	fmt.Println("Files that triggered events:")
 
@@ -159,16 +157,10 @@ func demonstrateAllFilters(watchDir string) {
 		log.Fatalf("Failed to create watcher: %v", err)
 	}
 
-	defer func() {
-		closeErr := watcher.Close()
-		if closeErr != nil {
-			log.Printf("Failed to close watcher: %v", closeErr)
-		}
-	}()
+	defer func() { _ = watcher.Close() }()
 
 	// Start watching with a timeout
 	ctx, cancel := context.WithTimeout(context.Background(), watchTimeout)
-
 	defer cancel()
 
 	events, err := watcher.Watch(ctx)
@@ -181,22 +173,7 @@ func demonstrateAllFilters(watchDir string) {
 	createTestFile(watchDir, "regular.go", "package main")
 	createTestFile(watchDir, "handlers.go", "package main")
 
-	// Collect events
-	var receivedEvents []string
-
-	eventDone := make(chan struct{})
-
-	go func() {
-		for event := range events {
-			receivedEvents = append(receivedEvents, filepath.Base(event.Path))
-		}
-
-		close(eventDone)
-	}()
-
-	// Wait for timeout
-	<-ctx.Done()
-	<-eventDone
+	receivedEvents := collectEvents(ctx, events)
 
 	fmt.Println("Files that triggered events:")
 

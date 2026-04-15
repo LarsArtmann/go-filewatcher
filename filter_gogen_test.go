@@ -18,48 +18,18 @@ var (
 		gogenfilter.FilterProtobuf,
 	}
 
-	sqlcEventCases = []struct {
-		name     string
-		path     string
-		expected bool
-	}{
-		{"models.go", "/project/db/models.go", false},
-		{"query.sql.go", "/project/db/query.sql.go", false},
-		{"users.sql.go", "/project/db/users.sql.go", false},
+	sqlcEventCases = []testCaseName{
+		{testCaseName: "models.go", path: "/project/db/models.go", expected: false},
+		{testCaseName: "query.sql.go", path: "/project/db/query.sql.go", expected: false},
+		{testCaseName: "users.sql.go", path: "/project/db/users.sql.go", expected: false},
 	}
 
-	templEventCases = []struct {
-		name     string
-		path     string
-		expected bool
-	}{
-		{"page_templ.go", "/project/components/page_templ.go", false},
+	templEventCases = []testCaseName{
+		{testCaseName: "page_templ.go", path: "/project/components/page_templ.go", expected: false},
 	}
 
-	goEnumEventCases = []struct {
-		name     string
-		path     string
-		expected bool
-	}{
-		{"status_enum.go", "/project/types/status_enum.go", false},
-	}
-
-	protobufEventCases = []struct {
-		name     string
-		path     string
-		expected bool
-	}{
-		{"user.pb.go", "/project/api/user.pb.go", false},
-		{"user_grpc.pb.go", "/project/api/user_grpc.pb.go", false},
-	}
-
-	mockgenEventCases = []struct {
-		name     string
-		path     string
-		expected bool
-	}{
-		{"service_mock.go", "/project/mocks/service_mock.go", false},
-		{"mock_service.go", "/project/mocks/mock_service.go", false},
+	goEnumEventCases = []testCaseName{
+		{testCaseName: "status_enum.go", path: "/project/types/status_enum.go", expected: false},
 	}
 
 	multipleOptionsTestCases = []struct {
@@ -75,42 +45,32 @@ var (
 	}
 )
 
+var (
+	protobufEventCases = twoTestCases(
+		"user.pb.go", "/project/api/user.pb.go",
+		"user_grpc.pb.go", "/project/api/user_grpc.pb.go",
+	)
+	mockgenEventCases = twoTestCases(
+		"service_mock.go", "/project/mocks/service_mock.go",
+		"mock_service.go", "/project/mocks/mock_service.go",
+	)
+)
+
+// twoTestCases creates a []testCaseName with two entries for files that should NOT be filtered.
+func twoTestCases(name1, path1, name2, path2 string) []testCaseName {
+	return []testCaseName{
+		{testCaseName: name1, path: path1, expected: false},
+		{testCaseName: name2, path: path2, expected: false},
+	}
+}
+
 //nolint:paralleltest // Test files cannot be parallel due to file system operations
 func TestFilterGeneratedCode_SingleFilters(t *testing.T) {
-	t.Run("SQLC", func(t *testing.T) {
-		filter := FilterGeneratedCode(gogenfilter.FilterSQLC)
-		for _, tc := range sqlcEventCases {
-			t.Run(tc.name, testFilter(filter, tc.path, tc.expected))
-		}
-	})
-
-	t.Run("Templ", func(t *testing.T) {
-		filter := FilterGeneratedCode(gogenfilter.FilterTempl)
-		for _, tc := range templEventCases {
-			t.Run(tc.name, testFilter(filter, tc.path, tc.expected))
-		}
-	})
-
-	t.Run("GoEnum", func(t *testing.T) {
-		filter := FilterGeneratedCode(gogenfilter.FilterGoEnum)
-		for _, tc := range goEnumEventCases {
-			t.Run(tc.name, testFilter(filter, tc.path, tc.expected))
-		}
-	})
-
-	t.Run("Protobuf", func(t *testing.T) {
-		filter := FilterGeneratedCode(gogenfilter.FilterProtobuf)
-		for _, tc := range protobufEventCases {
-			t.Run(tc.name, testFilter(filter, tc.path, tc.expected))
-		}
-	})
-
-	t.Run("Mockgen", func(t *testing.T) {
-		filter := FilterGeneratedCode(gogenfilter.FilterMockgen)
-		for _, tc := range mockgenEventCases {
-			t.Run(tc.name, testFilter(filter, tc.path, tc.expected))
-		}
-	})
+	runSingleFilterSubtests(t, "SQLC", gogenfilter.FilterSQLC, sqlcEventCases)
+	runSingleFilterSubtests(t, "Templ", gogenfilter.FilterTempl, templEventCases)
+	runSingleFilterSubtests(t, "GoEnum", gogenfilter.FilterGoEnum, goEnumEventCases)
+	runSingleFilterSubtests(t, "Protobuf", gogenfilter.FilterProtobuf, protobufEventCases)
+	runSingleFilterSubtests(t, "Mockgen", gogenfilter.FilterMockgen, mockgenEventCases)
 
 	t.Run("RegularFile", func(t *testing.T) {
 		filter := FilterGeneratedCode(gogenfilter.FilterSQLC)
@@ -132,13 +92,27 @@ func TestFilterGeneratedCode_SingleFilters(t *testing.T) {
 	})
 }
 
+// runSingleFilterSubtests runs subtests for a single filter type.
+func runSingleFilterSubtests(t *testing.T, name string, filterOption gogenfilter.FilterOption, cases []testCaseName) {
+	t.Run(name, func(t *testing.T) {
+		filter := FilterGeneratedCode(filterOption)
+		for _, tc := range cases {
+			t.Run(tc.testCaseName, testFilter(filter, tc.path, tc.expected))
+		}
+	})
+}
+
 func testFilter(filter Filter, path string, expected bool) func(*testing.T) {
 	return func(t *testing.T) {
-		event := Event{Path: path, Op: Op(0), Timestamp: time.Time{}, IsDir: false}
-		if filter(event) != expected {
+		if filter(newTestEvent(path)) != expected {
 			t.Errorf("FilterGeneratedCode() = %v, want %v for path %s", !expected, expected, path)
 		}
 	}
+}
+
+// newTestEvent creates a test event for the given path.
+func newTestEvent(path string) Event {
+	return Event{Path: path, Op: Op(0), Timestamp: time.Time{}, IsDir: false}
 }
 
 //nolint:paralleltest // Test files cannot be parallel due to file system operations
@@ -147,9 +121,7 @@ func TestFilterGeneratedCode_MultipleOptions(t *testing.T) {
 
 	for _, testCase := range multipleOptionsTestCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			if multiFilter(
-				Event{Path: testCase.path, Op: Op(0), Timestamp: time.Time{}, IsDir: false},
-			) != testCase.expected {
+			if multiFilter(newTestEvent(testCase.path)) != testCase.expected {
 				t.Errorf(
 					"FilterGeneratedCode() = %v, want %v for path %s",
 					!testCase.expected,
@@ -166,14 +138,14 @@ func TestFilterGeneratedCode_DefaultAll(t *testing.T) {
 	// When no options are provided, all generators should be checked
 	filter := FilterGeneratedCode()
 
-	runFilterSubtests(t, []filterTestCase{
-		{"/project/db/models.go", false},          // sqlc
-		{"/project/page_templ.go", false},         // templ
-		{"/project/status_enum.go", false},        // go-enum
-		{"/project/api/user.pb.go", false},        // protobuf
-		{"/project/mocks/service_mock.go", false}, // mockgen
-		{"/project/main.go", true},                // regular
-		{"/project/utils.go", true},               // regular
+	runFilterSubtests(t, []testCaseName{
+		{testCaseName: "/project/db/models.go", path: "/project/db/models.go", expected: false},
+		{testCaseName: "/project/page_templ.go", path: "/project/page_templ.go", expected: false},
+		{testCaseName: "/project/status_enum.go", path: "/project/status_enum.go", expected: false},
+		{testCaseName: "/project/api/user.pb.go", path: "/project/api/user.pb.go", expected: false},
+		{testCaseName: "/project/mocks/service_mock.go", path: "/project/mocks/service_mock.go", expected: false},
+		{testCaseName: "/project/main.go", path: "/project/main.go", expected: true},
+		{testCaseName: "/project/utils.go", path: "/project/utils.go", expected: true},
 	}, filter)
 }
 
@@ -233,11 +205,11 @@ func TestFilterGeneratedCodeWithFilter(t *testing.T) {
 
 	filter := FilterGeneratedCodeWithFilter(genFilter)
 
-	runFilterSubtests(t, []filterTestCase{
-		{"/project/db/models.go", false},  // filtered
-		{"/project/page_templ.go", false}, // filtered
-		{"/project/main.go", true},        // not filtered
-		{"/project/vendor/lib.go", true},  // not filtered (no vendor pattern)
+	runFilterSubtests(t, []testCaseName{
+		{testCaseName: "/project/db/models.go", path: "/project/db/models.go", expected: false},
+		{testCaseName: "/project/page_templ.go", path: "/project/page_templ.go", expected: false},
+		{testCaseName: "/project/main.go", path: "/project/main.go", expected: true},
+		{testCaseName: "/project/vendor/lib.go", path: "/project/vendor/lib.go", expected: true},
 	}, filter)
 
 	// Check metrics were recorded
@@ -261,15 +233,15 @@ func TestGeneratedCodeDetector(t *testing.T) {
 		{"/project/page_templ.go", false}, // templ (not in detector options)
 	}
 
-	for _, testCase := range tests {
-		t.Run(testCase.path, func(t *testing.T) {
-			result := detector.IsGenerated(testCase.path)
-			if result != testCase.expected {
+	for _, tc := range tests {
+		t.Run(tc.path, func(t *testing.T) {
+			result := detector.IsGenerated(tc.path)
+			if result != tc.expected {
 				t.Errorf(
 					"IsGenerated() = %v, want %v for path %s",
 					result,
-					testCase.expected,
-					testCase.path,
+					tc.expected,
+					tc.path,
 				)
 			}
 		})
@@ -281,24 +253,23 @@ func TestGeneratedCodeDetector_GetReason(t *testing.T) {
 	detector := NewGeneratedCodeDetector(gogenfilter.FilterSQLC, gogenfilter.FilterTempl)
 
 	tests := []struct {
-		path         string
-		expected     gogenfilter.FilterReason
-		shouldFilter bool
+		path     string
+		expected gogenfilter.FilterReason
 	}{
-		{"/project/db/models.go", gogenfilter.ReasonSQLC, true},
-		{"/project/page_templ.go", gogenfilter.ReasonTempl, true},
-		{"/project/main.go", gogenfilter.ReasonNotFiltered, false},
+		{"/project/db/models.go", gogenfilter.ReasonSQLC},
+		{"/project/page_templ.go", gogenfilter.ReasonTempl},
+		{"/project/main.go", gogenfilter.ReasonNotFiltered},
 	}
 
-	for _, testCase := range tests {
-		t.Run(testCase.path, func(t *testing.T) {
-			reason := detector.GetReason(testCase.path)
-			if reason != testCase.expected {
+	for _, tc := range tests {
+		t.Run(tc.path, func(t *testing.T) {
+			reason := detector.GetReason(tc.path)
+			if reason != tc.expected {
 				t.Errorf(
 					"GetReason() = %v, want %v for path %s",
 					reason,
-					testCase.expected,
-					testCase.path,
+					tc.expected,
+					tc.path,
 				)
 			}
 		})
@@ -332,21 +303,20 @@ func writeFile(path string, content []byte) error {
 	return nil
 }
 
-// filterTestCase represents a test case for filter testing.
-type filterTestCase struct {
-	path     string
-	expected bool
+// testCaseName is a test case with a name field for subtest naming.
+type testCaseName struct {
+	testCaseName string
+	path         string
+	expected     bool
 }
 
 // runFilterSubtests runs subtests for a filter function with the given test cases.
-func runFilterSubtests(t *testing.T, tests []filterTestCase, filter func(Event) bool) {
+func runFilterSubtests(t *testing.T, tests []testCaseName, filter func(Event) bool) {
 	t.Helper()
 
 	for _, testCase := range tests {
 		t.Run(testCase.path, func(t *testing.T) {
-			event := Event{Path: testCase.path, Op: Op(0), Timestamp: time.Time{}, IsDir: false}
-
-			result := filter(event)
+			result := filter(newTestEvent(testCase.path))
 
 			if result != testCase.expected {
 				t.Errorf(

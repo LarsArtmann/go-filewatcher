@@ -696,18 +696,9 @@ func TestWatcher_Stats_Metrics(t *testing.T) {
 
 	// Verify initial metrics are zero
 	stats := w.Stats()
-	if stats.EventsProcessed != 0 {
-		t.Errorf("expected 0 events processed initially, got %d", stats.EventsProcessed)
-	}
-
-	if stats.EventsFilteredOut != 0 {
-		t.Errorf("expected 0 events filtered initially, got %d", stats.EventsFilteredOut)
-	}
-
-	if stats.ErrorsEncountered != 0 {
-		t.Errorf("expected 0 errors initially, got %d", stats.ErrorsEncountered)
-	}
-
+	assertStat(t, stats.EventsProcessed, 0, "EventsProcessed", "initially")
+	assertStat(t, stats.EventsFilteredOut, 0, "EventsFilteredOut", "initially")
+	assertStat(t, stats.ErrorsEncountered, 0, "ErrorsEncountered", "initially")
 	if stats.Uptime != 0 {
 		t.Error("expected 0 uptime before Watch()")
 	}
@@ -745,11 +736,7 @@ func TestWatcher_Stats_Metrics(t *testing.T) {
 
 	// Check stats
 	stats = w.Stats()
-
-	// Should have processed the .go file
-	if stats.EventsProcessed != 1 {
-		t.Errorf("expected 1 event processed, got %d", stats.EventsProcessed)
-	}
+	assertStat(t, stats.EventsProcessed, 1, "EventsProcessed", "after .go file")
 
 	// Should have filtered the .txt file
 	if stats.EventsFilteredOut == 0 {
@@ -761,10 +748,7 @@ func TestWatcher_Stats_Metrics(t *testing.T) {
 		t.Error("expected non-zero uptime after Watch()")
 	}
 
-	// No errors expected
-	if stats.ErrorsEncountered != 0 {
-		t.Errorf("expected 0 errors, got %d", stats.ErrorsEncountered)
-	}
+	assertStat(t, stats.ErrorsEncountered, 0, "ErrorsEncountered", "after events")
 
 	// Drain remaining events
 	for {
@@ -1099,4 +1083,12 @@ func TestWatcher_Errors_ReceivesErrors(t *testing.T) {
 
 	// Verify channel is closed
 	assertChannelClosed(t, errorsCh, time.Second, "errors channel")
+}
+
+// assertStat asserts that a stat value matches the expected value.
+func assertStat(t *testing.T, got, expected uint64, name, msg string) {
+	t.Helper()
+	if got != expected {
+		t.Errorf("expected %s=%d, got %d: %s", name, expected, got, msg)
+	}
 }

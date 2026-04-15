@@ -384,16 +384,20 @@ type filterTestCase struct {
 
 // runFilterSubtests runs subtests for a filter function with the given test cases.
 func runFilterSubtests(t *testing.T, tests []filterTestCase, filter func(Event) bool) {
-	for _, tc := range tests {
-		t.Run(tc.path, func(t *testing.T) {
-			event := Event{Path: tc.path, Op: Op(0), Timestamp: time.Time{}, IsDir: false}
+	t.Helper()
+
+	for _, testCase := range tests {
+		t.Run(testCase.path, func(t *testing.T) {
+			event := Event{Path: testCase.path, Op: Op(0), Timestamp: time.Time{}, IsDir: false}
+
 			result := filter(event)
-			if result != tc.expected {
+
+			if result != testCase.expected {
 				t.Errorf(
 					"filter() = %v, want %v for path %s",
 					result,
-					tc.expected,
-					tc.path,
+					testCase.expected,
+					testCase.path,
 				)
 			}
 		})

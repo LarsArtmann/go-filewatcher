@@ -350,7 +350,10 @@ func TestErrorHandler_DefaultLogsToStderr(t *testing.T) {
 			defer func() { _ = w.Close() }()
 
 			output := captureStderr(t, func() {
-				w.handleError(ErrorContext{Operation: tt.operation}, errors.New(tt.errMsg)) //nolint:err113
+				w.handleError(
+					ErrorContext{Operation: tt.operation},
+					errors.New(tt.errMsg), //nolint:err113
+				)
 			})
 
 			if !strings.Contains(output, tt.errMsg) {
@@ -453,10 +456,12 @@ func captureStderr(t *testing.T, fn func()) string {
 	t.Helper()
 
 	old := os.Stderr
+
 	r, wPipe, err := os.Pipe()
 	if err != nil {
 		t.Fatalf("Failed to create pipe: %v", err)
 	}
+
 	os.Stderr = wPipe
 
 	fn()
@@ -465,6 +470,7 @@ func captureStderr(t *testing.T, fn func()) string {
 	os.Stderr = old
 
 	var buf bytes.Buffer
+
 	_, _ = io.Copy(&buf, r)
 
 	return buf.String()

@@ -140,9 +140,7 @@ func TestWatcher_Watch_DetectsWrite(t *testing.T) {
 	testFile := createTestFile(t, TempDir(tmpDir), "test.go", "package test")
 
 	event := waitForEventOrFail(t, events, 3*time.Second)
-	if event.Path != testFile {
-		t.Errorf("expected path %s, got %s", testFile, event.Path)
-	}
+	assertEventPath(t, event, testFile)
 
 	if event.Op != Write && event.Op != Create {
 		t.Errorf("expected Write or Create, got %s", event.Op.String())
@@ -732,9 +730,7 @@ func TestWatcher_Stats_Metrics(t *testing.T) {
 
 	// Wait for event
 	event := waitForEventOrFail(t, events, 2*time.Second)
-	if event.Path != testFile {
-		t.Errorf("expected event for %s, got %s", testFile, event.Path)
-	}
+	assertEventPath(t, event, testFile)
 
 	// Create a .txt file (should be filtered)
 	txtFile := filepath.Join(tmpDir, "test.txt")
@@ -989,9 +985,7 @@ func TestWatcher_FullLifecycle(t *testing.T) {
 	// Wait for event with timeout
 	select {
 	case event := <-events:
-		if event.Path != testFile {
-			t.Errorf("expected event for %s, got %s", testFile, event.Path)
-		}
+		assertEventPath(t, event, testFile)
 
 		if event.Op != Create && event.Op != Write {
 			t.Errorf("expected Create or Write op, got %s", event.Op)
@@ -1027,14 +1021,7 @@ func TestWatcher_FullLifecycle(t *testing.T) {
 	}
 
 	// Verify channel is closed
-	select {
-	case _, ok := <-events:
-		if ok {
-			t.Error("expected event channel to be closed after Close()")
-		}
-	case <-time.After(time.Second):
-		t.Error("timed out waiting for channel close")
-	}
+	assertChannelClosed(t, events, time.Second, "event channel")
 
 	// Verify WatchList is empty after close
 	if len(w.WatchList()) != 0 {
@@ -1111,12 +1098,5 @@ func TestWatcher_Errors_ReceivesErrors(t *testing.T) {
 	_ = w.Close()
 
 	// Verify channel is closed
-	select {
-	case _, ok := <-errorsCh:
-		if ok {
-			t.Error("expected errors channel to be closed after Close()")
-		}
-	case <-time.After(time.Second):
-		t.Error("timed out waiting for errors channel close")
-	}
+	assertChannelClosed(t, errorsCh, time.Second, "errors channel")
 }

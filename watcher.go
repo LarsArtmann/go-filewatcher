@@ -106,6 +106,16 @@ func (w *Watcher) IsWatching() bool {
 	return w.state&flagWatching != 0
 }
 
+// checkClosedOp returns an error if the watcher is closed.
+// operation is the operation being attempted (e.g., "add path", "remove path").
+// The lock must be held by the caller.
+func (w *Watcher) checkClosedOp(operation string) error {
+	if w.state&flagClosed != 0 {
+		return fmt.Errorf("%w: cannot %s on closed watcher", ErrWatcherClosed, operation)
+	}
+	return nil
+}
+
 // DebouncerInterface is the interface for debouncer implementations.
 type DebouncerInterface interface {
 	Debounce(key DebounceKey, fn func())
@@ -248,8 +258,8 @@ func (w *Watcher) Add(path string) error {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	if w.state&flagClosed != 0 {
-		return fmt.Errorf("%w: cannot add path to closed watcher", ErrWatcherClosed)
+	if err := w.checkClosedOp("add path"); err != nil {
+		return err
 	}
 
 	abs, resolveErr := filepath.Abs(path)
@@ -274,8 +284,8 @@ func (w *Watcher) Remove(path string) error {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	if w.state&flagClosed != 0 {
-		return fmt.Errorf("%w: cannot remove path from closed watcher", ErrWatcherClosed)
+	if err := w.checkClosedOp("remove path"); err != nil {
+		return err
 	}
 
 	abs, resolveErr := filepath.Abs(path)

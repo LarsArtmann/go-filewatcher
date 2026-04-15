@@ -178,40 +178,51 @@ func FilterRegex(pattern string) Filter {
 	}
 }
 
+// filterFileStat extracts common file stat logic used by size/time filters.
+// Returns (info, true, true) if stat succeeded and event is a file.
+// Returns (nil, true, false) if event is a directory.
+// Returns (nil, false, false) if stat fails.
+func filterFileStat(event Event) (os.FileInfo, bool, bool) {
+	if event.IsDir {
+		return nil, true, false // isFile=false, shouldFilter=false
+	}
+
+	info, err := os.Stat(event.Path)
+	if err != nil {
+		return nil, false, false // stat failed, shouldFilter=false
+	}
+
+	return info, true, true // stat succeeded, isFile=true, shouldFilter=true
+}
+
+// makeSizeFilter creates a filter that applies a size comparison.
+// Use >= for min size, <= for max size.
+func makeSizeFilter(threshold int64, min bool) Filter {
+	return func(event Event) bool {
+		info, isFile, shouldFilter := filterFileStat(event)
+		if !shouldFilter {
+			return isFile // directories pass through (true), stat fails filter out (false)
+		}
+
+		if min {
+			return info.Size() >= threshold
+		}
+		return info.Size() <= threshold
+	}
+}
+
 // FilterMinSize creates a filter that only passes events for files
 // with size greater than or equal to the given minimum size in bytes.
 // Directory events are not filtered by size.
 func FilterMinSize(minSize int64) Filter {
-	return func(event Event) bool {
-		if event.IsDir {
-			return true // Don't filter directories by size
-		}
-
-		info, err := os.Stat(event.Path)
-		if err != nil {
-			return false // If we can't stat, filter out
-		}
-
-		return info.Size() >= minSize
-	}
+	return makeSizeFilter(minSize, true)
 }
 
 // FilterMaxSize creates a filter that only passes events for files
 // with size less than or equal to the given maximum size in bytes.
 // Directory events are not filtered by size.
 func FilterMaxSize(maxSize int64) Filter {
-	return func(event Event) bool {
-		if event.IsDir {
-			return true // Don't filter directories by size
-		}
-
-		info, err := os.Stat(event.Path)
-		if err != nil {
-			return false // If we can't stat, filter out
-		}
-
-		return info.Size() <= maxSize
-	}
+	return makeSizeFilter(maxSize, false)
 }
 
 // FilterModifiedSince creates a filter that only passes events for files
@@ -219,13 +230,9 @@ func FilterMaxSize(maxSize int64) Filter {
 // Useful for ignoring old files during initial scan.
 func FilterModifiedSince(minTime time.Time) Filter {
 	return func(event Event) bool {
-		if event.IsDir {
-			return true // Don't filter directories by time
-		}
-
-		info, err := os.Stat(event.Path)
-		if err != nil {
-			return false // If we can't stat, filter out
+		info, isFile, shouldFilter := filterFileStat(event)
+		if !shouldFilter {
+			return isFile // directories pass through (true), stat fails filter out (false)
 		}
 
 		return info.ModTime().After(minTime)
@@ -237,13 +244,9 @@ func FilterModifiedSince(minTime time.Time) Filter {
 // Useful for ignoring recently modified files (e.g., during save operations).
 func FilterMinAge(age time.Duration) Filter {
 	return func(event Event) bool {
-		if event.IsDir {
-			return true // Don't filter directories by age
-		}
-
-		info, err := os.Stat(event.Path)
-		if err != nil {
-			return false // If we can't stat, filter out
+		info, isFile, shouldFilter := filterFileStat(event)
+		if !shouldFilter {
+			return isFile // directories pass through (true), stat fails filter out (false)
 		}
 
 		return time.Since(info.ModTime()) >= age

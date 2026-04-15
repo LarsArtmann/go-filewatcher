@@ -12,6 +12,12 @@ import (
 
 //nolint:gochecknoglobals // Test data must be package-level for funlen compliance
 var (
+	generatedCodeFilterOptions = []gogenfilter.FilterOption{
+		gogenfilter.FilterSQLC,
+		gogenfilter.FilterTempl,
+		gogenfilter.FilterProtobuf,
+	}
+
 	sqlcEventCases = []struct {
 		name     string
 		path     string
@@ -58,60 +64,14 @@ var (
 
 	multipleOptionsTestCases = []struct {
 		name     string
-		options  []gogenfilter.FilterOption
 		path     string
 		expected bool
 	}{
-		{
-			name: "sqlc with multiple options",
-			options: []gogenfilter.FilterOption{
-				gogenfilter.FilterSQLC,
-				gogenfilter.FilterTempl,
-				gogenfilter.FilterProtobuf,
-			},
-			path:     "/project/db/models.go",
-			expected: false,
-		},
-		{
-			name: "templ with multiple options",
-			options: []gogenfilter.FilterOption{
-				gogenfilter.FilterSQLC,
-				gogenfilter.FilterTempl,
-				gogenfilter.FilterProtobuf,
-			},
-			path:     "/project/page_templ.go",
-			expected: false,
-		},
-		{
-			name: "protobuf with multiple options",
-			options: []gogenfilter.FilterOption{
-				gogenfilter.FilterSQLC,
-				gogenfilter.FilterTempl,
-				gogenfilter.FilterProtobuf,
-			},
-			path:     "/project/api/user.pb.go",
-			expected: false,
-		},
-		{
-			name: "regular file with multiple options",
-			options: []gogenfilter.FilterOption{
-				gogenfilter.FilterSQLC,
-				gogenfilter.FilterTempl,
-				gogenfilter.FilterProtobuf,
-			},
-			path:     "/project/main.go",
-			expected: true,
-		},
-		{
-			name: "go-enum with multiple options (not in list)",
-			options: []gogenfilter.FilterOption{
-				gogenfilter.FilterSQLC,
-				gogenfilter.FilterTempl,
-				gogenfilter.FilterProtobuf,
-			},
-			path:     "/project/status_enum.go",
-			expected: true,
-		},
+		{name: "sqlc with multiple options", path: "/project/db/models.go", expected: false},
+		{name: "templ with multiple options", path: "/project/page_templ.go", expected: false},
+		{name: "protobuf with multiple options", path: "/project/api/user.pb.go", expected: false},
+		{name: "regular file with multiple options", path: "/project/main.go", expected: true},
+		{name: "go-enum with multiple options (not in list)", path: "/project/status_enum.go", expected: true},
 	}
 )
 
@@ -183,11 +143,7 @@ func testFilter(filter Filter, path string, expected bool) func(*testing.T) {
 
 //nolint:paralleltest // Test files cannot be parallel due to file system operations
 func TestFilterGeneratedCode_MultipleOptions(t *testing.T) {
-	multiFilter := FilterGeneratedCode(
-		gogenfilter.FilterSQLC,
-		gogenfilter.FilterTempl,
-		gogenfilter.FilterProtobuf,
-	)
+	multiFilter := FilterGeneratedCode(generatedCodeFilterOptions...)
 
 	for _, testCase := range multipleOptionsTestCases {
 		t.Run(testCase.name, func(t *testing.T) {

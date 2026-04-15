@@ -20,8 +20,7 @@ func TestMiddlewareLogging(t *testing.T) {
 	mw := MiddlewareLogging(logger)
 	testHandler := mw(noopHandler())
 
-	event := Event{Path: "/tmp/test.go", Op: Write, Timestamp: time.Now(), IsDir: false}
-	err := testHandler(context.Background(), event)
+	err := testHandler(context.Background(), testWriteEvent("/tmp/test.go"))
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -38,8 +37,7 @@ func TestMiddlewareLogging_NilLogger(t *testing.T) {
 	mw := MiddlewareLogging(nil)
 	testHandler := mw(noopHandler())
 
-	event := Event{Path: "/tmp/test.go", Op: Write, Timestamp: time.Now(), IsDir: false}
-	err := testHandler(context.Background(), event)
+	err := testHandler(context.Background(), testWriteEvent("/tmp/test.go"))
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -55,8 +53,7 @@ func TestMiddlewareRecovery(t *testing.T) {
 	mw := MiddlewareRecovery()
 	testHandler := mw(panicHandler)
 
-	event := Event{Path: "/tmp/test.go", Op: Write, Timestamp: time.Now(), IsDir: false}
-	err := testHandler(context.Background(), event)
+	err := testHandler(context.Background(), testWriteEvent("/tmp/test.go"))
 	if err == nil {
 		t.Error("expected error from panic recovery, got nil")
 	}
@@ -77,8 +74,7 @@ func TestMiddlewareRecovery_NoPanic(t *testing.T) {
 	mw := MiddlewareRecovery()
 	testHandler := mw(normalHandler)
 
-	event := Event{Path: "/tmp/test.go", Op: Write, Timestamp: time.Now(), IsDir: false}
-	err := testHandler(context.Background(), event)
+	err := testHandler(context.Background(), testWriteEvent("/tmp/test.go"))
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -100,16 +96,14 @@ func TestMiddlewareFilter(t *testing.T) {
 	})
 
 	// Event matching filter should be processed
-	event := Event{Path: "/tmp/test.go", Op: Write, Timestamp: time.Now(), IsDir: false}
-	_ = handler(context.Background(), event)
+	_ = handler(context.Background(), testWriteEvent("/tmp/test.go"))
 	if !processed {
 		t.Error("expected event to be processed")
 	}
 
 	// Event not matching filter should be dropped
 	processed = false
-	event = Event{Path: "/tmp/test.txt", Op: Write, Timestamp: time.Now(), IsDir: false}
-	_ = handler(context.Background(), event)
+	_ = handler(context.Background(), testWriteEvent("/tmp/test.txt"))
 	if processed {
 		t.Error("expected event to be dropped")
 	}
@@ -134,8 +128,7 @@ func TestMiddlewareOnError(t *testing.T) {
 
 	testHandler := mw(errorHandler)
 
-	event := Event{Path: "/tmp/test.go", Op: Write, Timestamp: time.Now(), IsDir: false}
-	err := testHandler(context.Background(), event)
+	err := testHandler(context.Background(), testWriteEvent("/tmp/test.go"))
 
 	if err != testErr {
 		t.Errorf("expected error to be passed through, got %v", err)
@@ -159,8 +152,7 @@ func TestMiddlewareOnError_NoError(t *testing.T) {
 	mw := MiddlewareOnError(onError)
 	testHandler := mw(noopHandler())
 
-	event := Event{Path: "/tmp/test.go", Op: Write, Timestamp: time.Now(), IsDir: false}
-	err := testHandler(context.Background(), event)
+	err := testHandler(context.Background(), testWriteEvent("/tmp/test.go"))
 
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
@@ -176,13 +168,10 @@ func TestMiddlewareRateLimit(t *testing.T) {
 	mw := MiddlewareRateLimit(2)
 
 	var processed int
-	handler := mw(func(_ context.Context, _ Event) error {
-		processed++
-		return nil
-	})
+	handler := mw(testHandlerFunc(&processed))
 
 	ctx := context.Background()
-	event := Event{Path: "/tmp/test.go", Op: Write, Timestamp: time.Now(), IsDir: false}
+	event := testWriteEvent("/tmp/test.go")
 
 	// First 2 should be processed
 	for range 2 {
@@ -203,13 +192,10 @@ func TestMiddlewareSlidingWindowRateLimit(t *testing.T) {
 	mw := MiddlewareSlidingWindowRateLimit(2, 100*time.Millisecond)
 
 	var processed int
-	handler := mw(func(_ context.Context, _ Event) error {
-		processed++
-		return nil
-	})
+	handler := mw(testHandlerFunc(&processed))
 
 	ctx := context.Background()
-	event := Event{Path: "/tmp/test.go", Op: Write, Timestamp: time.Now(), IsDir: false}
+	event := testWriteEvent("/tmp/test.go")
 
 	// First 2 should be processed
 	for range 2 {
@@ -236,15 +222,12 @@ func TestMiddlewareMetrics(t *testing.T) {
 	mw := MiddlewareMetrics(counter)
 	testHandler := mw(noopHandler())
 
-	event := Event{Path: "/tmp/test.go", Op: Write, Timestamp: time.Now(), IsDir: false}
-	err := testHandler(context.Background(), event)
+	err := testHandler(context.Background(), testWriteEvent("/tmp/test.go"))
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
 
-	if opCounts[Write] != 1 {
-		t.Errorf("expected Write count to be 1, got %d", opCounts[Write])
-	}
+	assertOpCount(t, opCounts, Write, 1)
 }
 
 func TestMiddlewareMetrics_ErrorNotCounted(t *testing.T) {
@@ -261,12 +244,9 @@ func TestMiddlewareMetrics_ErrorNotCounted(t *testing.T) {
 	}
 	testHandler := mw(errorHandler)
 
-	event := Event{Path: "/tmp/test.go", Op: Write, Timestamp: time.Now(), IsDir: false}
-	_ = testHandler(context.Background(), event)
+	_ = testHandler(context.Background(), testWriteEvent("/tmp/test.go"))
 
-	if opCounts[Write] != 0 {
-		t.Errorf("expected Write count to be 0 (error case), got %d", opCounts[Write])
-	}
+	assertOpCount(t, opCounts, Write, 0)
 }
 
 func TestMiddlewareWriteFileLog(t *testing.T) {
@@ -277,8 +257,7 @@ func TestMiddlewareWriteFileLog(t *testing.T) {
 	mw := MiddlewareWriteFileLog(tmpFile)
 	handler := mw(noopHandler())
 
-	ts := time.Date(2025, 1, 1, 12, 0, 0, 0, time.UTC)
-	e := Event{Path: "/tmp/test.go", Op: Write, Timestamp: ts, IsDir: false}
+	e := fixedWriteEvent("/tmp/test.go")
 
 	err := handler(context.Background(), e)
 	if err != nil {

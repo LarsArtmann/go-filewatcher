@@ -83,11 +83,7 @@ func TestWatcherError_IsTransient(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			err := &WatcherError{
-				Op:       OpString("test"),
-				Err:      errors.New("test"),
-				Category: tt.category,
-			}
+			err := testWatcherError(tt.category)
 
 			if got := err.IsTransient(); got != tt.transient {
 				t.Errorf("IsTransient() = %v, want %v", got, tt.transient)
@@ -113,11 +109,7 @@ func TestWatcherError_IsPermanent(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			err := &WatcherError{
-				Op:       OpString("test"),
-				Err:      errors.New("test"),
-				Category: tt.category,
-			}
+			err := testWatcherError(tt.category)
 
 			if got := err.IsPermanent(); got != tt.permanent {
 				t.Errorf("IsPermanent() = %v, want %v", got, tt.permanent)
@@ -193,19 +185,17 @@ func TestIsTransientError(t *testing.T) {
 		{"nil", nil, false},
 		{"transient sentinel", ErrFsnotifyFailed, true},
 		{"permanent sentinel", ErrWatcherClosed, false},
-		{
-			"transient watcher error",
-			&WatcherError{Err: errors.New("test"), Category: CategoryTransient},
+		{"transient watcher error", testError(errors.New("test"), CategoryTransient),
 			true,
 		},
 		{
 			"permanent watcher error",
-			&WatcherError{Err: errors.New("test"), Category: CategoryPermanent},
+			testError(errors.New("test"), CategoryPermanent),
 			false,
 		},
 		{
 			"unknown watcher error",
-			&WatcherError{Err: errors.New("test"), Category: CategoryUnknown},
+			testError(errors.New("test"), CategoryUnknown),
 			false,
 		},
 	}

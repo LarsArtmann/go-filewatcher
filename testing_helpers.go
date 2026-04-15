@@ -2,6 +2,7 @@ package filewatcher
 
 import (
 	"context"
+	"errors"
 	"os"
 	"path/filepath"
 	"strings"
@@ -27,6 +28,10 @@ func fixedTimeEvent(path string, op Op, hour int) Event {
 		Timestamp: time.Date(2025, 1, 1, hour, 0, 0, 0, time.UTC),
 		IsDir:     false,
 	}
+}
+
+func fixedWriteEvent(path string) Event {
+	return fixedTimeEvent(path, Write, 12)
 }
 
 func assertCount(t *testing.T, count *atomic.Int32, want int32) {
@@ -59,17 +64,39 @@ func assertGlobalPending(t *testing.T, d *GlobalDebouncer, want int) {
 	assertPendingFunc(t, d, want)
 }
 
-func countHandler(count *atomic.Int32) Handler {
+func noopHandler() Handler {
 	return func(_ context.Context, _ Event) error {
-		count.Add(1)
-
 		return nil
 	}
 }
 
-func noopHandler() Handler {
+func testHandlerFunc(counter *int) Handler {
 	return func(_ context.Context, _ Event) error {
+		*counter++
 		return nil
+	}
+}
+
+func assertOpCount(t *testing.T, opCounts [4]int, op Op, want int) {
+	t.Helper()
+
+	if got := opCounts[op]; got != want {
+		t.Errorf("expected %s count to be %d, got %d", op, want, got)
+	}
+}
+
+func testWatcherError(category ErrorCategory) *WatcherError {
+	return &WatcherError{
+		Op:       OpString("test"),
+		Err:      errors.New("test"),
+		Category: category,
+	}
+}
+
+func testError(err error, category ErrorCategory) *WatcherError {
+	return &WatcherError{
+		Err:      err,
+		Category: category,
 	}
 }
 
@@ -146,6 +173,29 @@ func receiveEventMatchingOrTimeout(
 		check(event)
 	case <-time.After(timeout):
 		t.Fatal(msg)
+	}
+}
+
+// assertChannelClosed verifies that a receive-only channel is closed within the timeout.
+func assertChannelClosed[T any](t *testing.T, ch <-chan T, timeout time.Duration, name string) {
+	t.Helper()
+
+	select {
+	case _, ok := <-ch:
+		if ok {
+			t.Errorf("expected %s to be closed after Close()", name)
+		}
+	case <-time.After(timeout):
+		t.Errorf("timed out waiting for %s to close", name)
+	}
+}
+
+// assertEventPath verifies that an event has the expected path.
+func assertEventPath(t *testing.T, event Event, expectedPath string) {
+	t.Helper()
+
+	if event.Path != expectedPath {
+		t.Errorf("expected path %s, got %s", expectedPath, event.Path)
 	}
 }
 

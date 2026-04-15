@@ -15,22 +15,22 @@ import (
 
 //nolint:gochecknoglobals // Benchmark helper - intentionally package level for reuse
 var (
-	benchmarkTestEvent = Event{
-		Path:      "/tmp/test.go",
-		Op:        Write,
-		Timestamp: time.Now(),
-		IsDir:     false,
-	}
+	benchmarkTestEvent = benchmarkEventTemplate()
 )
 
-// newBenchmarkEvent creates a new Event for benchmarking purposes.
-func newBenchmarkEvent() Event {
+// benchmarkEventTemplate returns the common Event structure used across benchmarks.
+func benchmarkEventTemplate() Event {
 	return Event{
 		Path:      "/tmp/test.go",
 		Op:        Write,
 		Timestamp: time.Now(),
 		IsDir:     false,
 	}
+}
+
+// newBenchmarkEvent creates a new Event for benchmarking purposes.
+func newBenchmarkEvent() Event {
+	return benchmarkEventTemplate()
 }
 
 // benchmarkMiddlewareHandler runs the middleware handler benchmark with the given watcher.

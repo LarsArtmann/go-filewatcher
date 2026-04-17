@@ -63,6 +63,24 @@ func (b *baseDebouncer) done() {
 	b.wg.Done()
 }
 
+// stopTimer stops a timer and compensates the waitgroup.
+// Use this when cancelling a pending timer callback.
+func (b *baseDebouncer) stopTimer(timer *time.Timer) {
+	if timer != nil {
+		timer.Stop()
+		b.done()
+	}
+}
+
+// executeCallbacks runs all provided callbacks with proper waitgroup tracking.
+func (b *baseDebouncer) executeCallbacks(callbacks []func()) {
+	for _, fn := range callbacks {
+		b.add()
+		fn()
+		b.done()
+	}
+}
+
 // Debouncer prevents rapid successive function executions by coalescing
 // calls within a delay window. It supports per-key debouncing so that
 // different keys (e.g., file paths) are debounced independently.
@@ -91,10 +109,7 @@ func (d *Debouncer) Debounce(key DebounceKey, callback func()) {
 	}
 
 	if entry, exists := d.entries[key]; exists {
-		entry.timer.Stop()
-		// Timer was cancelled, so its callback won't run.
-		// Decrement wg since we added for the previous debounce.
-		d.base.done()
+		d.base.stopTimer(entry.timer)
 	}
 
 	d.base.add()
@@ -135,12 +150,7 @@ func (d *Debouncer) Flush() {
 	}
 
 	d.base.mu.Unlock()
-
-	for _, fn := range callbacks {
-		d.base.add()
-		fn()
-		d.base.done()
-	}
+	d.base.executeCallbacks(callbacks)
 }
 
 // Stop cancels all pending executions without running them.
@@ -211,9 +221,7 @@ func (g *GlobalDebouncer) Debounce(_ DebounceKey, callback func()) {
 	}
 
 	if g.timer != nil {
-		g.timer.Stop()
-		// Timer was cancelled, callback won't run, compensate for wg.Add(1)
-		g.base.done()
+		g.base.stopTimer(g.timer)
 	}
 
 	g.base.add()
@@ -243,20 +251,18 @@ func (g *GlobalDebouncer) Flush() {
 	var callback func()
 
 	if g.timer != nil {
-		g.timer.Stop()
+		oldTimer := g.timer
 		g.timer = nil
 		callback = g.fn
 		g.fn = nil
-		// Cancelled timer means we called wg.Add(1) but callback won't run
+		oldTimer.Stop() // compensate for cancelled timer
 		g.base.done()
 	}
 
 	g.base.mu.Unlock()
 
 	if callback != nil {
-		g.base.add()
-		callback()
-		g.base.done()
+		g.base.executeCallbacks([]func(){callback})
 	}
 }
 
@@ -267,11 +273,9 @@ func (g *GlobalDebouncer) Stop() {
 	g.base.markStopped()
 
 	if g.timer != nil {
-		g.timer.Stop()
+		g.base.stopTimer(g.timer)
 		g.timer = nil
 		g.fn = nil
-		// Cancelled timer means we called wg.Add(1) but callback won't run
-		g.base.done()
 	}
 
 	g.base.mu.Unlock()

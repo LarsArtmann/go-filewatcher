@@ -87,6 +87,15 @@ func (e *WatcherError) Unwrap() error {
 	return e.Err
 }
 
+// checkWatcherError extracts a WatcherError from an error if present.
+// Returns (watcherErr, true) if found, (nil, false) otherwise.
+func checkWatcherError(err error) (*WatcherError, bool) {
+	if we, ok := err.(*WatcherError); ok {
+		return we, true
+	}
+	return nil, false
+}
+
 // IsTransient returns true if this error is potentially retryable.
 func (e *WatcherError) IsTransient() bool {
 	return e.Category == CategoryTransient
@@ -115,57 +124,61 @@ func categorizeError(err error) ErrorCategory {
 	}
 
 	// Permanent errors - these won't resolve on retry
-	if errors.Is(err, ErrWatcherClosed) ||
-		errors.Is(err, ErrNoPaths) ||
-		errors.Is(err, ErrPathNotFound) ||
-		errors.Is(err, ErrPathNotDir) ||
-		errors.Is(err, ErrWatcherRunning) ||
-		errors.Is(err, ErrUnknownOp) {
+	if matchesAnyError(err, ErrWatcherClosed, ErrNoPaths, ErrPathNotFound, ErrPathNotDir, ErrWatcherRunning, ErrUnknownOp) {
 		return CategoryPermanent
 	}
 
 	// Transient errors - these might resolve on retry
-	if errors.Is(err, ErrFsnotifyFailed) ||
-		errors.Is(err, ErrWalkFailed) ||
-		errors.Is(err, ErrEventProcessingFailed) {
+	if matchesAnyError(err, ErrFsnotifyFailed, ErrWalkFailed, ErrEventProcessingFailed) {
 		return CategoryTransient
 	}
 
-	// Check for specific error types that indicate transience
-	var watcherErr *WatcherError
-	if errors.As(err, &watcherErr) {
-		return watcherErr.Category
+	if we, ok := checkWatcherError(err); ok {
+		return we.Category
 	}
 
 	return CategoryUnknown
 }
 
-// IsTransientError reports whether an error is potentially retryable.
-func IsTransientError(err error) bool {
+// matchesAnyError checks if an error matches any of the given sentinels.
+func matchesAnyError(err error, sentinels ...error) bool {
+	for _, sentinel := range sentinels {
+		if errors.Is(err, sentinel) {
+			return true
+		}
+	}
+	return false
+}
+
+// isErrorTransientOrPermanent checks if an error is transient or permanent.
+// The isTransient parameter determines which category to check.
+func isErrorTransientOrPermanent(err error, isTransient bool) bool {
 	if err == nil {
 		return false
 	}
 
-	var watcherErr *WatcherError
-	if errors.As(err, &watcherErr) {
-		return watcherErr.IsTransient()
+	if we, ok := checkWatcherError(err); ok {
+		if isTransient {
+			return we.IsTransient()
+		}
+		return we.IsPermanent()
 	}
 
-	return categorizeError(err) == CategoryTransient
+	expected := CategoryTransient
+	if !isTransient {
+		expected = CategoryPermanent
+	}
+	return categorizeError(err) == expected
+}
+
+// IsTransientError reports whether an error is potentially retryable.
+func IsTransientError(err error) bool {
+	return isErrorTransientOrPermanent(err, true)
 }
 
 // IsPermanentError reports whether an error will not resolve on retry.
 func IsPermanentError(err error) bool {
-	if err == nil {
-		return false
-	}
-
-	var watcherErr *WatcherError
-	if errors.As(err, &watcherErr) {
-		return watcherErr.IsPermanent()
-	}
-
-	return categorizeError(err) == CategoryPermanent
+	return isErrorTransientOrPermanent(err, false)
 }
 
 // ErrorContext provides context about what was happening when an error occurred.

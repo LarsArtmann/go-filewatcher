@@ -88,13 +88,23 @@ type Watcher struct {
 // Compile-time interface check: Watcher implements io.Closer.
 var _ io.Closer = (*Watcher)(nil)
 
+// isClosed reports if the watcher has been closed (caller must hold lock).
+func (w *Watcher) isClosed() bool {
+	return w.state&flagClosed != 0
+}
+
+// isWatching reports if the watcher is currently running (caller must hold lock).
+func (w *Watcher) isWatching() bool {
+	return w.state&flagWatching != 0
+}
+
 // IsClosed reports if the watcher has been closed.
 // This is safe to call concurrently with other methods.
 func (w *Watcher) IsClosed() bool {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
-	return w.state&flagClosed != 0
+	return w.isClosed()
 }
 
 // IsWatching reports if the watcher is currently running and watching for events.
@@ -103,7 +113,7 @@ func (w *Watcher) IsWatching() bool {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
-	return w.state&flagWatching != 0
+	return w.isWatching()
 }
 
 // checkClosedOp returns an error if the watcher is closed.
@@ -219,11 +229,11 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	if w.state&flagClosed != 0 {
+	if w.isClosed() {
 		return nil, fmt.Errorf("%w: cannot start watch on closed watcher", ErrWatcherClosed)
 	}
 
-	if w.state&flagWatching != 0 {
+	if w.isWatching() {
 		return nil, fmt.Errorf("%w: watcher is already running", ErrWatcherRunning)
 	}
 

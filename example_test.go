@@ -308,3 +308,97 @@ func goExcludeDirsFilter(dirs ...string) filewatcher.Filter {
 		filewatcher.FilterNot(filewatcher.FilterIgnoreDirs(dirs...)),
 	)
 }
+
+// ExampleFilterOr demonstrates combining filters with OR logic.
+func ExampleFilterOr() {
+	// Accept either .go files or .md files
+	watcher, err := filewatcher.New(
+		[]string{"."},
+		filewatcher.WithFilter(filewatcher.FilterOr(
+			filewatcher.FilterExtensions(".go"),
+			filewatcher.FilterExtensions(".md"),
+		)),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	fmt.Println("Watcher with OR filter created")
+	// Output: Watcher with OR filter created
+}
+
+// ExampleEventPath demonstrates phantom type usage for type-safe paths.
+func ExampleEventPath() {
+	// Create an event and extract its path as a phantom type
+	event := filewatcher.Event{
+		Path: "/home/user/project/main.go",
+		Op:   filewatcher.Write,
+	}
+
+	path := event.GetPath()
+	fmt.Printf("Base: %s\n", path.Base())
+	fmt.Printf("Extension: %s\n", path.Ext())
+	fmt.Printf("Directory: %s\n", path.Dir())
+
+	// Output:
+	// Base: main.go
+	// Extension: .go
+	// Directory: /home/user/project
+}
+
+// ExampleWithPerPathDebounce demonstrates per-path debouncing.
+func ExampleWithPerPathDebounce() {
+	// Each file is debounced independently
+	watcher, err := filewatcher.New(
+		[]string{"."},
+		filewatcher.WithPerPathDebounce(500*time.Millisecond),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	fmt.Println("Watcher with per-path debounce created")
+	// Output: Watcher with per-path debounce created
+}
+
+// ExampleMiddlewareDeduplicate demonstrates event deduplication.
+func ExampleMiddlewareDeduplicate() {
+	// Drop duplicate events within 100ms window
+	watcher, err := filewatcher.New(
+		[]string{"."},
+		filewatcher.WithMiddleware(
+			filewatcher.MiddlewareDeduplicate(100*time.Millisecond),
+		),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	fmt.Println("Watcher with deduplication created")
+	// Output: Watcher with deduplication created
+}
+
+// ExampleFilterModifiedSince demonstrates filtering by modification time.
+func ExampleFilterModifiedSince() {
+	// Only process files modified in the last hour
+	oneHourAgo := time.Now().Add(-time.Hour)
+
+	watcher, err := filewatcher.New(
+		[]string{"."},
+		filewatcher.WithFilter(filewatcher.FilterModifiedSince(oneHourAgo)),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	fmt.Println("Watcher with time filter created")
+	// Output: Watcher with time filter created
+}

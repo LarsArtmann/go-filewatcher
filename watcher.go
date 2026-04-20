@@ -397,11 +397,6 @@ func (w *Watcher) Close() error {
 
 	w.mu.Unlock()
 
-	// Stop the debouncer FIRST to cancel pending callbacks and prevent new ones.
-	if w.debounceInterface != nil {
-		w.debounceInterface.Stop()
-	}
-
 	// Stop the debouncer FIRST - waits for all in-flight callbacks to complete.
 	// This must happen before closing eventCh to prevent send-on-closed-channel.
 	if w.debounceInterface != nil {

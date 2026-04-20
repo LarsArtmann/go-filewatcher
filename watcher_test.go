@@ -1092,3 +1092,96 @@ func assertStat(t *testing.T, got, expected uint64, name, msg string) {
 		t.Errorf("expected %s=%d, got %d: %s", name, expected, got, msg)
 	}
 }
+
+// TestWatcher_ContextCancellation_Integration tests that context cancellation
+// properly stops the watcher and cleans up resources, even with debouncing.
+func TestWatcher_ContextCancellation_Integration(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir}, WithDebounce(50*time.Millisecond))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	ctx, cancel := context.WithCancel(context.Background())
+
+	events, err := w.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	// Create a test file to generate an event
+	testFile := filepath.Join(tmpDir, "test.txt")
+	if err := os.WriteFile(testFile, []byte("hello"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	// Wait for event with timeout
+	done := make(chan struct{})
+	var receivedEvent bool
+
+	go func() {
+		for event := range events {
+			if event.Path == testFile {
+				receivedEvent = true
+
+				break
+			}
+		}
+		close(done)
+	}()
+
+	// Cancel context after a short delay
+	time.AfterFunc(200*time.Millisecond, cancel)
+
+	select {
+	case <-done:
+		// Channel closed as expected
+	case <-time.After(5 * time.Second):
+		t.Fatal("timeout waiting for events channel to close")
+	}
+
+	if !receivedEvent {
+		t.Error("expected to receive file creation event")
+	}
+}
+
+// TestWatcher_ContextCancellation_WithPerPathDebounce tests context cancellation
+// with per-path debouncing enabled.
+func TestWatcher_ContextCancellation_WithPerPathDebounce(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir}, WithPerPathDebounce(50*time.Millisecond))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	events, err := w.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	// Cancel immediately
+	cancel()
+
+	// Channel should close
+	timeout := time.AfterFunc(2*time.Second, func() {
+		t.Fatal("events channel did not close after context cancellation")
+	})
+	defer timeout.Stop()
+
+	for range events {
+		// Drain any pending events
+	}
+}

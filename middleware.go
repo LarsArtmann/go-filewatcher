@@ -7,7 +7,6 @@ import (
 	"os"
 	"runtime/debug"
 	"sync"
-	"sync/atomic"
 	"time"
 )
 
@@ -94,32 +93,37 @@ func MiddlewareOnError(onError func(event Event, err error)) Middleware {
 
 // MiddlewareRateLimit returns a middleware that limits the rate of events.
 // It allows maxEvents events per second. Events exceeding the limit are dropped.
+// Uses lazy time checking to avoid a background goroutine.
 func MiddlewareRateLimit(maxEvents int) Middleware {
 	if maxEvents <= 0 {
 		maxEvents = 100
 	}
 
-	var (
-		count  atomic.Int64
-		reset  = time.NewTicker(time.Second)
-		closed atomic.Bool
-	)
+	type rateState struct {
+		mu       sync.Mutex
+		count    int64
+		lastReset time.Time
+	}
 
-	// Stop ticker when middleware is no longer needed
-	// Note: In production, you'd want a way to stop this
-	go func() {
-		for range reset.C {
-			if closed.Load() {
-				reset.Stop()
-				return
-			}
-			count.Store(0)
-		}
-	}()
+	state := &rateState{
+		lastReset: time.Now(),
+	}
 
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			current := count.Add(1)
+			state.mu.Lock()
+
+			// Check if we need to reset (1 second elapsed)
+			now := time.Now()
+			if now.Sub(state.lastReset) >= time.Second {
+				state.count = 0
+				state.lastReset = now
+			}
+
+			state.count++
+			current := state.count
+			state.mu.Unlock()
+
 			if current > int64(maxEvents) {
 				return nil
 			}
@@ -224,36 +228,32 @@ func MiddlewareDeduplicate(window time.Duration) Middleware {
 		seen = make(map[dedupeKey]seenEntry)
 	)
 
-	// Cleanup old entries periodically
-	go func() {
-		ticker := time.NewTicker(window * dedupeCleanupMultiplier)
-		defer ticker.Stop()
-
-		for range ticker.C {
-			mu.Lock()
-			now := time.Now()
-			for key, entry := range seen {
-				if now.Sub(entry.timestamp) > window {
-					delete(seen, key)
-				}
-			}
-			mu.Unlock()
-		}
-	}()
-
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
 			key := dedupeKey{path: event.Path, op: event.Op}
 
 			mu.Lock()
+			now := time.Now()
+
+			// Lazy cleanup: remove old entries periodically
+			// (every 100 events or when map grows large)
+			if len(seen)%100 == 0 || len(seen) > 10000 {
+				cutoff := now.Add(-window * dedupeCleanupMultiplier)
+				for k, entry := range seen {
+					if entry.timestamp.Before(cutoff) {
+						delete(seen, k)
+					}
+				}
+			}
+
 			entry, exists := seen[key]
-			if exists && time.Since(entry.timestamp) < window {
+			if exists && now.Sub(entry.timestamp) < window {
 				mu.Unlock()
 				// Duplicate detected, drop this event
 				return nil
 			}
 
-			seen[key] = seenEntry{timestamp: time.Now()}
+			seen[key] = seenEntry{timestamp: now}
 			mu.Unlock()
 
 			return next(ctx, event)

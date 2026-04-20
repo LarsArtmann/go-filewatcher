@@ -67,8 +67,13 @@ type Watcher struct {
 	mu        sync.RWMutex
 	state     WatcherStateFlags // bit flags: closed, watching
 	watchList []string          // tracked paths currently being watched
-	eventCh   chan Event        // event channel, closed in Close()
-	emitWg    sync.WaitGroup    // tracks in-flight event emissions
+
+	// Event channel - stored so Close() can close it after stopping debouncer
+	// This prevents race between debouncer callbacks and channel close
+	eventCh chan<- Event
+	// closeEventChOnce ensures eventCh is closed exactly once, either by watchLoop
+	// when context is cancelled, or by Close() when watcher is stopped
+	closeEventChOnce sync.Once
 
 	// Debouncer (initialized based on config)
 	debounceInterface DebouncerInterface
@@ -192,8 +197,6 @@ func New(paths []string, opts ...Option) (*Watcher, error) {
 		mu:                sync.RWMutex{},
 		state:             0,
 		watchList:         make([]string, 0, len(paths)),
-		eventCh:           nil,
-		emitWg:            sync.WaitGroup{},
 		debounceInterface: nil,
 		errorsCh:          nil,
 		errorsMu:          sync.Mutex{},
@@ -246,6 +249,7 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 	}
 
 	eventCh := make(chan Event, w.bufferSize)
+	w.eventCh = eventCh
 
 	w.state |= flagWatching
 
@@ -255,9 +259,6 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 	}
 
 	go w.watchLoop(ctx, eventCh)
-
-	// Store eventCh so Close() can close it after debouncer stops
-	w.eventCh = eventCh
 
 	return eventCh, nil
 }
@@ -401,10 +402,25 @@ func (w *Watcher) Close() error {
 		w.debounceInterface.Stop()
 	}
 
-	// Close fsnotify watcher - this causes watchLoop to exit and close eventCh.
+	// Stop the debouncer FIRST - waits for all in-flight callbacks to complete.
+	// This must happen before closing eventCh to prevent send-on-closed-channel.
+	if w.debounceInterface != nil {
+		w.debounceInterface.Stop()
+	}
+
+	// Close fsnotify watcher - this causes watchLoop to exit.
 	err := w.fswatcher.Close()
 	if err != nil {
 		return fmt.Errorf("closing fsnotify watcher: %w", err)
+	}
+
+	// Now safe to close eventCh - debouncer callbacks are done.
+	// Use sync.Once to coordinate with watchLoop's defer.
+	w.mu.RLock()
+	ch := w.eventCh
+	w.mu.RUnlock()
+	if ch != nil {
+		w.closeEventChOnce.Do(func() { close(ch) })
 	}
 
 	// Close the errors channel if it was created

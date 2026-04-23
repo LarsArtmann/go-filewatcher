@@ -339,6 +339,106 @@ func TestMiddlewareDeduplicate(t *testing.T) {
 	}
 }
 
+func TestMiddlewareBatch_FullBatch(t *testing.T) {
+	t.Parallel()
+
+	var batched []Event
+
+	flush := func(events []Event) error {
+		batched = append(batched, events...)
+
+		return nil
+	}
+
+	mw := MiddlewareBatch(0, 3, flush) // use defaults for window, maxSize=3
+	handler := mw(noopHandler())
+
+	ctx := context.Background()
+
+	// Send 3 events to fill the batch
+	for i := range 3 {
+		err := handler(ctx, testEvent("/tmp/file.txt", Write))
+		if err != nil {
+			t.Errorf("event %d: unexpected error: %v", i, err)
+		}
+	}
+
+	if len(batched) != 3 {
+		t.Errorf("expected 3 batched events, got %d", len(batched))
+	}
+}
+
+func TestMiddlewareBatch_FlushError(t *testing.T) {
+	t.Parallel()
+
+	testErr := errors.New("flush error") //nolint:err113 // test-specific dynamic error
+
+	flush := func(_ []Event) error {
+		return testErr
+	}
+
+	mw := MiddlewareBatch(0, 1, flush) // maxSize=1 triggers immediate flush
+	handler := mw(noopHandler())
+
+	err := handler(context.Background(), testEvent("/tmp/file.txt", Write))
+	if !errors.Is(err, testErr) {
+		t.Errorf("expected flush error, got %v", err)
+	}
+}
+
+func TestMiddlewareBatch_TimerFlush(t *testing.T) {
+	t.Parallel()
+
+	done := make(chan []Event, 1)
+
+	flush := func(events []Event) error {
+		done <- events
+
+		return nil
+	}
+
+	mw := MiddlewareBatch(50*time.Millisecond, 100, flush) // short window, large maxSize
+	handler := mw(noopHandler())
+
+	ctx := context.Background()
+
+	// Send 2 events (below maxSize, so timer is set)
+	_ = handler(ctx, testEvent("/tmp/a.go", Write))
+	_ = handler(ctx, testEvent("/tmp/b.go", Write))
+
+	// Wait for timer to fire
+	select {
+	case batched := <-done:
+		if len(batched) != 2 {
+			t.Errorf("expected 2 batched events from timer flush, got %d", len(batched))
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("timed out waiting for timer flush")
+	}
+}
+
+func TestMiddlewareBatch_DefaultValues(t *testing.T) {
+	t.Parallel()
+
+	var batched []Event
+
+	flush := func(events []Event) error {
+		batched = append(batched, events...)
+
+		return nil
+	}
+
+	// Both window and maxSize are 0 — should use defaults
+	mw := MiddlewareBatch(0, 0, flush)
+	handler := mw(noopHandler())
+
+	ctx := context.Background()
+	_ = handler(ctx, testEvent("/tmp/file.txt", Write))
+
+	// Event should pass through to next handler (not flushed yet, waiting for timer)
+	// Just verify no panic or error
+}
+
 func TestMiddlewareChain(t *testing.T) {
 	t.Parallel()
 

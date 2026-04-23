@@ -1,3 +1,4 @@
+//nolint:testpackage // Tests need internal access to middleware types
 package filewatcher
 
 import (
@@ -14,6 +15,7 @@ func TestMiddlewareLogging(t *testing.T) {
 	t.Parallel()
 
 	var buf strings.Builder
+
 	handler := slog.NewTextHandler(&buf, nil)
 	logger := slog.New(handler)
 
@@ -57,6 +59,7 @@ func TestMiddlewareRecovery(t *testing.T) {
 	if err == nil {
 		t.Error("expected error from panic recovery, got nil")
 	}
+
 	if !strings.Contains(err.Error(), "panic in handler") {
 		t.Errorf("expected error to contain 'panic in handler', got: %v", err)
 	}
@@ -66,6 +69,7 @@ func TestMiddlewareRecovery_NoPanic(t *testing.T) {
 	t.Parallel()
 
 	var called bool
+
 	normalHandler := func(_ context.Context, _ Event) error {
 		called = true
 
@@ -79,6 +83,7 @@ func TestMiddlewareRecovery_NoPanic(t *testing.T) {
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
+
 	if !called {
 		t.Error("expected handler to be called")
 	}
@@ -91,6 +96,7 @@ func TestMiddlewareFilter(t *testing.T) {
 	mw := MiddlewareFilter(filter)
 
 	var processed bool
+
 	handler := mw(func(_ context.Context, _ Event) error {
 		processed = true
 
@@ -99,6 +105,7 @@ func TestMiddlewareFilter(t *testing.T) {
 
 	// Event matching filter should be processed
 	_ = handler(context.Background(), testWriteEvent("/tmp/test.go"))
+
 	if !processed {
 		t.Error("expected event to be processed")
 	}
@@ -106,6 +113,7 @@ func TestMiddlewareFilter(t *testing.T) {
 	// Event not matching filter should be dropped
 	processed = false
 	_ = handler(context.Background(), testWriteEvent("/tmp/test.txt"))
+
 	if processed {
 		t.Error("expected event to be dropped")
 	}
@@ -114,16 +122,18 @@ func TestMiddlewareFilter(t *testing.T) {
 func TestMiddlewareOnError(t *testing.T) {
 	t.Parallel()
 
-	var capturedEvent *Event
-	var capturedErr error
+	var (
+		capturedEvent *Event
+		capturedErr   error
+	)
 
 	onError := func(event Event, err error) {
 		capturedEvent = &event
 		capturedErr = err
 	}
 
-	mw := MiddlewareOnError(onError)
-	testErr := errors.New("test error")
+	mw := MiddlewareOnError(onError)    //nolint:varnamelen // idiomatic middleware abbreviation
+	testErr := errors.New("test error") //nolint:err113 // test-specific dynamic error
 	errorHandler := func(_ context.Context, _ Event) error {
 		return testErr
 	}
@@ -132,13 +142,15 @@ func TestMiddlewareOnError(t *testing.T) {
 
 	err := testHandler(context.Background(), testWriteEvent("/tmp/test.go"))
 
-	if err != testErr {
+	if !errors.Is(err, testErr) {
 		t.Errorf("expected error to be passed through, got %v", err)
 	}
+
 	if capturedEvent == nil {
 		t.Error("expected onError to be called with event")
 	}
-	if capturedErr != testErr {
+
+	if !errors.Is(capturedErr, testErr) {
 		t.Errorf("expected onError to receive error %v, got %v", testErr, capturedErr)
 	}
 }
@@ -155,10 +167,10 @@ func TestMiddlewareOnError_NoError(t *testing.T) {
 	testHandler := mw(noopHandler())
 
 	err := testHandler(context.Background(), testWriteEvent("/tmp/test.go"))
-
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
+
 	if onErrorCalled {
 		t.Error("expected onError not to be called")
 	}
@@ -170,6 +182,7 @@ func TestMiddlewareRateLimit(t *testing.T) {
 	mw := MiddlewareRateLimit(2)
 
 	var processed int
+
 	handler := mw(testHandlerFunc(&processed))
 
 	ctx := context.Background()
@@ -194,6 +207,7 @@ func TestMiddlewareSlidingWindowRateLimit(t *testing.T) {
 	mw := MiddlewareSlidingWindowRateLimit(2, 100*time.Millisecond)
 
 	var processed int
+
 	handler := mw(testHandlerFunc(&processed))
 
 	ctx := context.Background()
@@ -236,13 +250,14 @@ func TestMiddlewareMetrics_ErrorNotCounted(t *testing.T) {
 	t.Parallel()
 
 	var opCounts [4]int
+
 	counter := func(op Op) {
 		opCounts[op]++
 	}
 
 	mw := MiddlewareMetrics(counter)
 	errorHandler := func(_ context.Context, _ Event) error {
-		return errors.New("test error")
+		return errors.New("test error") //nolint:err113 // test-specific dynamic error
 	}
 	testHandler := mw(errorHandler)
 

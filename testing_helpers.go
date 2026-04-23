@@ -30,8 +30,10 @@ func fixedTimeEvent(path string, op Op, hour int) Event {
 	}
 }
 
+const fixedEventTimestamp = 12
+
 func fixedWriteEvent(path string) Event {
-	return fixedTimeEvent(path, Write, 12)
+	return fixedTimeEvent(path, Write, fixedEventTimestamp)
 }
 
 func assertCount(t *testing.T, count *atomic.Int32, want int32) {
@@ -86,16 +88,21 @@ func assertOpCount(t *testing.T, opCounts [4]int, op Op, want int) {
 	}
 }
 
+var errTest = errors.New("test")
+
 func testWatcherError(category ErrorCategory) *WatcherError {
 	return &WatcherError{
 		Op:       OpString("test"),
-		Err:      errors.New("test"),
+		Path:     "test-path",
+		Err:      errTest,
 		Category: category,
 	}
 }
 
 func testError(err error, category ErrorCategory) *WatcherError {
 	return &WatcherError{
+		Op:       OpString("test"),
+		Path:     "test-path",
 		Err:      err,
 		Category: category,
 	}
@@ -242,5 +249,3 @@ func createTestFile(t *testing.T, tmpDir TempDir, filename, content string) stri
 
 	return path
 }
-
-

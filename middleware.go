@@ -100,12 +100,14 @@ func MiddlewareRateLimit(maxEvents int) Middleware {
 	}
 
 	type rateState struct {
-		mu       sync.Mutex
-		count    int64
+		mu        sync.Mutex
+		count     int64
 		lastReset time.Time
 	}
 
 	state := &rateState{
+		mu:        sync.Mutex{},
+		count:     0,
 		lastReset: time.Now(),
 	}
 
@@ -164,11 +166,13 @@ func MiddlewareSlidingWindowRateLimit(maxEvents int, window time.Duration) Middl
 
 			// Remove events outside the window
 			var newEvents []time.Time
+
 			for _, t := range state.events {
 				if t.After(cutoff) {
 					newEvents = append(newEvents, t)
 				}
 			}
+
 			state.events = newEvents
 
 			// Check if we're over the limit
@@ -225,7 +229,7 @@ func MiddlewareDeduplicate(window time.Duration) Middleware {
 	}
 
 	var (
-		mu   sync.Mutex
+		mu   sync.Mutex //nolint:varnamelen // conventional mutex name
 		seen = make(map[dedupeKey]seenEntry)
 	)
 
@@ -356,34 +360,42 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 	}
 
 	//nolint:exhaustruct // f is lazily initialized on first write
-	cf := &cachedFile{}
+	cached := &cachedFile{}
 
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			cf.mu.Lock()
+			cached.mu.Lock()
 
 			var writeErr error
 
-			if cf.f == nil {
-				cf.f, writeErr = os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, logFilePermission)
+			if cached.f == nil {
+				cached.f, writeErr = os.OpenFile( //nolint:gosec // file path from user config is intentional
+					filePath,
+					os.O_CREATE|os.O_WRONLY|os.O_APPEND,
+					logFilePermission,
+				)
 			}
 
-			if writeErr == nil && cf.f != nil {
-				_, writeErr = fmt.Fprintf(cf.f, "[%s] %s: %s\n",
+			if writeErr == nil && cached.f != nil {
+				_, writeErr = fmt.Fprintf(cached.f, "[%s] %s: %s\n",
 					event.Timestamp.Format(time.RFC3339),
 					event.Op,
 					event.Path,
 				)
 			}
 
-			cf.mu.Unlock()
+			cached.mu.Unlock()
 
 			err := next(ctx, event)
 			if err != nil {
 				return err
 			}
 
-			return writeErr
+			if writeErr != nil {
+				return fmt.Errorf("writing to log file %q: %w", filePath, writeErr)
+			}
+
+			return nil
 		}
 	}
 }

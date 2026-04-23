@@ -126,7 +126,15 @@ func categorizeError(err error) ErrorCategory {
 	}
 
 	// Permanent errors - these won't resolve on retry
-	if matchesAnyError(err, ErrWatcherClosed, ErrNoPaths, ErrPathNotFound, ErrPathNotDir, ErrWatcherRunning, ErrUnknownOp) {
+	if matchesAnyError(
+		err,
+		ErrWatcherClosed,
+		ErrNoPaths,
+		ErrPathNotFound,
+		ErrPathNotDir,
+		ErrWatcherRunning,
+		ErrUnknownOp,
+	) {
 		return CategoryPermanent
 	}
 

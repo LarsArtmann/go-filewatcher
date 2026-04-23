@@ -19,6 +19,7 @@ func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
 		if w.debounceInterface != nil {
 			w.debounceInterface.Stop()
 		}
+
 		w.closeEventChOnce.Do(func() { close(eventCh) })
 	}()
 

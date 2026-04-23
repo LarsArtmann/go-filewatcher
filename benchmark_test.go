@@ -57,7 +57,12 @@ func benchmarkNewWatcher(b *testing.B, opts ...Option) {
 }
 
 // benchmarkShouldSkipDir runs shouldSkipDir repeatedly for benchmarking.
-func benchmarkShouldSkipDir(b *testing.B, skipDotDirs bool, ignoreDirNames []string, path string) {
+func benchmarkShouldSkipDir(
+	b *testing.B,
+	skipDotDirs bool, //nolint:unparam // param kept for API consistency
+	ignoreDirNames []string,
+	path string,
+) {
 	b.Helper()
 
 	w := &Watcher{

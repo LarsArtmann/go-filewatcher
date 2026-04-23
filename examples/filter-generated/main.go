@@ -73,6 +73,7 @@ func main() {
 // collectEvents collects events from a channel until context is done.
 func collectEvents(ctx context.Context, events <-chan filewatcher.Event) []string {
 	var receivedEvents []string
+
 	eventDone := make(chan struct{})
 
 	go func() {

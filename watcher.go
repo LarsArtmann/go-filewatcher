@@ -62,7 +62,7 @@ type Watcher struct {
 	ignoreDirNames  []string          // user-configured dir names to skip during walk
 	errorHandler    ErrorHandler      // callback for errors during event processing
 	lazyIsDir       bool              // skip os.Stat calls in convertEvent for performance
-	done            chan struct{}      // closed by Close() to signal shutdown to in-flight goroutines
+	done            chan struct{}     // closed by Close() to signal shutdown to in-flight goroutines
 
 	// Internal state
 	mu        sync.RWMutex
@@ -151,7 +151,10 @@ var (
 // At least one path must be provided. Paths are validated to exist.
 //
 // The watcher is not started until Watch() is called.
-func New(paths []string, opts ...Option) (*Watcher, error) {
+func New( //nolint:funlen // constructor with full field initialization
+	paths []string,
+	opts ...Option,
+) (*Watcher, error) {
 	if len(paths) == 0 {
 		return nil, fmt.Errorf("%w: at least one path must be provided", ErrNoPaths)
 	}
@@ -194,6 +197,9 @@ func New(paths []string, opts ...Option) (*Watcher, error) {
 		mu:                sync.RWMutex{},
 		state:             0,
 		watchList:         make([]string, 0, len(paths)),
+		wg:                sync.WaitGroup{},
+		eventCh:           nil,
+		closeEventChOnce:  sync.Once{},
 		debounceInterface: nil,
 		errorsCh:          nil,
 		errorsMu:          sync.Mutex{},
@@ -257,6 +263,7 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 	}
 
 	w.wg.Add(1)
+
 	go w.watchLoop(ctx, eventCh)
 
 	return eventCh, nil
@@ -268,7 +275,8 @@ func (w *Watcher) Add(path string) error {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	if err := w.checkClosedOp("add path"); err != nil {
+	err := w.checkClosedOp("add path")
+	if err != nil {
 		return err
 	}
 
@@ -294,7 +302,8 @@ func (w *Watcher) Remove(path string) error {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	if err := w.checkClosedOp("remove path"); err != nil {
+	err := w.checkClosedOp("remove path")
+	if err != nil {
 		return err
 	}
 
@@ -420,6 +429,7 @@ func (w *Watcher) Close() error {
 	w.mu.RLock()
 	ch := w.eventCh
 	w.mu.RUnlock()
+
 	if ch != nil {
 		w.closeEventChOnce.Do(func() { close(ch) })
 	}

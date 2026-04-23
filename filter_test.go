@@ -346,12 +346,16 @@ func TestFilterMaxSize(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	smallFile := tmpDir + "/small.txt"
-	if err := os.WriteFile(smallFile, []byte("hi"), 0o600); err != nil {
+
+	err := os.WriteFile(smallFile, []byte("hi"), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
 	largeFile := tmpDir + "/large.txt"
-	if err := os.WriteFile(largeFile, make([]byte, 1000), 0o600); err != nil {
+
+	err = os.WriteFile(largeFile, make([]byte, 1000), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
@@ -393,18 +397,24 @@ func TestFilterMinAge(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	oldFile := tmpDir + "/old.txt"
-	if err := os.WriteFile(oldFile, []byte("old"), 0o600); err != nil {
+
+	err := os.WriteFile(oldFile, []byte("old"), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Set modification time to 1 hour ago
 	oldTime := time.Now().Add(-1 * time.Hour)
-	if err := os.Chtimes(oldFile, oldTime, oldTime); err != nil {
+
+	err = os.Chtimes(oldFile, oldTime, oldTime)
+	if err != nil {
 		t.Fatal(err)
 	}
 
 	recentFile := tmpDir + "/recent.txt"
-	if err := os.WriteFile(recentFile, []byte("recent"), 0o600); err != nil {
+
+	err = os.WriteFile(recentFile, []byte("recent"), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
@@ -440,30 +450,38 @@ func TestFilterMinAge(t *testing.T) {
 	runFilterTestsInline(t, f, tests)
 }
 
-func TestFilterModifiedSince(t *testing.T) {
+func TestFilterModifiedSince(t *testing.T) { //nolint:funlen // comprehensive table-driven test
 	t.Parallel()
 
 	tmpDir := t.TempDir()
 
 	// Create a file modified 1 minute ago
 	recentFile := tmpDir + "/recent.txt"
-	if err := os.WriteFile(recentFile, []byte("recent"), 0o600); err != nil {
+
+	err := os.WriteFile(recentFile, []byte("recent"), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
 	recentTime := time.Now().Add(-1 * time.Minute)
-	if err := os.Chtimes(recentFile, recentTime, recentTime); err != nil {
+
+	err = os.Chtimes(recentFile, recentTime, recentTime)
+	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Create a file modified 1 hour ago
 	oldFile := tmpDir + "/old.txt"
-	if err := os.WriteFile(oldFile, []byte("old"), 0o600); err != nil {
+
+	err = os.WriteFile(oldFile, []byte("old"), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
 	oldTime := time.Now().Add(-1 * time.Hour)
-	if err := os.Chtimes(oldFile, oldTime, oldTime); err != nil {
+
+	err = os.Chtimes(oldFile, oldTime, oldTime)
+	if err != nil {
 		t.Fatal(err)
 	}
 

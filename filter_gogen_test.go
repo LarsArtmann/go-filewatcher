@@ -50,13 +50,13 @@ var (
 )
 
 var (
-	protobufEventCases = twoTestCases(
+	protobufEventCases = twoTestCases( //nolint:gochecknoglobals // table-driven test data
 		"user.pb.go",
 		"/project/api/user.pb.go",
 		"user_grpc.pb.go",
 		"/project/api/user_grpc.pb.go",
 	)
-	mockgenEventCases = twoTestCases(
+	mockgenEventCases = twoTestCases( //nolint:gochecknoglobals // table-driven test data
 		"service_mock.go",
 		"/project/mocks/service_mock.go",
 		"mock_service.go",
@@ -101,7 +101,13 @@ func TestFilterGeneratedCode_SingleFilters(t *testing.T) {
 }
 
 // runSingleFilterSubtests runs subtests for a single filter type.
-func runSingleFilterSubtests(t *testing.T, name string, filterOption gogenfilter.FilterOption, cases []testCaseName) {
+func runSingleFilterSubtests(
+	t *testing.T,
+	name string,
+	filterOption gogenfilter.FilterOption,
+	cases []testCaseName,
+) {
+	t.Helper()
 	t.Run(name, func(t *testing.T) {
 		filter := FilterGeneratedCode(filterOption)
 		for _, tc := range cases {
@@ -151,7 +157,11 @@ func TestFilterGeneratedCode_DefaultAll(t *testing.T) {
 		{testCaseName: "/project/page_templ.go", path: "/project/page_templ.go", expected: false},
 		{testCaseName: "/project/status_enum.go", path: "/project/status_enum.go", expected: false},
 		{testCaseName: "/project/api/user.pb.go", path: "/project/api/user.pb.go", expected: false},
-		{testCaseName: "/project/mocks/service_mock.go", path: "/project/mocks/service_mock.go", expected: false},
+		{
+			testCaseName: "/project/mocks/service_mock.go",
+			path:         "/project/mocks/service_mock.go",
+			expected:     false,
+		},
 		{testCaseName: "/project/main.go", path: "/project/main.go", expected: true},
 		{testCaseName: "/project/utils.go", path: "/project/utils.go", expected: true},
 	}, filter)
@@ -241,7 +251,7 @@ func TestGeneratedCodeDetector(t *testing.T) {
 		{"/project/page_templ.go", false}, // templ (not in detector options)
 	}
 
-	for _, tc := range tests {
+	for _, tc := range tests { //nolint:varnamelen // idiomatic table-driven test variable
 		t.Run(tc.path, func(t *testing.T) {
 			result := detector.IsGenerated(tc.path)
 			if result != tc.expected {
@@ -269,7 +279,7 @@ func TestGeneratedCodeDetector_GetReason(t *testing.T) {
 		{"/project/main.go", gogenfilter.ReasonNotFiltered},
 	}
 
-	for _, tc := range tests {
+	for _, tc := range tests { //nolint:varnamelen // idiomatic table-driven test variable
 		t.Run(tc.path, func(t *testing.T) {
 			reason := detector.GetReason(tc.path)
 			if reason != tc.expected {

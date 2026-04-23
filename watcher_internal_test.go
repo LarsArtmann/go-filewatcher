@@ -1,4 +1,3 @@
-//nolint:testpackage // Tests need internal access to call convertEvent
 package filewatcher
 
 import (

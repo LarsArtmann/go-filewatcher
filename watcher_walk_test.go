@@ -1,4 +1,4 @@
-//nolint:testpackage,varnamelen,exhaustruct // Tests need internal access; idiomatic short names; partial struct init
+//nolint:testpackage,varnamelen // Tests need internal access; idiomatic short names
 package filewatcher
 
 import (
@@ -39,7 +39,9 @@ func TestAddPath_Recursive(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	subDir := filepath.Join(tmpDir, "sub")
-	if mkdirErr := os.MkdirAll(subDir, 0o755); mkdirErr != nil {
+
+	mkdirErr := os.MkdirAll(subDir, 0o755) //nolint:gosec // standard temp directory permissions
+	if mkdirErr != nil {
 		t.Fatal(mkdirErr)
 	}
 
@@ -100,7 +102,9 @@ func TestWalkDirFunc_NonDirEntry(t *testing.T) {
 	defer func() { _ = w.Close() }()
 
 	filePath := filepath.Join(tmpDir, "test.txt")
-	if writeErr := os.WriteFile(filePath, []byte("test"), testFilePermission); writeErr != nil {
+
+	writeErr := os.WriteFile(filePath, []byte("test"), testFilePermission)
+	if writeErr != nil {
 		t.Fatal(writeErr)
 	}
 
@@ -146,7 +150,9 @@ func TestWalkDirFunc_SkipsIgnoredDirs(t *testing.T) {
 	defer func() { _ = w.Close() }()
 
 	nmDir := filepath.Join(tmpDir, "node_modules")
-	if mkdirErr := os.MkdirAll(nmDir, 0o755); mkdirErr != nil {
+
+	mkdirErr := os.MkdirAll(nmDir, 0o755) //nolint:gosec // standard temp directory permissions
+	if mkdirErr != nil {
 		t.Fatal(mkdirErr)
 	}
 

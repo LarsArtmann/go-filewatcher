@@ -244,6 +244,7 @@ func (g *GlobalDebouncer) Flush() {
 		g.timer = nil
 		callback = g.fn
 		g.fn = nil
+
 		oldTimer.Stop() // compensate for cancelled timer
 		g.base.done()
 	}
@@ -284,5 +285,3 @@ func (g *GlobalDebouncer) Pending() int {
 
 	return 0
 }
-
-

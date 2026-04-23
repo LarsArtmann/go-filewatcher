@@ -676,7 +676,7 @@ func TestWatcher_Stats(t *testing.T) {
 	}
 }
 
-func TestWatcher_Stats_Metrics(t *testing.T) {
+func TestWatcher_Stats_Metrics(t *testing.T) { //nolint:cyclop,funlen // comprehensive metrics test
 	t.Parallel()
 
 	tmpDir := t.TempDir()
@@ -695,6 +695,7 @@ func TestWatcher_Stats_Metrics(t *testing.T) {
 	assertStat(t, stats.EventsProcessed, 0, "EventsProcessed", "initially")
 	assertStat(t, stats.EventsFilteredOut, 0, "EventsFilteredOut", "initially")
 	assertStat(t, stats.ErrorsEncountered, 0, "ErrorsEncountered", "initially")
+
 	if stats.Uptime != 0 {
 		t.Error("expected 0 uptime before Watch()")
 	}
@@ -1084,6 +1085,7 @@ func TestWatcher_Errors_ReceivesErrors(t *testing.T) {
 // assertStat asserts that a stat value matches the expected value.
 func assertStat(t *testing.T, got, expected uint64, name, msg string) {
 	t.Helper()
+
 	if got != expected {
 		t.Errorf("expected %s=%d, got %d: %s", name, expected, got, msg)
 	}
@@ -1112,12 +1114,15 @@ func TestWatcher_ContextCancellation_Integration(t *testing.T) {
 
 	// Create a test file to generate an event
 	testFile := filepath.Join(tmpDir, "test.txt")
-	if err := os.WriteFile(testFile, []byte("hello"), 0o600); err != nil {
+
+	err = os.WriteFile(testFile, []byte("hello"), 0o600)
+	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Wait for event with timeout
 	done := make(chan struct{})
+
 	var receivedEvent bool
 
 	go func() {
@@ -1128,6 +1133,7 @@ func TestWatcher_ContextCancellation_Integration(t *testing.T) {
 				break
 			}
 		}
+
 		close(done)
 	}()
 
@@ -1177,7 +1183,8 @@ func TestWatcher_ContextCancellation_WithPerPathDebounce(t *testing.T) {
 	})
 	defer timeout.Stop()
 
+	// Drain any pending events
+	//nolint:revive // intentional drain loop
 	for range events {
-		// Drain any pending events
 	}
 }

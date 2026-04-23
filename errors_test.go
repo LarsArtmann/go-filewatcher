@@ -185,7 +185,8 @@ func TestIsTransientError(t *testing.T) {
 		{"nil", nil, false},
 		{"transient sentinel", ErrFsnotifyFailed, true},
 		{"permanent sentinel", ErrWatcherClosed, false},
-		{"transient watcher error", testError(errors.New("test"), CategoryTransient),
+		{
+			"transient watcher error", testError(errors.New("test"), CategoryTransient),
 			true,
 		},
 		{

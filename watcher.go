@@ -136,12 +136,6 @@ type DebouncerInterface interface {
 	Debounce(key DebounceKey, fn func())
 	Stop()
 	Flush()
-	// UsesPerPathKeys returns true if this debouncer tracks keys independently
-	// (per-path debouncing), or false if it coalesces all events into a single
-	// timer (global debouncing).
-	UsesPerPathKeys() bool
-	// Close is an alias for Stop() to satisfy io.Closer-like patterns.
-	Close()
 }
 
 // Compile-time interface checks.

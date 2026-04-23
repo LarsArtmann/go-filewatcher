@@ -180,17 +180,6 @@ func (d *Debouncer) Pending() int {
 	return len(d.entries)
 }
 
-// UsesPerPathKeys returns true because Debouncer tracks each key independently.
-func (d *Debouncer) UsesPerPathKeys() bool {
-	return true
-}
-
-// Close cancels all pending executions and waits for in-flight callbacks.
-// This is an alias for Stop() to satisfy io.Closer-like patterns.
-func (d *Debouncer) Close() {
-	d.Stop()
-}
-
 // GlobalDebouncer coalesces all events into a single timer, regardless of key.
 // Useful when you want to batch all file changes into one action.
 type GlobalDebouncer struct {
@@ -296,13 +285,4 @@ func (g *GlobalDebouncer) Pending() int {
 	return 0
 }
 
-// UsesPerPathKeys returns false because GlobalDebouncer coalesces all events.
-func (g *GlobalDebouncer) UsesPerPathKeys() bool {
-	return false
-}
 
-// Close cancels the pending execution and waits for in-flight callbacks.
-// This is an alias for Stop() to satisfy io.Closer-like patterns.
-func (g *GlobalDebouncer) Close() {
-	g.Stop()
-}

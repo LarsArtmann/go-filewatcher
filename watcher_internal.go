@@ -89,11 +89,11 @@ func (w *Watcher) emitEvent(ctx context.Context, event Event, eventCh chan<- Eve
 }
 
 // buildEmitFunc creates the emit function for sending events.
-func (w *Watcher) buildEmitFunc(ctx context.Context, eventCh chan<- Event) func(Event) {
+func (w *Watcher) buildEmitFunc(_ context.Context, eventCh chan<- Event) func(Event) {
 	return func(e Event) {
 		select {
 		case eventCh <- e:
-		case <-ctx.Done():
+		case <-w.done:
 		}
 	}
 }

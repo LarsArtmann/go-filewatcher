@@ -62,6 +62,7 @@ type Watcher struct {
 	ignoreDirNames  []string          // user-configured dir names to skip during walk
 	errorHandler    ErrorHandler      // callback for errors during event processing
 	lazyIsDir       bool              // skip os.Stat calls in convertEvent for performance
+	done            chan struct{}      // closed by Close() to signal shutdown to in-flight goroutines
 
 	// Internal state
 	mu        sync.RWMutex
@@ -200,6 +201,7 @@ func New(paths []string, opts ...Option) (*Watcher, error) {
 		errorsEncountered: atomic.Uint64{},
 		startTime:         time.Time{},
 		lazyIsDir:         false,
+		done:              make(chan struct{}),
 	}
 
 	for _, opt := range opts {
@@ -390,6 +392,9 @@ func (w *Watcher) Close() error {
 	w.watchList = w.watchList[:0]
 
 	w.mu.Unlock()
+
+	// Signal in-flight goroutines to stop before closing channels.
+	close(w.done)
 
 	// Stop the debouncer FIRST - waits for all in-flight callbacks to complete.
 	// This must happen before closing eventCh to prevent send-on-closed-channel.

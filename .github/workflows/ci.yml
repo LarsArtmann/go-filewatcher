@@ -28,6 +28,14 @@ jobs:
       - run: go test -race -count=1 ./...
       - run: go test -count=1 -coverprofile=coverage.out ./...
       - run: go tool cover -func=coverage.out
+      - name: Enforce coverage threshold
+        run: |
+          COVERAGE=$(go tool cover -func=coverage.out | tail -1 | awk '{print $3}' | sed 's/%//')
+          echo "Total coverage: ${COVERAGE}%"
+          if [ "$(echo "$COVERAGE < 90" | bc -l)" -eq 1 ]; then
+            echo "::error::Coverage ${COVERAGE}% is below 90% threshold"
+            exit 1
+          fi
 
   lint:
     name: Lint

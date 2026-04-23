@@ -1,4 +1,3 @@
-//nolint:cyclop // High cyclomatic complexity is acceptable for error categorization logic
 package filewatcher
 
 import (
@@ -90,9 +89,12 @@ func (e *WatcherError) Unwrap() error {
 // checkWatcherError extracts a WatcherError from an error if present.
 // Returns (watcherErr, true) if found, (nil, false) otherwise.
 func checkWatcherError(err error) (*WatcherError, bool) {
-	if we, ok := err.(*WatcherError); ok {
-		return we, true
+	var watcherErr *WatcherError
+
+	if errors.As(err, &watcherErr) {
+		return watcherErr, true
 	}
+
 	return nil, false
 }
 

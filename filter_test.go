@@ -340,6 +340,166 @@ func TestFilterRegex(t *testing.T) {
 	runFilterTestsInline(t, FilterRegex(`\.go$`), regexTestCases())
 }
 
+func TestFilterMaxSize(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	smallFile := tmpDir + "/small.txt"
+	if err := os.WriteFile(smallFile, []byte("hi"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	largeFile := tmpDir + "/large.txt"
+	if err := os.WriteFile(largeFile, make([]byte, 1000), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	f := FilterMaxSize(100)
+
+	tests := []struct {
+		name  string
+		event Event
+		want  bool
+	}{
+		{
+			"small file",
+			testWriteEvent(smallFile),
+			true,
+		},
+		{
+			"large file",
+			testWriteEvent(largeFile),
+			false,
+		},
+		{
+			"directory",
+			Event{Path: tmpDir, Op: Create, Timestamp: time.Now(), IsDir: true},
+			true,
+		},
+		{
+			"nonexistent file",
+			testWriteEvent("/nonexistent/file.txt"),
+			false,
+		},
+	}
+
+	runFilterTestsInline(t, f, tests)
+}
+
+func TestFilterMinAge(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	oldFile := tmpDir + "/old.txt"
+	if err := os.WriteFile(oldFile, []byte("old"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	// Set modification time to 1 hour ago
+	oldTime := time.Now().Add(-1 * time.Hour)
+	if err := os.Chtimes(oldFile, oldTime, oldTime); err != nil {
+		t.Fatal(err)
+	}
+
+	recentFile := tmpDir + "/recent.txt"
+	if err := os.WriteFile(recentFile, []byte("recent"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	f := FilterMinAge(10 * time.Minute)
+
+	tests := []struct {
+		name  string
+		event Event
+		want  bool
+	}{
+		{
+			"old file passes",
+			testWriteEvent(oldFile),
+			true,
+		},
+		{
+			"recent file filtered",
+			testWriteEvent(recentFile),
+			false,
+		},
+		{
+			"directory passes through",
+			Event{Path: tmpDir, Op: Create, Timestamp: time.Now(), IsDir: true},
+			true,
+		},
+		{
+			"nonexistent file filtered",
+			testWriteEvent("/nonexistent/file.txt"),
+			false,
+		},
+	}
+
+	runFilterTestsInline(t, f, tests)
+}
+
+func TestFilterModifiedSince(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	// Create a file modified 1 minute ago
+	recentFile := tmpDir + "/recent.txt"
+	if err := os.WriteFile(recentFile, []byte("recent"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	recentTime := time.Now().Add(-1 * time.Minute)
+	if err := os.Chtimes(recentFile, recentTime, recentTime); err != nil {
+		t.Fatal(err)
+	}
+
+	// Create a file modified 1 hour ago
+	oldFile := tmpDir + "/old.txt"
+	if err := os.WriteFile(oldFile, []byte("old"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	oldTime := time.Now().Add(-1 * time.Hour)
+	if err := os.Chtimes(oldFile, oldTime, oldTime); err != nil {
+		t.Fatal(err)
+	}
+
+	cutoff := time.Now().Add(-5 * time.Minute)
+	f := FilterModifiedSince(cutoff)
+
+	tests := []struct {
+		name  string
+		event Event
+		want  bool
+	}{
+		{
+			"recent file passes",
+			testWriteEvent(recentFile),
+			true,
+		},
+		{
+			"old file filtered",
+			testWriteEvent(oldFile),
+			false,
+		},
+		{
+			"directory passes through",
+			Event{Path: tmpDir, Op: Create, Timestamp: time.Now(), IsDir: true},
+			true,
+		},
+		{
+			"nonexistent file filtered",
+			testWriteEvent("/nonexistent/file.txt"),
+			false,
+		},
+	}
+
+	runFilterTestsInline(t, f, tests)
+}
+
 func TestEvent_String(t *testing.T) {
 	t.Parallel()
 

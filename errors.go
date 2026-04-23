@@ -149,6 +149,7 @@ func matchesAnyError(err error, sentinels ...error) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -163,6 +164,7 @@ func isErrorTransientOrPermanent(err error, isTransient bool) bool {
 		if isTransient {
 			return we.IsTransient()
 		}
+
 		return we.IsPermanent()
 	}
 
@@ -170,6 +172,7 @@ func isErrorTransientOrPermanent(err error, isTransient bool) bool {
 	if !isTransient {
 		expected = CategoryPermanent
 	}
+
 	return categorizeError(err) == expected
 }
 

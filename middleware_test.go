@@ -68,6 +68,7 @@ func TestMiddlewareRecovery_NoPanic(t *testing.T) {
 	var called bool
 	normalHandler := func(_ context.Context, _ Event) error {
 		called = true
+
 		return nil
 	}
 
@@ -92,6 +93,7 @@ func TestMiddlewareFilter(t *testing.T) {
 	var processed bool
 	handler := mw(func(_ context.Context, _ Event) error {
 		processed = true
+
 		return nil
 	})
 
@@ -306,6 +308,7 @@ func TestMiddlewareDeduplicate(t *testing.T) {
 	mw := MiddlewareDeduplicate(100 * time.Millisecond)
 	handler := mw(func(_ context.Context, _ Event) error {
 		callCount++
+
 		return nil
 	})
 

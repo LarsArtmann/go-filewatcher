@@ -73,6 +73,7 @@ func noopHandler() Handler {
 func testHandlerFunc(counter *int) Handler {
 	return func(_ context.Context, _ Event) error {
 		*counter++
+
 		return nil
 	}
 }

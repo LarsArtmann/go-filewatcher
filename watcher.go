@@ -129,6 +129,7 @@ func (w *Watcher) checkClosedOp(operation string) error {
 	if w.state&flagClosed != 0 {
 		return fmt.Errorf("%w: cannot %s on closed watcher", ErrWatcherClosed, operation)
 	}
+
 	return nil
 }
 

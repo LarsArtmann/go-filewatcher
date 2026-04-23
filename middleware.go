@@ -174,6 +174,7 @@ func MiddlewareSlidingWindowRateLimit(maxEvents int, window time.Duration) Middl
 			// Check if we're over the limit
 			if len(state.events) >= maxEvents {
 				state.mu.Unlock()
+
 				return nil
 			}
 

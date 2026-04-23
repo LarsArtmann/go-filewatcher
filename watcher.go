@@ -68,6 +68,7 @@ type Watcher struct {
 	mu        sync.RWMutex
 	state     WatcherStateFlags // bit flags: closed, watching
 	watchList []string          // tracked paths currently being watched
+	wg        sync.WaitGroup    // tracks watchLoop goroutine for clean shutdown
 
 	// Event channel - stored so Close() can close it after stopping debouncer
 	// This prevents race between debouncer callbacks and channel close
@@ -255,6 +256,7 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 		w.startTime = time.Now()
 	}
 
+	w.wg.Add(1)
 	go w.watchLoop(ctx, eventCh)
 
 	return eventCh, nil
@@ -409,7 +411,11 @@ func (w *Watcher) Close() error {
 		return fmt.Errorf("closing fsnotify watcher: %w", err)
 	}
 
-	// Now safe to close eventCh - debouncer callbacks are done.
+	// Wait for watchLoop to fully exit before closing eventCh.
+	// This ensures no goroutine is mid-send when we close the channel.
+	w.wg.Wait()
+
+	// Now safe to close eventCh - watchLoop and all callbacks are done.
 	// Use sync.Once to coordinate with watchLoop's defer.
 	w.mu.RLock()
 	ch := w.eventCh

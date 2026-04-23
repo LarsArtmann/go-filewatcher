@@ -14,7 +14,13 @@ import (
 // Exits when ctx is cancelled or fsnotify watcher is closed.
 // Note: eventCh is closed by Close() after debouncer is stopped.
 func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
-	defer w.closeEventChOnce.Do(func() { close(eventCh) })
+	defer w.wg.Done()
+	defer func() {
+		if w.debounceInterface != nil {
+			w.debounceInterface.Stop()
+		}
+		w.closeEventChOnce.Do(func() { close(eventCh) })
+	}()
 
 	for {
 		select {
@@ -89,11 +95,12 @@ func (w *Watcher) emitEvent(ctx context.Context, event Event, eventCh chan<- Eve
 }
 
 // buildEmitFunc creates the emit function for sending events.
-func (w *Watcher) buildEmitFunc(_ context.Context, eventCh chan<- Event) func(Event) {
+func (w *Watcher) buildEmitFunc(ctx context.Context, eventCh chan<- Event) func(Event) {
 	return func(e Event) {
 		select {
 		case eventCh <- e:
 		case <-w.done:
+		case <-ctx.Done():
 		}
 	}
 }

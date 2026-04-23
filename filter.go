@@ -197,16 +197,17 @@ func filterFileStat(event Event) (os.FileInfo, bool, bool) {
 
 // makeSizeFilter creates a filter that applies a size comparison.
 // Use >= for min size, <= for max size.
-func makeSizeFilter(threshold int64, min bool) Filter {
+func makeSizeFilter(threshold int64, isMin bool) Filter {
 	return func(event Event) bool {
 		info, isFile, shouldFilter := filterFileStat(event)
 		if !shouldFilter {
 			return isFile // directories pass through (true), stat fails filter out (false)
 		}
 
-		if min {
+		if isMin {
 			return info.Size() >= threshold
 		}
+
 		return info.Size() <= threshold
 	}
 }

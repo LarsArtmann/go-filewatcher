@@ -3,7 +3,9 @@ package filewatcher
 
 import (
 	"encoding/json"
+	"log/slog"
 	"testing"
+	"time"
 )
 
 func TestOp_MarshalText(t *testing.T) {
@@ -100,5 +102,39 @@ func TestEvent_JSON(t *testing.T) {
 
 	if decoded.IsDir != event.IsDir {
 		t.Errorf("IsDir = %v, want %v", decoded.IsDir, event.IsDir)
+	}
+}
+
+func TestEvent_LogValue(t *testing.T) {
+	t.Parallel()
+
+	ts := time.Date(2025, 6, 15, 10, 30, 0, 0, time.UTC)
+	event := Event{
+		Path:      "/tmp/test.go",
+		Op:        Write,
+		Timestamp: ts,
+		IsDir:     false,
+	}
+
+	val := event.LogValue()
+
+	if val.Kind() != slog.KindGroup {
+		t.Fatalf("LogValue kind = %v, want Group", val.Kind())
+	}
+
+	attrs := val.Group()
+	if len(attrs) != 4 {
+		t.Fatalf("LogValue group length = %d, want 4", len(attrs))
+	}
+
+	found := map[string]bool{}
+	for _, attr := range attrs {
+		found[attr.Key] = true
+	}
+
+	for _, key := range []string{"path", "op", "timestamp", "isDir"} {
+		if !found[key] {
+			t.Errorf("missing key %q in LogValue attrs", key)
+		}
 	}
 }

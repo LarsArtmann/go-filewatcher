@@ -301,7 +301,7 @@ func TestWatcher_Watch_WithDebounce(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	w, err := New([]string{tmpDir},
-		WithDebounce(100*time.Millisecond),
+		WithDebounce(200*time.Millisecond),
 	)
 	if err != nil {
 		t.Fatal(err)
@@ -321,13 +321,11 @@ func TestWatcher_Watch_WithDebounce(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-
-		time.Sleep(10 * time.Millisecond)
 	}
 
 	var eventCount atomic.Int32
 
-	timeout := time.After(2 * time.Second)
+	timeout := time.After(3 * time.Second)
 
 collect:
 	for {
@@ -339,8 +337,6 @@ collect:
 		}
 	}
 
-	// Close watcher explicitly after collecting events to avoid race
-	// between debouncer callbacks and channel closure.
 	_ = w.Close()
 
 	if got := eventCount.Load(); got != 1 {

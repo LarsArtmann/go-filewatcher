@@ -23,23 +23,31 @@ func TestEventPath_String(t *testing.T) {
 	}
 }
 
+// pathTestCase is a reusable test case for path-based tests.
+type pathTestCase struct {
+	input EventPath
+	want  string
+}
+
+// runPathTests executes a table-driven test for EventPath methods.
+func runPathTests(t *testing.T, tests []pathTestCase, fn func(EventPath) string) {
+	t.Helper()
+
+	for _, tt := range tests {
+		if got := fn(tt.input); got != tt.want {
+			t.Errorf("%q = %q, want %q", tt.input, got, tt.want)
+		}
+	}
+}
+
 func TestEventPath_Base(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		input EventPath
-		want  string
-	}{
+	runPathTests(t, []pathTestCase{
 		{"/home/user/file.go", "file.go"},
 		{"/home/user/", "user"},
 		{"file.go", "file.go"},
-	}
-
-	for _, tt := range tests {
-		if got := tt.input.Base(); got != tt.want {
-			t.Errorf("EventPath(%q).Base() = %q, want %q", tt.input, got, tt.want)
-		}
-	}
+	}, func(p EventPath) string { return p.Base() })
 }
 
 func TestEventPath_Dir(t *testing.T) {
@@ -64,20 +72,11 @@ func TestEventPath_Dir(t *testing.T) {
 func TestEventPath_Ext(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		input EventPath
-		want  string
-	}{
+	runPathTests(t, []pathTestCase{
 		{"/home/user/file.go", ".go"},
 		{"/home/user/README", ""},
 		{"/home/user/file.test.go", ".go"},
-	}
-
-	for _, tt := range tests {
-		if got := tt.input.Ext(); got != tt.want {
-			t.Errorf("EventPath(%q).Ext() = %q, want %q", tt.input, got, tt.want)
-		}
-	}
+	}, func(p EventPath) string { return p.Ext() })
 }
 
 func TestEventPath_Join(t *testing.T) {

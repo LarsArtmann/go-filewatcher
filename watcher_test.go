@@ -300,12 +300,7 @@ func TestWatcher_Watch_WithDebounce(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir},
-		WithDebounce(200*time.Millisecond),
-	)
-	if err != nil {
-		t.Fatal(err)
-	}
+	w := newTestWatcher(t, tmpDir, WithDebounce(200*time.Millisecond))
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -349,12 +344,7 @@ func TestWatcher_Watch_WithPerPathDebounce(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir},
-		WithPerPathDebounce(50*time.Millisecond),
-	)
-	if err != nil {
-		t.Fatal(err)
-	}
+	w := newTestWatcher(t, tmpDir, WithPerPathDebounce(50*time.Millisecond))
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -964,17 +954,13 @@ func TestWatcher_FullLifecycle(t *testing.T) {
 	}
 
 	// Wait for event with timeout
-	select {
-	case event := <-events:
+	receiveEventMatchingOrTimeout(t, events, 5*time.Second, func(event Event) {
 		assertEventPath(t, event, testFile)
 
 		if event.Op != Create && event.Op != Write {
 			t.Errorf("expected Create or Write op, got %s", event.Op)
 		}
-
-	case <-time.After(5 * time.Second):
-		t.Fatal("timed out waiting for event")
-	}
+	}, "timed out waiting for event")
 
 	// Verify event was processed by middleware
 	if eventCount.Load() != 1 {
@@ -1098,10 +1084,7 @@ func TestWatcher_ContextCancellation_Integration(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithDebounce(50*time.Millisecond))
-	if err != nil {
-		t.Fatal(err)
-	}
+	w := newTestWatcher(t, tmpDir, WithDebounce(50*time.Millisecond))
 
 	defer func() { _ = w.Close() }()
 
@@ -1140,12 +1123,8 @@ func TestWatcher_ContextCancellation_Integration(t *testing.T) {
 	// Cancel context after a short delay
 	time.AfterFunc(200*time.Millisecond, cancel)
 
-	select {
-	case <-done:
-		// Channel closed as expected
-	case <-time.After(5 * time.Second):
-		t.Fatal("timeout waiting for events channel to close")
-	}
+	// Wait for events channel to close
+	_ = waitForClose(t, done, 5*time.Second)
 
 	if !receivedEvent {
 		t.Error("expected to receive file creation event")
@@ -1159,10 +1138,7 @@ func TestWatcher_ContextCancellation_WithPerPathDebounce(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithPerPathDebounce(50*time.Millisecond))
-	if err != nil {
-		t.Fatal(err)
-	}
+	w := newTestWatcher(t, tmpDir, WithPerPathDebounce(50*time.Millisecond))
 
 	defer func() { _ = w.Close() }()
 

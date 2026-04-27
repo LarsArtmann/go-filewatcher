@@ -442,12 +442,8 @@ func TestMiddlewareBatch_TimerFlush(t *testing.T) {
 	_ = handler(ctx, testEvent("/tmp/b.go", Write))
 
 	// Wait for timer to fire
-	select {
-	case batched := <-done:
-		assertBatchLen(t, batched, 2, " from timer flush")
-	case <-time.After(2 * time.Second):
-		t.Fatal("timed out waiting for timer flush")
-	}
+	batched := waitForChannel(t, done, 2*time.Second, "timed out waiting for timer flush")
+	assertBatchLen(t, batched, 2, " from timer flush")
 }
 
 func TestMiddlewareBatch_DefaultValues(t *testing.T) {

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"log/slog"
 	"testing"
-	"time"
 )
 
 func TestOp_MarshalText(t *testing.T) {
@@ -108,7 +107,7 @@ func TestEvent_JSON(t *testing.T) {
 func TestEvent_LogValue(t *testing.T) {
 	t.Parallel()
 
-	ts := time.Date(2025, 6, 15, 10, 30, 0, 0, time.UTC)
+	ts := FixedTime(2025, 6, 15, 10, 30, 0)
 	event := Event{
 		Path:      "/tmp/test.go",
 		Op:        Write,

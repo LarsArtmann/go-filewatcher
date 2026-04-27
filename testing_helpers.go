@@ -32,6 +32,12 @@ func fixedTimeEvent(path string, op Op, hour int) Event {
 
 const fixedEventTimestamp = 12
 
+// FixedTime creates a time.Time with a fixed UTC timestamp.
+// Use this for deterministic test timestamps.
+func FixedTime(year int, month time.Month, day, hour, minute, second int) time.Time {
+	return time.Date(year, month, day, hour, minute, second, 0, time.UTC)
+}
+
 func fixedWriteEvent(path string) Event {
 	return fixedTimeEvent(path, Write, fixedEventTimestamp)
 }
@@ -248,4 +254,53 @@ func createTestFile(t *testing.T, tmpDir TempDir, filename, content string) stri
 	}
 
 	return path
+}
+
+// waitForChannel waits for a value from a channel with timeout.
+// Fatal if timeout occurs.
+//
+//nolint:ireturn // Generic channel helper must return generic type
+func waitForChannel[T any](t *testing.T, ch <-chan T, timeout time.Duration, msg string) T {
+	t.Helper()
+
+	select {
+	case v := <-ch:
+		return v
+	case <-time.After(timeout):
+		t.Fatal(msg)
+	}
+
+	var zero T
+
+	return zero
+}
+
+// waitForClose waits for a channel to be closed within the timeout.
+// Returns true if closed, false if timeout occurred.
+func waitForClose[T any](t *testing.T, channel <-chan T, timeout time.Duration) bool {
+	t.Helper()
+
+	var closed bool
+
+	select {
+	case _, ok := <-channel:
+		closed = !ok
+	case <-time.After(timeout):
+		t.Fatal("timeout waiting for channel to close")
+	}
+
+	return closed
+}
+
+// newTestWatcher creates a new watcher with the given options.
+// Fatal if creation fails.
+func newTestWatcher(t *testing.T, tmpDir string, opts ...Option) *Watcher {
+	t.Helper()
+
+	w, err := New([]string{tmpDir}, opts...)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return w
 }

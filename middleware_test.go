@@ -11,6 +11,33 @@ import (
 	"time"
 )
 
+// flushToSlice creates a flush function that appends events to a slice.
+func flushToSlice(slice *[]Event) func([]Event) error {
+	return func(events []Event) error {
+		*slice = append(*slice, events...)
+
+		return nil
+	}
+}
+
+// assertErrorIs asserts that err wraps the target error.
+func assertErrorIs(t *testing.T, err, target error, msg string) {
+	t.Helper()
+
+	if !errors.Is(err, target) {
+		t.Errorf("%s, got %v", msg, err)
+	}
+}
+
+// assertBatchLen asserts the length of a batched event slice.
+func assertBatchLen(t *testing.T, batched []Event, want int, msg string) {
+	t.Helper()
+
+	if len(batched) != want {
+		t.Errorf("expected %d batched events%s, got %d", want, msg, len(batched))
+	}
+}
+
 func TestMiddlewareLogging(t *testing.T) {
 	t.Parallel()
 
@@ -142,9 +169,7 @@ func TestMiddlewareOnError(t *testing.T) {
 
 	err := testHandler(context.Background(), testWriteEvent("/tmp/test.go"))
 
-	if !errors.Is(err, testErr) {
-		t.Errorf("expected error to be passed through, got %v", err)
-	}
+	assertErrorIs(t, err, testErr, "expected error to be passed through")
 
 	if capturedEvent == nil {
 		t.Error("expected onError to be called with event")
@@ -362,11 +387,7 @@ func TestMiddlewareBatch_FullBatch(t *testing.T) {
 
 	var batched []Event
 
-	flush := func(events []Event) error {
-		batched = append(batched, events...)
-
-		return nil
-	}
+	flush := flushToSlice(&batched)
 
 	mw := MiddlewareBatch(0, 3, flush) // use defaults for window, maxSize=3
 	handler := mw(noopHandler())
@@ -381,9 +402,7 @@ func TestMiddlewareBatch_FullBatch(t *testing.T) {
 		}
 	}
 
-	if len(batched) != 3 {
-		t.Errorf("expected 3 batched events, got %d", len(batched))
-	}
+	assertBatchLen(t, batched, 3, "")
 }
 
 func TestMiddlewareBatch_FlushError(t *testing.T) {
@@ -399,9 +418,7 @@ func TestMiddlewareBatch_FlushError(t *testing.T) {
 	handler := mw(noopHandler())
 
 	err := handler(context.Background(), testEvent("/tmp/file.txt", Write))
-	if !errors.Is(err, testErr) {
-		t.Errorf("expected flush error, got %v", err)
-	}
+	assertErrorIs(t, err, testErr, "expected flush error")
 }
 
 func TestMiddlewareBatch_TimerFlush(t *testing.T) {
@@ -427,9 +444,7 @@ func TestMiddlewareBatch_TimerFlush(t *testing.T) {
 	// Wait for timer to fire
 	select {
 	case batched := <-done:
-		if len(batched) != 2 {
-			t.Errorf("expected 2 batched events from timer flush, got %d", len(batched))
-		}
+		assertBatchLen(t, batched, 2, " from timer flush")
 	case <-time.After(2 * time.Second):
 		t.Fatal("timed out waiting for timer flush")
 	}
@@ -440,11 +455,7 @@ func TestMiddlewareBatch_DefaultValues(t *testing.T) {
 
 	var batched []Event
 
-	flush := func(events []Event) error {
-		batched = append(batched, events...)
-
-		return nil
-	}
+	flush := flushToSlice(&batched)
 
 	// Both window and maxSize are 0 — should use defaults
 	mw := MiddlewareBatch(0, 0, flush)

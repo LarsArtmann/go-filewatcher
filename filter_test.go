@@ -49,6 +49,20 @@ type filterTests []struct {
 	want  bool
 }
 
+// testDirEvent creates a directory create event for testing.
+func testDirEvent(path string) Event {
+	return Event{Path: path, Op: Create, Timestamp: time.Now(), IsDir: true}
+}
+
+// Time helpers for test fixtures.
+func hourAgo() time.Time {
+	return time.Now().Add(-1 * time.Hour)
+}
+
+func minutesAgo(n int) time.Time {
+	return time.Now().Add(time.Duration(-n) * time.Minute)
+}
+
 func ignoreDirTestCases() filterTests {
 	return filterTests{
 		{"main.go", testWriteEvent("/tmp/main.go"), true},
@@ -322,7 +336,7 @@ func TestFilterMinSize(t *testing.T) {
 		},
 		{
 			"directory",
-			Event{Path: tmpDir, Op: Create, Timestamp: time.Now(), IsDir: true},
+			testDirEvent(tmpDir),
 			true,
 		},
 		{
@@ -378,7 +392,7 @@ func TestFilterMaxSize(t *testing.T) {
 		},
 		{
 			"directory",
-			Event{Path: tmpDir, Op: Create, Timestamp: time.Now(), IsDir: true},
+			testDirEvent(tmpDir),
 			true,
 		},
 		{
@@ -404,7 +418,7 @@ func TestFilterMinAge(t *testing.T) {
 	}
 
 	// Set modification time to 1 hour ago
-	oldTime := time.Now().Add(-1 * time.Hour)
+	oldTime := hourAgo()
 
 	err = os.Chtimes(oldFile, oldTime, oldTime)
 	if err != nil {
@@ -437,7 +451,7 @@ func TestFilterMinAge(t *testing.T) {
 		},
 		{
 			"directory passes through",
-			Event{Path: tmpDir, Op: Create, Timestamp: time.Now(), IsDir: true},
+			testDirEvent(tmpDir),
 			true,
 		},
 		{
@@ -463,7 +477,7 @@ func TestFilterModifiedSince(t *testing.T) { //nolint:funlen // comprehensive ta
 		t.Fatal(err)
 	}
 
-	recentTime := time.Now().Add(-1 * time.Minute)
+	recentTime := minutesAgo(1)
 
 	err = os.Chtimes(recentFile, recentTime, recentTime)
 	if err != nil {
@@ -478,14 +492,14 @@ func TestFilterModifiedSince(t *testing.T) { //nolint:funlen // comprehensive ta
 		t.Fatal(err)
 	}
 
-	oldTime := time.Now().Add(-1 * time.Hour)
+	oldTime := hourAgo()
 
 	err = os.Chtimes(oldFile, oldTime, oldTime)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	cutoff := time.Now().Add(-5 * time.Minute)
+	cutoff := minutesAgo(5)
 	f := FilterModifiedSince(cutoff)
 
 	tests := []struct {
@@ -505,7 +519,7 @@ func TestFilterModifiedSince(t *testing.T) { //nolint:funlen // comprehensive ta
 		},
 		{
 			"directory passes through",
-			Event{Path: tmpDir, Op: Create, Timestamp: time.Now(), IsDir: true},
+			testDirEvent(tmpDir),
 			true,
 		},
 		{

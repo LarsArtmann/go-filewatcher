@@ -55,9 +55,9 @@ func TestMiddlewareLogging(t *testing.T) {
 	}
 
 	content := buf.String()
-	assertLogContains(t, content, LogSubstring("filewatcher event"))
-	assertLogContains(t, content, LogSubstring("WRITE"))
-	assertLogContains(t, content, LogSubstring("/tmp/test.go"))
+	assertLogContains(t, content, NewLogSubstring("filewatcher event"))
+	assertLogContains(t, content, NewLogSubstring("WRITE"))
+	assertLogContains(t, content, NewLogSubstring("/tmp/test.go"))
 }
 
 func TestMiddlewareLogging_NilLogger(t *testing.T) {
@@ -312,8 +312,8 @@ func TestMiddlewareWriteFileLog(t *testing.T) {
 	}
 
 	content := string(data)
-	assertLogContains(t, content, LogSubstring("WRITE"))
-	assertLogContains(t, content, LogSubstring("/tmp/test.go"))
+	assertLogContains(t, content, NewLogSubstring("WRITE"))
+	assertLogContains(t, content, NewLogSubstring("/tmp/test.go"))
 }
 
 func TestMiddlewareWriteFileLog_Appends(t *testing.T) {

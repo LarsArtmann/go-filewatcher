@@ -246,7 +246,7 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 
 	// Add initial paths to the fsnotify watcher
 	for _, p := range w.paths {
-		addErr := w.addPath(RootPath(p))
+		addErr := w.addPath(NewRootPath(p))
 		if addErr != nil {
 			return nil, fmt.Errorf("adding watch path %q during Watch(): %w", p, addErr)
 		}
@@ -285,7 +285,7 @@ func (w *Watcher) Add(path string) error {
 		return fmt.Errorf("resolving path %q in Add(): %w", path, resolveErr)
 	}
 
-	pathErr := w.addPath(RootPath(abs))
+	pathErr := w.addPath(NewRootPath(abs))
 	if pathErr != nil {
 		return fmt.Errorf("adding resolved path %q to watcher: %w", abs, pathErr)
 	}

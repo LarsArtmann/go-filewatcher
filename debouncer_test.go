@@ -15,7 +15,11 @@ func TestDebouncer_Debounce(t *testing.T) {
 
 	d := NewDebouncer(50 * time.Millisecond)
 
-	debounceMulti(d, []DebounceKey{"key1", "key1", "key1"}, &count)
+	debounceMulti(d, []DebounceKey{
+		NewDebounceKey("key1"),
+		NewDebounceKey("key1"),
+		NewDebounceKey("key1"),
+	}, &count)
 
 	time.Sleep(100 * time.Millisecond)
 
@@ -29,7 +33,7 @@ func TestDebouncer_DifferentKeys(t *testing.T) {
 
 	d := NewDebouncer(50 * time.Millisecond)
 
-	debounceMulti(d, []DebounceKey{"key1", "key2"}, &count)
+	debounceMulti(d, []DebounceKey{NewDebounceKey("key1"), NewDebounceKey("key2")}, &count)
 
 	time.Sleep(100 * time.Millisecond)
 
@@ -43,7 +47,7 @@ func TestDebouncer_Flush(t *testing.T) {
 
 	d := NewDebouncer(200 * time.Millisecond)
 
-	debounceSingle(d, DebounceKey("key1"), &count)
+	debounceSingle(d, NewDebounceKey("key1"), &count)
 	d.Flush()
 
 	time.Sleep(50 * time.Millisecond)
@@ -59,7 +63,7 @@ func TestDebouncer_Stop(t *testing.T) {
 
 	d := NewDebouncer(50 * time.Millisecond)
 
-	debounceSingle(d, DebounceKey("key1"), &count)
+	debounceSingle(d, NewDebounceKey("key1"), &count)
 	d.Stop()
 
 	time.Sleep(100 * time.Millisecond)
@@ -72,7 +76,11 @@ func TestDebouncer_Pending(t *testing.T) {
 
 	d := NewDebouncer(200 * time.Millisecond)
 
-	debounceMultiNoCount(d, []DebounceKey{"key1", "key2", "key3"})
+	debounceMultiNoCount(d, []DebounceKey{
+		NewDebounceKey("key1"),
+		NewDebounceKey("key2"),
+		NewDebounceKey("key3"),
+	})
 
 	assertPending(t, d, 3)
 
@@ -87,7 +95,7 @@ func TestDebouncer_DefaultDelay(t *testing.T) {
 	d := NewDebouncer(0)
 
 	var count atomic.Int32
-	debounceSingle(d, "key", &count)
+	debounceSingle(d, NewDebounceKey("key"), &count)
 
 	time.Sleep(600 * time.Millisecond)
 
@@ -100,7 +108,7 @@ func TestDebouncer_NegativeDelay(t *testing.T) {
 	d := NewDebouncer(-1 * time.Second)
 
 	var count atomic.Int32
-	debounceSingle(d, "key", &count)
+	debounceSingle(d, NewDebounceKey("key"), &count)
 
 	time.Sleep(600 * time.Millisecond)
 
@@ -114,7 +122,7 @@ func TestDebouncer_RapidCalls(t *testing.T) {
 
 	d := NewDebouncer(30 * time.Millisecond)
 
-	debounceSingle(d, DebounceKey("key1"), &count)
+	debounceSingle(d, NewDebounceKey("key1"), &count)
 
 	time.Sleep(100 * time.Millisecond)
 
@@ -202,7 +210,7 @@ func BenchmarkDebouncer_Debounce(b *testing.B) {
 	d := NewDebouncer(1 * time.Second)
 	defer d.Stop()
 
-	runDebouncerBenchmark(b, d, "key")
+	runDebouncerBenchmark(b, d, NewDebounceKey("key"))
 }
 
 func BenchmarkDebouncer_DifferentKeys(b *testing.B) {
@@ -212,7 +220,7 @@ func BenchmarkDebouncer_DifferentKeys(b *testing.B) {
 	b.ResetTimer()
 
 	for i := range b.N {
-		d.Debounce(DebounceKey(fmt.Sprintf("key-%d", i%100)), func() {})
+		d.Debounce(NewDebounceKey(fmt.Sprintf("key-%d", i%100)), func() {})
 	}
 }
 
@@ -239,7 +247,7 @@ func runGlobalDebouncerBenchmark(b *testing.B, d *GlobalDebouncer) {
 	b.ResetTimer()
 
 	for i := range b.N {
-		d.Debounce("", func() {})
+		d.Debounce(NewDebounceKey(""), func() {})
 
 		_ = i
 	}

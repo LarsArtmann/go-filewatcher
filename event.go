@@ -114,5 +114,5 @@ func (e Event) LogValue() slog.Value {
 
 // GetPath returns the event path as a phantom type for type-safe usage.
 func (e Event) GetPath() EventPath {
-	return EventPath(e.Path)
+	return NewEventPath(e.Path)
 }

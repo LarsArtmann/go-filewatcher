@@ -75,10 +75,10 @@ type WatcherError struct {
 // Error implements the error interface.
 func (e *WatcherError) Error() string {
 	if e.Path != "" {
-		return fmt.Sprintf("%s: path %q: %v", string(e.Op), e.Path, e.Err)
+		return fmt.Sprintf("%s: path %q: %v", e.Op.Get(), e.Path, e.Err)
 	}
 
-	return fmt.Sprintf("%s: %v", string(e.Op), e.Err)
+	return fmt.Sprintf("%s: %v", e.Op.Get(), e.Err)
 }
 
 // Unwrap returns the underlying error for errors.Is/As support.

@@ -269,7 +269,7 @@ func ExampleDebouncer() {
 	defer debouncer.Stop()
 
 	// Schedule a function - it will run after 100ms unless reset
-	debouncer.Debounce("key", func() {
+	debouncer.Debounce(filewatcher.NewDebounceKey("key"), func() {
 		fmt.Println("Debounced function executed")
 	})
 

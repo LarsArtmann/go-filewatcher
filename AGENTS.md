@@ -158,6 +158,37 @@ Run `just lint-fix` — it auto-fixes many issues.
 
 ```
 github.com/fsnotify/fsnotify    # Core file watching
+github.com/larsartmann/go-branded-id  # Branded types for compile-time safety
 ```
 
-Only dependency. Keep it minimal.
+## Branded Types (phantom types)
+
+Uses `go-branded-id` for compile-time type safety on path-like types:
+
+| Type | Brand | Purpose |
+|------|-------|---------|
+| `EventPath` | `EventPathBrand` | Event file/directory paths |
+| `RootPath` | `RootPathBrand` | Root directory paths during walking |
+| `DebounceKey` | `DebounceKeyBrand` | Debouncer keys |
+| `LogSubstring` | `LogSubstringBrand` | Log substring assertions (tests) |
+| `TempDir` | `TempDirBrand` | Temp directory paths (tests) |
+| `OpString` | `OpStringBrand` | Operation names |
+
+**Usage:** Use constructor functions (e.g., `NewEventPath()`, `NewRootPath()`) — direct string conversion won't compile.
+
+**Brands have `Name()` method** for debugging/introspection.
+
+---
+
+## Known Issues
+
+### Flaky Tests
+
+These tests are timing-sensitive and may fail intermittently:
+
+| Test | Reason |
+|------|--------|
+| `TestWatcher_Stats_Metrics` | Counts `EventsProcessed` but filesystem write coalescing may produce 2 events instead of 1 |
+| `TestWatcher_Watch_WithMiddleware` | Similar timing issue with middleware call counting |
+
+This is a pre-existing issue unrelated to the `go-branded-id` integration.

@@ -8,7 +8,7 @@ import (
 func TestLogSubstring_String(t *testing.T) {
 	t.Parallel()
 
-	ls := LogSubstring("hello world")
+	ls := NewLogSubstring("hello world")
 	if ls.String() != "hello world" {
 		t.Errorf("LogSubstring.String() = %q, want %q", ls.String(), "hello world")
 	}
@@ -17,7 +17,7 @@ func TestLogSubstring_String(t *testing.T) {
 func TestEventPath_String(t *testing.T) {
 	t.Parallel()
 
-	ep := EventPath("/tmp/test.go")
+	ep := NewEventPath("/tmp/test.go")
 	if ep.String() != "/tmp/test.go" {
 		t.Errorf("EventPath.String() = %q, want %q", ep.String(), "/tmp/test.go")
 	}
@@ -44,9 +44,9 @@ func TestEventPath_Base(t *testing.T) {
 	t.Parallel()
 
 	runPathTests(t, []pathTestCase{
-		{"/home/user/file.go", "file.go"},
-		{"/home/user/", "user"},
-		{"file.go", "file.go"},
+		{NewEventPath("/home/user/file.go"), "file.go"},
+		{NewEventPath("/home/user/"), "user"},
+		{NewEventPath("file.go"), "file.go"},
 	}, func(p EventPath) string { return p.Base() })
 }
 
@@ -57,9 +57,9 @@ func TestEventPath_Dir(t *testing.T) {
 		input EventPath
 		want  EventPath
 	}{
-		{"/home/user/file.go", "/home/user"},
-		{"/home/user/", "/home/user"},
-		{"file.go", "."},
+		{NewEventPath("/home/user/file.go"), NewEventPath("/home/user")},
+		{NewEventPath("/home/user/"), NewEventPath("/home/user")},
+		{NewEventPath("file.go"), NewEventPath(".")},
 	}
 
 	for _, tt := range tests {
@@ -73,9 +73,9 @@ func TestEventPath_Ext(t *testing.T) {
 	t.Parallel()
 
 	runPathTests(t, []pathTestCase{
-		{"/home/user/file.go", ".go"},
-		{"/home/user/README", ""},
-		{"/home/user/file.test.go", ".go"},
+		{NewEventPath("/home/user/file.go"), ".go"},
+		{NewEventPath("/home/user/README"), ""},
+		{NewEventPath("/home/user/file.test.go"), ".go"},
 	}, func(p EventPath) string { return p.Ext() })
 }
 
@@ -87,10 +87,18 @@ func TestEventPath_Join(t *testing.T) {
 		elems []string
 		want  EventPath
 	}{
-		{"/home/user", []string{"docs", "readme.md"}, "/home/user/docs/readme.md"},
-		{"/home/user", []string{"file.go"}, "/home/user/file.go"},
-		{"/home/user", []string{}, "/home/user"},
-		{"/home/user", []string{"a", "b", "c"}, "/home/user/a/b/c"},
+		{
+			NewEventPath("/home/user"),
+			[]string{"docs", "readme.md"},
+			NewEventPath("/home/user/docs/readme.md"),
+		},
+		{NewEventPath("/home/user"), []string{"file.go"}, NewEventPath("/home/user/file.go")},
+		{NewEventPath("/home/user"), []string{}, NewEventPath("/home/user")},
+		{
+			NewEventPath("/home/user"),
+			[]string{"a", "b", "c"},
+			NewEventPath("/home/user/a/b/c"),
+		},
 	}
 
 	for _, tt := range tests {

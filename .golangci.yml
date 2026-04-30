@@ -135,6 +135,7 @@ linters:
             - "$gostd"
             - "github.com/LarsArtmann/gogenfilter"
             - "github.com/fsnotify/fsnotify"
+            - "github.com/larsartmann/go-branded-id"
             - "github.com/larsartmann/go-filewatcher"
           files:
             - "!examples/"

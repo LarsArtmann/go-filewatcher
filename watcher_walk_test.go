@@ -21,7 +21,7 @@ func TestAddPath_NonRecursive(t *testing.T) {
 
 	w.mu.Lock()
 
-	addErr := w.addPath(RootPath(tmpDir))
+	addErr := w.addPath(NewRootPath(tmpDir))
 	w.mu.Unlock()
 
 	if addErr != nil {
@@ -54,7 +54,7 @@ func TestAddPath_Recursive(t *testing.T) {
 
 	w.mu.Lock()
 
-	addErr := w.addPath(RootPath(tmpDir))
+	addErr := w.addPath(NewRootPath(tmpDir))
 	w.mu.Unlock()
 
 	if addErr != nil {
@@ -199,7 +199,7 @@ func TestWalkAndAddPaths_WalkError(t *testing.T) {
 
 	w.mu.Lock()
 
-	walkErr := w.walkAndAddPaths(RootPath("/nonexistent/path/that/does/not/exist"))
+	walkErr := w.walkAndAddPaths(NewRootPath("/nonexistent/path/that/does/not/exist"))
 	w.mu.Unlock()
 
 	if walkErr == nil {

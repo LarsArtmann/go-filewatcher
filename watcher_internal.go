@@ -163,7 +163,7 @@ func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handl
 }
 
 func (w *Watcher) getDebounceKey(path string) DebounceKey {
-	return DebounceKey(path)
+	return NewDebounceKey(path)
 }
 
 // handleNewDirectory adds newly created directories to the watcher
@@ -190,7 +190,7 @@ func (w *Watcher) handleNewDirectory(path string) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	_ = w.addPath(RootPath(path))
+	_ = w.addPath(NewRootPath(path))
 }
 
 // passesFilters checks if an event passes all registered filters.

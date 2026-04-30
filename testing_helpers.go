@@ -98,7 +98,7 @@ var errTest = errors.New("test")
 
 func testWatcherError(category ErrorCategory) *WatcherError {
 	return &WatcherError{
-		Op:       OpString("test"),
+		Op:       NewOpString("test"),
 		Path:     "test-path",
 		Err:      errTest,
 		Category: category,
@@ -107,7 +107,7 @@ func testWatcherError(category ErrorCategory) *WatcherError {
 
 func testError(err error, category ErrorCategory) *WatcherError {
 	return &WatcherError{
-		Op:       OpString("test"),
+		Op:       NewOpString("test"),
 		Path:     "test-path",
 		Err:      err,
 		Category: category,
@@ -117,7 +117,7 @@ func testError(err error, category ErrorCategory) *WatcherError {
 func assertLogContains(t *testing.T, content string, substr LogSubstring) {
 	t.Helper()
 
-	if !strings.Contains(content, string(substr)) {
+	if !strings.Contains(content, substr.Get()) {
 		t.Errorf("expected log to contain %q, got %q", substr, content)
 	}
 }
@@ -225,7 +225,7 @@ func debounceSingle(d *Debouncer, key DebounceKey, count *atomic.Int32) {
 
 func debounceGlobalMulti(d *GlobalDebouncer, count *atomic.Int32, times int) {
 	for range times {
-		d.Debounce(DebounceKey(""), func() { count.Add(1) })
+		d.Debounce(NewDebounceKey(""), func() { count.Add(1) })
 	}
 }
 
@@ -240,13 +240,13 @@ func debounceMultiNoCount(d *Debouncer, keys []DebounceKey) {
 }
 
 func debounceGlobalNoCount(d *GlobalDebouncer) {
-	d.Debounce(DebounceKey(""), func() {})
+	d.Debounce(NewDebounceKey(""), func() {})
 }
 
 func createTestFile(t *testing.T, tmpDir TempDir, filename, content string) string {
 	t.Helper()
 
-	path := filepath.Join(string(tmpDir), filename)
+	path := filepath.Join(tmpDir.Get(), filename)
 
 	err := os.WriteFile(path, []byte(content), testFilePermission)
 	if err != nil {

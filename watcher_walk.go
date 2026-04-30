@@ -22,7 +22,7 @@ func (w *Watcher) initDebouncer() {
 // addPath adds a directory (and optionally its subdirectories) to the fsnotify watcher.
 func (w *Watcher) addPath(root RootPath) error {
 	if !w.recursive {
-		err := w.fswatcher.Add(string(root))
+		err := w.fswatcher.Add(root.Get())
 		if err != nil {
 			return fmt.Errorf("adding watch path %q: %w", root, err)
 		}
@@ -36,12 +36,12 @@ func (w *Watcher) addPath(root RootPath) error {
 // walkAndAddPaths walks a directory tree and adds all directories to the watcher.
 // Caller must hold w.mu lock.
 func (w *Watcher) walkAndAddPaths(root RootPath) error {
-	err := filepath.WalkDir(string(root), w.walkDirFunc)
+	err := filepath.WalkDir(root.Get(), w.walkDirFunc)
 	if err != nil {
 		return fmt.Errorf("walking directory %q: %w", root, err)
 	}
 	// Track the root path (caller holds lock)
-	w.watchList = append(w.watchList, string(root))
+	w.watchList = append(w.watchList, root.Get())
 
 	return nil
 }

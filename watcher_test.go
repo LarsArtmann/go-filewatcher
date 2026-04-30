@@ -137,7 +137,7 @@ func TestWatcher_Watch_DetectsWrite(t *testing.T) {
 		t.Fatalf("Watch failed: %v", err)
 	}
 
-	testFile := createTestFile(t, TempDir(tmpDir), "test.go", "package test")
+	testFile := createTestFile(t, NewTempDir(tmpDir), "test.go", "package test")
 
 	event := waitForEventOrFail(t, events, 3*time.Second)
 	assertEventPath(t, event, testFile)
@@ -236,7 +236,7 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 		t.Fatalf("Watch failed: %v", err)
 	}
 
-	testFile := createTestFile(t, TempDir(tmpDir), "todelete.go", "package test")
+	testFile := createTestFile(t, NewTempDir(tmpDir), "todelete.go", "package test")
 
 	// Drain all events from file creation/write
 	for waitForEventOrTimeout(t, events, 500*time.Millisecond) {
@@ -286,7 +286,7 @@ func TestWatcher_Watch_WithMiddleware(t *testing.T) {
 		t.Fatalf("Watch failed: %v", err)
 	}
 
-	_ = createTestFile(t, TempDir(tmpDir), "test.txt", "test")
+	_ = createTestFile(t, NewTempDir(tmpDir), "test.txt", "test")
 
 	receiveEventOrTimeout(t, events, 3*time.Second)
 
@@ -496,7 +496,7 @@ func TestWatcher_Add(t *testing.T) {
 		t.Fatalf("Add failed: %v", err)
 	}
 
-	testFile := createTestFile(t, TempDir(newDir), "added.txt", "added")
+	testFile := createTestFile(t, NewTempDir(newDir), "added.txt", "added")
 
 	receiveEventMatchingOrTimeout(t, events, 3*time.Second,
 		func(event Event) {
@@ -532,7 +532,7 @@ func TestWatcher_Remove(t *testing.T) {
 		t.Fatalf("Remove failed: %v", err)
 	}
 
-	_ = createTestFile(t, TempDir(tmpDir), "after-remove.txt", "test")
+	_ = createTestFile(t, NewTempDir(tmpDir), "after-remove.txt", "test")
 
 	select {
 	case event := <-events:

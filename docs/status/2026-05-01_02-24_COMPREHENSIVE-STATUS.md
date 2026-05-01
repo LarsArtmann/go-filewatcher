@@ -9,13 +9,13 @@
 
 ## Build Status
 
-| Check | Status |
-|-------|--------|
-| `go build` | ✅ PASS |
-| `go vet` | ✅ PASS |
+| Check           | Status             |
+| --------------- | ------------------ |
+| `go build`      | ✅ PASS            |
+| `go vet`        | ✅ PASS            |
 | `golangci-lint` | ✅ PASS (0 issues) |
-| Tests | ✅ PASS (3.1s) |
-| Coverage | ✅ 90.0% |
+| Tests           | ✅ PASS (3.1s)     |
+| Coverage        | ✅ 90.0%           |
 
 ---
 
@@ -23,30 +23,30 @@
 
 ### A) Fully Done ✅
 
-| Item | Details |
-|------|---------|
-| **gogenfilter API v0.2.0 migration** | Updated all `filter_gogen.go` code to use new API signatures |
-| **DetectReason variadic args** | Changed from `map[FilterOption]bool` to variadic `...FilterOption` |
-| **ShouldFilter error handling** | Now handles `(bool, error)` return properly |
-| **GeneratedCodeDetector refactor** | Changed internal storage from map to slice |
-| **Test update** | Updated `TestFilterGeneratedCodeWithFilter` to use new `NewFilter` signature |
-| **Dependencies updated** | gogenfilter v0.1.0 → v0.2.0, fsnotify v1.9.0 → v1.10.0, go-branded-id updated |
-| **nlreturn lint fix** | Added blank lines before returns in `IsGenerated` methods |
+| Item                                 | Details                                                                       |
+| ------------------------------------ | ----------------------------------------------------------------------------- |
+| **gogenfilter API v0.2.0 migration** | Updated all `filter_gogen.go` code to use new API signatures                  |
+| **DetectReason variadic args**       | Changed from `map[FilterOption]bool` to variadic `...FilterOption`            |
+| **ShouldFilter error handling**      | Now handles `(bool, error)` return properly                                   |
+| **GeneratedCodeDetector refactor**   | Changed internal storage from map to slice                                    |
+| **Test update**                      | Updated `TestFilterGeneratedCodeWithFilter` to use new `NewFilter` signature  |
+| **Dependencies updated**             | gogenfilter v0.1.0 → v0.2.0, fsnotify v1.9.0 → v1.10.0, go-branded-id updated |
+| **nlreturn lint fix**                | Added blank lines before returns in `IsGenerated` methods                     |
 
 ### B) Partially Done 🔄
 
-| Item | Status |
-|------|--------|
+| Item                               | Status                                                                 |
+| ---------------------------------- | ---------------------------------------------------------------------- |
 | **gogenfilter v0.2.0 integration** | Build/lint/tests pass, but API change may have behavioral implications |
-| **Documentation updates** | Status reports touched but not fully reviewed |
+| **Documentation updates**          | Status reports touched but not fully reviewed                          |
 
 ### C) Not Started ⏳
 
-| Item | Notes |
-|------|-------|
-| **v0.1.0 release tag** | TODO_LIST.md shows this as HIGH priority |
-| **v2.0.0 release tag** | Planned major release |
-| **Many MEDIUM priority items** | See TODO_LIST.md for 65+ items |
+| Item                           | Notes                                    |
+| ------------------------------ | ---------------------------------------- |
+| **v0.1.0 release tag**         | TODO_LIST.md shows this as HIGH priority |
+| **v2.0.0 release tag**         | Planned major release                    |
+| **Many MEDIUM priority items** | See TODO_LIST.md for 65+ items           |
 
 ### D) Totally Fucked Up ❌
 
@@ -99,7 +99,8 @@ None. Project is in healthy state.
 **How do we want to handle the `gogenfilter.FilterOption` API evolution?**
 
 The library changed from:
-- `func DetectReason(path, content string, opts map[FilterOption]bool)` 
+
+- `func DetectReason(path, content string, opts map[FilterOption]bool)`
 - To: `func DetectReason(path, content string, opts ...FilterOption)`
 
 Our implementation now expands `FilterAll` into individual options. But what if `gogenfilter` changes its API again? Should we:
@@ -113,24 +114,24 @@ D) Something else?
 
 ## Recent Commits (Last 5)
 
-| Commit | Description |
-|--------|-------------|
-| `4deaf4c` | fix(tests): make fsnotify assertions tolerant of duplicate events |
+| Commit    | Description                                                                 |
+| --------- | --------------------------------------------------------------------------- |
+| `4deaf4c` | fix(tests): make fsnotify assertions tolerant of duplicate events           |
 | `3eb33c0` | docs(status): add comprehensive status report for go-branded-id integration |
-| `6d1f29f` | feat(types): integrate go-branded-id for compile-time type safety |
-| `0199ea7` | refactor(tests): extract shared test helper functions for DRY principle |
-| `1db8fe4` | refactor(tests): extract shared test helper functions for DRY principle |
+| `6d1f29f` | feat(types): integrate go-branded-id for compile-time type safety           |
+| `0199ea7` | refactor(tests): extract shared test helper functions for DRY principle     |
+| `1db8fe4` | refactor(tests): extract shared test helper functions for DRY principle     |
 
 ---
 
 ## Files Changed (This Session)
 
-| File | Lines Changed |
-|------|---------------|
-| `filter_gogen.go` | -38, +30 (refactored) |
-| `filter_gogen_test.go` | -1, +4 (API update) |
-| `go.mod` | -3, +4 (dependency updates) |
-| `go.sum` | -8, +10 (checksum updates) |
+| File                   | Lines Changed               |
+| ---------------------- | --------------------------- |
+| `filter_gogen.go`      | -38, +30 (refactored)       |
+| `filter_gogen_test.go` | -1, +4 (API update)         |
+| `go.mod`               | -3, +4 (dependency updates) |
+| `go.sum`               | -8, +10 (checksum updates)  |
 
 **Total:** 21 files touched, ~1209 insertions, ~1105 deletions (mostly documentation)
 
@@ -138,23 +139,23 @@ D) Something else?
 
 ## Dependencies
 
-| Package | Version | Notes |
-|---------|---------|-------|
-| `github.com/fsnotify/fsnotify` | v1.10.0 | Core file watching |
-| `github.com/LarsArtmann/gogenfilter` | v0.2.0 | Just updated |
-| `github.com/larsartmann/go-branded-id` | v0.1.0 | Type safety |
+| Package                                | Version | Notes              |
+| -------------------------------------- | ------- | ------------------ |
+| `github.com/fsnotify/fsnotify`         | v1.10.0 | Core file watching |
+| `github.com/LarsArtmann/gogenfilter`   | v0.2.0  | Just updated       |
+| `github.com/larsartmann/go-branded-id` | v0.1.0  | Type safety        |
 
 ---
 
 ## Health Metrics
 
-| Metric | Value | Trend |
-|--------|-------|-------|
-| Linter Issues | 0 | ✅ Stable |
-| Test Pass Rate | 100% | ✅ Stable |
-| Code Coverage | 90.0% | ✅ Meets threshold |
-| Build Status | Clean | ✅ Pass |
-| Open Issues (TODO) | 70+ | 🟡 High |
+| Metric             | Value | Trend              |
+| ------------------ | ----- | ------------------ |
+| Linter Issues      | 0     | ✅ Stable          |
+| Test Pass Rate     | 100%  | ✅ Stable          |
+| Code Coverage      | 90.0% | ✅ Meets threshold |
+| Build Status       | Clean | ✅ Pass            |
+| Open Issues (TODO) | 70+   | 🟡 High            |
 
 ---
 

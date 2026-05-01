@@ -112,9 +112,7 @@ func BenchmarkConvertEvent_Create(b *testing.B) {
 
 	fsEvent := fsnotify.Event{Name: tmpFile, Op: fsnotify.Create}
 
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		_ = convertEvent(fsEvent, false)
 	}
 }
@@ -125,9 +123,7 @@ func BenchmarkConvertEvent_Write(b *testing.B) {
 
 	fsEvent := fsnotify.Event{Name: tmpFile, Op: fsnotify.Write}
 
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		_ = convertEvent(fsEvent, false)
 	}
 }
@@ -138,9 +134,7 @@ func BenchmarkConvertEvent_Chmod(b *testing.B) {
 
 	fsEvent := fsnotify.Event{Name: tmpFile, Op: fsnotify.Chmod}
 
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		_ = convertEvent(fsEvent, false)
 	}
 }
@@ -151,9 +145,7 @@ func BenchmarkConvertEvent_LazyIsDir(b *testing.B) {
 
 	fsEvent := fsnotify.Event{Name: tmpFile, Op: fsnotify.Create}
 
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		_ = convertEvent(fsEvent, true) // lazyIsDir=true for performance
 	}
 }
@@ -169,9 +161,7 @@ func BenchmarkPassesFilters_SingleFilter(b *testing.B) {
 
 	event := Event{Op: Write, Path: "/tmp/main.go"}
 
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		_ = w.passesFilters(event)
 	}
 }
@@ -187,9 +177,7 @@ func BenchmarkPassesFilters_MultipleFilters(b *testing.B) {
 
 	event := Event{Op: Write, Path: "/tmp/main.go"}
 
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		_ = w.passesFilters(event)
 	}
 }
@@ -207,9 +195,7 @@ func BenchmarkPassesFilters_ComplexFilterChain(b *testing.B) {
 
 	event := Event{Op: Write, Path: "/tmp/main.go"}
 
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		_ = w.passesFilters(event)
 	}
 }
@@ -269,9 +255,7 @@ func BenchmarkStats_Empty(b *testing.B) {
 		mu:        sync.RWMutex{},
 	}
 
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		_ = w.Stats()
 	}
 }
@@ -289,9 +273,7 @@ func BenchmarkStats_WithPaths(b *testing.B) {
 		mu:        sync.RWMutex{},
 	}
 
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		_ = w.Stats()
 	}
 }
@@ -308,9 +290,7 @@ func BenchmarkWatchList_Copy(b *testing.B) {
 		mu:        sync.RWMutex{},
 	}
 
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		_ = w.WatchList()
 	}
 }
@@ -326,9 +306,7 @@ func BenchmarkEmitEvent_NoDebounce(b *testing.B) {
 	ctx := context.Background()
 	eventCh := make(chan Event, 1)
 
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		w.emitEvent(ctx, event, eventCh)
 	}
 }
@@ -345,9 +323,7 @@ func BenchmarkEmitEvent_WithMiddleware(b *testing.B) {
 	ctx := context.Background()
 	eventCh := make(chan Event, 1)
 
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		w.emitEvent(ctx, event, eventCh)
 	}
 }
@@ -363,9 +339,7 @@ func BenchmarkEmitEvent_WithGlobalDebounce(b *testing.B) {
 	ctx := context.Background()
 	eventCh := make(chan Event, 1)
 
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		w.emitEvent(ctx, event, eventCh)
 	}
 }
@@ -381,9 +355,7 @@ func BenchmarkEmitEvent_WithPerPathDebounce(b *testing.B) {
 	ctx := context.Background()
 	eventCh := make(chan Event, 1)
 
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		w.emitEvent(ctx, event, eventCh)
 	}
 }
@@ -394,9 +366,8 @@ func BenchmarkEmitEvent_WithPerPathDebounce(b *testing.B) {
 
 func BenchmarkEventAllocation(b *testing.B) {
 	b.ReportAllocs()
-	b.ResetTimer()
 
-	for range b.N {
+	for b.Loop() {
 		e := newBenchmarkEvent()
 
 		_ = e
@@ -404,17 +375,13 @@ func BenchmarkEventAllocation(b *testing.B) {
 }
 
 func BenchmarkEventString(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		_ = benchmarkTestEvent.String()
 	}
 }
 
 func BenchmarkOpString(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		_ = Write.String()
 	}
 }

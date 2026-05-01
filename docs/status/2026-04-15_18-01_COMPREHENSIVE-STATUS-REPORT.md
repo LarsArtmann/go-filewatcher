@@ -13,15 +13,15 @@ The go-filewatcher library has reached a mature, production-ready state with **8
 
 ### Key Metrics
 
-| Metric | Value | Status |
-|--------|-------|--------|
-| Test Coverage | 83.1% | ✅ Good |
-| Source Files | 13 | - |
-| Test Files | 9 | - |
-| Lines of Code | 4,832 | - |
+| Metric        | Value   | Status        |
+| ------------- | ------- | ------------- |
+| Test Coverage | 83.1%   | ✅ Good       |
+| Source Files  | 13      | -             |
+| Test Files    | 9       | -             |
+| Lines of Code | 4,832   | -             |
 | Linter Issues | 6 minor | 🟡 Acceptable |
-| Build Status | Clean | ✅ Passing |
-| Race Detector | Clean | ✅ Passing |
+| Build Status  | Clean   | ✅ Passing    |
+| Race Detector | Clean   | ✅ Passing    |
 
 ---
 
@@ -77,6 +77,7 @@ The go-filewatcher library has reached a mature, production-ready state with **8
 ### 1. Linter Compliance (90% Done)
 
 **Remaining Issues:**
+
 - `cyclop`: TestWatcher_Stats_Metrics has complexity 11 (max 10)
 - `err113`: 4 instances of dynamic errors in tests (acceptable for test code)
 - `exhaustruct`: 1 instance in testing_helpers.go (WatcherError missing Path)
@@ -88,11 +89,13 @@ The go-filewatcher library has reached a mature, production-ready state with **8
 **Completed:** 68 items  
 **Remaining:** 83 items  
 **Breakdown:**
+
 - HIGH Priority: 2 remaining (release tags)
 - MEDIUM Priority: 65 remaining
 - LOW Priority: 5 remaining
 
 **Notable Partial Items:**
+
 - MiddlewareDeduplicate: Implemented but needs cleanup goroutine improvements
 - FilterBatch: Concept exists but not fully implemented
 - Prometheus metrics: Not started but Stats struct is ready
@@ -100,6 +103,7 @@ The go-filewatcher library has reached a mature, production-ready state with **8
 ### 3. Examples (80% Done)
 
 **Existing:**
+
 - basic: Simple watcher
 - demo: Shared utilities
 - filter-generated: gogenfilter usage
@@ -107,6 +111,7 @@ The go-filewatcher library has reached a mature, production-ready state with **8
 - per-path-debounce: Per-path debouncing
 
 **Missing:**
+
 - Prometheus metrics example
 - Structured logging example
 - Error handling patterns
@@ -114,11 +119,13 @@ The go-filewatcher library has reached a mature, production-ready state with **8
 ### 4. CI/CD (70% Done)
 
 **Existing:**
+
 - GitHub Actions workflow
 - Linter checks
 - Race detector tests
 
 **Missing:**
+
 - Coverage threshold enforcement (>=90%)
 - Benchmark regression detection
 - Examples testing in CI
@@ -261,48 +268,48 @@ The codebase is in excellent shape. No critical issues identified.
 
 ### Priority 1: Critical (Do First)
 
-| # | Task | Impact | Effort | Why |
-|---|------|--------|--------|-----|
-| 1 | Tag v0.1.0 release | High | Low | Mark stable state |
-| 2 | Fix testing_helpers.go exhaustruct | Low | Low | Clean linter |
-| 3 | Refactor TestWatcher_Stats_Metrics cyclop | Low | Low | Clean linter |
-| 4 | Add Prometheus example | High | Medium | Demonstrate observability |
-| 5 | Add Troubleshooting.md | Medium | Low | User support |
+| #   | Task                                      | Impact | Effort | Why                       |
+| --- | ----------------------------------------- | ------ | ------ | ------------------------- |
+| 1   | Tag v0.1.0 release                        | High   | Low    | Mark stable state         |
+| 2   | Fix testing_helpers.go exhaustruct        | Low    | Low    | Clean linter              |
+| 3   | Refactor TestWatcher_Stats_Metrics cyclop | Low    | Low    | Clean linter              |
+| 4   | Add Prometheus example                    | High   | Medium | Demonstrate observability |
+| 5   | Add Troubleshooting.md                    | Medium | Low    | User support              |
 
 ### Priority 2: High Impact
 
-| # | Task | Impact | Effort | Why |
-|---|------|--------|--------|-----|
-| 6 | OpenTelemetry integration | High | High | Distributed tracing |
-| 7 | WatchOnce() mode | High | Medium | One-shot use cases |
-| 8 | Coverage threshold CI | High | Low | Quality gate |
-| 9 | Add test for handleError stderr | Medium | Low | Coverage gap |
-| 10 | CONTRIBUTING.md | Medium | Low | Community |
-| 11 | CODEOWNERS | Low | Low | Code ownership |
-| 12 | CODE_OF_CONDUCT.md | Low | Low | Community |
-| 13 | PR template | Low | Low | Process |
+| #   | Task                            | Impact | Effort | Why                 |
+| --- | ------------------------------- | ------ | ------ | ------------------- |
+| 6   | OpenTelemetry integration       | High   | High   | Distributed tracing |
+| 7   | WatchOnce() mode                | High   | Medium | One-shot use cases  |
+| 8   | Coverage threshold CI           | High   | Low    | Quality gate        |
+| 9   | Add test for handleError stderr | Medium | Low    | Coverage gap        |
+| 10  | CONTRIBUTING.md                 | Medium | Low    | Community           |
+| 11  | CODEOWNERS                      | Low    | Low    | Code ownership      |
+| 12  | CODE_OF_CONDUCT.md              | Low    | Low    | Community           |
+| 13  | PR template                     | Low    | Low    | Process             |
 
 ### Priority 3: Medium Impact
 
-| # | Task | Impact | Effort | Why |
-|---|------|--------|--------|-----|
-| 14 | WithPolling() fallback | Medium | Medium | NFS support |
-| 15 | Symlink following | Medium | Medium | Feature parity |
-| 16 | Content hashing filter | Medium | High | Accuracy |
-| 17 | Circuit breaker middleware | Medium | Medium | Resilience |
-| 18 | Error rate limiting | Medium | Low | Stability |
-| 19 | Examples in CI | Medium | Low | Quality |
-| 20 | Benchmark regression | Medium | Medium | Performance |
-| 21 | Fuzz testing | Medium | High | Robustness |
+| #   | Task                       | Impact | Effort | Why            |
+| --- | -------------------------- | ------ | ------ | -------------- |
+| 14  | WithPolling() fallback     | Medium | Medium | NFS support    |
+| 15  | Symlink following          | Medium | Medium | Feature parity |
+| 16  | Content hashing filter     | Medium | High   | Accuracy       |
+| 17  | Circuit breaker middleware | Medium | Medium | Resilience     |
+| 18  | Error rate limiting        | Medium | Low    | Stability      |
+| 19  | Examples in CI             | Medium | Low    | Quality        |
+| 20  | Benchmark regression       | Medium | Medium | Performance    |
+| 21  | Fuzz testing               | Medium | High   | Robustness     |
 
 ### Priority 4: Nice to Have
 
-| # | Task | Impact | Effort | Why |
-|---|------|--------|--------|-----|
-| 22 | Dead letter queue | Low | Medium | Error handling |
-| 23 | Goreleaser config | Low | Low | Releases |
-| 24 | Dependabot config | Low | Low | Maintenance |
-| 25 | Semantic-release | Low | Medium | Automation |
+| #   | Task              | Impact | Effort | Why            |
+| --- | ----------------- | ------ | ------ | -------------- |
+| 22  | Dead letter queue | Low    | Medium | Error handling |
+| 23  | Goreleaser config | Low    | Low    | Releases       |
+| 24  | Dependabot config | Low    | Low    | Maintenance    |
+| 25  | Semantic-release  | Low    | Medium | Automation     |
 
 ---
 
@@ -311,6 +318,7 @@ The codebase is in excellent shape. No critical issues identified.
 ### Question: What's the Correct Release Versioning Strategy?
 
 **Context:**
+
 - Current API has breaking changes from earlier versions (ErrorHandler signature)
 - CHANGELOG.md documents these as v2.0 breaking changes
 - But we haven't tagged any releases yet
@@ -333,6 +341,7 @@ The codebase is in excellent shape. No critical issues identified.
    - Clean slate approach
 
 **What I Need:**
+
 - Decision on initial version number
 - Whether to treat current state as v0.1.0 or v2.0.0
 - If v2.0.0, how to explain starting there
@@ -372,6 +381,7 @@ e18a095 refactor(filter): eliminate boolean blindness in FilterGeneratedCodeFull
 ## Files Overview
 
 ### Core Source Files (13)
+
 - `watcher.go` - Public API and core watcher logic
 - `watcher_internal.go` - Internal event processing
 - `watcher_walk.go` - Directory walking logic
@@ -387,6 +397,7 @@ e18a095 refactor(filter): eliminate boolean blindness in FilterGeneratedCodeFull
 - `testing_helpers.go` - Test utilities
 
 ### Test Files (9)
+
 - `watcher_test.go` - Core watcher tests
 - `debouncer_test.go` - Debouncer tests
 - `event_test.go` - Event marshaling tests
@@ -409,6 +420,6 @@ The go-filewatcher library is **production-ready** with excellent code quality, 
 
 ---
 
-*Report generated: 2026-04-15 18:01:14*  
-*Author: Crush AI Assistant*  
-*Status: AWAITING INSTRUCTIONS*
+_Report generated: 2026-04-15 18:01:14_  
+_Author: Crush AI Assistant_  
+_Status: AWAITING INSTRUCTIONS_

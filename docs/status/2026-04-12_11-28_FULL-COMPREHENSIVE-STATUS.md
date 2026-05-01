@@ -13,6 +13,7 @@
 The go-filewatcher project is in **excellent condition**. All tests pass, the build is clean, and recent improvements have significantly enhanced code quality. The project has undergone substantial modernization with phantom types, structured error handling, generated code filtering, and Nix flake support.
 
 **Key Metrics:**
+
 - **Test Pass Rate:** 100% ✅
 - **Build Status:** Clean ✅
 - **Code Coverage:** ~90%
@@ -26,44 +27,44 @@ The go-filewatcher project is in **excellent condition**. All tests pass, the bu
 
 ### 1. Core Architecture Improvements
 
-| Feature | Status | Evidence | Impact |
-|---------|--------|----------|--------|
-| Phantom Types | ✅ Complete | `phantom_types.go` — DebounceKey, RootPath, LogSubstring, TempDir | Type safety for internal APIs |
-| Error Handling v2 | ✅ Complete | `errors.go` — ErrorContext, WatcherError, ErrorCategory | Rich error context |
-| Generated Code Filter | ✅ Complete | `filter_gogen.go` — gogenfilter integration | Auto-filter generated files |
-| Watcher State Optimization | ✅ Complete | `watcher.go` — Bit flags for closed/watching | Memory efficiency |
-| Mixin Pattern | ✅ Complete | `debouncer.go` — debounceMixin struct | Code reuse |
-| Nix Flake Support | ✅ Complete | `flake.nix`, `.envrc` | Reproducible dev env |
-| Race Condition Fixes | ✅ Complete | `errors_test.go`, `watcher_test.go` — removed t.Parallel() from stderr tests | Test reliability |
-| MIGRATION.md | ✅ Complete | Migration guide for ErrorHandler changes | User documentation |
+| Feature                    | Status      | Evidence                                                                     | Impact                        |
+| -------------------------- | ----------- | ---------------------------------------------------------------------------- | ----------------------------- |
+| Phantom Types              | ✅ Complete | `phantom_types.go` — DebounceKey, RootPath, LogSubstring, TempDir            | Type safety for internal APIs |
+| Error Handling v2          | ✅ Complete | `errors.go` — ErrorContext, WatcherError, ErrorCategory                      | Rich error context            |
+| Generated Code Filter      | ✅ Complete | `filter_gogen.go` — gogenfilter integration                                  | Auto-filter generated files   |
+| Watcher State Optimization | ✅ Complete | `watcher.go` — Bit flags for closed/watching                                 | Memory efficiency             |
+| Mixin Pattern              | ✅ Complete | `debouncer.go` — debounceMixin struct                                        | Code reuse                    |
+| Nix Flake Support          | ✅ Complete | `flake.nix`, `.envrc`                                                        | Reproducible dev env          |
+| Race Condition Fixes       | ✅ Complete | `errors_test.go`, `watcher_test.go` — removed t.Parallel() from stderr tests | Test reliability              |
+| MIGRATION.md               | ✅ Complete | Migration guide for ErrorHandler changes                                     | User documentation            |
 
 ### 2. Testing Infrastructure
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| Unit Tests | ✅ 100% | All tests passing (`go test ./...`) |
-| Race Detection | ✅ Fixed | os.Stderr manipulation tests now serial |
-| Benchmarks | ✅ Complete | `benchmark_test.go` with 37 benchmarks |
-| Examples | ✅ 4 working | basic, middleware, per-path-debounce, filter-generated |
+| Component      | Status       | Details                                                |
+| -------------- | ------------ | ------------------------------------------------------ |
+| Unit Tests     | ✅ 100%      | All tests passing (`go test ./...`)                    |
+| Race Detection | ✅ Fixed     | os.Stderr manipulation tests now serial                |
+| Benchmarks     | ✅ Complete  | `benchmark_test.go` with 37 benchmarks                 |
+| Examples       | ✅ 4 working | basic, middleware, per-path-debounce, filter-generated |
 
 ### 3. Documentation
 
-| Document | Status | Purpose |
-|----------|--------|---------|
-| README.md | ✅ Complete | Quick start, API reference |
-| MIGRATION.md | ✅ Complete | v2.0 breaking changes |
-| CHANGELOG.md | ✅ Complete | Version history |
-| AGENTS.md | ✅ Complete | Project conventions |
-| TODO_LIST.md | ✅ Tracked | 182 items prioritized |
+| Document     | Status      | Purpose                    |
+| ------------ | ----------- | -------------------------- |
+| README.md    | ✅ Complete | Quick start, API reference |
+| MIGRATION.md | ✅ Complete | v2.0 breaking changes      |
+| CHANGELOG.md | ✅ Complete | Version history            |
+| AGENTS.md    | ✅ Complete | Project conventions        |
+| TODO_LIST.md | ✅ Tracked  | 182 items prioritized      |
 
 ### 4. Code Quality
 
-| Aspect | Status | Details |
-|--------|--------|---------|
-| Build | ✅ Clean | `go build ./...` succeeds |
-| Vet | ✅ Clean | `go vet ./...` passes |
-| Fmt | ✅ Clean | All files formatted |
-| Linter | ⚠️ Minor issues | ~16 style warnings |
+| Aspect | Status          | Details                   |
+| ------ | --------------- | ------------------------- |
+| Build  | ✅ Clean        | `go build ./...` succeeds |
+| Vet    | ✅ Clean        | `go vet ./...` passes     |
+| Fmt    | ✅ Clean        | All files formatted       |
+| Linter | ⚠️ Minor issues | ~16 style warnings        |
 
 ---
 
@@ -77,14 +78,14 @@ The go-filewatcher project is in **excellent condition**. All tests pass, the bu
 
 ### 2. Linter Compliance
 
-| Linter | Count | Location | Priority |
-|--------|-------|----------|----------|
-| mnd (magic numbers) | ~5 | examples/ | Low |
-| errcheck | ~3 | examples/ | Low |
-| wsl_v5 | ~10 | filter_gogen.go, examples/ | Low |
-| nlreturn | ~3 | filter_gogen.go | Low |
-| varnamelen | ~40 | Tests (short var names) | Very Low |
-| **Total** | **~16** | | **Non-blocking** |
+| Linter              | Count   | Location                   | Priority         |
+| ------------------- | ------- | -------------------------- | ---------------- |
+| mnd (magic numbers) | ~5      | examples/                  | Low              |
+| errcheck            | ~3      | examples/                  | Low              |
+| wsl_v5              | ~10     | filter_gogen.go, examples/ | Low              |
+| nlreturn            | ~3      | filter_gogen.go            | Low              |
+| varnamelen          | ~40     | Tests (short var names)    | Very Low         |
+| **Total**           | **~16** |                            | **Non-blocking** |
 
 ### 3. Documentation Gaps
 
@@ -104,49 +105,49 @@ The go-filewatcher project is in **excellent condition**. All tests pass, the bu
 
 ### 1. Testing & Quality
 
-| Test | Priority | Effort |
-|------|----------|--------|
-| Stats() method coverage | Medium | 15 min |
-| Remove() method tests | Medium | 15 min |
-| WatchList() method tests | Medium | 15 min |
-| FilterMinSize() tests | Medium | 15 min |
-| MiddlewareWriteFileLog() tests | Low | 20 min |
-| Benchmark regression tests | Medium | 30 min |
-| Stress tests (10k+ files) | Low | 2 hours |
-| Fuzz tests for FilterRegex/Glob | Low | 1 hour |
-| Windows-specific edge cases | Low | 1 hour |
+| Test                            | Priority | Effort  |
+| ------------------------------- | -------- | ------- |
+| Stats() method coverage         | Medium   | 15 min  |
+| Remove() method tests           | Medium   | 15 min  |
+| WatchList() method tests        | Medium   | 15 min  |
+| FilterMinSize() tests           | Medium   | 15 min  |
+| MiddlewareWriteFileLog() tests  | Low      | 20 min  |
+| Benchmark regression tests      | Medium   | 30 min  |
+| Stress tests (10k+ files)       | Low      | 2 hours |
+| Fuzz tests for FilterRegex/Glob | Low      | 1 hour  |
+| Windows-specific edge cases     | Low      | 1 hour  |
 
 ### 2. API Enhancements
 
-| Feature | Priority | Effort |
-|---------|----------|--------|
-| WithOnError(func(error)) option | Medium | 20 min |
-| Watcher.WatchOnce() one-shot mode | Low | 30 min |
-| WithRecursive(false) option | Low | 15 min |
-| WithPolling(fallback bool) | Low | 2 hours |
-| Event.ModTime() field | Low | 30 min |
-| FilterMinAge() | Low | 30 min |
-| FilterMaxSize() | Low | 20 min |
+| Feature                           | Priority | Effort  |
+| --------------------------------- | -------- | ------- |
+| WithOnError(func(error)) option   | Medium   | 20 min  |
+| Watcher.WatchOnce() one-shot mode | Low      | 30 min  |
+| WithRecursive(false) option       | Low      | 15 min  |
+| WithPolling(fallback bool)        | Low      | 2 hours |
+| Event.ModTime() field             | Low      | 30 min  |
+| FilterMinAge()                    | Low      | 30 min  |
+| FilterMaxSize()                   | Low      | 20 min  |
 
 ### 3. Performance & Observability
 
-| Feature | Priority | Effort |
-|---------|----------|--------|
-| Event batching middleware | Medium | 2 hours |
-| Prometheus metrics export | Low | 1 hour |
-| OpenTelemetry integration | Low | 2 hours |
-| Structured logging (slog) | Low | 1 hour |
-| Circuit breaker middleware | Low | 1 hour |
-| Error rate limiting | Low | 1 hour |
+| Feature                    | Priority | Effort  |
+| -------------------------- | -------- | ------- |
+| Event batching middleware  | Medium   | 2 hours |
+| Prometheus metrics export  | Low      | 1 hour  |
+| OpenTelemetry integration  | Low      | 2 hours |
+| Structured logging (slog)  | Low      | 1 hour  |
+| Circuit breaker middleware | Low      | 1 hour  |
+| Error rate limiting        | Low      | 1 hour  |
 
 ### 4. Documentation
 
-| Document | Priority | Effort |
-|----------|----------|--------|
-| Architecture.md deep dive | Medium | 1 hour |
-| Troubleshooting.md guide | Medium | 30 min |
-| CONTRIBUTING.md | Low | 30 min |
-| Video tutorial/GIF demos | Low | 3 hours |
+| Document                  | Priority | Effort  |
+| ------------------------- | -------- | ------- |
+| Architecture.md deep dive | Medium   | 1 hour  |
+| Troubleshooting.md guide  | Medium   | 30 min  |
+| CONTRIBUTING.md           | Low      | 30 min  |
+| Video tutorial/GIF demos  | Low      | 3 hours |
 
 ---
 
@@ -158,6 +159,7 @@ The go-filewatcher project is in **excellent condition**. All tests pass, the bu
 **Impact:** False errors in editor, confusing development experience
 
 **Symptoms:**
+
 - LSP reports 2 errors about undefined gogenfilter imports
 - `go build ./...` passes successfully
 - Tests run successfully
@@ -173,6 +175,7 @@ The go-filewatcher project is in **excellent condition**. All tests pass, the bu
 **Impact:** Race detector fails on debouncer tests
 
 **Symptoms:**
+
 - `go test -race` shows DATA RACE in debouncer
 - Race between channel close and send
 - Pre-existing issue, not introduced by recent changes
@@ -185,6 +188,7 @@ The go-filewatcher project is in **excellent condition**. All tests pass, the bu
 **Impact:** Occasional test failure
 
 **Symptoms:**
+
 - Expected 1 middleware call, got 2
 - Timing-dependent, file creation triggers multiple events
 
@@ -262,43 +266,43 @@ The go-filewatcher project is in **excellent condition**. All tests pass, the bu
 
 ### P0: Critical (Blockers)
 
-| # | Task | File/Area | Effort | Customer Value |
-|---|------|-----------|--------|----------------|
-| 1 | Add nolint:paralleltest for intentional serial tests | errors_test.go:330,360 | 5 min | Clean linter output |
-| 2 | Fix gopls diagnostic cache | LSP restart | 2 min | Developer experience |
-| 3 | Document pre-existing debouncer race | docs/adr/ | 15 min | Transparency |
-| 4 | Complete filter_gogen.go tests | filter_gogen_test.go | 45 min | Quality assurance |
-| 5 | Fix examples/filter-generated linter issues | examples/ | 20 min | Code quality |
+| #   | Task                                                 | File/Area              | Effort | Customer Value       |
+| --- | ---------------------------------------------------- | ---------------------- | ------ | -------------------- |
+| 1   | Add nolint:paralleltest for intentional serial tests | errors_test.go:330,360 | 5 min  | Clean linter output  |
+| 2   | Fix gopls diagnostic cache                           | LSP restart            | 2 min  | Developer experience |
+| 3   | Document pre-existing debouncer race                 | docs/adr/              | 15 min | Transparency         |
+| 4   | Complete filter_gogen.go tests                       | filter_gogen_test.go   | 45 min | Quality assurance    |
+| 5   | Fix examples/filter-generated linter issues          | examples/              | 20 min | Code quality         |
 
 ### P1: High Value
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 6 | Add tests for Stats() method | Coverage | 15 min |
-| 7 | Add tests for Remove() method | Coverage | 15 min |
-| 8 | Add tests for WatchList() method | Coverage | 15 min |
-| 9 | Create Architecture.md | Documentation | 1 hour |
-| 10 | Add benchmark results to README | Marketing | 30 min |
-| 11 | Implement WithOnError() option | API enhancement | 20 min |
-| 12 | Add stress tests | Reliability | 2 hours |
-| 13 | Fix remaining linter issues | Quality | 1 hour |
-| 14 | Create CONTRIBUTING.md | Community | 30 min |
-| 15 | Add fuzz tests for filters | Robustness | 1 hour |
+| #   | Task                             | Impact          | Effort  |
+| --- | -------------------------------- | --------------- | ------- |
+| 6   | Add tests for Stats() method     | Coverage        | 15 min  |
+| 7   | Add tests for Remove() method    | Coverage        | 15 min  |
+| 8   | Add tests for WatchList() method | Coverage        | 15 min  |
+| 9   | Create Architecture.md           | Documentation   | 1 hour  |
+| 10  | Add benchmark results to README  | Marketing       | 30 min  |
+| 11  | Implement WithOnError() option   | API enhancement | 20 min  |
+| 12  | Add stress tests                 | Reliability     | 2 hours |
+| 13  | Fix remaining linter issues      | Quality         | 1 hour  |
+| 14  | Create CONTRIBUTING.md           | Community       | 30 min  |
+| 15  | Add fuzz tests for filters       | Robustness      | 1 hour  |
 
 ### P2: Medium Value
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 16 | Implement event batching | Performance | 2 hours |
-| 17 | Add Prometheus metrics | Observability | 1 hour |
-| 18 | Add slog integration | Logging | 1 hour |
-| 19 | Create Troubleshooting.md | Support | 30 min |
-| 20 | Add WithRecursive(false) option | API | 15 min |
-| 21 | Implement WatchOnce() mode | Feature | 30 min |
-| 22 | Add FilterMinAge() | Feature | 30 min |
-| 23 | Add FilterMaxSize() | Feature | 20 min |
-| 24 | Create video tutorial | Education | 3 hours |
-| 25 | Tag v2.0.0 release | Milestone | 15 min |
+| #   | Task                            | Impact        | Effort  |
+| --- | ------------------------------- | ------------- | ------- |
+| 16  | Implement event batching        | Performance   | 2 hours |
+| 17  | Add Prometheus metrics          | Observability | 1 hour  |
+| 18  | Add slog integration            | Logging       | 1 hour  |
+| 19  | Create Troubleshooting.md       | Support       | 30 min  |
+| 20  | Add WithRecursive(false) option | API           | 15 min  |
+| 21  | Implement WatchOnce() mode      | Feature       | 30 min  |
+| 22  | Add FilterMinAge()              | Feature       | 30 min  |
+| 23  | Add FilterMaxSize()             | Feature       | 20 min  |
+| 24  | Create video tutorial           | Education     | 3 hours |
+| 25  | Tag v2.0.0 release              | Milestone     | 15 min  |
 
 ---
 
@@ -397,5 +401,5 @@ github.com/LarsArtmann/gogenfilter v0.1.0
 
 ---
 
-*Report generated: 2026-04-12 11:28:13 CEST*  
-*Next review: After addressing P0 items*
+_Report generated: 2026-04-12 11:28:13 CEST_  
+_Next review: After addressing P0 items_

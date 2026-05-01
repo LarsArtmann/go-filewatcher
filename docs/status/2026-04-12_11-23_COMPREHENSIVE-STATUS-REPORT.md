@@ -19,23 +19,23 @@ The go-filewatcher project is in **excellent condition** with all tests passing,
 
 ### Core Architecture (15 items completed)
 
-| Item | Description | Evidence |
-|------|-------------|----------|
-| Phantom Types - Critical | All 5 critical phantom types implemented | `phantom_types.go` with `DebounceKey`, `RootPath`, `LogSubstring`, `TempDir` |
-| CHANGELOG.md | Breaking changes documented | `CHANGELOG.md` v2.0 migration notes |
-| handleNewDirectory Race | Lock acquisition fixed | `watcher_internal.go:handleNewDirectory` now acquires write lock before calling `addPath()` |
-| shouldSkipDir Fix | Respects `WithIgnoreDirs` during walking | `watcher_walk.go:shouldSkipDir` checks `w.ignoreDirs` |
-| Test Race Conditions | All `t.Parallel()` issues resolved | `errors_test.go`, `filter_test.go` - removed from stderr-capturing tests |
-| exhaustruct Violations | All 10 fixed in `filter_test.go` | All struct fields initialized explicitly |
-| gocritic exitAfterDefer | All 5 issues in examples fixed | `examples/filter-generated/main.go` - proper cleanup handling |
-| golines Issue | `filter_test.go:36` formatted | Long lines split appropriately |
-| convertEvent Combined Ops | `Create\|Write` → `Create` logic implemented | `watcher_internal.go:convertEvent` prioritizes Create over Write |
-| Watcher Large Struct | Struct splitting analysis complete | Recommendation: split into `WatcherCore` + `WatcherAPI` + `WatcherState` |
-| IsClosed() Method | Public method added | `watcher.go:IsClosed()` returns atomic boolean |
-| TestWatcher_Watch_Deletes | Flakiness resolved through proper synchronization | Test now passes consistently |
-| t.Parallel() Filter Subtests | Added to filter test cases | `filter_test.go` subtests run in parallel |
-| Rename Short Variables | `tt→tc`, `d→debouncer`, etc. | Applied throughout test files |
-| MIGRATION.md | v2.0 ErrorHandler breaking change documented | `MIGRATION.md` with upgrade guide |
+| Item                         | Description                                       | Evidence                                                                                    |
+| ---------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Phantom Types - Critical     | All 5 critical phantom types implemented          | `phantom_types.go` with `DebounceKey`, `RootPath`, `LogSubstring`, `TempDir`                |
+| CHANGELOG.md                 | Breaking changes documented                       | `CHANGELOG.md` v2.0 migration notes                                                         |
+| handleNewDirectory Race      | Lock acquisition fixed                            | `watcher_internal.go:handleNewDirectory` now acquires write lock before calling `addPath()` |
+| shouldSkipDir Fix            | Respects `WithIgnoreDirs` during walking          | `watcher_walk.go:shouldSkipDir` checks `w.ignoreDirs`                                       |
+| Test Race Conditions         | All `t.Parallel()` issues resolved                | `errors_test.go`, `filter_test.go` - removed from stderr-capturing tests                    |
+| exhaustruct Violations       | All 10 fixed in `filter_test.go`                  | All struct fields initialized explicitly                                                    |
+| gocritic exitAfterDefer      | All 5 issues in examples fixed                    | `examples/filter-generated/main.go` - proper cleanup handling                               |
+| golines Issue                | `filter_test.go:36` formatted                     | Long lines split appropriately                                                              |
+| convertEvent Combined Ops    | `Create\|Write` → `Create` logic implemented      | `watcher_internal.go:convertEvent` prioritizes Create over Write                            |
+| Watcher Large Struct         | Struct splitting analysis complete                | Recommendation: split into `WatcherCore` + `WatcherAPI` + `WatcherState`                    |
+| IsClosed() Method            | Public method added                               | `watcher.go:IsClosed()` returns atomic boolean                                              |
+| TestWatcher_Watch_Deletes    | Flakiness resolved through proper synchronization | Test now passes consistently                                                                |
+| t.Parallel() Filter Subtests | Added to filter test cases                        | `filter_test.go` subtests run in parallel                                                   |
+| Rename Short Variables       | `tt→tc`, `d→debouncer`, etc.                      | Applied throughout test files                                                               |
+| MIGRATION.md                 | v2.0 ErrorHandler breaking change documented      | `MIGRATION.md` with upgrade guide                                                           |
 
 ### Technical Achievements
 
@@ -51,14 +51,14 @@ The go-filewatcher project is in **excellent condition** with all tests passing,
 
 ### Linter Compliance
 
-| Issue | Count | Location | Blocker |
-|-------|-------|----------|---------|
-| mnd (magic numbers) | 5 | `examples/filter-generated/main.go` | Non-blocking |
-| errcheck | 3 | `examples/filter-generated/main.go` | Non-blocking |
-| gocritic exitAfterDefer | 2 | `examples/filter-generated/main.go` | Non-blocking |
-| gosec G301 | 2 | `examples/filter-generated/main.go` | Non-blocking |
-| unused vars | 6 | `filter_gogen_test.go` | Non-blocking |
-| **TOTAL** | **20** | | **Quality issue, not functional** |
+| Issue                   | Count  | Location                            | Blocker                           |
+| ----------------------- | ------ | ----------------------------------- | --------------------------------- |
+| mnd (magic numbers)     | 5      | `examples/filter-generated/main.go` | Non-blocking                      |
+| errcheck                | 3      | `examples/filter-generated/main.go` | Non-blocking                      |
+| gocritic exitAfterDefer | 2      | `examples/filter-generated/main.go` | Non-blocking                      |
+| gosec G301              | 2      | `examples/filter-generated/main.go` | Non-blocking                      |
+| unused vars             | 6      | `filter_gogen_test.go`              | Non-blocking                      |
+| **TOTAL**               | **20** |                                     | **Quality issue, not functional** |
 
 ### Phantom Types Integration
 
@@ -81,6 +81,7 @@ The go-filewatcher project is in **excellent condition** with all tests passing,
 ### High Impact Features (Selection of 182 items)
 
 #### Testing & Quality
+
 - Add integration tests for full Watch→Event→Close lifecycle
 - Add test coverage for `Stats()` method
 - Add test for `Remove()` method
@@ -93,6 +94,7 @@ The go-filewatcher project is in **excellent condition** with all tests passing,
 - Windows-specific edge case tests
 
 #### API Enhancements
+
 - Add `WithOnError(func(error))` option
 - Add `Watcher.WatchOnce()` for one-shot mode
 - Add `WithRecursive(false)` option
@@ -106,6 +108,7 @@ The go-filewatcher project is in **excellent condition** with all tests passing,
 - Add `WithIgnorePatterns()` using glob patterns
 
 #### Middleware
+
 - `MiddlewareRateLimit(maxEvents int, window time.Duration)`
 - `MiddlewareRateBurst()` for token bucket rate limiting
 - `MiddlewareDeduplicate()` to drop duplicate events
@@ -115,6 +118,7 @@ The go-filewatcher project is in **excellent condition** with all tests passing,
 - Error rate limiting middleware
 
 #### Advanced Features
+
 - Event batching with configurable window
 - Symlink following support
 - File content hashing option
@@ -124,6 +128,7 @@ The go-filewatcher project is in **excellent condition** with all tests passing,
 - OpenTelemetry integration
 
 #### Infrastructure
+
 - GitHub Actions CI pipeline
 - Goreleaser configuration
 - Dependabot / Renovate config
@@ -152,6 +157,7 @@ The go-filewatcher project is in **excellent condition** with all tests passing,
 ### Examples Directory Issues
 
 The `examples/filter-generated/main.go` has accumulated technical debt:
+
 - 5 magic number violations
 - 3 unchecked error returns
 - 2 exitAfterDefer issues (despite partial fix)
@@ -265,6 +271,7 @@ The `examples/filter-generated/main.go` has accumulated technical debt:
 ### Why does gopls report "no new variables on left side of :=" at filter_gogen_test.go:233 when the code clearly uses `=` (assignment), not `:=` (short declaration)?
 
 **Evidence:**
+
 - Line 233 shows: `err = someFunc()` (assignment)
 - Compilation succeeds: `go test -c ./...` works
 - Tests pass: `go test ./...` succeeds
@@ -273,12 +280,14 @@ The `examples/filter-generated/main.go` has accumulated technical debt:
 **Hypothesis:** This is an LSP diagnostic cache corruption issue where gopls has stale state or incorrect position mapping.
 
 **What I've Tried:**
+
 - ✓ Verified actual file content uses `=`, not `:=`
 - ✓ Confirmed compilation succeeds
 - ✓ Confirmed tests pass
 - ✗ Haven't restarted gopls yet
 
 **Why This Matters:**
+
 - False positive diagnostics erode trust in IDE feedback
 - Could indicate deeper LSP/cache issues
 - Need to confirm fix (restart gopls) before dismissing
@@ -290,21 +299,22 @@ Is this a known gopls issue with generated test files, or is there something els
 
 ## Metrics Summary
 
-| Metric | Value | Target | Status |
-|--------|-------|--------|--------|
-| Test Coverage | 90.0% | 77% | ✅ Exceeds |
-| Tests Passing | 100% | 100% | ✅ Met |
-| Build Status | Clean | Clean | ✅ Met |
-| Linter Issues | 20 | 0 | 🟡 Acceptable |
-| Race Conditions | 0 | 0 | ✅ Met |
-| TODO Items | 182 | <50 | 🔴 High |
-| Documentation | Partial | Complete | 🟡 In Progress |
+| Metric          | Value   | Target   | Status         |
+| --------------- | ------- | -------- | -------------- |
+| Test Coverage   | 90.0%   | 77%      | ✅ Exceeds     |
+| Tests Passing   | 100%    | 100%     | ✅ Met         |
+| Build Status    | Clean   | Clean    | ✅ Met         |
+| Linter Issues   | 20      | 0        | 🟡 Acceptable  |
+| Race Conditions | 0       | 0        | ✅ Met         |
+| TODO Items      | 182     | <50      | 🔴 High        |
+| Documentation   | Partial | Complete | 🟡 In Progress |
 
 ---
 
 ## File Inventory
 
 ### Core Files (10)
+
 - `watcher.go` - Public API
 - `watcher_internal.go` - Event processing
 - `watcher_walk.go` - Directory walking
@@ -317,6 +327,7 @@ Is this a known gopls issue with generated test files, or is there something els
 - `phantom_types.go` - Phantom type definitions
 
 ### Test Files (9)
+
 - `watcher_test.go`
 - `event_test.go`
 - `filter_test.go`
@@ -328,6 +339,7 @@ Is this a known gopls issue with generated test files, or is there something els
 - `benchmark_test.go`
 
 ### Supporting (3)
+
 - `doc.go` - Package documentation
 - `filter_gogen.go` - gogenfilter integration
 - `testing_helpers.go` - Test utilities
@@ -339,6 +351,7 @@ Is this a known gopls issue with generated test files, or is there something els
 **Current State:** The project is functionally complete and stable. All critical bugs have been fixed, phantom types are integrated, and the API is solid.
 
 **Next Steps:**
+
 1. Clean up the gopls diagnostic issue (restart/clear cache)
 2. Fix or deprecate the examples directory
 3. Set up CI/CD to prevent regression
@@ -349,6 +362,6 @@ Is this a known gopls issue with generated test files, or is there something els
 
 ---
 
-*Report generated by Crush AI Assistant*  
-*Session: Comprehensive status analysis*  
-*Repository: github.com/larsartmann/go-filewatcher*
+_Report generated by Crush AI Assistant_  
+_Session: Comprehensive status analysis_  
+_Repository: github.com/larsartmann/go-filewatcher_

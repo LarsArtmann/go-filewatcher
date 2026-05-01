@@ -65,7 +65,7 @@
 - [x] ~~Add `MiddlewareBatch()` to batch events over a window~~ - Done
 - [x] ~~Fix race condition between event emission and channel close~~ - Fixed with emitWg
 - [x] ~~Replace `log.Logger` with `log/slog` in middleware~~ - Done: MiddlewareLogging already uses slog.Logger
-- [x] ~~Add slog support to MiddlewareLogging~~ - Done: Already implemented, accepts *slog.Logger
+- [x] ~~Add slog support to MiddlewareLogging~~ - Done: Already implemented, accepts \*slog.Logger
 - [x] ~~Add `Event` batch accumulation~~ - Done via MiddlewareBatch
 - [x] ~~Add Op.MarshalText/UnmarshalText for JSON~~ - Done: Already implemented
 - [x] ~~Add `UnmarshalText` to Op type~~ - Done: Already implemented
@@ -130,7 +130,7 @@
 - [x] ~~Fix TestWatcher_Watch_Deletes flakiness~~ - Done: Proper synchronization
 - [x] ~~Add t.Parallel() to filter subtests~~ - Done: `filter_test.go` subtests run in parallel
 - [x] ~~Rename short variables in tests~~ - Done: `tt→tc`, `d→debouncer`, etc.
-- [x] ~~Move test files to *_test packages~~ - Deferred: Tests need internal access
+- [x] ~~Move test files to \*\_test packages~~ - Deferred: Tests need internal access
 - [x] ~~Refactor inline error handling in tests~~ - Deferred: Current pattern acceptable
 - [x] ~~Add integration tests~~ - Partial: Basic integration in place
 - [x] ~~Add Stats() method~~ - Done: Method exists
@@ -184,13 +184,13 @@
 
 ## 📊 Status Summary
 
-| Metric | Value | Status |
-|--------|-------|--------|
-| Linter Issues | 0 | ✅ |
-| Build Status | Clean | ✅ |
-| Test Passing | 100% | ✅ |
-| Race Conditions | Mitigated | 🟡 |
-| HIGH Priority | 2 | 🔴 |
-| MEDIUM Priority | 65 | 🟡 |
-| LOW Priority | 5 | 🟢 |
-| Completed | 55+ | ✅ |
+| Metric          | Value     | Status |
+| --------------- | --------- | ------ |
+| Linter Issues   | 0         | ✅     |
+| Build Status    | Clean     | ✅     |
+| Test Passing    | 100%      | ✅     |
+| Race Conditions | Mitigated | 🟡     |
+| HIGH Priority   | 2         | 🔴     |
+| MEDIUM Priority | 65        | 🟡     |
+| LOW Priority    | 5         | 🟢     |
+| Completed       | 55+       | ✅     |

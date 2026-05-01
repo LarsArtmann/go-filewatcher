@@ -38,7 +38,9 @@
 ## Key Components
 
 ### Watcher
+
 The central struct coordinating all operations:
+
 - **Configuration**: paths, filters, middleware, debounce settings
 - **State Management**: Bit flags for closed/watching states
 - **Concurrency Control**: RWMutex for state, WaitGroup for emissions
@@ -63,11 +65,13 @@ emitEvent() → middleware chain → debouncer → eventCh
 **Type**: `func(Event) bool`
 
 Filters are pure functions that determine which events are emitted:
+
 - Return `true` to keep the event
 - Return `false` to discard the event
 - Compose with `FilterAnd()`, `FilterOr()`, `FilterNot()`
 
 **Built-in Filters**:
+
 - `FilterExtensions()` — File extension matching
 - `FilterIgnoreDirs()` — Directory name exclusion
 - `FilterOperations()` — Operation type filtering
@@ -80,11 +84,13 @@ Filters are pure functions that determine which events are emitted:
 **Type**: `func(Handler) Handler`
 
 Middleware wraps handlers for cross-cutting concerns:
+
 - Applied in **reverse order** (last added runs first)
 - Can transform events, log, recover panics, rate limit
 - Chain ends with the emit function that sends to eventCh
 
 **Built-in Middleware**:
+
 - `MiddlewareRecovery()` — Panic recovery
 - `MiddlewareLogging()` — Structured logging
 - `MiddlewareRateLimit()` / `MiddlewareRateLimitWindow()` — Rate limiting
@@ -103,17 +109,20 @@ Both use `sync.WaitGroup` to track in-flight callbacks during shutdown.
 ## Concurrency Model
 
 ### Goroutines
+
 1. **watchLoop**: Main event processing (1 per Watch call)
 2. **debouncer timers**: time.AfterFunc goroutines
 3. **test goroutines**: Parallel test execution
 
 ### Synchronization
+
 - **w.mu**: Protects state, watchList, eventCh
 - **emitWg**: Waits for event emissions before close
 - **debouncer.wg**: Waits for debounced callbacks
 - **errorsMu**: Protects error channel initialization
 
 ### State Machine
+
 ```
 [Created] → Watch() → [Watching] → Close() → [Closed]
    ↑                                    |
@@ -130,6 +139,7 @@ type RootPath string     // Absolute validated path for watching
 ```
 
 Usage:
+
 ```go
 path := filewatcher.GetPath(event)  // Returns EventPath
 // Cannot accidentally use EventPath where RootPath is expected
@@ -138,6 +148,7 @@ path := filewatcher.GetPath(event)  // Returns EventPath
 ## Error Handling
 
 ### Sentinel Errors
+
 ```go
 var ErrWatcherClosed  = errors.New("watcher is closed")
 var ErrNoPaths        = errors.New("at least one path is required")
@@ -146,16 +157,20 @@ var ErrWatcherRunning = errors.New("watcher is already running")
 ```
 
 ### Error Context
+
 All errors are wrapped with context using `fmt.Errorf("...: %w", err)`.
 
 ### Error Channels
+
 Two ways to receive errors:
+
 1. **ErrorHandler callback**: Synchronous during event processing
 2. **Errors() channel**: Asynchronous error stream
 
 ## Memory Layout
 
 ### Watcher Struct
+
 ```go
 type Watcher struct {
     // fsnotify wrapper (8 bytes)
@@ -190,21 +205,25 @@ Total: ~200 bytes per watcher (excluding slices and fsnotify internals)
 ## Performance Characteristics
 
 ### Event Processing
+
 - **Allocation**: 1 allocation per event (Event struct)
 - **Channel**: Buffered with configurable size (default 64)
 - **Filters**: O(n) where n = number of filters
 - **Middleware**: O(m) where m = middleware chain depth
 
 ### Debouncing
+
 - **Global**: O(1) timer management
 - **Per-path**: O(1) map lookup + timer management
 
 ### Memory
+
 - **Watcher**: ~200 bytes base + slices
 - **Per watched path**: ~50 bytes + fsnotify overhead
 - **Per debounce entry**: ~40 bytes + timer
 
 ### Scalability
+
 - Tested with 10k+ files
 - Channel backpressure for burst handling
 - Lock-free reads for Stats(), IsClosed(), IsWatching()
@@ -212,17 +231,20 @@ Total: ~200 bytes per watcher (excluding slices and fsnotify internals)
 ## Testing Strategy
 
 ### Unit Tests
+
 - Individual component testing (filters, middleware, debouncer)
 - Table-driven tests for filter/middleware combinations
 - Mock fsnotify for isolated testing
 
 ### Integration Tests
+
 - Full Watch → Event → Close lifecycle
 - Recursive directory watching
 - Per-path debounce correctness
 - Race condition detection with `-race`
 
 ### Benchmarks
+
 - Event throughput: ~100k events/sec
 - Memory allocation: <1 alloc per filtered event
 - Startup time: <10ms for 1000 files
@@ -237,6 +259,7 @@ Total: ~200 bytes per watcher (excluding slices and fsnotify internals)
 ## Extension Points
 
 ### Adding a Filter
+
 ```go
 func FilterCustom(pattern string) Filter {
     return func(e Event) bool {
@@ -247,6 +270,7 @@ func FilterCustom(pattern string) Filter {
 ```
 
 ### Adding Middleware
+
 ```go
 func MiddlewareCustom() Middleware {
     return func(next Handler) Handler {

@@ -12,3 +12,5 @@ Copy/paste detection report
 # Nix
 .direnv/
 .envrc.local
+# Nix build output
+/result

@@ -20,7 +20,7 @@
 
 ### 1.2 What's Stupid That We Do Anyway?
 
-1. **Split Brain on Channel Ownership**: 
+1. **Split Brain on Channel Ownership**:
    - `watchLoop` thinks it owns `eventCh` (closes in defer)
    - `Close()` also tries to close `eventCh`
    - Result: Double-close panic or race
@@ -48,6 +48,7 @@
 ### 1.4 Did I Lie?
 
 **YES** - I claimed "Fixed race condition" but:
+
 - Tests still fail with `-race`
 - The "fix" introduced a deadlock
 - The architecture is still fundamentally racy
@@ -81,35 +82,35 @@
 
 ### Phase 1: FIX THE RACE CONDITION (Priority: CRITICAL)
 
-| # | Task | Est. Time | Impact | Effort | Customer Value |
-|---|------|-----------|--------|--------|----------------|
-| 1.1 | Remove emitWg from Watcher struct | 5min | Critical | Low | Prevents deadlock |
-| 1.2 | Revert watchLoop to close eventCh in defer | 10min | Critical | Low | Proper channel ownership |
-| 1.3 | Use defer/recover in buildEmitFunc | 10min | Critical | Low | Handles race safely |
-| 1.4 | Remove eventCh field from Watcher | 5min | Critical | Low | Removes split brain |
-| 1.5 | Simplify Close() to just stop debouncer and close fsnotify | 10min | Critical | Low | Clean shutdown |
-| 1.6 | Run -race tests to verify fix | 15min | Critical | Medium | Validate solution |
-| 1.7 | Fix context cancellation test | 20min | High | Medium | Fix hanging test |
+| #   | Task                                                       | Est. Time | Impact   | Effort | Customer Value           |
+| --- | ---------------------------------------------------------- | --------- | -------- | ------ | ------------------------ |
+| 1.1 | Remove emitWg from Watcher struct                          | 5min      | Critical | Low    | Prevents deadlock        |
+| 1.2 | Revert watchLoop to close eventCh in defer                 | 10min     | Critical | Low    | Proper channel ownership |
+| 1.3 | Use defer/recover in buildEmitFunc                         | 10min     | Critical | Low    | Handles race safely      |
+| 1.4 | Remove eventCh field from Watcher                          | 5min      | Critical | Low    | Removes split brain      |
+| 1.5 | Simplify Close() to just stop debouncer and close fsnotify | 10min     | Critical | Low    | Clean shutdown           |
+| 1.6 | Run -race tests to verify fix                              | 15min     | Critical | Medium | Validate solution        |
+| 1.7 | Fix context cancellation test                              | 20min     | High     | Medium | Fix hanging test         |
 
 **Total Phase 1: ~75min**
 
 ### Phase 2: CLEANUP & COMMIT (Priority: HIGH)
 
-| # | Task | Est. Time | Impact | Effort | Customer Value |
-|---|------|-----------|--------|--------|----------------|
-| 2.1 | Commit race condition fix | 10min | High | Low | Stable codebase |
-| 2.2 | Update TODO_LIST.md (mark race fix complete) | 5min | Medium | Low | Accurate tracking |
-| 2.3 | Run full test suite | 10min | High | Low | Verify nothing broken |
-| 2.4 | Run linter | 5min | Medium | Low | Code quality |
+| #   | Task                                         | Est. Time | Impact | Effort | Customer Value        |
+| --- | -------------------------------------------- | --------- | ------ | ------ | --------------------- |
+| 2.1 | Commit race condition fix                    | 10min     | High   | Low    | Stable codebase       |
+| 2.2 | Update TODO_LIST.md (mark race fix complete) | 5min      | Medium | Low    | Accurate tracking     |
+| 2.3 | Run full test suite                          | 10min     | High   | Low    | Verify nothing broken |
+| 2.4 | Run linter                                   | 5min      | Medium | Low    | Code quality          |
 
 **Total Phase 2: ~30min**
 
 ### Phase 3: HIGH PRIORITY REMAINING (Priority: HIGH)
 
-| # | Task | Est. Time | Impact | Effort | Customer Value |
-|---|------|-----------|--------|--------|----------------|
-| 3.1 | Tag v0.1.0 release | 15min | High | Low | Milestone |
-| 3.2 | Review and clean up TODO_LIST.md | 20min | Medium | Medium | Accurate project status |
+| #   | Task                             | Est. Time | Impact | Effort | Customer Value          |
+| --- | -------------------------------- | --------- | ------ | ------ | ----------------------- |
+| 3.1 | Tag v0.1.0 release               | 15min     | High   | Low    | Milestone               |
+| 3.2 | Review and clean up TODO_LIST.md | 20min     | Medium | Medium | Accurate project status |
 
 **Total Phase 3: ~35min**
 
@@ -117,41 +118,41 @@
 
 Selected based on impact/effort ratio:
 
-| # | Task | Est. Time | Impact | Effort | Customer Value |
-|---|------|-----------|--------|--------|----------------|
-| 4.1 | Add Event.Size field | 30min | Medium | Low | File size info |
-| 4.2 | Add Event.ModTime() field | 30min | Medium | Low | Modification time |
-| 4.3 | Add FilterExcludePaths | 30min | Medium | Low | Exclude specific paths |
-| 4.4 | Add WithPolling(fallback bool) | 60min | High | High | NFS support |
-| 4.5 | Add symlink following support | 45min | Medium | Medium | Better coverage |
-| 4.6 | Add MiddlewareDeduplicate | 45min | Medium | Medium | Fewer duplicate events |
-| 4.7 | Add FilterMinAge | 30min | Medium | Low | Time-based filtering |
-| 4.8 | Add FilterMaxSize | 30min | Medium | Low | Size filtering |
-| 4.9 | Add Watcher.WatchOnce() | 45min | Medium | Medium | One-shot mode |
-| 4.10 | Tag v2.0.0 release | 15min | High | Low | Milestone |
+| #    | Task                           | Est. Time | Impact | Effort | Customer Value         |
+| ---- | ------------------------------ | --------- | ------ | ------ | ---------------------- |
+| 4.1  | Add Event.Size field           | 30min     | Medium | Low    | File size info         |
+| 4.2  | Add Event.ModTime() field      | 30min     | Medium | Low    | Modification time      |
+| 4.3  | Add FilterExcludePaths         | 30min     | Medium | Low    | Exclude specific paths |
+| 4.4  | Add WithPolling(fallback bool) | 60min     | High   | High   | NFS support            |
+| 4.5  | Add symlink following support  | 45min     | Medium | Medium | Better coverage        |
+| 4.6  | Add MiddlewareDeduplicate      | 45min     | Medium | Medium | Fewer duplicate events |
+| 4.7  | Add FilterMinAge               | 30min     | Medium | Low    | Time-based filtering   |
+| 4.8  | Add FilterMaxSize              | 30min     | Medium | Low    | Size filtering         |
+| 4.9  | Add Watcher.WatchOnce()        | 45min     | Medium | Medium | One-shot mode          |
+| 4.10 | Tag v2.0.0 release             | 15min     | High   | Low    | Milestone              |
 
 **Total Phase 4: ~360min (6 hours)**
 
 ### Phase 5: DOCUMENTATION & EXAMPLES (Priority: MEDIUM)
 
-| # | Task | Est. Time | Impact | Effort | Customer Value |
-|---|------|-----------|--------|--------|----------------|
-| 5.1 | Document public API with godoc examples | 60min | High | Medium | Better DX |
-| 5.2 | Write Troubleshooting.md | 45min | Medium | Medium | Support |
-| 5.3 | Create standalone CLI tool | 90min | High | High | Usability |
-| 5.4 | Add structured logging example | 30min | Medium | Low | Examples |
+| #   | Task                                    | Est. Time | Impact | Effort | Customer Value |
+| --- | --------------------------------------- | --------- | ------ | ------ | -------------- |
+| 5.1 | Document public API with godoc examples | 60min     | High   | Medium | Better DX      |
+| 5.2 | Write Troubleshooting.md                | 45min     | Medium | Medium | Support        |
+| 5.3 | Create standalone CLI tool              | 90min     | High   | High   | Usability      |
+| 5.4 | Add structured logging example          | 30min     | Medium | Low    | Examples       |
 
 **Total Phase 5: ~225min (3.75 hours)**
 
 ### Phase 6: CI/CD & INFRASTRUCTURE (Priority: LOW)
 
-| # | Task | Est. Time | Impact | Effort | Customer Value |
-|---|------|-----------|--------|--------|----------------|
-| 6.1 | Goreleaser configuration | 30min | Medium | Low | Releases |
-| 6.2 | Configure semantic-release | 30min | Medium | Low | Automation |
-| 6.3 | Add coverage threshold enforcement | 20min | Medium | Low | Quality |
-| 6.4 | Add Dependabot/Renovate config | 15min | Low | Low | Maintenance |
-| 6.5 | Add CONTRIBUTING.md + CODEOWNERS | 30min | Low | Low | Community |
+| #   | Task                               | Est. Time | Impact | Effort | Customer Value |
+| --- | ---------------------------------- | --------- | ------ | ------ | -------------- |
+| 6.1 | Goreleaser configuration           | 30min     | Medium | Low    | Releases       |
+| 6.2 | Configure semantic-release         | 30min     | Medium | Low    | Automation     |
+| 6.3 | Add coverage threshold enforcement | 20min     | Medium | Low    | Quality        |
+| 6.4 | Add Dependabot/Renovate config     | 15min     | Low    | Low    | Maintenance    |
+| 6.5 | Add CONTRIBUTING.md + CODEOWNERS   | 30min     | Low    | Low    | Community      |
 
 **Total Phase 6: ~125min (2 hours)**
 
@@ -161,93 +162,93 @@ Selected based on impact/effort ratio:
 
 ### Immediate Fix Tasks (Race Condition)
 
-| # | Task | Time | Blocker? |
-|---|------|------|----------|
-| 1 | Remove emitWg field from Watcher struct | 5min | YES |
-| 2 | Remove emitWg initialization in New() | 5min | YES |
-| 3 | Revert watchLoop defer to close eventCh | 5min | YES |
-| 4 | Remove emitWg.Wait() from watchLoop defer | 3min | YES |
-| 5 | Add defer/recover to buildEmitFunc | 5min | YES |
-| 6 | Remove eventCh field from Watcher struct | 5min | YES |
-| 7 | Remove eventCh assignment in Watch() | 3min | YES |
-| 8 | Simplify Close() - remove eventCh close | 5min | YES |
-| 9 | Run tests without -race | 5min | YES |
-| 10 | Run tests with -race | 10min | YES |
-| 11 | Fix context cancellation test | 10min | YES |
-| 12 | Commit race fix | 5min | YES |
+| #   | Task                                      | Time  | Blocker? |
+| --- | ----------------------------------------- | ----- | -------- |
+| 1   | Remove emitWg field from Watcher struct   | 5min  | YES      |
+| 2   | Remove emitWg initialization in New()     | 5min  | YES      |
+| 3   | Revert watchLoop defer to close eventCh   | 5min  | YES      |
+| 4   | Remove emitWg.Wait() from watchLoop defer | 3min  | YES      |
+| 5   | Add defer/recover to buildEmitFunc        | 5min  | YES      |
+| 6   | Remove eventCh field from Watcher struct  | 5min  | YES      |
+| 7   | Remove eventCh assignment in Watch()      | 3min  | YES      |
+| 8   | Simplify Close() - remove eventCh close   | 5min  | YES      |
+| 9   | Run tests without -race                   | 5min  | YES      |
+| 10  | Run tests with -race                      | 10min | YES      |
+| 11  | Fix context cancellation test             | 10min | YES      |
+| 12  | Commit race fix                           | 5min  | YES      |
 
 ### Cleanup Tasks
 
-| # | Task | Time | Blocker? |
-|---|------|------|----------|
-| 13 | Update TODO_LIST.md | 5min | No |
-| 14 | Run linter | 5min | No |
-| 15 | Review git history | 5min | No |
-| 16 | Squash commits if needed | 10min | No |
+| #   | Task                     | Time  | Blocker? |
+| --- | ------------------------ | ----- | -------- |
+| 13  | Update TODO_LIST.md      | 5min  | No       |
+| 14  | Run linter               | 5min  | No       |
+| 15  | Review git history       | 5min  | No       |
+| 16  | Squash commits if needed | 10min | No       |
 
 ### Tagging & Release
 
-| # | Task | Time | Blocker? |
-|---|------|------|----------|
-| 17 | Create v0.1.0 tag | 5min | YES |
-| 18 | Write v0.1.0 release notes | 10min | No |
-| 19 | Push tags to origin | 2min | No |
+| #   | Task                       | Time  | Blocker? |
+| --- | -------------------------- | ----- | -------- |
+| 17  | Create v0.1.0 tag          | 5min  | YES      |
+| 18  | Write v0.1.0 release notes | 10min | No       |
+| 19  | Push tags to origin        | 2min  | No       |
 
 ### Medium Priority Implementation
 
-| # | Task | Time | Blocker? |
-|---|------|------|----------|
-| 20 | Add Event.Size field to Event struct | 5min | No |
-| 21 | Update convertEvent to populate Size | 10min | No |
-| 22 | Test Event.Size | 5min | No |
-| 23 | Add Event.ModTime() method | 5min | No |
-| 24 | Test Event.ModTime() | 5min | No |
-| 25 | Add FilterExcludePaths function | 10min | No |
-| 26 | Test FilterExcludePaths | 5min | No |
-| 27 | Add FilterMinAge function | 10min | No |
-| 28 | Test FilterMinAge | 5min | No |
-| 29 | Add FilterMaxSize function | 10min | No |
-| 30 | Test FilterMaxSize | 5min | No |
-| 31 | Add WithPolling option skeleton | 5min | No |
-| 32 | Research fsnotify polling support | 10min | No |
-| 33 | Implement polling fallback | 20min | No |
-| 34 | Test WithPolling | 10min | No |
-| 35 | Add symlink following support | 15min | No |
-| 36 | Test symlink following | 10min | No |
-| 37 | Add MiddlewareDeduplicate skeleton | 5min | No |
-| 38 | Implement deduplication logic | 15min | No |
-| 39 | Test MiddlewareDeduplicate | 10min | No |
-| 40 | Add Watcher.WatchOnce() skeleton | 5min | No |
-| 41 | Implement WatchOnce logic | 15min | No |
-| 42 | Test WatchOnce | 10min | No |
+| #   | Task                                 | Time  | Blocker? |
+| --- | ------------------------------------ | ----- | -------- |
+| 20  | Add Event.Size field to Event struct | 5min  | No       |
+| 21  | Update convertEvent to populate Size | 10min | No       |
+| 22  | Test Event.Size                      | 5min  | No       |
+| 23  | Add Event.ModTime() method           | 5min  | No       |
+| 24  | Test Event.ModTime()                 | 5min  | No       |
+| 25  | Add FilterExcludePaths function      | 10min | No       |
+| 26  | Test FilterExcludePaths              | 5min  | No       |
+| 27  | Add FilterMinAge function            | 10min | No       |
+| 28  | Test FilterMinAge                    | 5min  | No       |
+| 29  | Add FilterMaxSize function           | 10min | No       |
+| 30  | Test FilterMaxSize                   | 5min  | No       |
+| 31  | Add WithPolling option skeleton      | 5min  | No       |
+| 32  | Research fsnotify polling support    | 10min | No       |
+| 33  | Implement polling fallback           | 20min | No       |
+| 34  | Test WithPolling                     | 10min | No       |
+| 35  | Add symlink following support        | 15min | No       |
+| 36  | Test symlink following               | 10min | No       |
+| 37  | Add MiddlewareDeduplicate skeleton   | 5min  | No       |
+| 38  | Implement deduplication logic        | 15min | No       |
+| 39  | Test MiddlewareDeduplicate           | 10min | No       |
+| 40  | Add Watcher.WatchOnce() skeleton     | 5min  | No       |
+| 41  | Implement WatchOnce logic            | 15min | No       |
+| 42  | Test WatchOnce                       | 10min | No       |
 
 ### Documentation
 
-| # | Task | Time | Blocker? |
-|---|------|------|----------|
-| 43 | Write godoc examples for New() | 10min | No |
-| 44 | Write godoc examples for Watch() | 10min | No |
-| 45 | Write godoc examples for filters | 15min | No |
-| 46 | Write godoc examples for middleware | 15min | No |
-| 47 | Create Troubleshooting.md outline | 5min | No |
-| 48 | Write common issues section | 10min | No |
-| 49 | Write debugging tips section | 10min | No |
-| 50 | Create CLI tool main.go | 10min | No |
-| 51 | Add CLI flags parsing | 15min | No |
-| 52 | Add CLI watch logic | 15min | No |
-| 53 | Test CLI tool | 10min | No |
+| #   | Task                                | Time  | Blocker? |
+| --- | ----------------------------------- | ----- | -------- |
+| 43  | Write godoc examples for New()      | 10min | No       |
+| 44  | Write godoc examples for Watch()    | 10min | No       |
+| 45  | Write godoc examples for filters    | 15min | No       |
+| 46  | Write godoc examples for middleware | 15min | No       |
+| 47  | Create Troubleshooting.md outline   | 5min  | No       |
+| 48  | Write common issues section         | 10min | No       |
+| 49  | Write debugging tips section        | 10min | No       |
+| 50  | Create CLI tool main.go             | 10min | No       |
+| 51  | Add CLI flags parsing               | 15min | No       |
+| 52  | Add CLI watch logic                 | 15min | No       |
+| 53  | Test CLI tool                       | 10min | No       |
 
 ### CI/CD
 
-| # | Task | Time | Blocker? |
-|---|------|------|----------|
-| 54 | Create .goreleaser.yaml | 15min | No |
-| 55 | Test goreleaser locally | 10min | No |
-| 56 | Add semantic-release config | 10min | No |
-| 57 | Add coverage threshold to CI | 10min | No |
-| 58 | Create CONTRIBUTING.md | 15min | No |
-| 59 | Create CODEOWNERS | 5min | No |
-| 60 | Tag v2.0.0 | 5min | No |
+| #   | Task                         | Time  | Blocker? |
+| --- | ---------------------------- | ----- | -------- |
+| 54  | Create .goreleaser.yaml      | 15min | No       |
+| 55  | Test goreleaser locally      | 10min | No       |
+| 56  | Add semantic-release config  | 10min | No       |
+| 57  | Add coverage threshold to CI | 10min | No       |
+| 58  | Create CONTRIBUTING.md       | 15min | No       |
+| 59  | Create CODEOWNERS            | 5min  | No       |
+| 60  | Tag v2.0.0                   | 5min  | No       |
 
 ---
 
@@ -266,12 +267,12 @@ graph TD
     C6 --> C7[Fix context cancellation test]
     C7 --> D[Commit Changes]
     B -->|Yes| D
-    
+
     D --> E[Update TODO_LIST]
     E --> F{Tests Pass?}
     F -->|No| C
     F -->|Yes| G[Tag v0.1.0]
-    
+
     G --> H[Phase 4: Medium Priority]
     H --> H1[Event.Size]
     H1 --> H2[Event.ModTime]
@@ -281,21 +282,21 @@ graph TD
     H5 --> H6[Symlink Support]
     H6 --> H7[MiddlewareDeduplicate]
     H7 --> H8[WatchOnce]
-    
+
     H8 --> I[Phase 5: Documentation]
     I --> I1[Godoc Examples]
     I1 --> I2[Troubleshooting.md]
     I2 --> I3[CLI Tool]
-    
+
     I3 --> J[Phase 6: CI/CD]
     J --> J1[Goreleaser]
     J1 --> J2[Semantic Release]
     J2 --> J3[Coverage Threshold]
     J3 --> J4[CONTRIBUTING.md]
-    
+
     J4 --> K[Tag v2.0.0]
     K --> L[End]
-    
+
     style C fill:#ff6b6b
     style C6 fill:#ff6b6b
     style D fill:#4ecdc4

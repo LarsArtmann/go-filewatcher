@@ -44,12 +44,12 @@ This proposal outlines a **complete migration to Nix Flakes** that would provide
 
 ### 2.1 What Exists
 
-| File | Status | Quality |
-|------|--------|---------|
-| `flake.nix` | Exists | Basic — devShell only, wrong Go version |
-| `flake.lock` | Exists | Locked to nixpkgs `13043924` (April 2025) |
-| `.envrc` | Exists | Minimal — `use flake` |
-| `.gitignore` | Updated | Includes `.direnv/`, `.envrc.local` |
+| File         | Status  | Quality                                   |
+| ------------ | ------- | ----------------------------------------- |
+| `flake.nix`  | Exists  | Basic — devShell only, wrong Go version   |
+| `flake.lock` | Exists  | Locked to nixpkgs `13043924` (April 2025) |
+| `.envrc`     | Exists  | Minimal — `use flake`                     |
+| `.gitignore` | Updated | Includes `.direnv/`, `.envrc.local`       |
 
 ### 2.2 Current `flake.nix` Analysis
 
@@ -86,11 +86,11 @@ The CI uses `actions/setup-go@v5` and `golangci/golangci-lint-action@v7` — **c
 
 The `justfile` (removed 2026-04-12) provided these commands:
 
-| Command | Equivalent Today | Nix-native Target |
-|---------|-----------------|-------------------|
-| `just check` | Manual: `go vet && golangci-lint run && go test -race` | `nix flake check` or `nix run .#check` |
-| `just ci` | Manual: `go mod tidy && go fmt && go vet && ...` | `nix run .#ci` |
-| `just lint-fix` | Manual: `golangci-lint run --fix` | `nix run .#lint-fix` |
+| Command         | Equivalent Today                                       | Nix-native Target                      |
+| --------------- | ------------------------------------------------------ | -------------------------------------- |
+| `just check`    | Manual: `go vet && golangci-lint run && go test -race` | `nix flake check` or `nix run .#check` |
+| `just ci`       | Manual: `go mod tidy && go fmt && go vet && ...`       | `nix run .#ci`                         |
+| `just lint-fix` | Manual: `golangci-lint run --fix`                      | `nix run .#lint-fix`                   |
 
 The removal of `justfile` without Nix-native replacements **regressed developer experience**. Commands must be typed manually or memorized from shellHook output.
 
@@ -100,23 +100,23 @@ The removal of `justfile` without Nix-native replacements **regressed developer 
 
 ### 3.1 Critical Gaps
 
-| # | Gap | Impact | Severity |
-|---|-----|--------|----------|
-| G1 | **Go version mismatch** (`go_1_24` vs 1.26.1) | Build failures, incorrect behavior | **CRITICAL** |
-| G2 | **No `packages` output** | Cannot `nix build`, no reproducible packaging | **HIGH** |
-| G3 | **No `apps` output** | Cannot `nix run .#test`, `nix run .#lint`, etc. | **HIGH** |
-| G4 | **No `checks` output** | Cannot `nix flake check` for automated QA | **HIGH** |
-| G5 | **CI not using Nix** | CI ≠ dev environment | **MEDIUM** |
+| #   | Gap                                           | Impact                                          | Severity     |
+| --- | --------------------------------------------- | ----------------------------------------------- | ------------ |
+| G1  | **Go version mismatch** (`go_1_24` vs 1.26.1) | Build failures, incorrect behavior              | **CRITICAL** |
+| G2  | **No `packages` output**                      | Cannot `nix build`, no reproducible packaging   | **HIGH**     |
+| G3  | **No `apps` output**                          | Cannot `nix run .#test`, `nix run .#lint`, etc. | **HIGH**     |
+| G4  | **No `checks` output**                        | Cannot `nix flake check` for automated QA       | **HIGH**     |
+| G5  | **CI not using Nix**                          | CI ≠ dev environment                            | **MEDIUM**   |
 
 ### 3.2 Quality Gaps
 
-| # | Gap | Impact | Severity |
-|---|-----|--------|----------|
-| G6 | **No formatter output** | `flake.nix` not auto-formatted | **LOW** |
-| G7 | **Missing dev tools** | gopls, delve, gotools not in shell | **MEDIUM** |
-| G8 | **No Cachix** | Slow CI, slow onboarding | **MEDIUM** |
-| G9 | **Unpinned nixpkgs URL** | `nixpkgs` registry may shift | **LOW** |
-| G10 | **No overlay** | Other flakes cannot consume this project | **LOW** |
+| #   | Gap                      | Impact                                   | Severity   |
+| --- | ------------------------ | ---------------------------------------- | ---------- |
+| G6  | **No formatter output**  | `flake.nix` not auto-formatted           | **LOW**    |
+| G7  | **Missing dev tools**    | gopls, delve, gotools not in shell       | **MEDIUM** |
+| G8  | **No Cachix**            | Slow CI, slow onboarding                 | **MEDIUM** |
+| G9  | **Unpinned nixpkgs URL** | `nixpkgs` registry may shift             | **LOW**    |
+| G10 | **No overlay**           | Other flakes cannot consume this project | **LOW**    |
 
 ### 3.3 Go Version Deep-Dive
 
@@ -194,13 +194,13 @@ The target flake should expose all standard Nix outputs:
 
 ### 4.2 Output Categories
 
-| Output | Command | Purpose |
-|--------|---------|---------|
-| `packages` | `nix build .` | Reproducible build validation |
-| `devShells` | `nix develop` | Development environment |
-| `apps` | `nix run .#test` | Executable commands |
-| `checks` | `nix flake check` | Automated quality gates |
-| `formatter` | `nix fmt` | Nix file formatting |
+| Output      | Command           | Purpose                       |
+| ----------- | ----------------- | ----------------------------- |
+| `packages`  | `nix build .`     | Reproducible build validation |
+| `devShells` | `nix develop`     | Development environment       |
+| `apps`      | `nix run .#test`  | Executable commands           |
+| `checks`    | `nix flake check` | Automated quality gates       |
+| `formatter` | `nix fmt`         | Nix file formatting           |
 
 ---
 
@@ -586,6 +586,7 @@ jobs:
 ```
 
 **Benefits:**
+
 - CI uses **exact same** toolchain as local dev
 - No version drift between environments
 - Single source of truth: `flake.nix`
@@ -595,11 +596,11 @@ jobs:
 
 Files to update after migration:
 
-| File | Changes |
-|------|---------|
-| `AGENTS.md` | Update commands section with `nix run .#<cmd>` syntax |
-| `README.md` | Add Nix installation section, update dev commands |
-| `.envrc` | Consider adding `watch_file flake.nix` for auto-reload |
+| File        | Changes                                                |
+| ----------- | ------------------------------------------------------ |
+| `AGENTS.md` | Update commands section with `nix run .#<cmd>` syntax  |
+| `README.md` | Add Nix installation section, update dev commands      |
+| `.envrc`    | Consider adding `watch_file flake.nix` for auto-reload |
 
 #### Step 3.3: Add Shell Aliases (Optional Enhancement)
 
@@ -633,14 +634,14 @@ shellHook = ''
 
 ### 6.1 Current vs Target
 
-| Aspect | Current | Target |
-|--------|---------|--------|
-| Go install | `actions/setup-go@v5` | Nix (via `install-nix-action`) |
-| Lint install | `golangci/golangci-lint-action@v7` | Nix (via `install-nix-action`) |
-| Go version | Matrix: `["1.26"]` | Single: whatever `flake.nix` provides |
-| Lint version | `latest` (pinned by action) | Whatever `flake.nix` provides |
-| Reproducibility | Partial (action versions drift) | Full (flake.lock pins everything) |
-| Build cache | Go module cache only | Cachix binary cache |
+| Aspect          | Current                            | Target                                |
+| --------------- | ---------------------------------- | ------------------------------------- |
+| Go install      | `actions/setup-go@v5`              | Nix (via `install-nix-action`)        |
+| Lint install    | `golangci/golangci-lint-action@v7` | Nix (via `install-nix-action`)        |
+| Go version      | Matrix: `["1.26"]`                 | Single: whatever `flake.nix` provides |
+| Lint version    | `latest` (pinned by action)        | Whatever `flake.nix` provides         |
+| Reproducibility | Partial (action versions drift)    | Full (flake.lock pins everything)     |
+| Build cache     | Go module cache only               | Cachix binary cache                   |
 
 ### 6.2 CI Strategy: Nix-First
 
@@ -683,7 +684,7 @@ For projects with frequent CI runs, Cachix dramatically reduces build times:
 - uses: cachix/cachix-action@v14
   with:
     name: go-filewatcher
-    authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+    authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 ```
 
 **Cost:** Free for open-source projects. Requires setup at `cachix.org`.
@@ -696,17 +697,17 @@ For projects with frequent CI runs, Cachix dramatically reduces build times:
 
 ### 7.1 Command Comparison
 
-| Before (justfile) | Current (manual) | Target (Nix) |
-|---|---|---|
-| `just check` | Type 3 commands manually | `nix run .#check` |
-| `just ci` | Type 6 commands manually | `nix run .#ci` |
-| `just lint-fix` | Type full command | `nix run .#lint-fix` |
-| — | `go test -race ./...` | `nix run .#test` |
-| — | `golangci-lint run ./...` | `nix run .#lint` |
-| — | `go test -bench=. ./...` | `nix run .#bench` |
-| — | — | `nix flake check` (all QA) |
-| — | — | `nix build .` (validate build) |
-| — | — | `nix fmt` (format Nix files) |
+| Before (justfile) | Current (manual)          | Target (Nix)                   |
+| ----------------- | ------------------------- | ------------------------------ |
+| `just check`      | Type 3 commands manually  | `nix run .#check`              |
+| `just ci`         | Type 6 commands manually  | `nix run .#ci`                 |
+| `just lint-fix`   | Type full command         | `nix run .#lint-fix`           |
+| —                 | `go test -race ./...`     | `nix run .#test`               |
+| —                 | `golangci-lint run ./...` | `nix run .#lint`               |
+| —                 | `go test -bench=. ./...`  | `nix run .#bench`              |
+| —                 | —                         | `nix flake check` (all QA)     |
+| —                 | —                         | `nix build .` (validate build) |
+| —                 | —                         | `nix fmt` (format Nix files)   |
 
 ### 7.2 Onboarding Flow
 
@@ -754,12 +755,12 @@ The `watch_file` directives cause direnv to automatically reload when the flake 
 
 `go-filewatcher` is a **library**, not a binary. This affects Nix packaging:
 
-| Aspect | Binary | Library |
-|--------|--------|---------|
-| `packages` output | Essential (produces binary) | Nice-to-have (validates build) |
-| `nix run` | Runs the binary | N/A (no main package) |
-| Docker image | Common use case | Rarely needed |
-| nixpkgs inclusion | High value | Low value (Go modules preferred) |
+| Aspect            | Binary                      | Library                          |
+| ----------------- | --------------------------- | -------------------------------- |
+| `packages` output | Essential (produces binary) | Nice-to-have (validates build)   |
+| `nix run`         | Runs the binary             | N/A (no main package)            |
+| Docker image      | Common use case             | Rarely needed                    |
+| nixpkgs inclusion | High value                  | Low value (Go modules preferred) |
 
 ### 8.2 Recommended Approach
 
@@ -793,14 +794,14 @@ packages.default = pkgs.buildGoModule {
 
 ### 9.1 Risks
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|-----------|--------|------------|
-| `go_1_26` not in nixpkgs | Medium | High | Update flake.lock; use `pkgs.go` as fallback |
-| Nix evaluation slow on CI | Medium | Medium | Cachix binary cache |
-| Team unfamiliar with Nix | Low | Low | Document commands; shell aliases |
-| `vendorHash` maintenance burden | Medium | Low | Automate via CI; document update procedure |
-| Breaking change for contributors | Low | Medium | Keep `direnv allow` as primary onboarding path |
-| `golangci-lint` version mismatch | Low | Medium | Nix pins exact version; more reproducible |
+| Risk                             | Likelihood | Impact | Mitigation                                     |
+| -------------------------------- | ---------- | ------ | ---------------------------------------------- |
+| `go_1_26` not in nixpkgs         | Medium     | High   | Update flake.lock; use `pkgs.go` as fallback   |
+| Nix evaluation slow on CI        | Medium     | Medium | Cachix binary cache                            |
+| Team unfamiliar with Nix         | Low        | Low    | Document commands; shell aliases               |
+| `vendorHash` maintenance burden  | Medium     | Low    | Automate via CI; document update procedure     |
+| Breaking change for contributors | Low        | Medium | Keep `direnv allow` as primary onboarding path |
+| `golangci-lint` version mismatch | Low        | Medium | Nix pins exact version; more reproducible      |
 
 ### 9.2 Rollback Plan
 
@@ -816,26 +817,26 @@ If Nix proves problematic:
 
 ### Summary of All Steps (Ordered by Priority)
 
-| # | Step | Phase | Est. Time | Dependency |
-|---|------|-------|-----------|------------|
-| 1 | Update `flake.lock` to get `go_1_26` | 1 | 5 min | — |
-| 2 | Fix `go_1_24` → `go_1_26` in `flake.nix` | 1 | 5 min | Step 1 |
-| 3 | Pin `nixpkgs.url` to explicit GitHub ref | 1 | 2 min | — |
-| 4 | Add missing dev tools (gopls, delve, golines) | 1 | 5 min | — |
-| 5 | Verify `nix develop` works with correct Go | 1 | 5 min | Steps 1-4 |
-| 6 | Add `packages` output with `buildGoModule` | 2 | 30 min | Step 5 |
-| 7 | Compute and set `vendorHash` | 2 | 10 min | Step 6 |
-| 8 | Add `apps` output (test, lint, check, ci, etc.) | 2 | 45 min | Step 5 |
-| 9 | Add `checks` output (build, test, lint, fmt, vet) | 2 | 30 min | Steps 6, 8 |
-| 10 | Add `formatter` output | 2 | 5 min | — |
-| 11 | Verify `nix flake check` passes | 2 | 10 min | Steps 6-10 |
-| 12 | Update `.envrc` with `watch_file` directives | 3 | 2 min | — |
-| 13 | Add shell aliases in `shellHook` | 3 | 5 min | Step 8 |
-| 14 | Update `AGENTS.md` with new commands | 3 | 10 min | Step 8 |
-| 15 | Update `README.md` with Nix instructions | 3 | 15 min | Step 8 |
-| 16 | Migrate `ci.yml` to Nix | 3 | 30 min | Step 11 |
-| 17 | Set up Cachix (optional) | 3 | 30 min | Step 16 |
-| 18 | Final verification: all commands work | 3 | 15 min | Steps 1-17 |
+| #   | Step                                              | Phase | Est. Time | Dependency |
+| --- | ------------------------------------------------- | ----- | --------- | ---------- |
+| 1   | Update `flake.lock` to get `go_1_26`              | 1     | 5 min     | —          |
+| 2   | Fix `go_1_24` → `go_1_26` in `flake.nix`          | 1     | 5 min     | Step 1     |
+| 3   | Pin `nixpkgs.url` to explicit GitHub ref          | 1     | 2 min     | —          |
+| 4   | Add missing dev tools (gopls, delve, golines)     | 1     | 5 min     | —          |
+| 5   | Verify `nix develop` works with correct Go        | 1     | 5 min     | Steps 1-4  |
+| 6   | Add `packages` output with `buildGoModule`        | 2     | 30 min    | Step 5     |
+| 7   | Compute and set `vendorHash`                      | 2     | 10 min    | Step 6     |
+| 8   | Add `apps` output (test, lint, check, ci, etc.)   | 2     | 45 min    | Step 5     |
+| 9   | Add `checks` output (build, test, lint, fmt, vet) | 2     | 30 min    | Steps 6, 8 |
+| 10  | Add `formatter` output                            | 2     | 5 min     | —          |
+| 11  | Verify `nix flake check` passes                   | 2     | 10 min    | Steps 6-10 |
+| 12  | Update `.envrc` with `watch_file` directives      | 3     | 2 min     | —          |
+| 13  | Add shell aliases in `shellHook`                  | 3     | 5 min     | Step 8     |
+| 14  | Update `AGENTS.md` with new commands              | 3     | 10 min    | Step 8     |
+| 15  | Update `README.md` with Nix instructions          | 3     | 15 min    | Step 8     |
+| 16  | Migrate `ci.yml` to Nix                           | 3     | 30 min    | Step 11    |
+| 17  | Set up Cachix (optional)                          | 3     | 30 min    | Step 16    |
+| 18  | Final verification: all commands work             | 3     | 15 min    | Steps 1-17 |
 
 **Total estimated time:** ~4-5 hours
 
@@ -1158,7 +1159,7 @@ jobs:
 
 ## Appendix D: Target `AGENTS.md` Commands Section
 
-```markdown
+````markdown
 ## Critical Commands
 
 ```bash
@@ -1185,6 +1186,7 @@ nix fmt                  # Format .nix files
 go test -race ./...
 golangci-lint run ./...
 ```
+````
 
 ---
 
@@ -1192,13 +1194,13 @@ golangci-lint run ./...
 
 The following decisions are needed before execution:
 
-| # | Decision | Options | Recommendation |
-|---|----------|---------|----------------|
-| D1 | Go version if `go_1_26` unavailable | `pkgs.go` / custom overlay / wait | Update flake.lock first; use `pkgs.go` as fallback |
-| D2 | Include `packages` output for library | Yes / No | Yes — validates build, minimal maintenance |
-| D3 | CI: full Nix or hybrid | Full Nix / Hybrid | Full Nix — eliminates version drift |
-| D4 | Set up Cachix now or later | Now / Later | Later — add when CI is stable |
-| D5 | Include `buildGoModule` or skip | Include / Skip | Include — catches dependency issues early |
+| #   | Decision                              | Options                           | Recommendation                                     |
+| --- | ------------------------------------- | --------------------------------- | -------------------------------------------------- |
+| D1  | Go version if `go_1_26` unavailable   | `pkgs.go` / custom overlay / wait | Update flake.lock first; use `pkgs.go` as fallback |
+| D2  | Include `packages` output for library | Yes / No                          | Yes — validates build, minimal maintenance         |
+| D3  | CI: full Nix or hybrid                | Full Nix / Hybrid                 | Full Nix — eliminates version drift                |
+| D4  | Set up Cachix now or later            | Now / Later                       | Later — add when CI is stable                      |
+| D5  | Include `buildGoModule` or skip       | Include / Skip                    | Include — catches dependency issues early          |
 
 ---
 

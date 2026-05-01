@@ -38,38 +38,30 @@ func FilterGeneratedCode(options ...gogenfilter.FilterOption) Filter {
 	return FilterGeneratedCodeFull(ContentCheckDisabled, options...)
 }
 
-// buildGogenFilterOptions converts filter options slice to a lookup map.
-// Handles FilterAll expansion and applies defaults when no options provided.
-func buildGogenFilterOptions(options []gogenfilter.FilterOption) map[gogenfilter.FilterOption]bool {
-	// Default to all generators if none specified
-	opts := options
-	if len(opts) == 0 {
-		opts = []gogenfilter.FilterOption{gogenfilter.FilterAll}
+// buildGogenFilterOptions expands FilterAll and applies defaults when needed.
+func buildGogenFilterOptions(options []gogenfilter.FilterOption) []gogenfilter.FilterOption {
+	if len(options) == 0 {
+		return []gogenfilter.FilterOption{gogenfilter.FilterAll}
 	}
 
-	optMap := make(map[gogenfilter.FilterOption]bool)
-
-	for _, opt := range opts {
+	result := make([]gogenfilter.FilterOption, 0, len(options))
+	for _, opt := range options {
 		if opt == gogenfilter.FilterAll {
-			// Enable all specific options
-			for _, specific := range []gogenfilter.FilterOption{
+			result = append(result,
 				gogenfilter.FilterSQLC,
 				gogenfilter.FilterTempl,
 				gogenfilter.FilterGoEnum,
 				gogenfilter.FilterProtobuf,
 				gogenfilter.FilterMockgen,
 				gogenfilter.FilterStringer,
-			} {
-				optMap[specific] = true
-			}
-
-			optMap[gogenfilter.FilterGeneric] = true
+				gogenfilter.FilterGeneric,
+			)
 		} else {
-			optMap[opt] = true
+			result = append(result, opt)
 		}
 	}
 
-	return optMap
+	return result
 }
 
 // FilterGeneratedCodeFull creates a filter with configurable content checking.
@@ -84,32 +76,29 @@ func buildGogenFilterOptions(options []gogenfilter.FilterOption) map[gogenfilter
 // The filter returns true to keep (non-generated) files, false to discard
 // (generated) files.
 func FilterGeneratedCodeFull(mode ContentCheckMode, options ...gogenfilter.FilterOption) Filter {
-	optMap := buildGogenFilterOptions(options)
+	filterOpts := buildGogenFilterOptions(options)
 
 	return func(event Event) bool {
-		// Directories are not filtered by generated code detection
 		if event.IsDir {
 			return true
 		}
 
-		// Phase 1: Filename-based detection (zero I/O)
-		reason := gogenfilter.DetectReason(event.Path, "", optMap)
+		reason := gogenfilter.DetectReason(event.Path, "", filterOpts...)
 		if reason != gogenfilter.ReasonNotFiltered {
-			return false // Filter out generated file
+			return false
 		}
 
-		// Phase 2: Content-based detection (if requested)
 		if mode == ContentCheckEnabled {
 			content, err := os.ReadFile(event.Path)
 			if err == nil {
-				reason = gogenfilter.DetectReason(event.Path, string(content), optMap)
+				reason = gogenfilter.DetectReason(event.Path, string(content), filterOpts...)
 				if reason != gogenfilter.ReasonNotFiltered {
-					return false // Filter out generated file
+					return false
 				}
 			}
 		}
 
-		return true // Keep non-generated files
+		return true
 	}
 }
 
@@ -129,21 +118,23 @@ func FilterGeneratedCodeFull(mode ContentCheckMode, options ...gogenfilter.Filte
 //	)
 func FilterGeneratedCodeWithFilter(genFilter *gogenfilter.Filter) Filter {
 	return func(event Event) bool {
-		// Directories are not filtered by generated code detection
 		if event.IsDir {
 			return true
 		}
 
-		// Use gogenfilter's ShouldFilter method
-		// Returns true if file should be filtered (excluded)
-		return !genFilter.ShouldFilter(event.Path)
+		shouldFilter, err := genFilter.ShouldFilter(event.Path)
+		if err != nil {
+			return true
+		}
+
+		return !shouldFilter
 	}
 }
 
 // GeneratedCodeDetector provides a reusable detector for generated code.
 // Useful when you need to check files outside of the event filter context.
 type GeneratedCodeDetector struct {
-	options map[gogenfilter.FilterOption]bool
+	options []gogenfilter.FilterOption
 }
 
 // NewGeneratedCodeDetector creates a new detector with the specified options.
@@ -154,7 +145,7 @@ func NewGeneratedCodeDetector(options ...gogenfilter.FilterOption) *GeneratedCod
 // IsGenerated checks if a file path represents generated code using
 // filename-based detection only (zero I/O).
 func (d *GeneratedCodeDetector) IsGenerated(filePath string) bool {
-	reason := gogenfilter.DetectReason(filePath, "", d.options)
+	reason := gogenfilter.DetectReason(filePath, "", d.options...)
 
 	return reason != gogenfilter.ReasonNotFiltered
 }
@@ -162,7 +153,7 @@ func (d *GeneratedCodeDetector) IsGenerated(filePath string) bool {
 // IsGeneratedWithContent checks if a file is generated using both
 // filename and content detection.
 func (d *GeneratedCodeDetector) IsGeneratedWithContent(filePath, content string) bool {
-	reason := gogenfilter.DetectReason(filePath, content, d.options)
+	reason := gogenfilter.DetectReason(filePath, content, d.options...)
 
 	return reason != gogenfilter.ReasonNotFiltered
 }
@@ -170,5 +161,5 @@ func (d *GeneratedCodeDetector) IsGeneratedWithContent(filePath, content string)
 // GetReason returns the specific reason why a file was detected as generated,
 // or gogenfilter.ReasonNotFiltered if it's not generated.
 func (d *GeneratedCodeDetector) GetReason(filePath string) gogenfilter.FilterReason {
-	return gogenfilter.DetectReason(filePath, "", d.options)
+	return gogenfilter.DetectReason(filePath, "", d.options...)
 }

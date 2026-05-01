@@ -219,7 +219,10 @@ func TestFilterGeneratedCodeFull_WithContent(t *testing.T) {
 //nolint:paralleltest // Test files cannot be parallel due to file system operations
 func TestFilterGeneratedCodeWithFilter(t *testing.T) {
 	// Create a gogenfilter.Filter instance
-	genFilter := gogenfilter.NewFilter(true, []gogenfilter.FilterOption{gogenfilter.FilterAll})
+	genFilter := gogenfilter.NewFilter(
+		gogenfilter.Enabled(),
+		gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
+	)
 
 	filter := FilterGeneratedCodeWithFilter(genFilter)
 

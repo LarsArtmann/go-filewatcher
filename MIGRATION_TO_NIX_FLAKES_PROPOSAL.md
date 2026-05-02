@@ -302,7 +302,7 @@ packages = forEachSystem ({ pkgs, system }: {
     meta = with pkgs.lib; {
       description = "High-performance, composable file system watcher for Go";
       homepage = "https://github.com/larsartmann/go-filewatcher";
-      license = licenses.unfree; # Proprietary per LICENSE
+      license = licenses.mit;
     };
   };
 });
@@ -900,7 +900,7 @@ After completing all phases, verify:
           meta = with pkgs.lib; {
             description = "High-performance, composable file system watcher for Go";
             homepage = "https://github.com/larsartmann/go-filewatcher";
-            license = licenses.unfree;
+            license = licenses.mit;
           };
         };
       });

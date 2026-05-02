@@ -3,7 +3,7 @@
 [![Go Version](https://img.shields.io/badge/go-1.26.1+-blue.svg)](https://golang.org/dl/)
 [![Go Reference](https://pkg.go.dev/badge/github.com/larsartmann/go-filewatcher.svg)](https://pkg.go.dev/github.com/larsartmann/go-filewatcher)
 [![CI](https://github.com/larsartmann/go-filewatcher/actions/workflows/ci.yml/badge.svg)](https://github.com/larsartmann/go-filewatcher/actions)
-[![License](https://img.shields.io/badge/license-Proprietary-red.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 A high-performance, composable file system watcher for Go, built on [fsnotify](https://github.com/fsnotify/fsnotify). Eliminates the boilerplate of raw fsnotify usage with sensible defaults, automatic recursive watching, powerful filtering, and elegant middleware chains.
 
@@ -577,9 +577,9 @@ go run ./examples/filter-generated
 
 ## License
 
-Proprietary — See [LICENSE](LICENSE) file for details.
+MIT — See [LICENSE](LICENSE) file for details.
 
-Copyright © 2026 Lars Artmann. All rights reserved.
+Copyright © 2026 Lars Artmann.
 
 ---
 

@@ -20,12 +20,15 @@ func (w *Watcher) initDebouncer() {
 }
 
 // addPath adds a directory (and optionally its subdirectories) to the fsnotify watcher.
+// It also appends the root path to the watchList.
 func (w *Watcher) addPath(root RootPath) error {
 	if !w.recursive {
 		err := w.fswatcher.Add(root.Get())
 		if err != nil {
 			return fmt.Errorf("adding watch path %q: %w", root, err)
 		}
+
+		w.watchList = append(w.watchList, root.Get())
 
 		return nil
 	}

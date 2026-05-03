@@ -190,7 +190,10 @@ func (w *Watcher) handleNewDirectory(path string) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	_ = w.addPath(NewRootPath(path))
+	addErr := w.addPath(NewRootPath(path))
+	if addErr != nil {
+		w.handleError(ErrorContext{Operation: "add-path", Path: path, Retryable: true}, addErr)
+	}
 }
 
 // passesFilters checks if an event passes all registered filters.

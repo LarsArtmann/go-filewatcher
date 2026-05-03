@@ -28,8 +28,8 @@ func TestAddPath_NonRecursive(t *testing.T) {
 		t.Fatalf("addPath non-recursive: %v", addErr)
 	}
 
-	if len(w.watchList) != 0 {
-		t.Errorf("watchList should be empty for non-recursive addPath, got %d", len(w.watchList))
+	if len(w.watchList) != 1 {
+		t.Errorf("watchList should have 1 entry for non-recursive addPath, got %d", len(w.watchList))
 	}
 }
 

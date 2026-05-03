@@ -290,8 +290,6 @@ func (w *Watcher) Add(path string) error {
 		return fmt.Errorf("adding resolved path %q to watcher: %w", abs, pathErr)
 	}
 
-	w.watchList = append(w.watchList, abs)
-
 	return nil
 }
 

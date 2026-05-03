@@ -338,7 +338,9 @@ func MiddlewareBatch(window time.Duration, maxSize int, flush func([]Event) erro
 					state.mu.Unlock()
 
 					if len(events) > 0 {
-						_ = flush(events)
+						if err := flush(events); err != nil {
+							slog.Error("filewatcher: batch flush error", slog.String("error", err.Error()))
+						}
 					}
 				})
 			}

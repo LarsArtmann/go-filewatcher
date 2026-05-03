@@ -8,6 +8,8 @@ import (
 	"runtime/debug"
 	"sync"
 	"time"
+
+	"golang.org/x/time/rate"
 )
 
 const logFilePermission = 0o600 // rw------- (owner read/write only) for audit log files
@@ -91,42 +93,19 @@ func MiddlewareOnError(onError func(event Event, err error)) Middleware {
 	}
 }
 
-// MiddlewareRateLimit returns a middleware that limits the rate of events.
-// It allows maxEvents events per second. Events exceeding the limit are dropped.
-// Uses lazy time checking to avoid a background goroutine.
+// MiddlewareRateLimit returns a middleware that limits the rate of events
+// using a token bucket algorithm. It allows maxEvents events per second
+// with burst=maxEvents. Events exceeding the limit are dropped.
 func MiddlewareRateLimit(maxEvents int) Middleware {
 	if maxEvents <= 0 {
 		maxEvents = 100
 	}
 
-	type rateState struct {
-		mu        sync.Mutex
-		count     int64
-		lastReset time.Time
-	}
-
-	state := &rateState{
-		mu:        sync.Mutex{},
-		count:     0,
-		lastReset: time.Now(),
-	}
+	limiter := rate.NewLimiter(rate.Limit(maxEvents), maxEvents)
 
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			state.mu.Lock()
-
-			// Check if we need to reset (1 second elapsed)
-			now := time.Now()
-			if now.Sub(state.lastReset) >= time.Second {
-				state.count = 0
-				state.lastReset = now
-			}
-
-			state.count++
-			current := state.count
-			state.mu.Unlock()
-
-			if current > int64(maxEvents) {
+			if !limiter.Allow() {
 				return nil
 			}
 
@@ -135,9 +114,9 @@ func MiddlewareRateLimit(maxEvents int) Middleware {
 	}
 }
 
-// MiddlewareSlidingWindowRateLimit returns a middleware that uses a sliding
-// window algorithm for rate limiting. This is more accurate than the simple
-// counter approach but has slightly more overhead.
+// MiddlewareSlidingWindowRateLimit returns a middleware that limits events
+// to maxEvents per window duration using a token bucket. This provides
+// smooth rate limiting without the boundary-burst problem of fixed windows.
 func MiddlewareSlidingWindowRateLimit(maxEvents int, window time.Duration) Middleware {
 	if maxEvents <= 0 {
 		maxEvents = 100
@@ -147,45 +126,15 @@ func MiddlewareSlidingWindowRateLimit(maxEvents int, window time.Duration) Middl
 		window = time.Second
 	}
 
-	type windowState struct {
-		mu     sync.Mutex
-		events []time.Time
-	}
-
-	state := &windowState{
-		mu:     sync.Mutex{},
-		events: make([]time.Time, 0, maxEvents),
-	}
+	// Convert maxEvents/window to events per second
+	eventsPerSec := float64(maxEvents) / window.Seconds()
+	limiter := rate.NewLimiter(rate.Limit(eventsPerSec), maxEvents)
 
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			now := time.Now()
-			cutoff := now.Add(-window)
-
-			state.mu.Lock()
-
-			// In-place compaction: remove expired entries without allocation
-			writeIdx := 0
-
-			for _, t := range state.events {
-				if t.After(cutoff) {
-					state.events[writeIdx] = t
-					writeIdx++
-				}
-			}
-
-			state.events = state.events[:writeIdx]
-
-			// Check if we're over the limit
-			if len(state.events) >= maxEvents {
-				state.mu.Unlock()
-
+			if !limiter.Allow() {
 				return nil
 			}
-
-			// Add this event
-			state.events = append(state.events, now)
-			state.mu.Unlock()
 
 			return next(ctx, event)
 		}
@@ -410,7 +359,7 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 // MiddlewareThrottle returns a middleware that limits event processing to
 // maxEvents per second with burst support. Up to burst events can be
 // processed immediately; after that, only maxEvents per second are allowed.
-// Excess events are dropped.
+// Excess events are dropped. Uses golang.org/x/time/rate for correctness.
 func MiddlewareThrottle(maxEvents, burst int) Middleware {
 	if maxEvents <= 0 {
 		maxEvents = 100
@@ -420,43 +369,13 @@ func MiddlewareThrottle(maxEvents, burst int) Middleware {
 		burst = maxEvents
 	}
 
-	type tokenBucket struct {
-		mu         sync.Mutex
-		tokens     float64
-		maxTokens  float64
-		rate       float64
-		lastUpdate time.Time
-	}
-
-	bucket := &tokenBucket{
-		mu:         sync.Mutex{},
-		tokens:     float64(burst),
-		maxTokens:  float64(burst),
-		rate:       float64(maxEvents),
-		lastUpdate: time.Now(),
-	}
+	limiter := rate.NewLimiter(rate.Limit(maxEvents), burst)
 
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			bucket.mu.Lock()
-
-			now := time.Now()
-			elapsed := now.Sub(bucket.lastUpdate).Seconds()
-			bucket.lastUpdate = now
-			bucket.tokens += elapsed * bucket.rate
-
-			if bucket.tokens > bucket.maxTokens {
-				bucket.tokens = bucket.maxTokens
-			}
-
-			if bucket.tokens < 1 {
-				bucket.mu.Unlock()
-
+			if !limiter.Allow() {
 				return nil
 			}
-
-			bucket.tokens--
-			bucket.mu.Unlock()
 
 			return next(ctx, event)
 		}

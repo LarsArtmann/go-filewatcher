@@ -145,3 +145,13 @@ func WithLazyIsDir() Option {
 		w.lazyIsDir = true
 	}
 }
+
+// WithIgnorePatterns adds glob patterns to ignore at the filter level.
+// Files matching any of the patterns are filtered out.
+// Patterns are applied to the filename only (not the full path).
+// Example patterns: "*.log", "*.tmp", ".*".
+func WithIgnorePatterns(patterns ...string) Option {
+	return func(w *Watcher) {
+		w.filters = append(w.filters, FilterIgnoreGlobs(patterns...))
+	}
+}

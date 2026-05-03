@@ -279,6 +279,40 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 	return eventCh, nil
 }
 
+// WatchOnce starts watching and returns the first matching event, then stops.
+// This is a convenience method for one-shot file watching. The watcher is
+// automatically closed after the event is received or the context is cancelled.
+//
+// Returns the event and nil on success, or an empty Event and an error if
+// the context is cancelled or the watcher encounters an error.
+func (w *Watcher) WatchOnce(ctx context.Context) (Event, error) {
+	events, err := w.Watch(ctx)
+	if err != nil {
+		return Event{}, fmt.Errorf("starting watch in WatchOnce: %w", err)
+	}
+
+	select {
+	case event, ok := <-events:
+		if !ok {
+			return Event{}, fmt.Errorf("%w: event channel closed", ErrWatcherClosed)
+		}
+
+		closeErr := w.Close()
+		if closeErr != nil {
+			return event, fmt.Errorf("closing watcher in WatchOnce: %w", closeErr)
+		}
+
+		return event, nil
+	case <-ctx.Done():
+		closeErr := w.Close()
+
+		return Event{}, fmt.Errorf(
+			"watchonce cancelled: watcher close: %w: context: %w",
+			closeErr, ctx.Err(),
+		)
+	}
+}
+
 // Add adds a new path to the watcher. The path must be an existing directory.
 // This method is safe for concurrent use with other methods.
 func (w *Watcher) Add(path string) error {

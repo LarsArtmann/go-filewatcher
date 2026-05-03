@@ -406,3 +406,59 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 		}
 	}
 }
+
+// MiddlewareThrottle returns a middleware that limits event processing to
+// maxEvents per second with burst support. Up to burst events can be
+// processed immediately; after that, only maxEvents per second are allowed.
+// Excess events are dropped.
+func MiddlewareThrottle(maxEvents, burst int) Middleware {
+	if maxEvents <= 0 {
+		maxEvents = 100
+	}
+
+	if burst <= 0 {
+		burst = maxEvents
+	}
+
+	type tokenBucket struct {
+		mu         sync.Mutex
+		tokens     float64
+		maxTokens  float64
+		rate       float64
+		lastUpdate time.Time
+	}
+
+	bucket := &tokenBucket{
+		mu:         sync.Mutex{},
+		tokens:     float64(burst),
+		maxTokens:  float64(burst),
+		rate:       float64(maxEvents),
+		lastUpdate: time.Now(),
+	}
+
+	return func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			bucket.mu.Lock()
+
+			now := time.Now()
+			elapsed := now.Sub(bucket.lastUpdate).Seconds()
+			bucket.lastUpdate = now
+			bucket.tokens += elapsed * bucket.rate
+
+			if bucket.tokens > bucket.maxTokens {
+				bucket.tokens = bucket.maxTokens
+			}
+
+			if bucket.tokens < 1 {
+				bucket.mu.Unlock()
+
+				return nil
+			}
+
+			bucket.tokens--
+			bucket.mu.Unlock()
+
+			return next(ctx, event)
+		}
+	}
+}

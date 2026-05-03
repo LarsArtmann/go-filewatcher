@@ -278,3 +278,21 @@ func FilterNot(f Filter) Filter {
 		return !f(event)
 	}
 }
+
+// FilterIgnoreGlobs creates a filter that discards events for files matching
+// any of the given glob patterns. This is useful for excluding files by
+// pattern (e.g., "*.log", "*.tmp", ".*") at the filter level.
+func FilterIgnoreGlobs(patterns ...string) Filter {
+	return func(event Event) bool {
+		base := filepath.Base(event.Path)
+
+		for _, pattern := range patterns {
+			matched, matchErr := filepath.Match(pattern, base)
+			if matchErr == nil && matched {
+				return false
+			}
+		}
+
+		return true
+	}
+}

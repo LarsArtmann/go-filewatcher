@@ -1,6 +1,6 @@
 # Agent Guide: go-filewatcher
 
-**Go 1.26.1** | `github.com/larsartmann/go-filewatcher`
+**Go 1.26.2** | `github.com/larsartmann/go-filewatcher` | **MIT License**
 
 ---
 

@@ -469,3 +469,168 @@ func TestWatcher_WatchList_NoDuplicates(t *testing.T) {
 		}
 	}
 }
+
+func TestWatcher_WatchOnce(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	go func() {
+		time.Sleep(200 * time.Millisecond)
+
+		triggerPath := filepath.Join(tmpDir, "trigger.txt")
+
+		writeErr := os.WriteFile(triggerPath, []byte("data"), testFilePermission)
+		if writeErr != nil {
+			t.Error(writeErr)
+		}
+	}()
+
+	event, onceErr := w.WatchOnce(ctx)
+	if onceErr != nil {
+		t.Fatalf("WatchOnce failed: %v", onceErr)
+	}
+
+	if event.Path == "" {
+		t.Error("expected non-empty event path")
+	}
+
+	if !w.IsClosed() {
+		t.Error("expected watcher to be closed after WatchOnce")
+	}
+}
+
+func TestWatcher_WatchOnce_CancelledContext(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ctx, cancel := context.WithCancel(t.Context())
+	cancel()
+
+	_, onceErr := w.WatchOnce(ctx)
+	if onceErr == nil {
+		t.Fatal("expected error from WatchOnce with cancelled context")
+	}
+}
+
+func TestMiddlewareThrottle_AllowsBurst(t *testing.T) {
+	t.Parallel()
+
+	var count atomic.Int32
+
+	mw := MiddlewareThrottle(1, 5)
+	handler := mw(func(_ context.Context, _ Event) error {
+		count.Add(1)
+
+		return nil
+	})
+
+	ctx := context.Background()
+	event := testWriteEvent("/tmp/test.txt")
+
+	for range 10 {
+		_ = handler(ctx, event)
+	}
+
+	if count.Load() > 5 {
+		t.Errorf("expected at most 5 events through burst=5 limiter, got %d", count.Load())
+	}
+}
+
+func TestMiddlewareThrottle_ZeroDefaults(t *testing.T) {
+	t.Parallel()
+
+	var count atomic.Int32
+
+	mw := MiddlewareThrottle(0, 0)
+	handler := mw(func(_ context.Context, _ Event) error {
+		count.Add(1)
+
+		return nil
+	})
+
+	ctx := context.Background()
+	event := testWriteEvent("/tmp/test.txt")
+
+	for range 200 {
+		_ = handler(ctx, event)
+	}
+
+	if count.Load() == 0 {
+		t.Error("expected some events to pass through with default throttle")
+	}
+}
+
+func TestFilterIgnoreGlobs(t *testing.T) {
+	t.Parallel()
+
+	filter := FilterIgnoreGlobs("*.log", "*.tmp", ".*")
+
+	tests := []struct {
+		path string
+		want bool
+	}{
+		{"/tmp/app.log", false},
+		{"/tmp/cache.tmp", false},
+		{"/tmp/.env", false},
+		{"/tmp/main.go", true},
+		{"/tmp/README.md", true},
+	}
+
+	for _, tt := range tests {
+		event := testWriteEvent(tt.path)
+
+		if got := filter(event); got != tt.want {
+			t.Errorf("FilterIgnoreGlobs(%q) = %v, want %v", tt.path, got, tt.want)
+		}
+	}
+}
+
+func TestWithIgnorePatterns(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir}, WithIgnorePatterns("*.log", "*.tmp"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	if len(w.filters) != 1 {
+		t.Fatalf("expected 1 filter, got %d", len(w.filters))
+	}
+
+	filter := w.filters[0]
+
+	tests := []struct {
+		path string
+		want bool
+	}{
+		{"/tmp/app.log", false},
+		{"/tmp/cache.tmp", false},
+		{"/tmp/main.go", true},
+	}
+
+	for _, tt := range tests {
+		event := testWriteEvent(tt.path)
+
+		if got := filter(event); got != tt.want {
+			t.Errorf("WithIgnorePatterns filter(%q) = %v, want %v", tt.path, got, tt.want)
+		}
+	}
+}

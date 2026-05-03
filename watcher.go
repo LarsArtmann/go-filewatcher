@@ -305,11 +305,13 @@ func (w *Watcher) WatchOnce(ctx context.Context) (Event, error) {
 		return event, nil
 	case <-ctx.Done():
 		closeErr := w.Close()
+		if closeErr != nil {
+			return Event{}, fmt.Errorf(
+				"watchonce cancelled: %w: %w", closeErr, ctx.Err(),
+			)
+		}
 
-		return Event{}, fmt.Errorf(
-			"watchonce cancelled: watcher close: %w: context: %w",
-			closeErr, ctx.Err(),
-		)
+		return Event{}, fmt.Errorf("watchonce cancelled: %w", ctx.Err())
 	}
 }
 

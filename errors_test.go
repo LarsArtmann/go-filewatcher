@@ -1,4 +1,4 @@
-//nolint:testpackage,varnamelen,exhaustruct,err113,goconst // Tests need internal access; idiomatic short names; partial initialization acceptable; dynamic errors for testing; repeated literals in tests
+//nolint:testpackage,varnamelen,exhaustruct,err113,goconst // Tests need internal access; idiomatic short names; partial initialization acceptable; dynamic errors for testing; repeated literals
 package filewatcher
 
 import (

@@ -1,25 +1,37 @@
 package filewatcher
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // Option configures a Watcher during creation.
 type Option func(*Watcher)
 
 // WithDebounce sets a global debounce delay. All events are coalesced
 // into a single emission after the delay since the last event.
-// Default is no debouncing.
-func WithDebounce(d time.Duration) Option {
+// Default is no debouncing. Panics if delay is negative.
+func WithDebounce(delay time.Duration) Option {
+	if delay < 0 {
+		panic(fmt.Sprintf("filewatcher: WithDebounce: negative duration %v", delay))
+	}
+
 	return func(w *Watcher) {
-		w.globalDebounce = d
+		w.globalDebounce = delay
 	}
 }
 
 // WithPerPathDebounce sets a per-path debounce delay. Events for different
 // file paths are debounced independently. This is useful when watching
 // many files and changes to different files should trigger separate actions.
-func WithPerPathDebounce(d time.Duration) Option {
+// Panics if delay is negative.
+func WithPerPathDebounce(delay time.Duration) Option {
+	if delay < 0 {
+		panic(fmt.Sprintf("filewatcher: WithPerPathDebounce: negative duration %v", delay))
+	}
+
 	return func(w *Watcher) {
-		w.perPathDebounce = d
+		w.perPathDebounce = delay
 	}
 }
 
@@ -95,10 +107,11 @@ func WithSkipDotDirs(skip bool) Option {
 
 // WithBuffer sets the buffer size for the event channel.
 // A larger buffer helps handle event bursts without dropping events.
-// Default is 64. Minimum effective value is 1.
+// Default is 64. A value of 0 creates an unbuffered channel which may
+// cause deadlocks if the consumer is slow; use with caution.
 func WithBuffer(size int) Option {
 	return func(w *Watcher) {
-		if size > 0 {
+		if size >= 0 {
 			w.bufferSize = size
 		}
 	}

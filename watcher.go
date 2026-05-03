@@ -25,7 +25,8 @@ const (
 	flagWatching
 )
 
-// DefaultIgnoreDirs contains commonly ignored directory names.
+// DefaultIgnoreDirs returns a copy of the commonly ignored directory names.
+// The returned slice is safe to modify without affecting the defaults.
 //
 //nolint:gochecknoglobals // Exported for user reference in configuration.
 var DefaultIgnoreDirs = []string{
@@ -33,6 +34,15 @@ var DefaultIgnoreDirs = []string{
 	"vendor", "node_modules",
 	"dist", "build", "bin", "out",
 	"__pycache__", ".cache",
+}
+
+// DefaultIgnoreDirsCopy returns a defensive copy of DefaultIgnoreDirs
+// so callers cannot mutate the global default.
+func DefaultIgnoreDirsCopy() []string {
+	result := make([]string, len(DefaultIgnoreDirs))
+	copy(result, DefaultIgnoreDirs)
+
+	return result
 }
 
 // Watcher watches file system paths for changes and emits filtered,

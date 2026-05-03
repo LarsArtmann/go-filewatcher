@@ -29,7 +29,10 @@ func TestAddPath_NonRecursive(t *testing.T) {
 	}
 
 	if len(w.watchList) != 1 {
-		t.Errorf("watchList should have 1 entry for non-recursive addPath, got %d", len(w.watchList))
+		t.Errorf(
+			"watchList should have 1 entry for non-recursive addPath, got %d",
+			len(w.watchList),
+		)
 	}
 }
 

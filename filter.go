@@ -93,20 +93,9 @@ func FilterExcludePaths(paths ...string) Filter {
 	}
 
 	return func(event Event) bool {
-		// Check exact path match
-		if _, excluded := pathSet[event.Path]; excluded {
-			return false
-		}
+		_, excluded := pathSet[event.Path]
 
-		// Also check normalized path
-		abs, err := filepath.Abs(event.Path)
-		if err == nil {
-			if _, excluded := pathSet[abs]; excluded {
-				return false
-			}
-		}
-
-		return true
+		return !excluded
 	}
 }
 
@@ -170,6 +159,7 @@ func FilterGlob(pattern string) Filter {
 // FilterRegex creates a filter that only passes events for paths
 // matching the given regular expression pattern. The pattern is
 // pre-compiled at creation time for efficiency.
+// Panics if the pattern is invalid (use regexp.Compile for runtime validation).
 func FilterRegex(pattern string) Filter {
 	re := regexp.MustCompile(pattern)
 

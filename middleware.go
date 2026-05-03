@@ -154,7 +154,7 @@ func MiddlewareSlidingWindowRateLimit(maxEvents int, window time.Duration) Middl
 
 	state := &windowState{
 		mu:     sync.Mutex{},
-		events: nil,
+		events: make([]time.Time, 0, maxEvents),
 	}
 
 	return func(next Handler) Handler {
@@ -164,16 +164,17 @@ func MiddlewareSlidingWindowRateLimit(maxEvents int, window time.Duration) Middl
 
 			state.mu.Lock()
 
-			// Remove events outside the window
-			var newEvents []time.Time
+			// In-place compaction: remove expired entries without allocation
+			writeIdx := 0
 
 			for _, t := range state.events {
 				if t.After(cutoff) {
-					newEvents = append(newEvents, t)
+					state.events[writeIdx] = t
+					writeIdx++
 				}
 			}
 
-			state.events = newEvents
+			state.events = state.events[:writeIdx]
 
 			// Check if we're over the limit
 			if len(state.events) >= maxEvents {
@@ -338,8 +339,12 @@ func MiddlewareBatch(window time.Duration, maxSize int, flush func([]Event) erro
 					state.mu.Unlock()
 
 					if len(events) > 0 {
-						if err := flush(events); err != nil {
-							slog.Error("filewatcher: batch flush error", slog.String("error", err.Error()))
+						err := flush(events)
+						if err != nil {
+							slog.Error(
+								"filewatcher: batch flush error",
+								slog.String("error", err.Error()),
+							)
 						}
 					}
 				})

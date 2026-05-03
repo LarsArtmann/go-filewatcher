@@ -89,9 +89,8 @@ func (e *WatcherError) Unwrap() error {
 // checkWatcherError extracts a WatcherError from an error if present.
 // Returns (watcherErr, true) if found, (nil, false) otherwise.
 func checkWatcherError(err error) (*WatcherError, bool) {
-	var watcherErr *WatcherError
-
-	if errors.As(err, &watcherErr) {
+	watcherErr, ok := errors.AsType[*WatcherError](err)
+	if ok {
 		return watcherErr, true
 	}
 

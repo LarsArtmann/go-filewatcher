@@ -1,3 +1,4 @@
+//nolint:testpackage // Tests need internal access to unexported functions
 package filewatcher
 
 import (

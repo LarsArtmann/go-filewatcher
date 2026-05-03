@@ -2,6 +2,7 @@ package filewatcher
 
 import (
 	"encoding"
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"time"
@@ -53,7 +54,8 @@ func (op Op) MarshalText() ([]byte, error) {
 
 // MarshalJSON implements json.Marshaler.
 func (op Op) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + op.String() + `"`), nil
+	//nolint:wrapcheck // JSON serialization of enum string — no meaningful wrap
+	return json.Marshal(op.String())
 }
 
 // UnmarshalText implements encoding.TextUnmarshaler.

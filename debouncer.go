@@ -201,6 +201,10 @@ func NewGlobalDebouncer(delay time.Duration) *GlobalDebouncer {
 // since the last call, regardless of how many times Debounce is called.
 // The key parameter is intentionally ignored — GlobalDebouncer coalesces all
 // events into a single timer regardless of their key.
+//
+// Note: only the last callback is executed. If multiple events have different
+// callbacks, earlier ones are discarded. This is by design: GlobalDebouncer
+// coalesces all events into a single action.
 func (g *GlobalDebouncer) Debounce(_ DebounceKey, callback func()) {
 	g.base.mu.Lock()
 	defer g.base.mu.Unlock()

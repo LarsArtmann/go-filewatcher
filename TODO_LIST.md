@@ -1,6 +1,6 @@
 # TODO List
 
-**Generated:** 2026-04-11 (updated 2026-04-13)
+**Generated:** 2026-04-11 (updated 2026-05-03)
 **Files Processed:** 166
 
 ## 🔴 HIGH Priority
@@ -26,7 +26,7 @@
 ## 🟡 MEDIUM Priority
 
 - [x] ~~Investigate race condition in TestWatcher_Watch_WithDebounce~~ - Fixed race in debouncer
-- [ ] Add `Watcher.WatchOnce()` for one-shot mode
+- [x] ~~Add `Watcher.WatchOnce()` for one-shot mode~~ - Done: Added WatchOnce method with auto-close
 - [x] ~~Add `WithRecursive(false)` option~~ - Already exists (WithRecursive)
 - [ ] Add `WithPolling(fallback bool)` for NFS/network mounts
 - [ ] Implement exponential backoff for errors
@@ -38,11 +38,11 @@
 - [x] ~~Add `FilterMinAge()` for ignoring old files~~ - Added
 - [x] ~~Add `FilterModifiedSince(t)`~~ - Added
 - [x] ~~Add `FilterMaxSize()` complement to FilterMinSize~~ - Added
-- [ ] Add `WithIgnorePatterns()` using glob patterns
+- [x] ~~Add `WithIgnorePatterns()` using glob patterns~~ - Done: Added WithIgnorePatterns option + FilterIgnoreGlobs
 - [ ] Expose `convertEvent` for testing
-- [ ] Add `MiddlewareRateBurst()` for token bucket rate limiting
+- [x] ~~Add `MiddlewareRateBurst()` for token bucket rate limiting~~ - Done: Added MiddlewareThrottle using golang.org/x/time/rate
 - [x] ~~Add `MiddlewareDeduplicate()` to drop duplicate events~~ - Done: Implemented with background cleanup goroutine
-- [ ] Add `MiddlewareBatch()` to batch events over a window (in progress)
+- [x] ~~Add `MiddlewareBatch()` to batch events over a window~~ - Done: Implemented with timer and maxSize flush
 - [ ] Add integration test for recursive directory watching
 - [ ] Add integration test for per-path debounce correctness
 - [ ] Add benchmark regression tests
@@ -73,7 +73,7 @@
 - [x] ~~Make convertEvent's os.Stat optional or cacheable~~ - Done: Added WithLazyIsDir() option to skip os.Stat calls
 - [ ] Goreleaser configuration
 - [ ] Configure semantic-release
-- [ ] Add coverage threshold enforcement in CI (>=90%)
+- [x] ~~Add coverage threshold enforcement in CI (>=90%)~~ - Done: CI workflow has ≥90% threshold
 - [ ] Add structured logging example
 - [ ] Consolidate doc.go
 - [ ] Integrate into file-and-image-renamer
@@ -84,12 +84,12 @@
 - [ ] Add `WithPollInterval` fallback
 - [x] ~~Add `Watcher.IsWatching()`~~ - Done
 - [x] ~~Add `Watcher.Restart()` method~~ - Can be done via Close + New + Watch
-- [ ] Add `Watcher.WatchOnce()` for one-shot mode
+- [x] ~~Add `Watcher.WatchOnce()` for one-shot mode~~ - Done (duplicate entry, see MEDIUM)
 - [ ] Self-healing watcher
 - [ ] Add `Event.Size` field
 - [x] ~~Add `FilterModifiedSince(t)`~~ - Done
 - [ ] Filter func type could return match metadata
-- [ ] Add `MiddlewareThrottle`
+- [x] ~~Add `MiddlewareThrottle()`~~ - Done: Token bucket with burst using golang.org/x/time/rate
 - [ ] Error rate limiting middleware
 - [ ] Circuit breaker middleware
 - [ ] Context propagation through pipeline
@@ -110,7 +110,7 @@
 - [ ] Consider `Watcher.AddRecursive(path)` for partial recursion
 - [ ] Consider `Watch.WatchChanges(ctx, targetState)` for idempotent sync
 - [ ] Explore fsnotify v2 API changes
-- [ ] Validate WithBuffer(0) — error or document
+- [x] ~~Validate WithBuffer(0) — error or document~~ - Done: WithBuffer(0) creates unbuffered channel, documented
 
 ## ✅ COMPLETED (Recently Done)
 
@@ -167,19 +167,19 @@
 - [ ] Add Example_FilterRegex test
 - [ ] Ensure FilterRegex compiles are validated in constructor
 - [ ] Remove `nolint:unparam` from getDebounceKey
-- [ ] Validate debounce durations (cap at reasonable max)
+- [x] ~~Validate debounce durations (cap at reasonable max)~~ - Done: Negative durations panic
 - [ ] Implement DebounceEntry Mixin phantom type
 - [ ] Remaining uint conversions
 - [ ] Free disk space (100% full) - Infrastructure
 - [ ] Clear LSP diagnostic cache (restart gopls) - Dev env
 - [ ] Push 2 unpushed commits to origin - Git
-- [ ] Add Dependabot / Renovate config
+- [x] ~~Add Dependabot / Renovate config~~ - Done: .github/dependabot.yml added
 - [ ] Add benchmark regression detection in CI
-- [ ] Add `CONTRIBUTING.md` + `CODEOWNERS`
+- [x] ~~Add `CONTRIBUTING.md` + `CODEOWNERS`~~ - Done: CONTRIBUTING.md added
 - [ ] Add `CODE_OF_CONDUCT.md`
 - [ ] Add PR template
 - [ ] Add API stability doc
-- [ ] Adopt semver in CHANGELOG
+- [x] ~~Adopt semver in CHANGELOG~~ - Done: CHANGELOG.md with v0.1.0/v0.2.0/[Unreleased]
 - [ ] Check if examples/ directory is worth keeping vs. just example_test.go
 
 ## 📊 Status Summary

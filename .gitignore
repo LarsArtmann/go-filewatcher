@@ -5,6 +5,8 @@
 node_modules/
 # Build artifacts
 /go-filewatcher
+filter-generated
+*.test
 # Crush
 .crush/
 Copy/paste detection report

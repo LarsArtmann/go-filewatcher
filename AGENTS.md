@@ -158,9 +158,21 @@ Run `just lint-fix` — it auto-fixes many issues.
 
 ```
 github.com/fsnotify/fsnotify    # Core file watching
-github.com/LarsArtmann/gogenfilter  # Generated code detection
+github.com/LarsArtmann/gogenfilter  # Generated code detection (v3, local replace)
 golang.org/x/time                # rate.Limiter for rate limiting middleware
 ```
+
+### gogenfilter v3 API
+
+Uses `replace` directive in `go.mod` pointing to `../gogenfilter` (module path issue: v3.0.0 doesn't include `/v3` in module path).
+
+**Breaking changes from v3:**
+
+- `NewFilter` returns `(*Filter, error)` — must handle error
+- `WithFilterOptions` returns `(FilterConfig, error)` — must handle error
+- `Enabled()` / `Disabled()` removed — auto-enables when configured
+- `ShouldFilter` renamed to `Filter` — `f.Filter(path)` returns `(bool, error)`
+- New generators: `FilterOapi`, `FilterDeepcopy`, `FilterWire`, `FilterMoq`
 
 ## Named Types (phantom types)
 
@@ -192,4 +204,6 @@ These tests are timing-sensitive and may fail intermittently:
 | `TestWatcher_Stats_Metrics`        | Counts `EventsProcessed` but filesystem write coalescing may produce 2 events instead of 1 |
 | `TestWatcher_Watch_WithMiddleware` | Similar timing issue with middleware call counting                                         |
 
-This is a pre-existing issue unrelated to the `go-branded-id` integration.
+### Pre-existing Linter Warning
+
+`watcher_coverage_test.go:1` has an unused `modernize` nolint directive — do not fix (unrelated to current work).

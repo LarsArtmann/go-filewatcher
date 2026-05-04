@@ -38,30 +38,14 @@ func FilterGeneratedCode(options ...gogenfilter.FilterOption) Filter {
 	return FilterGeneratedCodeFull(ContentCheckDisabled, options...)
 }
 
-// buildGogenFilterOptions expands FilterAll and applies defaults when needed.
+// buildGogenFilterOptions defaults to FilterAll when no options provided.
+// v3's DetectReason handles FilterAll expansion natively, so no manual expansion needed.
 func buildGogenFilterOptions(options []gogenfilter.FilterOption) []gogenfilter.FilterOption {
 	if len(options) == 0 {
 		return []gogenfilter.FilterOption{gogenfilter.FilterAll}
 	}
 
-	result := make([]gogenfilter.FilterOption, 0, len(options))
-	for _, opt := range options {
-		if opt == gogenfilter.FilterAll {
-			result = append(result,
-				gogenfilter.FilterSQLC,
-				gogenfilter.FilterTempl,
-				gogenfilter.FilterGoEnum,
-				gogenfilter.FilterProtobuf,
-				gogenfilter.FilterMockgen,
-				gogenfilter.FilterStringer,
-				gogenfilter.FilterGeneric,
-			)
-		} else {
-			result = append(result, opt)
-		}
-	}
-
-	return result
+	return options
 }
 
 // FilterGeneratedCodeFull creates a filter with configurable content checking.
@@ -106,12 +90,10 @@ func FilterGeneratedCodeFull(mode ContentCheckMode, options ...gogenfilter.Filte
 // gogenfilter.Filter instance. This allows for more advanced configuration
 // including custom filesystems and include/exclude patterns.
 //
-// The gogenfilter.Filter should be created with metrics enabled for tracking.
-//
 // Example:
 //
-//	genFilter := gogenfilter.NewFilter(true, []gogenfilter.FilterOption{gogenfilter.FilterAll})
-//	genFilter.WithExcludePatterns([]string{"*_custom.go"})
+//	config, _ := gogenfilter.WithFilterOptions(gogenfilter.FilterAll)
+//	genFilter, _ := gogenfilter.NewFilter(config)
 //
 //	watcher, _ := filewatcher.New("./src",
 //	    filewatcher.WithFilter(filewatcher.FilterGeneratedCodeWithFilter(genFilter)),
@@ -122,7 +104,7 @@ func FilterGeneratedCodeWithFilter(genFilter *gogenfilter.Filter) Filter {
 			return true
 		}
 
-		shouldFilter, err := genFilter.ShouldFilter(event.Path)
+		shouldFilter, err := genFilter.Filter(event.Path)
 		if err != nil {
 			return true
 		}

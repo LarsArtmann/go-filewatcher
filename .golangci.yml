@@ -144,6 +144,10 @@ linters:
         - "fmt\\.Print.*"
         - "print"
         - "println"
+    gomoddirectives:
+      replace-allow-list:
+        - "github.com/LarsArtmann/gogenfilter"
+      replace-local: true
   exclusions:
     rules:
       - path: "^examples/"

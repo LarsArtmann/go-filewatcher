@@ -219,10 +219,15 @@ func TestFilterGeneratedCodeFull_WithContent(t *testing.T) {
 //nolint:paralleltest // Test files cannot be parallel due to file system operations
 func TestFilterGeneratedCodeWithFilter(t *testing.T) {
 	// Create a gogenfilter.Filter instance
-	genFilter := gogenfilter.NewFilter(
-		gogenfilter.Enabled(),
-		gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
-	)
+	config, configErr := gogenfilter.WithFilterOptions(gogenfilter.FilterAll)
+	if configErr != nil {
+		t.Fatalf("Failed to create filter config: %v", configErr)
+	}
+
+	genFilter, filterErr := gogenfilter.NewFilter(config)
+	if filterErr != nil {
+		t.Fatalf("Failed to create filter: %v", filterErr)
+	}
 
 	filter := FilterGeneratedCodeWithFilter(genFilter)
 

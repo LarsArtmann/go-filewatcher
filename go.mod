@@ -3,7 +3,7 @@ module github.com/larsartmann/go-filewatcher
 go 1.26.2
 
 require (
-	github.com/LarsArtmann/gogenfilter v0.2.0
+	github.com/LarsArtmann/gogenfilter v3.0.0+incompatible
 	github.com/fsnotify/fsnotify v1.10.1
 	golang.org/x/time v0.15.0
 )
@@ -17,5 +17,3 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/sys v0.43.0 // indirect
 )
-
-replace github.com/LarsArtmann/gogenfilter => ../gogenfilter

@@ -93,6 +93,19 @@ func MiddlewareOnError(onError func(event Event, err error)) Middleware {
 	}
 }
 
+// rateLimiterMiddleware creates a middleware that rate-limits events using the given limiter.
+func rateLimiterMiddleware(limiter *rate.Limiter) Middleware {
+	return func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			if !limiter.Allow() {
+				return nil
+			}
+
+			return next(ctx, event)
+		}
+	}
+}
+
 // MiddlewareRateLimit returns a middleware that limits the rate of events
 // using a token bucket algorithm. It allows maxEvents events per second
 // with burst=maxEvents. Events exceeding the limit are dropped.
@@ -103,15 +116,7 @@ func MiddlewareRateLimit(maxEvents int) Middleware {
 
 	limiter := rate.NewLimiter(rate.Limit(maxEvents), maxEvents)
 
-	return func(next Handler) Handler {
-		return func(ctx context.Context, event Event) error {
-			if !limiter.Allow() {
-				return nil
-			}
-
-			return next(ctx, event)
-		}
-	}
+	return rateLimiterMiddleware(limiter)
 }
 
 // MiddlewareSlidingWindowRateLimit returns a middleware that limits events
@@ -130,15 +135,7 @@ func MiddlewareSlidingWindowRateLimit(maxEvents int, window time.Duration) Middl
 	eventsPerSec := float64(maxEvents) / window.Seconds()
 	limiter := rate.NewLimiter(rate.Limit(eventsPerSec), maxEvents)
 
-	return func(next Handler) Handler {
-		return func(ctx context.Context, event Event) error {
-			if !limiter.Allow() {
-				return nil
-			}
-
-			return next(ctx, event)
-		}
-	}
+	return rateLimiterMiddleware(limiter)
 }
 
 // MiddlewareMetrics returns a middleware that counts processed events.
@@ -371,13 +368,5 @@ func MiddlewareThrottle(maxEvents, burst int) Middleware {
 
 	limiter := rate.NewLimiter(rate.Limit(maxEvents), burst)
 
-	return func(next Handler) Handler {
-		return func(ctx context.Context, event Event) error {
-			if !limiter.Allow() {
-				return nil
-			}
-
-			return next(ctx, event)
-		}
-	}
+	return rateLimiterMiddleware(limiter)
 }

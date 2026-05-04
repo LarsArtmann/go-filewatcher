@@ -282,15 +282,7 @@ func TestErrorContext(t *testing.T) {
 func TestErrorHandler_WithContext(t *testing.T) {
 	t.Parallel()
 
-	var (
-		receivedCtx ErrorContext
-		receivedErr error
-	)
-
-	handler := func(ctx ErrorContext, err error) {
-		receivedCtx = ctx
-		receivedErr = err
-	}
+	handler, receivedCtx, receivedErr := newErrorHandlerCallback()
 
 	tmpDir := t.TempDir()
 
@@ -313,7 +305,7 @@ func TestErrorHandler_WithContext(t *testing.T) {
 		t.Errorf("Path = %q, want %q", receivedCtx.Path, "/test/path")
 	}
 
-	if !errors.Is(receivedErr, testErr) {
+	if !errors.Is(*receivedErr, testErr) {
 		t.Error("Error mismatch")
 	}
 }

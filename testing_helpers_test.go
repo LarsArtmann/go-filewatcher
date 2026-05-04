@@ -305,3 +305,61 @@ func newTestWatcher(t *testing.T, tmpDir string, opts ...Option) *Watcher {
 
 	return w
 }
+
+// newErrorHandlerCallback creates an error handler that captures the context and error.
+// Returns the handler function, received context, and received error.
+func newErrorHandlerCallback() (func(ErrorContext, error), *ErrorContext, *error) {
+	var ctx ErrorContext
+	var err error
+
+	handler := func(c ErrorContext, e error) {
+		ctx = c
+		err = e
+	}
+
+	return handler, &ctx, &err
+}
+
+// newMiddlewareCounter creates a handler that increments a counter on each call.
+func newMiddlewareCounter(counter *atomic.Int32) Handler {
+	return func(_ context.Context, _ Event) error {
+		counter.Add(1)
+
+		return nil
+	}
+}
+
+// runFilterTestsTable runs a table-driven test for a filter function.
+func runFilterTestsTable(t *testing.T, filter func(Event) bool, tests []struct {
+	path string
+	want bool
+}) {
+	t.Helper()
+
+	for _, tt := range tests {
+		event := testWriteEvent(tt.path)
+
+		if got := filter(event); got != tt.want {
+			t.Errorf("filter(%q) = %v, want %v", tt.path, got, tt.want)
+		}
+	}
+}
+
+// assertMinWatchList asserts that the watch list has at least the expected minimum length.
+func assertMinWatchList(t *testing.T, w *Watcher, min int) {
+	t.Helper()
+
+	list := w.WatchList()
+	if len(list) < min {
+		t.Errorf("expected at least %d paths in watch list, got %d", min, len(list))
+	}
+}
+
+// assertMinLen asserts that a slice has at least the expected minimum length.
+func assertMinLen(t *testing.T, list []string, min int, msg string) {
+	t.Helper()
+
+	if len(list) < min {
+		t.Errorf("%s: expected at least %d, got %d", msg, min, len(list))
+	}
+}

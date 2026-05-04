@@ -65,9 +65,7 @@ func TestAddPath_Recursive(t *testing.T) {
 	}
 
 	list := w.WatchList()
-	if len(list) < 1 {
-		t.Errorf("watchList should have at least root, got %d", len(list))
-	}
+	assertMinLen(t, list, 1, "watchList should have at least root")
 }
 
 func TestWalkDirFunc_WalkError(t *testing.T) {

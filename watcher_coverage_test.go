@@ -77,10 +77,7 @@ func TestWatcher_Watch_MultipleInitialPaths(t *testing.T) {
 		t.Fatalf("Watch failed: %v", err)
 	}
 
-	list := w.WatchList()
-	if len(list) < 2 {
-		t.Errorf("expected at least 2 paths in watch list, got %d", len(list))
-	}
+	assertMinWatchList(t, w, 2)
 
 	file1 := filepath.Join(dir1, "a.txt")
 
@@ -395,16 +392,9 @@ func TestWatcher_ErrorHandler_WithContext(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	var receivedCtx ErrorContext
+	handler, receivedCtx, receivedErr := newErrorHandlerCallback()
 
-	var receivedErr error
-
-	w, err := New([]string{tmpDir},
-		WithErrorHandler(func(ctx ErrorContext, err error) {
-			receivedCtx = ctx
-			receivedErr = err
-		}),
-	)
+	w, err := New([]string{tmpDir}, WithErrorHandler(handler))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -432,8 +422,8 @@ func TestWatcher_ErrorHandler_WithContext(t *testing.T) {
 		t.Error("expected Retryable=true")
 	}
 
-	if !errors.Is(receivedErr, testErr) {
-		t.Errorf("expected testErr, got %v", receivedErr)
+	if !errors.Is(*receivedErr, testErr) {
+		t.Errorf("expected testErr, got %v", *receivedErr)
 	}
 }
 
@@ -531,11 +521,7 @@ func TestMiddlewareThrottle_AllowsBurst(t *testing.T) {
 	var count atomic.Int32
 
 	mw := MiddlewareThrottle(1, 5)
-	handler := mw(func(_ context.Context, _ Event) error {
-		count.Add(1)
-
-		return nil
-	})
+	handler := mw(newMiddlewareCounter(&count))
 
 	ctx := context.Background()
 	event := testWriteEvent("/tmp/test.txt")
@@ -555,11 +541,7 @@ func TestMiddlewareThrottle_ZeroDefaults(t *testing.T) {
 	var count atomic.Int32
 
 	mw := MiddlewareThrottle(0, 0)
-	handler := mw(func(_ context.Context, _ Event) error {
-		count.Add(1)
-
-		return nil
-	})
+	handler := mw(newMiddlewareCounter(&count))
 
 	ctx := context.Background()
 	event := testWriteEvent("/tmp/test.txt")
@@ -589,13 +571,7 @@ func TestFilterIgnoreGlobs(t *testing.T) {
 		{"/tmp/README.md", true},
 	}
 
-	for _, tt := range tests {
-		event := testWriteEvent(tt.path)
-
-		if got := filter(event); got != tt.want {
-			t.Errorf("FilterIgnoreGlobs(%q) = %v, want %v", tt.path, got, tt.want)
-		}
-	}
+	runFilterTestsTable(t, filter, tests)
 }
 
 func TestWithIgnorePatterns(t *testing.T) {
@@ -625,11 +601,5 @@ func TestWithIgnorePatterns(t *testing.T) {
 		{"/tmp/main.go", true},
 	}
 
-	for _, tt := range tests {
-		event := testWriteEvent(tt.path)
-
-		if got := filter(event); got != tt.want {
-			t.Errorf("WithIgnorePatterns filter(%q) = %v, want %v", tt.path, got, tt.want)
-		}
-	}
+	runFilterTestsTable(t, filter, tests)
 }

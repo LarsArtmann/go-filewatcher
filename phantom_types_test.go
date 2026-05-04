@@ -40,14 +40,33 @@ func runPathTests(t *testing.T, tests []pathTestCase, fn func(EventPath) string)
 	}
 }
 
+// newPathTestCases creates pathTestCase slice from input/want pairs.
+func newPathTestCases(pairs ...string) []pathTestCase {
+	if len(pairs)%2 != 0 {
+		panic("newPathTestCases requires even number of arguments")
+	}
+
+	cases := make([]pathTestCase, len(pairs)/2)
+	for i := 0; i < len(pairs); i += 2 {
+		input := pairs[i]
+		wantIdx := i + 1
+		cases[i/2] = pathTestCase{
+			NewEventPath(input),
+			pairs[wantIdx], //nolint:gosec // safe: len(pairs)%2==0 ensures i+1 is in bounds
+		}
+	}
+
+	return cases
+}
+
 func TestEventPath_Base(t *testing.T) {
 	t.Parallel()
 
-	runPathTests(t, []pathTestCase{
-		{NewEventPath("/home/user/file.go"), "file.go"},
-		{NewEventPath("/home/user/"), "user"},
-		{NewEventPath("file.go"), "file.go"},
-	}, func(p EventPath) string { return p.Base() })
+	runPathTests(t, newPathTestCases(
+		"/home/user/file.go", "file.go",
+		"/home/user/", "user",
+		"file.go", "file.go",
+	), func(p EventPath) string { return p.Base() })
 }
 
 func TestEventPath_Dir(t *testing.T) {
@@ -72,11 +91,11 @@ func TestEventPath_Dir(t *testing.T) {
 func TestEventPath_Ext(t *testing.T) {
 	t.Parallel()
 
-	runPathTests(t, []pathTestCase{
-		{NewEventPath("/home/user/file.go"), ".go"},
-		{NewEventPath("/home/user/README"), ""},
-		{NewEventPath("/home/user/file.test.go"), ".go"},
-	}, func(p EventPath) string { return p.Ext() })
+	runPathTests(t, newPathTestCases(
+		"/home/user/file.go", ".go",
+		"/home/user/README", "",
+		"/home/user/file.test.go", ".go",
+	), func(p EventPath) string { return p.Ext() })
 }
 
 func TestEventPath_Join(t *testing.T) {

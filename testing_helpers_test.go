@@ -309,8 +309,10 @@ func newTestWatcher(t *testing.T, tmpDir string, opts ...Option) *Watcher {
 // newErrorHandlerCallback creates an error handler that captures the context and error.
 // Returns the handler function, received context, and received error.
 func newErrorHandlerCallback() (func(ErrorContext, error), *ErrorContext, *error) {
-	var ctx ErrorContext
-	var err error
+	var (
+		ctx ErrorContext
+		err error
+	)
 
 	handler := func(c ErrorContext, e error) {
 		ctx = c
@@ -333,7 +335,8 @@ func newMiddlewareCounter(counter *atomic.Int32) Handler {
 func runFilterTestsTable(t *testing.T, filter func(Event) bool, tests []struct {
 	path string
 	want bool
-}) {
+},
+) {
 	t.Helper()
 
 	for _, tt := range tests {

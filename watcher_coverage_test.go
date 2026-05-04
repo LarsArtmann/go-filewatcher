@@ -263,8 +263,7 @@ func TestWatcher_ErrorsChannel_ClosesOnClose(t *testing.T) {
 
 	errorsCh := w.Errors()
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	ctx := t.Context()
 
 	_, watchErr := w.Watch(ctx)
 	if watchErr != nil {

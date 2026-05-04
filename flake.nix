@@ -51,6 +51,7 @@
 
           GOWORK = "off";
         };
-      });
+        });
+      formatter = forEachSystem ({ pkgs, ... }: pkgs.nixfmt);
     };
 }

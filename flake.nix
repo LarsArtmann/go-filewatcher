@@ -4,7 +4,7 @@
   # This flake provides a reproducible development environment.
   # Go 1.26.1 and golangci-lint are provided by the system nixpkgs.
 
-  inputs.nixpkgs.url = "nixpkgs";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   outputs = { self, nixpkgs }:
     let

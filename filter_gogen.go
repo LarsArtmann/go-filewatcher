@@ -3,7 +3,7 @@ package filewatcher
 import (
 	"os"
 
-	"github.com/LarsArtmann/gogenfilter"
+	"github.com/LarsArtmann/gogenfilter/v3"
 )
 
 // ContentCheckMode controls whether generated code detection reads file content.

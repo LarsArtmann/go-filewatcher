@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/LarsArtmann/gogenfilter"
+	"github.com/LarsArtmann/gogenfilter/v3"
 )
 
 //nolint:gochecknoglobals // Test data must be package-level for funlen compliance

@@ -1,4 +1,4 @@
-//nolint:testpackage,varnamelen,gosec,modernize,exhaustruct,cyclop // Tests need internal access; idiomatic short names; test code allows relaxed permissions, complexity, flexible formatting, partial struct init
+//nolint:testpackage,varnamelen,gosec,exhaustruct,cyclop // Tests need internal access; idiomatic short names; test code allows relaxed permissions, complexity, flexible formatting, partial struct init
 package filewatcher
 
 import (

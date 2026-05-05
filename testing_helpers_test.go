@@ -349,20 +349,20 @@ func runFilterTestsTable(t *testing.T, filter func(Event) bool, tests []struct {
 }
 
 // assertMinWatchList asserts that the watch list has at least the expected minimum length.
-func assertMinWatchList(t *testing.T, w *Watcher, min int) {
+func assertMinWatchList(t *testing.T, w *Watcher, minLen int) {
 	t.Helper()
 
 	list := w.WatchList()
-	if len(list) < min {
-		t.Errorf("expected at least %d paths in watch list, got %d", min, len(list))
+	if len(list) < minLen {
+		t.Errorf("expected at least %d paths in watch list, got %d", minLen, len(list))
 	}
 }
 
 // assertMinLen asserts that a slice has at least the expected minimum length.
-func assertMinLen(t *testing.T, list []string, min int, msg string) {
+func assertMinLen(t *testing.T, list []string, minLen int, msg string) {
 	t.Helper()
 
-	if len(list) < min {
-		t.Errorf("%s: expected at least %d, got %d", msg, min, len(list))
+	if len(list) < minLen {
+		t.Errorf("%s: expected at least %d, got %d", msg, minLen, len(list))
 	}
 }

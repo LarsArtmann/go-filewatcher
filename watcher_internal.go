@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"slices"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
@@ -112,8 +113,8 @@ func (w *Watcher) buildMiddlewareHandler(emit func(Event)) Handler {
 		emit(e)
 	}
 
-	for i := len(w.middleware) - 1; i >= 0; i-- {
-		handler = w.wrapWithMiddleware(handler, w.middleware[i])
+	for _, v := range slices.Backward(w.middleware) {
+		handler = w.wrapWithMiddleware(handler, v)
 	}
 
 	return wrapHandlerWithNilReturn(handler)

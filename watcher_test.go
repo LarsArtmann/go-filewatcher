@@ -180,7 +180,8 @@ func TestWatcher_Watch_FiltersExtensions(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	receiveEventMatchingOrTimeout(t, events, 3*time.Second,
+	receiveEventMatchingOrTimeout(
+		t, events, 3*time.Second,
 		func(event Event) {
 			if event.Path != goFile {
 				t.Errorf("expected go file event, got %s", event.Path)
@@ -247,7 +248,8 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	receiveEventMatchingOrTimeout(t, events, 5*time.Second,
+	receiveEventMatchingOrTimeout(
+		t, events, 5*time.Second,
 		func(event Event) {
 			if event.Op != Remove {
 				t.Errorf("expected Remove, got %s", event.Op.String())
@@ -264,7 +266,8 @@ func TestWatcher_Watch_WithMiddleware(t *testing.T) {
 
 	var processed atomic.Int32
 
-	w, err := New([]string{tmpDir},
+	w, err := New(
+		[]string{tmpDir},
 		WithMiddleware(func(next Handler) Handler {
 			return func(ctx context.Context, event Event) error {
 				processed.Add(1)
@@ -435,7 +438,8 @@ func TestWatcher_Watch_NewDirectory(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	receiveEventMatchingOrTimeout(t, events, 3*time.Second,
+	receiveEventMatchingOrTimeout(
+		t, events, 3*time.Second,
 		func(event Event) {
 			if event.Path != nestedFile {
 				t.Errorf("expected event for nested file %s, got %s", nestedFile, event.Path)
@@ -452,7 +456,8 @@ func TestWatcher_Watch_ErrorHandler(t *testing.T) {
 
 	var errorReceived atomic.Pointer[error]
 
-	w, err := New([]string{tmpDir},
+	w, err := New(
+		[]string{tmpDir},
 		WithErrorHandler(func(ctx ErrorContext, err error) {
 			_ = ctx
 
@@ -498,7 +503,8 @@ func TestWatcher_Add(t *testing.T) {
 
 	testFile := createTestFile(t, NewTempDir(newDir), "added.txt", "added")
 
-	receiveEventMatchingOrTimeout(t, events, 3*time.Second,
+	receiveEventMatchingOrTimeout(
+		t, events, 3*time.Second,
 		func(event Event) {
 			if event.Path != testFile {
 				t.Errorf("expected event from added dir, got %s", event.Path)
@@ -671,7 +677,8 @@ func TestWatcher_Stats_Metrics(t *testing.T) { //nolint:cyclop,funlen // compreh
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir},
+	w, err := New(
+		[]string{tmpDir},
 		WithExtensions(".go"),
 	)
 	if err != nil {
@@ -752,7 +759,8 @@ func TestWatcher_IgnoreDirs(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir},
+	w, err := New(
+		[]string{tmpDir},
 		WithIgnoreDirs("vendor"),
 	)
 	if err != nil {
@@ -789,7 +797,8 @@ func TestWatcher_IgnoreDirs(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	receiveEventMatchingOrTimeout(t, events, 3*time.Second,
+	receiveEventMatchingOrTimeout(
+		t, events, 3*time.Second,
 		func(event Event) {
 			if event.Path == vendorFile {
 				t.Error("vendor file should have been filtered")
@@ -897,7 +906,8 @@ func TestWatcher_FullLifecycle(t *testing.T) {
 	// Create watcher with filters and middleware
 	var eventCount atomic.Int32
 
-	w, err := New([]string{tmpDir},
+	w, err := New(
+		[]string{tmpDir},
 		WithExtensions(".go"),
 		WithDebounce(50*time.Millisecond),
 		WithMiddleware(func(next Handler) Handler {

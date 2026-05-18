@@ -37,7 +37,8 @@ func MiddlewareLogging(logger *slog.Logger) Middleware {
 
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			logger.Info("filewatcher event",
+			logger.Info(
+				"filewatcher event",
 				slog.String("op", event.Op.String()),
 				slog.String("path", event.Path),
 			)
@@ -330,7 +331,8 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 			}
 
 			if writeErr == nil && cached.f != nil {
-				_, writeErr = fmt.Fprintf(cached.f, "[%s] %s: %s\n",
+				_, writeErr = fmt.Fprintf(
+					cached.f, "[%s] %s: %s\n",
 					event.Timestamp.Format(time.RFC3339),
 					event.Op,
 					event.Path,

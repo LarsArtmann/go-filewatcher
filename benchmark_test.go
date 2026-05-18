@@ -84,7 +84,8 @@ func BenchmarkNew_SinglePath(b *testing.B) {
 }
 
 func BenchmarkNew_WithOptions(b *testing.B) {
-	benchmarkNewWatcher(b,
+	benchmarkNewWatcher(
+		b,
 		WithExtensions(".go", ".md"),
 		WithIgnoreDirs("vendor", "node_modules"),
 		WithDebounce(100*time.Millisecond),
@@ -94,7 +95,8 @@ func BenchmarkNew_WithOptions(b *testing.B) {
 }
 
 func BenchmarkNew_WithMiddleware(b *testing.B) {
-	benchmarkNewWatcher(b,
+	benchmarkNewWatcher(
+		b,
 		WithMiddleware(
 			MiddlewareRecovery(),
 			MiddlewareMetrics(func(_ Op) {}),

@@ -260,7 +260,7 @@ func createTestFile(t *testing.T, tmpDir TempDir, filename, content string) stri
 // waitForChannel waits for a value from a channel with timeout.
 // Fatal if timeout occurs.
 //
-//nolint:ireturn // Generic channel helper must return generic type
+
 func waitForChannel[T any](t *testing.T, ch <-chan T, timeout time.Duration, msg string) T {
 	t.Helper()
 

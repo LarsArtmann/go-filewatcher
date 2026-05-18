@@ -47,7 +47,8 @@ func TestWatcher_Watch_RenameEvent(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	receiveEventMatchingOrTimeout(t, events, 3*time.Second,
+	receiveEventMatchingOrTimeout(
+		t, events, 3*time.Second,
 		func(event Event) {
 			if event.Op != Rename && event.Op != Create {
 				t.Errorf("expected Rename or Create, got %s", event.Op)

@@ -15,5 +15,5 @@ require (
 	github.com/go-faster/yaml v0.4.6 // indirect
 	github.com/segmentio/asm v1.2.1 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/sys v0.43.0 // indirect
+	golang.org/x/sys v0.44.0 // indirect
 )

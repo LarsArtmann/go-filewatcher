@@ -21,7 +21,7 @@
           name = "go-filewatcher";
 
           packages = with pkgs; [
-            go
+            go_1_26
             golangci-lint
             gofumpt
             git

@@ -2,7 +2,7 @@
   description = "go-filewatcher - A Go file watching library with debouncing and middleware support";
 
   # This flake provides a reproducible development environment.
-  # Go 1.26.1 and golangci-lint are provided by the system nixpkgs.
+  # Go 1.26 and golangci-lint are provided by the system nixpkgs.
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
@@ -53,5 +53,14 @@
         };
         });
       formatter = forEachSystem ({ pkgs, ... }: pkgs.nixfmt);
+
+      checks = forEachSystem ({ pkgs, system }: {
+        build = pkgs.runCommand "go-filewatcher-build" { nativeBuildInputs = [ pkgs.go_1_26 ]; } ''
+          export GOWORK=off
+          cp -r ${./.} src && chmod -R u+w src && cd src
+          go build ./...
+          touch $out
+        '';
+      });
     };
 }

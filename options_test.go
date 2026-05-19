@@ -83,8 +83,8 @@ func TestWithOnError(t *testing.T) {
 	testErr := errors.New("test error") //nolint:err113 // test-specific dynamic error
 	watcher.errorHandler(
 		ErrorContext{ //nolint:exhaustruct // test-specific minimal fields
-			Operation: "test",
-			Path:      "test",
+			Operation: "test operation",
+			Path:      "test path",
 		},
 		testErr,
 	)

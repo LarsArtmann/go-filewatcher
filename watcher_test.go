@@ -828,7 +828,7 @@ func TestWatcher_handleError_Default(t *testing.T) {
 	os.Stderr = w2
 
 	//nolint:err113 // test-only error for stderr validation
-	w.handleError(ErrorContext{Operation: "test"}, errors.New("test stderr error"))
+	w.handleError(ErrorContext{Operation: "test operation"}, errors.New("test stderr error"))
 
 	_ = w2.Close()
 	os.Stderr = old
@@ -1056,7 +1056,7 @@ func TestWatcher_Errors_ReceivesErrors(t *testing.T) {
 	// Trigger an error by sending to a closed watcher (simulated via handleError)
 	//nolint:err113 // test-only error
 	testErr := errors.New("test error from handler")
-	w.handleError(ErrorContext{Operation: "test_op", Path: tmpDir}, testErr)
+	w.handleError(ErrorContext{Operation: "test_operation", Path: tmpDir}, testErr)
 
 	// Wait for error on channel
 	select {

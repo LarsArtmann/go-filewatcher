@@ -56,7 +56,7 @@ func TestConvertEvent_ChmodIgnored(t *testing.T) {
 	t.Parallel()
 
 	fsEvent := fsnotify.Event{
-		Name: "/tmp/test.go",
+		Name: benchmarkTestPathTestGo,
 		Op:   fsnotify.Chmod,
 	}
 

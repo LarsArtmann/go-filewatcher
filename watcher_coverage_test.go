@@ -568,7 +568,7 @@ func TestFilterIgnoreGlobs(t *testing.T) {
 		{"/tmp/app.log", false},
 		{"/tmp/cache.tmp", false},
 		{"/tmp/.env", false},
-		{"/tmp/main.go", true},
+		{benchmarkTestPathMainGo, true},
 		{"/tmp/README.md", true},
 	}
 

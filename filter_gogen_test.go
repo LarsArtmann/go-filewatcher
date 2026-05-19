@@ -18,18 +18,27 @@ var (
 		gogenfilter.FilterProtobuf,
 	}
 
+	// Test paths for generated code detection.
+	testPathModelsGo     = "/project/db/models.go"
+	testPathQuerySQLGo   = "/project/db/query.sql.go"
+	testPathUsersSQLGo   = "/project/db/users.sql.go"
+	testPathPageTemplGo  = "/project/page_templ.go"
+	testPathUserPbGo     = "/project/api/user.pb.go"
+	testPathMainGo       = "/project/main.go"
+	testPathStatusEnumGo = "/project/status_enum.go"
+
 	sqlcEventCases = []testCaseName{
-		{testCaseName: "models.go", path: "/project/db/models.go", expected: false},
-		{testCaseName: "query.sql.go", path: "/project/db/query.sql.go", expected: false},
-		{testCaseName: "users.sql.go", path: "/project/db/users.sql.go", expected: false},
+		{testCaseName: "models.go", path: testPathModelsGo, expected: false},
+		{testCaseName: "query.sql.go", path: testPathQuerySQLGo, expected: false},
+		{testCaseName: "users.sql.go", path: testPathUsersSQLGo, expected: false},
 	}
 
 	templEventCases = []testCaseName{
-		{testCaseName: "page_templ.go", path: "/project/components/page_templ.go", expected: false},
+		{testCaseName: "page_templ.go", path: testPathPageTemplGo, expected: false},
 	}
 
 	goEnumEventCases = []testCaseName{
-		{testCaseName: "status_enum.go", path: "/project/types/status_enum.go", expected: false},
+		{testCaseName: "status_enum.go", path: testPathStatusEnumGo, expected: false},
 	}
 
 	multipleOptionsTestCases = []struct {
@@ -37,13 +46,13 @@ var (
 		path     string
 		expected bool
 	}{
-		{name: "sqlc with multiple options", path: "/project/db/models.go", expected: false},
-		{name: "templ with multiple options", path: "/project/page_templ.go", expected: false},
-		{name: "protobuf with multiple options", path: "/project/api/user.pb.go", expected: false},
-		{name: "regular file with multiple options", path: "/project/main.go", expected: true},
+		{name: "sqlc with multiple options", path: testPathModelsGo, expected: false},
+		{name: "templ with multiple options", path: testPathPageTemplGo, expected: false},
+		{name: "protobuf with multiple options", path: testPathUserPbGo, expected: false},
+		{name: "regular file with multiple options", path: testPathMainGo, expected: true},
 		{
 			name:     "go-enum with multiple options (not in list)",
-			path:     "/project/status_enum.go",
+			path:     testPathStatusEnumGo,
 			expected: true,
 		},
 	}
@@ -153,16 +162,16 @@ func TestFilterGeneratedCode_DefaultAll(t *testing.T) {
 	filter := FilterGeneratedCode()
 
 	runFilterSubtests(t, []testCaseName{
-		{testCaseName: "/project/db/models.go", path: "/project/db/models.go", expected: false},
-		{testCaseName: "/project/page_templ.go", path: "/project/page_templ.go", expected: false},
-		{testCaseName: "/project/status_enum.go", path: "/project/status_enum.go", expected: false},
-		{testCaseName: "/project/api/user.pb.go", path: "/project/api/user.pb.go", expected: false},
+		{testCaseName: testPathModelsGo, path: testPathModelsGo, expected: false},
+		{testCaseName: testPathPageTemplGo, path: testPathPageTemplGo, expected: false},
+		{testCaseName: testPathStatusEnumGo, path: testPathStatusEnumGo, expected: false},
+		{testCaseName: testPathUserPbGo, path: testPathUserPbGo, expected: false},
 		{
 			testCaseName: "/project/mocks/service_mock.go",
 			path:         "/project/mocks/service_mock.go",
 			expected:     false,
 		},
-		{testCaseName: "/project/main.go", path: "/project/main.go", expected: true},
+		{testCaseName: testPathMainGo, path: testPathMainGo, expected: true},
 		{testCaseName: "/project/utils.go", path: "/project/utils.go", expected: true},
 	}, filter)
 }
@@ -232,9 +241,9 @@ func TestFilterGeneratedCodeWithFilter(t *testing.T) {
 	filter := FilterGeneratedCodeWithFilter(genFilter)
 
 	runFilterSubtests(t, []testCaseName{
-		{testCaseName: "/project/db/models.go", path: "/project/db/models.go", expected: false},
-		{testCaseName: "/project/page_templ.go", path: "/project/page_templ.go", expected: false},
-		{testCaseName: "/project/main.go", path: "/project/main.go", expected: true},
+		{testCaseName: testPathModelsGo, path: testPathModelsGo, expected: false},
+		{testCaseName: testPathPageTemplGo, path: testPathPageTemplGo, expected: false},
+		{testCaseName: testPathMainGo, path: testPathMainGo, expected: true},
 		{testCaseName: "/project/vendor/lib.go", path: "/project/vendor/lib.go", expected: true},
 	}, filter)
 
@@ -253,10 +262,10 @@ func TestGeneratedCodeDetector(t *testing.T) {
 		path     string
 		expected bool
 	}{
-		{"/project/db/models.go", true},   // sqlc
-		{"/project/api/user.pb.go", true}, // protobuf
-		{"/project/main.go", false},       // regular
-		{"/project/page_templ.go", false}, // templ (not in detector options)
+		{testPathModelsGo, true},     // sqlc
+		{testPathUserPbGo, true},     // protobuf
+		{testPathMainGo, false},      // regular
+		{testPathPageTemplGo, false}, // templ (not in detector options)
 	}
 
 	for _, tc := range tests { //nolint:varnamelen // idiomatic table-driven test variable
@@ -282,9 +291,9 @@ func TestGeneratedCodeDetector_GetReason(t *testing.T) {
 		path     string
 		expected gogenfilter.FilterReason
 	}{
-		{"/project/db/models.go", gogenfilter.ReasonSQLC},
-		{"/project/page_templ.go", gogenfilter.ReasonTempl},
-		{"/project/main.go", gogenfilter.ReasonNotFiltered},
+		{testPathModelsGo, gogenfilter.ReasonSQLC},
+		{testPathPageTemplGo, gogenfilter.ReasonTempl},
+		{testPathMainGo, gogenfilter.ReasonNotFiltered},
 	}
 
 	for _, tc := range tests { //nolint:varnamelen // idiomatic table-driven test variable

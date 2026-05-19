@@ -8,6 +8,12 @@ import (
 	"time"
 )
 
+// Test name constants for repeated filter test names.
+const (
+	testNameGoFile  = "go file"
+	testNameTxtFile = "txt file"
+)
+
 // runFilterTests is a helper function that runs table-driven filter tests.
 
 func runFilterTests(t *testing.T, filterName string, f Filter, tests filterTests) {
@@ -83,7 +89,7 @@ func ignoreHiddenTestCases() filterTests {
 
 func ignoreExtTestCases() filterTests {
 	return filterTests{
-		{"go file", testWriteEvent("/tmp/main.go"), true},
+		{testNameGoFile, testWriteEvent("/tmp/main.go"), true},
 		{"log file", testWriteEvent("/tmp/app.log"), false},
 		{"tmp file", testWriteEvent("/tmp/cache.tmp"), false},
 	}
@@ -91,17 +97,17 @@ func ignoreExtTestCases() filterTests {
 
 func regexTestCases() filterTests {
 	return filterTests{
-		{"go file", testWriteEvent("/tmp/main.go"), true},
-		{"txt file", testWriteEvent("/tmp/readme.txt"), false},
+		{testNameGoFile, testWriteEvent("/tmp/main.go"), true},
+		{testNameTxtFile, testWriteEvent("/tmp/readme.txt"), false},
 		{"go file in subdir", testWriteEvent("/tmp/pkg/helper.go"), true},
 	}
 }
 
 func extensionsTestCases() filterTests {
 	return filterTests{
-		{"go file", testWriteEvent("/tmp/main.go"), true},
+		{testNameGoFile, testWriteEvent("/tmp/main.go"), true},
 		{"md file", testWriteEvent("/tmp/readme.md"), true},
-		{"txt file", testWriteEvent("/tmp/notes.txt"), false},
+		{testNameTxtFile, testWriteEvent("/tmp/notes.txt"), false},
 		{"go file uppercase ext", testWriteEvent("/tmp/main.GO"), true},
 	}
 }
@@ -554,10 +560,10 @@ func TestOp_String(t *testing.T) {
 		op   Op
 		want string
 	}{
-		{Create, "CREATE"},
-		{Write, "WRITE"},
-		{Remove, "REMOVE"},
-		{Rename, "RENAME"},
+		{Create, opStringCreate},
+		{Write, opStringWrite},
+		{Remove, opStringRemove},
+		{Rename, opStringRename},
 		{Op(99), "UNKNOWN(99)"},
 	}
 

@@ -13,6 +13,14 @@ import (
 //nolint:recvcheck // UnmarshalText/UnmarshalJSON must have pointer receiver to modify the receiver.
 type Op int
 
+// String representations for Op values.
+const (
+	opStringCreate = "CREATE"
+	opStringWrite  = "WRITE"
+	opStringRemove = "REMOVE"
+	opStringRename = "RENAME"
+)
+
 const (
 	// Create indicates a file or directory was created.
 	Create Op = iota + 1
@@ -35,13 +43,13 @@ var (
 func (op Op) String() string {
 	switch op {
 	case Create:
-		return "CREATE"
+		return opStringCreate
 	case Write:
-		return "WRITE"
+		return opStringWrite
 	case Remove:
-		return "REMOVE"
+		return opStringRemove
 	case Rename:
-		return "RENAME"
+		return opStringRename
 	default:
 		return fmt.Sprintf("UNKNOWN(%d)", op)
 	}
@@ -61,13 +69,13 @@ func (op Op) MarshalJSON() ([]byte, error) {
 // UnmarshalText implements encoding.TextUnmarshaler.
 func (op *Op) UnmarshalText(text []byte) error {
 	switch string(text) {
-	case "CREATE":
+	case opStringCreate:
 		*op = Create
-	case "WRITE":
+	case opStringWrite:
 		*op = Write
-	case "REMOVE":
+	case opStringRemove:
 		*op = Remove
-	case "RENAME":
+	case opStringRename:
 		*op = Rename
 	default:
 		return fmt.Errorf("unknown operation: %q: %w", text, ErrUnknownOp)

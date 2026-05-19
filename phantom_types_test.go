@@ -17,9 +17,9 @@ func TestLogSubstring_String(t *testing.T) {
 func TestEventPath_String(t *testing.T) {
 	t.Parallel()
 
-	ep := NewEventPath("/tmp/test.go")
-	if ep.String() != "/tmp/test.go" {
-		t.Errorf("EventPath.String() = %q, want %q", ep.String(), "/tmp/test.go")
+	ep := NewEventPath(benchmarkTestPathTestGo)
+	if ep.String() != benchmarkTestPathTestGo {
+		t.Errorf("EventPath.String() = %q, want %q", ep.String(), benchmarkTestPathTestGo)
 	}
 }
 

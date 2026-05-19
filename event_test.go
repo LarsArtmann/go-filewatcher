@@ -7,6 +7,11 @@ import (
 	"testing"
 )
 
+// Test constants for repeated strings.
+const (
+	testEventPath = "/tmp/test.go"
+)
+
 func TestOp_MarshalText(t *testing.T) {
 	t.Parallel()
 
@@ -14,10 +19,10 @@ func TestOp_MarshalText(t *testing.T) {
 		op   Op
 		want string
 	}{
-		{Create, "CREATE"},
-		{Write, "WRITE"},
-		{Remove, "REMOVE"},
-		{Rename, "RENAME"},
+		{Create, opStringCreate},
+		{Write, opStringWrite},
+		{Remove, opStringRemove},
+		{Rename, opStringRename},
 	}
 
 	for _, tt := range tests {
@@ -73,7 +78,7 @@ func TestOp_UnmarshalText_Invalid(t *testing.T) {
 func TestEvent_JSON(t *testing.T) {
 	t.Parallel()
 
-	event := fixedTimeEvent("/tmp/test.go", Write, 12)
+	event := fixedTimeEvent(testEventPath, Write, 12)
 
 	data, err := json.Marshal(event)
 	if err != nil {
@@ -109,7 +114,7 @@ func TestEvent_LogValue(t *testing.T) {
 
 	ts := FixedTime(2025, 6, 15, 10, 30, 0)
 	event := Event{
-		Path:      "/tmp/test.go",
+		Path:      testEventPath,
 		Op:        Write,
 		Timestamp: ts,
 		IsDir:     false,

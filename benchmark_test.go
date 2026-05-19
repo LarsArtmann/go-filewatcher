@@ -15,13 +15,15 @@ import (
 
 //nolint:gochecknoglobals // Benchmark helper - intentionally package level for reuse
 var (
-	benchmarkTestEvent = benchmarkEventTemplate()
+	benchmarkTestEvent      = benchmarkEventTemplate()
+	benchmarkTestPathTestGo = "/tmp/test.go"
+	benchmarkTestPathMainGo = "/tmp/main.go"
 )
 
 // benchmarkEventTemplate returns the common Event structure used across benchmarks.
 func benchmarkEventTemplate() Event {
 	return Event{
-		Path:      "/tmp/test.go",
+		Path:      benchmarkTestPathTestGo,
 		Op:        Write,
 		Timestamp: time.Now(),
 		IsDir:     false,
@@ -161,7 +163,7 @@ func BenchmarkPassesFilters_SingleFilter(b *testing.B) {
 		filters: []Filter{FilterExtensions(".go")},
 	}
 
-	event := Event{Op: Write, Path: "/tmp/main.go"}
+	event := Event{Op: Write, Path: benchmarkTestPathMainGo}
 
 	for b.Loop() {
 		_ = w.passesFilters(event)
@@ -177,7 +179,7 @@ func BenchmarkPassesFilters_MultipleFilters(b *testing.B) {
 		},
 	}
 
-	event := Event{Op: Write, Path: "/tmp/main.go"}
+	event := Event{Op: Write, Path: benchmarkTestPathMainGo}
 
 	for b.Loop() {
 		_ = w.passesFilters(event)
@@ -195,7 +197,7 @@ func BenchmarkPassesFilters_ComplexFilterChain(b *testing.B) {
 		},
 	}
 
-	event := Event{Op: Write, Path: "/tmp/main.go"}
+	event := Event{Op: Write, Path: benchmarkTestPathMainGo}
 
 	for b.Loop() {
 		_ = w.passesFilters(event)
@@ -304,7 +306,7 @@ func BenchmarkWatchList_Copy(b *testing.B) {
 func BenchmarkEmitEvent_NoDebounce(b *testing.B) {
 	w := &Watcher{}
 
-	event := Event{Op: Write, Path: "/tmp/test.go"}
+	event := Event{Op: Write, Path: benchmarkTestPathTestGo}
 	ctx := context.Background()
 	eventCh := make(chan Event, 1)
 
@@ -321,7 +323,7 @@ func BenchmarkEmitEvent_WithMiddleware(b *testing.B) {
 		},
 	}
 
-	event := Event{Op: Write, Path: "/tmp/test.go"}
+	event := Event{Op: Write, Path: benchmarkTestPathTestGo}
 	ctx := context.Background()
 	eventCh := make(chan Event, 1)
 
@@ -337,7 +339,7 @@ func BenchmarkEmitEvent_WithGlobalDebounce(b *testing.B) {
 
 	defer w.debounceInterface.Stop()
 
-	event := Event{Op: Write, Path: "/tmp/test.go"}
+	event := Event{Op: Write, Path: benchmarkTestPathTestGo}
 	ctx := context.Background()
 	eventCh := make(chan Event, 1)
 
@@ -353,7 +355,7 @@ func BenchmarkEmitEvent_WithPerPathDebounce(b *testing.B) {
 
 	defer w.debounceInterface.Stop()
 
-	event := Event{Op: Write, Path: "/tmp/test.go"}
+	event := Event{Op: Write, Path: benchmarkTestPathTestGo}
 	ctx := context.Background()
 	eventCh := make(chan Event, 1)
 

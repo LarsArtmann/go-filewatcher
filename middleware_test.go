@@ -523,7 +523,7 @@ func runMiddlewareBenchmark(b *testing.B, mwFunc func() Middleware) {
 	b.Helper()
 
 	handler := mwFunc()(noopHandler())
-	event := Event{Op: Write, Path: "/tmp/test.go", Timestamp: time.Now(), IsDir: false}
+	event := Event{Op: Write, Path: benchmarkTestPathTestGo, Timestamp: time.Now(), IsDir: false}
 	ctx := context.Background()
 
 	b.ResetTimer()

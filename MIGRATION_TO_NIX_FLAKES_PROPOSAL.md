@@ -2,7 +2,7 @@
 
 **Project:** `github.com/larsartmann/go-filewatcher`
 **Date:** 2026-04-21
-**Status:** Proposal — Awaiting Decision
+**Status:** ✅ COMPLETED (2026-05-23)
 **Scope:** Full Nix Flakes adoption across dev environment, CI, and release tooling
 
 ---
@@ -852,21 +852,23 @@ Phase 3 (CI & Polish) ───── 1.5 hours ─ Steps 12-18
 
 After completing all phases, verify:
 
-- [ ] `nix develop` enters shell with Go 1.26.x
-- [ ] `nix build .` succeeds (validates buildGoModule)
-- [ ] `nix run .#test` passes all tests with `-race`
-- [ ] `nix run .#lint` passes with 0 issues
-- [ ] `nix run .#check` runs vet + lint + test
-- [ ] `nix run .#ci` runs full CI pipeline
-- [ ] `nix run .#lint-fix` auto-fixes lint issues
-- [ ] `nix run .#bench` runs benchmarks
-- [ ] `nix run .#coverage` generates coverage report
-- [ ] `nix flake check` runs all checks
-- [ ] `nix fmt` formats `.nix` files
-- [ ] `direnv allow` works with `.envrc`
-- [ ] CI pipeline passes with Nix
-- [ ] `AGENTS.md` reflects new commands
-- [ ] `README.md` has Nix installation instructions
+- [x] `nix develop` enters shell with Go 1.26.x
+- [x] `nix build .` succeeds (validates buildGoModule)
+- [x] `nix run .#test` passes all tests with `-race`
+- [x] `nix run .#lint` passes with 0 issues
+- [x] `nix run .#check` runs vet + lint + test
+- [x] `nix run .#ci` runs full CI pipeline
+- [x] `nix run .#lint-fix` auto-fixes lint issues
+- [x] `nix run .#bench` runs benchmarks
+- [x] `nix run .#coverage` generates coverage report
+- [x] `nix flake check` runs all checks
+- [x] `nix fmt` formats `.nix` files
+- [x] `direnv allow` works with `.envrc`
+- [ ] CI pipeline passes with Nix (DEFERRED - using GitHub Actions Go setup instead per decision D4)
+- [x] `AGENTS.md` reflects new commands
+- [x] `README.md` has Nix installation instructions
+
+**Note:** CI migration to Nix was deferred per proposal decision D4 ("Later — add when CI is stable"). The existing GitHub Actions CI using `setup-go` continues to work and provides equivalent quality gates.
 
 ---
 

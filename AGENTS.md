@@ -8,17 +8,33 @@
 
 ```bash
 # Using Nix flake (recommended)
-nix develop          # Enter development shell with Go and tools
-direnv allow         # Auto-load environment on cd (requires direnv)
+nix develop              # Enter development shell with Go and tools
+direnv allow             # Auto-load environment on cd (requires direnv)
 
-# Inside dev shell or with Go installed:
-check       # Full quality: vet + lint + test
-ci          # Full CI: tidy + fmt + vet + lint + test
-lint-fix    # Auto-fix linter issues
+# Nix apps (run from anywhere, no need to be in dev shell)
+nix run .#check          # Full quality: vet + lint + test
+nix run .#ci             # Full CI: tidy + fmt + vet + lint + test
+nix run .#lint-fix       # Auto-fix linter issues
+nix run .#test           # Run tests with -race
+nix run .#test-v         # Run tests with -race -v
+nix run .#lint           # Run linter
+nix run .#bench          # Run benchmarks
+nix run .#coverage       # Generate coverage report
+nix run .#fmt            # Format Go code
+nix run .#tidy           # Run go mod tidy
+nix run .                # Default = check
 
-# Direct Go commands
-GOWORK=off go test -race ./...
-GOWORK=off golangci-lint run ./...
+# Nix quality gates
+nix flake check          # Run all checks (build, test, lint, fmt, vet)
+nix build .              # Validate reproducible build
+nix fmt                  # Format .nix files
+
+# Inside dev shell (aliases are set automatically):
+check       # nix run .#check
+ci          # nix run .#ci
+lint        # nix run .#lint
+lint-fix    # nix run .#lint-fix
+test        # nix run .#test
 ```
 
 ---
@@ -150,7 +166,7 @@ Don't remove the nolint — this is intentional.
 | `gochecknoglobals` | No globals unless `//nolint`          |
 | `gci`              | Import order matters                  |
 
-Run `just lint-fix` — it auto-fixes many issues.
+Run `nix run .#lint-fix` — it auto-fixes many issues.
 
 ---
 

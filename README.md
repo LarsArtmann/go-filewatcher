@@ -49,6 +49,27 @@ go get github.com/larsartmann/go-filewatcher
 
 Requires Go 1.26.1 or later.
 
+### Development with Nix
+
+This project uses [Nix Flakes](https://nixos.wiki/wiki/Flakes) for reproducible builds and development:
+
+```bash
+# Enter development shell (all tools included)
+nix develop
+
+# Or use direnv for automatic environment loading
+direnv allow
+
+# Run commands via Nix (no dev shell needed)
+nix run .#check          # vet + lint + test
+nix run .#ci             # full CI pipeline
+nix run .#test           # run tests with -race
+nix run .#lint           # run linter
+nix run .#lint-fix       # auto-fix lint issues
+nix flake check          # run all quality gates
+nix build .              # validate reproducible build
+```
+
 ---
 
 ## Quick Start
@@ -531,7 +552,7 @@ Performance characteristics on Apple M2 (arm64):
 | `Stats/Empty`           | 21,545,258     | 51.0 ns | 0 allocs    |
 | `WatchList/Copy`        | 444,613        | 6.4 µs  | 1 alloc     |
 
-Run benchmarks: `go test -bench=. -benchmem`
+Run benchmarks: `nix run .#bench` or `go test -bench=. -benchmem`
 
 ---
 

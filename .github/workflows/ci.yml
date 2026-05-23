@@ -45,9 +45,18 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: "1.26"
+      - run: go vet ./...
       - uses: golangci/golangci-lint-action@v7
         with:
           version: latest
+      - name: Check formatting
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "Files need formatting:"
+            echo "$unformatted"
+            exit 1
+          fi
 
   benchmark:
     name: Benchmark

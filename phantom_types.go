@@ -149,11 +149,11 @@ func NewOpString(op string) OpString {
 }
 
 // Get returns the underlying string value.
-func (os OpString) Get() string {
-	return string(os)
+func (o OpString) Get() string {
+	return string(o)
 }
 
 // String returns the string representation.
-func (os OpString) String() string {
-	return string(os)
+func (o OpString) String() string {
+	return string(o)
 }

@@ -1,7 +1,7 @@
 # go-filewatcher
 
-[![Go Version](https://img.shields.io/badge/go-1.26.1+-blue.svg)](https://golang.org/dl/)
-[![Go Reference](https://pkg.go.dev/badge/github.com/larsartmann/go-filewatcher.svg)](https://pkg.go.dev/github.com/larsartmann/go-filewatcher)
+[![Go Version](https://img.shields.io/badge/go-1.26.2+-blue.svg)](https://golang.org/dl/)
+[![Go Reference](https://pkg.go.dev/badge/github.com/larsartmann/go-filewatcher/v2.svg)](https://pkg.go.dev/github.com/larsartmann/go-filewatcher/v2)
 [![CI](https://github.com/larsartmann/go-filewatcher/actions/workflows/ci.yml/badge.svg)](https://github.com/larsartmann/go-filewatcher/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -85,7 +85,7 @@ import (
     "log"
     "time"
 
-    filewatcher "github.com/larsartmann/go-filewatcher"
+    filewatcher "github.com/larsartmann/go-filewatcher/v2"
 )
 
 func main() {
@@ -608,6 +608,6 @@ Copyright © 2026 Lars Artmann.
 
 **Made with ❤️ for Go developers**
 
-[Report Issue](https://github.com/larsartmann/go-filewatcher/issues) · [View Documentation](https://pkg.go.dev/github.com/larsartmann/go-filewatcher)
+[Report Issue](https://github.com/larsartmann/go-filewatcher/issues) · [View Documentation](https://pkg.go.dev/github.com/larsartmann/go-filewatcher/v2)
 
 </div>

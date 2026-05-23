@@ -1,6 +1,6 @@
 # Agent Guide: go-filewatcher
 
-**Go 1.26.2** | `github.com/larsartmann/go-filewatcher` | **MIT License**
+**Go 1.26.2** | `github.com/larsartmann/go-filewatcher/v2` | **MIT License**
 
 ---
 
@@ -35,6 +35,34 @@ ci          # nix run .#ci
 lint        # nix run .#lint
 lint-fix    # nix run .#lint-fix
 test        # nix run .#test
+
+## Updating vendorHash
+
+When `go.mod` or `go.sum` changes, `vendorHash` in `flake.nix` must be updated:
+
+```bash
+# 1. Update dependencies
+go get github.com/some/pkg@latest
+# or: go mod tidy
+
+# 2. Update vendorHash (Nix will compute the new hash)
+nix flake update
+
+# 3. Verify everything still works
+nix run .#check
+```
+
+If `nix flake update` fails with a hash mismatch, set a temporary placeholder and rebuild:
+
+```bash
+# In flake.nix, set vendorHash to an empty string temporarily:
+vendorHash = "";  # Will show correct hash in error message
+
+# Then run:
+nix build .  # Error will show correct hash
+
+# Copy the hash from the error and set it properly:
+vendorHash = "sha256-XXXX...";
 ```
 
 ---
@@ -173,9 +201,9 @@ Run `nix run .#lint-fix` — it auto-fixes many issues.
 ## Dependencies
 
 ```
-github.com/fsnotify/fsnotify    # Core file watching
+github.com/fsnotify/fsnotify         # Core file watching
 github.com/LarsArtmann/gogenfilter  # Generated code detection (v3, local replace)
-golang.org/x/time                # rate.Limiter for rate limiting middleware
+golang.org/x/time/rate              # rate.Limiter for rate limiting middleware
 ```
 
 ### gogenfilter v3 API

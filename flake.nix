@@ -98,6 +98,9 @@
               export GOWORK=off
               ${pkgs.go_1_26}/bin/go test -race -count=1 ./...
             ''}/bin/test";
+            meta = with pkgs.lib; {
+              description = "Run tests with -race flag";
+            };
           };
 
           test-v = {
@@ -107,6 +110,9 @@
               export GOWORK=off
               ${pkgs.go_1_26}/bin/go test -v -race -count=1 ./...
             ''}/bin/test-v";
+            meta = with pkgs.lib; {
+              description = "Run tests with -race and verbose flags";
+            };
           };
 
           lint = {
@@ -114,8 +120,13 @@
             program = "${pkgs.writeShellScriptBin "lint" ''
               cd "${self}"
               export GOWORK=off
+              export TMPDIR="/tmp"
+              export GOLANGCI_LINT_CACHE="$TMPDIR/golangci-lint-cache"
               ${pkgs.golangci-lint}/bin/golangci-lint run ./...
             ''}/bin/lint";
+            meta = with pkgs.lib; {
+              description = "Run golangci-lint linter";
+            };
           };
 
           lint-fix = {
@@ -123,8 +134,13 @@
             program = "${pkgs.writeShellScriptBin "lint-fix" ''
               cd "${self}"
               export GOWORK=off
+              export TMPDIR="/tmp"
+              export GOLANGCI_LINT_CACHE="$TMPDIR/golangci-lint-cache"
               ${pkgs.golangci-lint}/bin/golangci-lint run --fix ./...
             ''}/bin/lint-fix";
+            meta = with pkgs.lib; {
+              description = "Auto-fix linter issues with golangci-lint";
+            };
           };
 
           vet = {
@@ -134,6 +150,9 @@
               export GOWORK=off
               ${pkgs.go_1_26}/bin/go vet ./...
             ''}/bin/vet";
+            meta = with pkgs.lib; {
+              description = "Run go vet static analyzer";
+            };
           };
 
           fmt = {
@@ -144,6 +163,9 @@
               ${pkgs.go_1_26}/bin/go fmt ./...
               ${pkgs.gofumpt}/bin/gofumpt -w .
             ''}/bin/fmt";
+            meta = with pkgs.lib; {
+              description = "Format Go code with gofmt and gofumpt";
+            };
           };
 
           bench = {
@@ -153,6 +175,9 @@
               export GOWORK=off
               ${pkgs.go_1_26}/bin/go test -bench=. -benchmem ./...
             ''}/bin/bench";
+            meta = with pkgs.lib; {
+              description = "Run Go benchmarks with memory stats";
+            };
           };
 
           coverage = {
@@ -160,9 +185,14 @@
             program = "${pkgs.writeShellScriptBin "coverage" ''
               cd "${self}"
               export GOWORK=off
-              ${pkgs.go_1_26}/bin/go test -coverprofile=coverage.out ./...
-              ${pkgs.go_1_26}/bin/go tool cover -func=coverage.out
+              export TMPDIR="/tmp"
+              export GOLANGCI_LINT_CACHE="$TMPDIR/golangci-lint-cache"
+              ${pkgs.go_1_26}/bin/go test -coverprofile="$TMPDIR/coverage.out" ./...
+              ${pkgs.go_1_26}/bin/go tool cover -func="$TMPDIR/coverage.out"
             ''}/bin/coverage";
+            meta = with pkgs.lib; {
+              description = "Generate Go test coverage report";
+            };
           };
 
           tidy = {
@@ -172,6 +202,9 @@
               export GOWORK=off
               ${pkgs.go_1_26}/bin/go mod tidy
             ''}/bin/tidy";
+            meta = with pkgs.lib; {
+              description = "Run go mod tidy to clean up dependencies";
+            };
           };
 
           check = {
@@ -179,6 +212,8 @@
             program = "${pkgs.writeShellScriptBin "check" ''
               cd "${self}"
               export GOWORK=off
+              export TMPDIR="/tmp"
+              export GOLANGCI_LINT_CACHE="$TMPDIR/golangci-lint-cache"
               echo "Running vet..."
               ${pkgs.go_1_26}/bin/go vet ./...
               echo "Running lint..."
@@ -187,6 +222,9 @@
               ${pkgs.go_1_26}/bin/go test -race -count=1 ./...
               echo "All checks passed."
             ''}/bin/check";
+            meta = with pkgs.lib; {
+              description = "Run vet, lint, and tests";
+            };
           };
 
           ci = {
@@ -194,6 +232,8 @@
             program = "${pkgs.writeShellScriptBin "ci" ''
               cd "${self}"
               export GOWORK=off
+              export TMPDIR="/tmp"
+              export GOLANGCI_LINT_CACHE="$TMPDIR/golangci-lint-cache"
               echo "Running tidy..."
               ${pkgs.go_1_26}/bin/go mod tidy
               echo "Running fmt..."
@@ -206,6 +246,9 @@
               ${pkgs.go_1_26}/bin/go test -race -count=1 ./...
               echo "CI complete."
             ''}/bin/ci";
+            meta = with pkgs.lib; {
+              description = "Full CI pipeline: tidy, fmt, vet, lint, test";
+            };
           };
 
           default = self.apps.${system}.check;

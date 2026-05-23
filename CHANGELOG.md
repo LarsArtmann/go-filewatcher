@@ -4,18 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
-
-### Changed
-
-- Relicensed from Proprietary to MIT
-
-### Fixed
-
-- `Add()` no longer double-appends to `WatchList()` in recursive mode
-- `MiddlewareBatch` timer-triggered flush errors now logged via `slog.Error` instead of silently dropped
-- `handleNewDirectory` now propagates `addPath` errors to the error handler
-- `MiddlewareSlidingWindowRateLimit` uses in-place slice compaction instead of per-event allocation
+## [2.0.0] - 2026-05-23
 
 ### Added
 
@@ -36,12 +25,61 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **BREAKING**: Relicensed from Proprietary to MIT
+- **BREAKING**: Module path changed to `github.com/larsartmann/go-filewatcher/v2`
 - Replaced hand-rolled `Op.MarshalJSON` with `json.Marshal` for robustness
 - Modernized `errors.As` to Go 1.26 `AsType` pattern
 - `testing_helpers.go` renamed to `testing_helpers_test.go` (no longer ships to consumers)
 - `flake.nix` Go version aligned to 1.26 (was 1.24)
 - `FilterExcludePaths` no longer calls `filepath.Abs` per event
 - `WithBuffer(0)` now allowed with documented caveat
+
+### Fixed
+
+- `Add()` no longer double-appends to `WatchList()` in recursive mode
+- `MiddlewareBatch` timer-triggered flush errors now logged via `slog.Error` instead of silently dropped
+- `handleNewDirectory` now propagates `addPath` errors to the error handler
+- `MiddlewareSlidingWindowRateLimit` uses in-place slice compaction instead of per-event allocation
+
+### Removed
+
+- 306 lines of test-only code from production binary
+
+## [Unreleased]
+
+### Added
+
+- `DefaultIgnoreDirsCopy()` function for safe access without mutation risk
+- Debounce option validation: panics on negative durations
+- `Errors() <-chan error` method for channel-based error consumption
+- `IsWatching()` and `IsClosed()` state inspection methods
+- `WithLazyIsDir()` option to skip `os.Stat` calls for performance
+- `WithOnAdd()` callback option for path tracking
+- `WithOnError()` simplified error callback option
+- `FilterMaxSize()`, `FilterMinAge()`, `FilterModifiedSince()` filters
+- `MiddlewareDeduplicate()`, `MiddlewareBatch()`, `MiddlewareSlidingWindowRateLimit()`
+- `FilterGeneratedCode()`, `FilterGeneratedCodeFull()` via gogenfilter integration
+- Compile-time phantom types for `EventPath`, `RootPath`, `DebounceKey`, `OpString`
+- `Event.GetPath()` returning phantom-typed `EventPath`
+- `slog.LogValuer` on `Event` for structured logging
+- 15 new tests covering rename events, multi-directory init, concurrent ops, state transitions
+
+### Changed
+
+- Relicensed from Proprietary to MIT
+- Replaced hand-rolled `Op.MarshalJSON` with `json.Marshal` for robustness
+- Modernized `errors.As` to Go 1.26 `AsType` pattern
+- `testing_helpers.go` renamed to `testing_helpers_test.go` (no longer ships to consumers)
+- `flake.nix` Go version aligned to 1.26 (was 1.24)
+- `FilterExcludePaths` no longer calls `filepath.Abs` per event
+- `WithBuffer(0)` now allowed with documented caveat
+
+### Fixed
+
+- `Add()` no longer double-appends to `WatchList()` in recursive mode
+- `MiddlewareBatch` timer-triggered flush errors now logged via `slog.Error` instead of silently dropped
+- `handleNewDirectory` now propagates `addPath` errors to the error handler
+- `MiddlewareSlidingWindowRateLimit` uses in-place slice compaction instead of per-event allocation
 
 ### Removed
 

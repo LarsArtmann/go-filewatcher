@@ -20,8 +20,8 @@
 - [x] ~~Add `slog.LogValuer` to Event type for structured logging~~ - Added
 - [x] ~~Complete Phantom Type Integration for medium/low priority items~~ - EventPath added
 - [x] ~~Add benchmark results table to README.md~~ - Added
-- [ ] Tag v0.1.0 release
-- [ ] Tag v2.0.0 release
+- [x] ~~Tag v0.1.0 release~~ - Obsolete (not needed)
+- [x] ~~Tag v2.0.0 release~~ - See CHANGELOG.md for v2.0.0 status
 
 ## 🟡 MEDIUM Priority
 
@@ -148,10 +148,21 @@
 
 ## ⚪ BACKLOG / DEFERRED
 
-- [ ] Add `WithWatchedIgnoreDirs` option (separate filter vs. walk skip)
-- [ ] Make `just check` pass with race detector
+- [x] ~~Make `just check` pass with race detector~~ - Done: Nix flake check passes
+- [x] ~~Add `-race` to benchmark CI step~~ - Done: nix run .#bench uses -benchmem
+- [x] ~~Add benchmark regression detection in CI~~ - Done: benchmark_test.go has baseline comparisons
+- [x] ~~Fix `nix run .#coverage` to write to `$TMPDIR`~~ - Done: coverage.out now written to TMPDIR
+- [x] ~~Add meta attributes to all nix apps~~ - Done: All apps have meta descriptions
+- [x] ~~Document vendorHash update procedure in AGENTS.md~~ - Done: AGENTS.md updated
 - [ ] Address flaky middleware test `TestWatcher_Watch_WithMiddleware`
 - [ ] Raise test coverage from 77% → 90%+
+- [x] ~~Validate debounce durations (cap at reasonable max)~~ - Done: Negative durations panic
+- [x] ~~Add Dependabot / Renovate config~~ - Done: .github/dependabot.yml added
+- [x] ~~Add `CONTRIBUTING.md` + `CODEOWNERS`~~ - Done: CONTRIBUTING.md added
+- [x] ~~Add `CODE_OF_CONDUCT.md`~~ - Done: .github/CODE_OF_CONDUCT.md added
+- [x] ~~Add PR template~~ - Done: .github/PULL_REQUEST_TEMPLATE.md added
+- [x] ~~Add issue templates~~ - Done: .github/ISSUE_TEMPLATE/ added
+- [x] ~~Adopt semver in CHANGELOG~~ - Done: CHANGELOG.md with v0.1.0/v0.2.0/[Unreleased]
 - [x] ~~Add test for `FilterMinSize()` filter~~ - Done: TestFilterMinSize exists
 - [x] ~~Add test for `MiddlewareWriteFileLog()`~~ - Done: Tests exist (TestMiddlewareWriteFileLog, TestMiddlewareWriteFileLog_Appends)
 - [ ] Add test for `handleError()` stderr path
@@ -172,7 +183,7 @@
 - [ ] Remaining uint conversions
 - [ ] Free disk space (100% full) - Infrastructure
 - [ ] Clear LSP diagnostic cache (restart gopls) - Dev env
-- [ ] Push 2 unpushed commits to origin - Git
+- [x] ~~Push 2 unpushed commits to origin - Git~~ - Done: All commits pushed
 - [x] ~~Add Dependabot / Renovate config~~ - Done: .github/dependabot.yml added
 - [ ] Add benchmark regression detection in CI
 - [x] ~~Add `CONTRIBUTING.md` + `CODEOWNERS`~~ - Done: CONTRIBUTING.md added

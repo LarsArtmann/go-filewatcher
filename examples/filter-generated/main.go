@@ -25,7 +25,7 @@ import (
 	"time"
 
 	"github.com/LarsArtmann/gogenfilter/v3"
-	filewatcher "github.com/larsartmann/go-filewatcher/v2"
+	filewatcher "github.com/larsartmann/go-filewatcher"
 )
 
 const (

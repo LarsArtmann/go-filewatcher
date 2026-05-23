@@ -9,7 +9,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	filewatcher "github.com/larsartmann/go-filewatcher/v2"
+	filewatcher "github.com/larsartmann/go-filewatcher"
 )
 
 const (

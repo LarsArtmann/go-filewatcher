@@ -7,8 +7,8 @@ import (
 	"log"
 	"time"
 
-	filewatcher "github.com/larsartmann/go-filewatcher/v2"
-	demo "github.com/larsartmann/go-filewatcher/v2/examples/demo"
+	filewatcher "github.com/larsartmann/go-filewatcher"
+	demo "github.com/larsartmann/go-filewatcher/examples/demo"
 )
 
 const debounceDelay = 300 * time.Millisecond // Delay for coalescing rapid file events

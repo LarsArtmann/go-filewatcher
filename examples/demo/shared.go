@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	filewatcher "github.com/larsartmann/go-filewatcher/v2"
+	filewatcher "github.com/larsartmann/go-filewatcher"
 )
 
 const timeFormat = "15:04:05.000"

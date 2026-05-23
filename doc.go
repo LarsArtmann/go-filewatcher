@@ -26,7 +26,7 @@
 // Following go-cqrs-lite conventions:
 //   - Functional options for configuration
 //   - Sentinel errors with stdlib errors package
-//   - No panics, explicit error handling
+//   - Explicit error handling; panics only for programmer errors (invalid arguments)
 //   - Context as first parameter
 //   - Channel-based event streaming
 //   - Middleware chains for cross-cutting concerns

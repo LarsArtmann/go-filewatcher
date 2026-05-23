@@ -57,6 +57,26 @@ const (
 	CategoryPermanent
 )
 
+const (
+	categoryStrTransient = "transient"
+	categoryStrPermanent = "permanent"
+	categoryStrUnknown   = "unknown"
+)
+
+// String returns a human-readable name for the error category.
+func (c ErrorCategory) String() string {
+	switch c {
+	case CategoryTransient:
+		return categoryStrTransient
+	case CategoryPermanent:
+		return categoryStrPermanent
+	case CategoryUnknown:
+		return categoryStrUnknown
+	default:
+		return categoryStrUnknown
+	}
+}
+
 // WatcherError provides structured error information with context.
 type WatcherError struct {
 	// Op is the operation being performed when the error occurred.
@@ -138,7 +158,14 @@ func categorizeError(err error) ErrorCategory {
 	}
 
 	// Transient errors - these might resolve on retry
-	if matchesAnyError(err, ErrFsnotifyFailed, ErrWalkFailed, ErrEventProcessingFailed) {
+	if matchesAnyError(
+		err,
+		ErrFsnotifyFailed,
+		ErrWalkFailed,
+		ErrEventProcessingFailed,
+		ErrPathResolveFailed,
+		ErrMiddlewareFailed,
+	) {
 		return CategoryTransient
 	}
 

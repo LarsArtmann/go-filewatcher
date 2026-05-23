@@ -16,3 +16,5 @@ Copy/paste detection report
 .envrc.local
 # Nix build output
 /result
+# Build artifacts
+/v2

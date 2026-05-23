@@ -120,8 +120,6 @@
             program = "${pkgs.writeShellScriptBin "lint" ''
               cd "${self}"
               export GOWORK=off
-              export TMPDIR="/tmp"
-              export GOLANGCI_LINT_CACHE="$TMPDIR/golangci-lint-cache"
               ${pkgs.golangci-lint}/bin/golangci-lint run ./...
             ''}/bin/lint";
             meta = with pkgs.lib; {
@@ -134,8 +132,6 @@
             program = "${pkgs.writeShellScriptBin "lint-fix" ''
               cd "${self}"
               export GOWORK=off
-              export TMPDIR="/tmp"
-              export GOLANGCI_LINT_CACHE="$TMPDIR/golangci-lint-cache"
               ${pkgs.golangci-lint}/bin/golangci-lint run --fix ./...
             ''}/bin/lint-fix";
             meta = with pkgs.lib; {
@@ -185,10 +181,8 @@
             program = "${pkgs.writeShellScriptBin "coverage" ''
               cd "${self}"
               export GOWORK=off
-              export TMPDIR="/tmp"
-              export GOLANGCI_LINT_CACHE="$TMPDIR/golangci-lint-cache"
-              ${pkgs.go_1_26}/bin/go test -coverprofile="$TMPDIR/coverage.out" ./...
-              ${pkgs.go_1_26}/bin/go tool cover -func="$TMPDIR/coverage.out"
+              ${pkgs.go_1_26}/bin/go test -coverprofile="/tmp/coverage.out" ./...
+              ${pkgs.go_1_26}/bin/go tool cover -func="/tmp/coverage.out"
             ''}/bin/coverage";
             meta = with pkgs.lib; {
               description = "Generate Go test coverage report";
@@ -212,8 +206,6 @@
             program = "${pkgs.writeShellScriptBin "check" ''
               cd "${self}"
               export GOWORK=off
-              export TMPDIR="/tmp"
-              export GOLANGCI_LINT_CACHE="$TMPDIR/golangci-lint-cache"
               echo "Running vet..."
               ${pkgs.go_1_26}/bin/go vet ./...
               echo "Running lint..."
@@ -232,8 +224,6 @@
             program = "${pkgs.writeShellScriptBin "ci" ''
               cd "${self}"
               export GOWORK=off
-              export TMPDIR="/tmp"
-              export GOLANGCI_LINT_CACHE="$TMPDIR/golangci-lint-cache"
               echo "Running tidy..."
               ${pkgs.go_1_26}/bin/go mod tidy
               echo "Running fmt..."

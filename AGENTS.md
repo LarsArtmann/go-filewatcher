@@ -6,7 +6,7 @@
 
 ## Critical Commands
 
-```bash
+````bash
 # Using Nix flake (recommended)
 nix develop              # Enter development shell with Go and tools
 direnv allow             # Auto-load environment on cd (requires direnv)
@@ -50,7 +50,7 @@ nix flake update
 
 # 3. Verify everything still works
 nix run .#check
-```
+````
 
 If `nix flake update` fails with a hash mismatch, set a temporary placeholder and rebuild:
 

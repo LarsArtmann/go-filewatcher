@@ -143,10 +143,9 @@ linters:
       exclude:
         - os/exec.Cmd
     forbidigo:
-      exclude-functions:
-        - fmt\.Print.*
-        - print
-        - println
+      forbid:
+        - pattern: '^(fmt\.Print(|f|ln)|print|println)$'
+          msg: "use slog or log.Logger instead of fmt.Print*"
     gocritic:
       disabled-checks:
         - dupImport

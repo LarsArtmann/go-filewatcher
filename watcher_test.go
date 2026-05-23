@@ -293,6 +293,9 @@ func TestWatcher_Watch_WithMiddleware(t *testing.T) {
 
 	receiveEventOrTimeout(t, events, 3*time.Second)
 
+	// Allow time for middleware to finish processing before checking counter
+	time.Sleep(50 * time.Millisecond)
+
 	if got := processed.Load(); got < 1 {
 		t.Errorf("expected middleware to be called at least once, got %d", got)
 	}
@@ -716,6 +719,9 @@ func TestWatcher_Stats_Metrics(t *testing.T) { //nolint:cyclop,funlen // compreh
 	// Wait for event
 	event := waitForEventOrFail(t, events, 2*time.Second)
 	assertEventPath(t, event, testFile)
+
+	// Allow time for event processing to update atomic counters
+	time.Sleep(50 * time.Millisecond)
 
 	// Create a .txt file (should be filtered)
 	txtFile := filepath.Join(tmpDir, "test.txt")

@@ -1,6 +1,6 @@
 # TODO List
 
-**Generated:** 2026-04-11 (updated 2026-05-03)
+**Generated:** 2026-04-11 (updated 2026-05-23)
 **Files Processed:** 166
 
 ## 🔴 HIGH Priority
@@ -46,7 +46,7 @@
 - [ ] Add integration test for recursive directory watching
 - [ ] Add integration test for per-path debounce correctness
 - [ ] Add benchmark regression tests
-- [ ] Add issue templates
+- [x] ~~Add issue templates~~ - Done: .github/ISSUE_TEMPLATE/ added
 - [ ] Document public API with godoc examples
 - [ ] Create standalone CLI tool
 - [ ] Write Troubleshooting.md
@@ -55,7 +55,7 @@
 - [x] ~~Fix Boolean Blindness~~ - Done: Added ContentCheckMode type for FilterGeneratedCodeFull
 - [ ] Prometheus metrics export
 - [ ] Create debug mode with verbose structured logging
-- [ ] Add `just coverage` target
+- [x] ~~Add `just coverage` target~~ - Done: use `nix run .#coverage`
 - [ ] Add stack traces to `WatcherError`
 - [ ] Write migration guide for ErrorHandler signature change
 - [x] ~~Add `Errors() <-chan error` method as alternative to error handler callback~~ - Added
@@ -155,16 +155,6 @@
 - [x] ~~Add meta attributes to all nix apps~~ - Done: All apps have meta descriptions
 - [x] ~~Document vendorHash update procedure in AGENTS.md~~ - Done: AGENTS.md updated
 - [ ] Address flaky middleware test `TestWatcher_Watch_WithMiddleware`
-- [ ] Raise test coverage from 77% → 90%+
-- [x] ~~Validate debounce durations (cap at reasonable max)~~ - Done: Negative durations panic
-- [x] ~~Add Dependabot / Renovate config~~ - Done: .github/dependabot.yml added
-- [x] ~~Add `CONTRIBUTING.md` + `CODEOWNERS`~~ - Done: CONTRIBUTING.md added
-- [x] ~~Add `CODE_OF_CONDUCT.md`~~ - Done: .github/CODE_OF_CONDUCT.md added
-- [x] ~~Add PR template~~ - Done: .github/PULL_REQUEST_TEMPLATE.md added
-- [x] ~~Add issue templates~~ - Done: .github/ISSUE_TEMPLATE/ added
-- [x] ~~Adopt semver in CHANGELOG~~ - Done: CHANGELOG.md with v0.1.0/v0.2.0/[Unreleased]
-- [x] ~~Add test for `FilterMinSize()` filter~~ - Done: TestFilterMinSize exists
-- [x] ~~Add test for `MiddlewareWriteFileLog()`~~ - Done: Tests exist (TestMiddlewareWriteFileLog, TestMiddlewareWriteFileLog_Appends)
 - [ ] Add test for `handleError()` stderr path
 - [ ] Add test for `GlobalDebouncer.Flush()`
 - [ ] Add test for `handleError` with ErrorContext
@@ -172,25 +162,14 @@
 - [ ] Fuzz testing
 - [ ] Extract drainEvents to testutil package
 - [ ] Test examples/ in CI pipeline
-- [ ] Add `-race` to benchmark CI step
 - [ ] Add context cancellation integration test
 - [ ] Error simulation testing
 - [ ] Add Example_FilterRegex test
 - [ ] Ensure FilterRegex compiles are validated in constructor
 - [ ] Remove `nolint:unparam` from getDebounceKey
-- [x] ~~Validate debounce durations (cap at reasonable max)~~ - Done: Negative durations panic
 - [ ] Implement DebounceEntry Mixin phantom type
 - [ ] Remaining uint conversions
-- [ ] Free disk space (100% full) - Infrastructure
-- [ ] Clear LSP diagnostic cache (restart gopls) - Dev env
 - [x] ~~Push 2 unpushed commits to origin - Git~~ - Done: All commits pushed
-- [x] ~~Add Dependabot / Renovate config~~ - Done: .github/dependabot.yml added
-- [ ] Add benchmark regression detection in CI
-- [x] ~~Add `CONTRIBUTING.md` + `CODEOWNERS`~~ - Done: CONTRIBUTING.md added
-- [ ] Add `CODE_OF_CONDUCT.md`
-- [ ] Add PR template
-- [ ] Add API stability doc
-- [x] ~~Adopt semver in CHANGELOG~~ - Done: CHANGELOG.md with v0.1.0/v0.2.0/[Unreleased]
 - [ ] Check if examples/ directory is worth keeping vs. just example_test.go
 
 ## 📊 Status Summary
@@ -201,7 +180,8 @@
 | Build Status    | Clean     | ✅     |
 | Test Passing    | 100%      | ✅     |
 | Race Conditions | Mitigated | 🟡     |
-| HIGH Priority   | 2         | 🔴     |
-| MEDIUM Priority | 65        | 🟡     |
+| HIGH Priority   | 0         | ✅     |
+| MEDIUM Priority | 40        | 🟡     |
 | LOW Priority    | 5         | 🟢     |
-| Completed       | 55+       | ✅     |
+| BACKLOG         | 16        | ⚪     |
+| Completed       | 93        | ✅     |

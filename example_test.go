@@ -336,7 +336,6 @@ func ExampleFilterOr() {
 // ExampleEventPath demonstrates phantom type usage for type-safe paths.
 func ExampleEventPath() {
 	// Create an event and extract its path as a phantom type
-
 	event := filewatcher.Event{
 		Path: "/home/user/project/main.go",
 		Op:   filewatcher.Write,

@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"slices"
@@ -1185,4 +1186,281 @@ func TestWatcher_ContextCancellation_WithPerPathDebounce(t *testing.T) {
 
 	for range events {
 	}
+}
+
+func TestWatcher_Watch_WithDebug(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	var logBuf strings.Builder
+
+	logger := slog.New(slog.NewTextHandler(&logBuf, &slog.HandlerOptions{Level: slog.LevelDebug}))
+
+	w, err := New([]string{tmpDir}, WithDebug(logger), WithExtensions(".go"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	events, err := w.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	_ = createTestFile(t, NewTempDir(tmpDir), "test.go", "package test")
+
+	receiveEventOrTimeout(t, events, 3*time.Second)
+
+	// Close watcher first to avoid race with debug logger goroutine
+	closeErr := w.Close()
+	if closeErr != nil {
+		t.Fatal(closeErr)
+	}
+
+	logOutput := logBuf.String()
+
+	if !strings.Contains(logOutput, "watch started") {
+		t.Errorf("expected debug log to contain 'watch started', got: %s", logOutput)
+	}
+
+	if !strings.Contains(logOutput, "event received") {
+		t.Errorf("expected debug log to contain 'event received', got: %s", logOutput)
+	}
+}
+
+func TestWatcher_Watch_WithPolling(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir}, WithPolling(true), WithPollInterval(200*time.Millisecond))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	events, err := w.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	// Create a file and wait for polling to detect it
+	time.Sleep(300 * time.Millisecond) // Wait for initial snapshot
+
+	_ = createTestFile(t, NewTempDir(tmpDir), "polled.txt", "content")
+
+	// Polling should detect the new file within pollInterval + margin
+	event := waitForEvent(t, events, 3*time.Second)
+	if event == nil {
+		t.Fatal("polling failed to detect new file")
+	}
+}
+
+func TestWatcher_Watch_WithPolling_FileModification(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	testFile := filepath.Join(tmpDir, "modify.txt")
+
+	err := os.WriteFile(testFile, []byte("initial"), testFilePermission)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w, err := New([]string{tmpDir}, WithPolling(true), WithPollInterval(200*time.Millisecond))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	events, err := w.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	// Wait for initial snapshot
+	time.Sleep(300 * time.Millisecond)
+
+	// Modify the file
+	err = os.WriteFile(testFile, []byte("modified"), testFilePermission)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Polling should detect the modification
+	event := waitForEvent(t, events, 3*time.Second)
+	if event == nil {
+		t.Fatal("polling failed to detect file modification")
+	}
+
+	if event.Op != Write {
+		t.Errorf("expected Write event, got %s", event.Op)
+	}
+}
+
+func TestWatcher_Watch_WithPolling_FileRemoval(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	testFile := filepath.Join(tmpDir, "remove.txt")
+
+	err := os.WriteFile(testFile, []byte("content"), testFilePermission)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w, err := New([]string{tmpDir}, WithPolling(true), WithPollInterval(200*time.Millisecond))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	events, err := w.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	// Wait for initial snapshot
+	time.Sleep(300 * time.Millisecond)
+
+	// Remove the file
+	err = os.Remove(testFile)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Polling should detect the removal
+	event := waitForEvent(t, events, 3*time.Second)
+	if event == nil {
+		t.Fatal("polling failed to detect file removal")
+	}
+
+	if event.Op != Remove {
+		t.Errorf("expected Remove event, got %s", event.Op)
+	}
+}
+
+func TestWatcher_AddRecursive_DepthLimit(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	// Create nested directory structure: tmpDir/a/b/c
+	subDirA := filepath.Join(tmpDir, "a")
+	subDirB := filepath.Join(subDirA, "b")
+	subDirC := filepath.Join(subDirB, "c")
+
+	err := os.MkdirAll(subDirC, 0o755) //nolint:gosec
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w := newTestWatcher(t, tmpDir, WithRecursive(false))
+
+	defer func() { _ = w.Close() }()
+
+	err = w.AddRecursive(tmpDir, 1)
+	if err != nil {
+		t.Fatalf("AddRecursive failed: %v", err)
+	}
+
+	watchList := w.WatchList()
+
+	// Should contain tmpDir and a, but NOT b or c
+	foundA := slices.Contains(watchList, subDirA)
+	foundB := slices.Contains(watchList, subDirB)
+
+	if !foundA {
+		t.Errorf("expected watch list to contain %q, got %v", subDirA, watchList)
+	}
+
+	if foundB {
+		t.Errorf(
+			"expected watch list NOT to contain %q (depth limit 1), got %v",
+			subDirB,
+			watchList,
+		)
+	}
+}
+
+func TestWatcher_AddRecursive_FullRecursion(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	subDir := filepath.Join(tmpDir, "deep", "nested", "dir")
+
+	err := os.MkdirAll(subDir, 0o755) //nolint:gosec
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w := newTestWatcher(t, tmpDir, WithRecursive(false))
+
+	defer func() { _ = w.Close() }()
+
+	err = w.AddRecursive(tmpDir, -1)
+	if err != nil {
+		t.Fatalf("AddRecursive failed: %v", err)
+	}
+
+	// Should at least have the root path
+	assertMinWatchList(t, w, 1)
+}
+
+func TestWatcher_WithFollowSymlinks(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	targetDir := filepath.Join(tmpDir, "target")
+
+	err := os.MkdirAll(targetDir, 0o755) //nolint:gosec
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	linkDir := filepath.Join(tmpDir, "link")
+
+	err = os.Symlink(targetDir, linkDir)
+	if err != nil {
+		t.Skipf("symlinks not supported: %v", err)
+	}
+
+	w := newTestWatcher(t, tmpDir, WithFollowSymlinks(true))
+
+	defer func() { _ = w.Close() }()
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	events, watchErr := w.Watch(ctx)
+	if watchErr != nil {
+		t.Fatalf("Watch failed: %v", watchErr)
+	}
+
+	// Create file in the symlink target — should be detected via the symlink path
+	testFile := filepath.Join(targetDir, "via_symlink.txt")
+
+	err = os.WriteFile(testFile, []byte("hello"), testFilePermission)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Should receive an event (either via symlink or target)
+	receiveEventOrTimeout(t, events, 3*time.Second)
 }

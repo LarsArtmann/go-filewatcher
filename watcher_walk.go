@@ -50,6 +50,8 @@ func (w *Watcher) walkAndAddPaths(root RootPath) error {
 }
 
 // walkDirFunc is the WalkDirFunc for adding paths during directory traversal.
+//
+
 func (w *Watcher) walkDirFunc(path string, d os.DirEntry, walkErr error) error {
 	if walkErr != nil {
 		isDir := d != nil && d.IsDir()
@@ -59,6 +61,26 @@ func (w *Watcher) walkDirFunc(path string, d os.DirEntry, walkErr error) error {
 
 	if !d.IsDir() {
 		return nil
+	}
+
+	// Follow symlinks if enabled
+	if w.followSymlinks && d.Type()&os.ModeSymlink != 0 {
+		resolved, err := filepath.EvalSymlinks(path)
+		if err != nil {
+			return fmt.Errorf("resolving symlink %q: %w", path, err)
+		}
+
+		info, err := os.Stat(resolved)
+		if err != nil {
+			return fmt.Errorf("stat resolved symlink target %q: %w", resolved, err)
+		}
+
+		if !info.IsDir() {
+			return nil
+		}
+
+		// Walk the symlink target directory
+		return w.walkAndAddPaths(NewRootPath(resolved))
 	}
 
 	if w.shouldSkipDir(d.Name()) {

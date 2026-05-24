@@ -95,17 +95,18 @@ All code in **root package** (`filewatcher`). No `internal/` or `pkg/` subdirect
 
 ### File Organization
 
-| File                  | Responsibility                                        |
-| --------------------- | ----------------------------------------------------- |
-| `watcher.go`          | Public API: New, Watch, Add, Remove, WatchList, Stats |
-| `watcher_internal.go` | Event processing: watchLoop, middleware, emitEvent    |
-| `watcher_walk.go`     | Directory walking: addPath, walkAndAddPaths           |
-| `filter.go`           | All Filter functions                                  |
-| `middleware.go`       | All Middleware functions                              |
-| `debouncer.go`        | Debouncer + GlobalDebouncer                           |
-| `event.go`            | Op type, Event type, JSON/Text marshaling             |
-| `errors.go`           | Sentinel errors                                       |
-| `options.go`          | Functional options                                    |
+| File                  | Responsibility                                                             |
+| --------------------- | -------------------------------------------------------------------------- |
+| `watcher.go`          | Public API: New, Watch, Add, AddRecursive, Remove, WatchList, Stats        |
+| `watcher_internal.go` | Event processing: watchLoop, middleware, emitEvent, debugLog, handleError  |
+| `watcher_walk.go`     | Directory walking: addPath, walkAndAddPaths, symlink resolution            |
+| `watcher_poll.go`     | Polling goroutine: pollLoop, snapshot-based change detection               |
+| `filter.go`           | All Filter functions                                                       |
+| `middleware.go`       | All Middleware functions (circuit breaker, error batch, correlation, etc.) |
+| `debouncer.go`        | Debouncer + GlobalDebouncer                                                |
+| `event.go`            | Op type, Event type, JSON/Text marshaling                                  |
+| `errors.go`           | Sentinel errors, ErrorCode, ErrorCategory, WatcherError                    |
+| `options.go`          | Functional options                                                         |
 
 ---
 
@@ -169,6 +170,30 @@ var DefaultIgnoreDirs = []string{".git", "vendor", ...}
 ```
 
 Don't remove the nolint — this is intentional.
+
+### 8. WithDebug is Active (not a stub)
+
+`WithDebug(logger)` wires real debug logging throughout the pipeline. The `debugLog` helper checks `w.debug` and calls `w.debugLogger.Debug()`. Log calls are in `watchLoop`, `processEvent`, `emitEvent`, `handleError`, `handleNewDirectory`, and `pollLoop`.
+
+### 9. WithPolling is Active (not a stub)
+
+`WithPolling(true)` starts a `pollLoop` goroutine in `Watch()` that maintains a filesystem snapshot and detects new/modified/removed files at `pollInterval`. Works alongside fsnotify for NFS/FUSE environments.
+
+### 10. Circuit Breaker States
+
+`MiddlewareCircuitBreaker` uses three states: `CircuitClosed` → `CircuitOpen` → `CircuitHalfOpen`. In half-open, only one event passes through to test recovery.
+
+### 8. WithDebug is Active (not a stub)
+
+`WithDebug(logger)` wires real debug logging throughout the pipeline. The `debugLog` helper checks `w.debug` and calls `w.debugLogger.Debug()`. Log calls are in `watchLoop`, `processEvent`, `emitEvent`, `handleError`, `handleNewDirectory`, and `pollLoop`.
+
+### 9. WithPolling is Active (not a stub)
+
+`WithPolling(true)` starts a `pollLoop` goroutine in `Watch()` that maintains a filesystem snapshot and detects new/modified/removed files at `pollInterval`. Works alongside fsnotify for NFS/FUSE environments.
+
+### 10. Circuit Breaker States
+
+`MiddlewareCircuitBreaker` uses three states: `CircuitClosed` → `CircuitOpen` → `CircuitHalfOpen`. In half-open, only one event passes through to test recovery.
 
 ---
 

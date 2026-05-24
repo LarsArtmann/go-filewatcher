@@ -1,7 +1,7 @@
 version: "2"
 run:
   timeout: 5m
-  go: 1.26.2
+  go: 1.26.3
   build-tags:
     - goexperiment.arenas
     - goexperiment.goroutineleakprofile
@@ -126,6 +126,8 @@ linters:
     - wsl_v5
     - zerologlint
   settings:
+    cyclop:
+      max-complexity: 12
     depguard:
       rules:
         Main:
@@ -144,8 +146,8 @@ linters:
         - os/exec.Cmd
     forbidigo:
       forbid:
-        - pattern: '^(fmt\.Print(|f|ln)|print|println)$'
-          msg: "use slog or log.Logger instead of fmt.Print*"
+        - msg: use slog or log.Logger instead of fmt.Print*
+          pattern: ^(fmt\.Print(|f|ln)|print|println)$
     gocritic:
       disabled-checks:
         - dupImport
@@ -163,20 +165,62 @@ linters:
         - anon
         - stdlib
         - generic
+    revive:
+      rules:
+        - disabled: true
+          name: exported
+        - disabled: true
+          name: package-comments
+    varnamelen:
+      ignore-map-index-ok: true
+      ignore-names:
+        - err
+        - ok
+        - tt
+        - fn
+        - t
+        - i
+        - m
+        - g
+        - a
+        - b
+        - v
+      ignore-type-assert-ok: true
   exclusions:
     generated: lax
     rules:
       - path: ^examples/
         linters:
           - forbidigo
+      - path: _test\.go
+        linters:
+          - exhaustruct
+          - testpackage
+          - gochecknoglobals
+          - funlen
+          - cyclop
+          - goconst
+      - path: _test\.go
+        text: unused
+        linters:
+          - unused
+    paths:
+      - \.gen\.go$
+      - _templ\.go$
+      - vendor/
 formatters:
   enable:
     - gci
     - goimports
     - gofumpt
     - golines
+  settings:
+    golines:
+      max-len: 120
   exclusions:
     generated: lax
+    paths:
+      - _templ\.go$
 issues:
   max-issues-per-linter: 50
   max-same-issues: 10

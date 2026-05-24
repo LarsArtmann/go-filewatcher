@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"os"
 	"runtime/debug"
+	"strconv"
 	"sync"
 	"time"
 
@@ -371,4 +372,317 @@ func MiddlewareThrottle(maxEvents, burst int) Middleware {
 	limiter := rate.NewLimiter(rate.Limit(maxEvents), burst)
 
 	return rateLimiterMiddleware(limiter)
+}
+
+// CircuitState represents the state of a circuit breaker.
+type CircuitState int
+
+const (
+	// CircuitClosed means the circuit is healthy and all events pass through.
+	CircuitClosed CircuitState = iota
+	// CircuitOpen means the circuit has tripped and all events are dropped.
+	CircuitOpen
+	// CircuitHalfOpen means the circuit is testing if the downstream is healthy.
+	CircuitHalfOpen
+)
+
+// String returns a human-readable name for the circuit state.
+func (s CircuitState) String() string {
+	switch s {
+	case CircuitClosed:
+		return "closed"
+	case CircuitOpen:
+		return "open"
+	case CircuitHalfOpen:
+		return "half-open"
+	default:
+		return categoryStrUnknown
+	}
+}
+
+const circuitBreakerDefaultTimeout = 30 * time.Second
+
+// MiddlewareCircuitBreaker returns a middleware that implements the circuit breaker pattern.
+// After maxFailures consecutive failures from the downstream handler, the circuit opens
+// and drops all events for the resetTimeout duration. After the timeout, the circuit
+// enters half-open state and allows one event through. If it succeeds, the circuit closes;
+// if it fails, the circuit opens again.
+//
+//nolint:funlen // Complex state machine requiring inline logic
+func MiddlewareCircuitBreaker(maxFailures int, resetTimeout time.Duration) Middleware {
+	if maxFailures <= 0 {
+		maxFailures = 5
+	}
+
+	if resetTimeout <= 0 {
+		resetTimeout = circuitBreakerDefaultTimeout
+	}
+
+	type circuitBreaker struct {
+		mu           sync.Mutex
+		state        CircuitState
+		failures     int
+		lastFailure  time.Time
+		halfOpenSent bool
+	}
+
+	breaker := &circuitBreaker{
+		mu:           sync.Mutex{},
+		state:        CircuitClosed,
+		failures:     0,
+		lastFailure:  time.Time{},
+		halfOpenSent: false,
+	}
+
+	return func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			breaker.mu.Lock()
+
+			switch breaker.state { //nolint:exhaustive // CircuitClosed needs no special handling
+			case CircuitOpen:
+				if time.Since(breaker.lastFailure) > resetTimeout {
+					breaker.state = CircuitHalfOpen
+					breaker.halfOpenSent = false
+				} else {
+					breaker.mu.Unlock()
+
+					return nil
+				}
+
+			case CircuitHalfOpen:
+				if breaker.halfOpenSent {
+					breaker.mu.Unlock()
+
+					return nil
+				}
+
+				breaker.halfOpenSent = true
+			}
+
+			breaker.mu.Unlock()
+
+			err := next(ctx, event)
+
+			breaker.mu.Lock()
+			defer breaker.mu.Unlock()
+
+			if err != nil {
+				breaker.failures++
+				breaker.lastFailure = time.Now()
+
+				if breaker.failures >= maxFailures {
+					breaker.state = CircuitOpen
+				}
+
+				return err
+			}
+
+			breaker.failures = 0
+			breaker.state = CircuitClosed
+
+			return nil
+		}
+	}
+}
+
+// MiddlewareErrorRateLimit returns a middleware that limits the rate of error dispatching.
+// When the downstream handler returns errors, this middleware tracks the error rate
+// and applies backoff when errors exceed maxErrors within the window duration.
+// During backoff, events are still forwarded but errors are suppressed.
+func MiddlewareErrorRateLimit(maxErrors int, window time.Duration) Middleware {
+	if maxErrors <= 0 {
+		maxErrors = 10
+	}
+
+	if window <= 0 {
+		window = time.Second
+	}
+
+	type errorRateState struct {
+		mu      sync.Mutex
+		errors  int
+		start   time.Time
+		limited bool
+	}
+
+	state := &errorRateState{
+		mu:      sync.Mutex{},
+		errors:  0,
+		start:   time.Time{},
+		limited: false,
+	}
+
+	return func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			err := next(ctx, event)
+			if err == nil {
+				return nil
+			}
+
+			state.mu.Lock()
+			defer state.mu.Unlock()
+
+			now := time.Now()
+
+			if state.start.IsZero() || now.Sub(state.start) > window {
+				state.start = now
+				state.errors = 1
+				state.limited = false
+
+				return err
+			}
+
+			state.errors++
+
+			if state.errors >= maxErrors {
+				state.limited = true
+
+				return nil
+			}
+
+			return err
+		}
+	}
+}
+
+// MiddlewareErrorRecovery returns a middleware that applies a recovery strategy
+// when the downstream handler returns an error. The strategy function receives
+// the event and error, and returns a replacement error (or nil to suppress it).
+func MiddlewareErrorRecovery(strategy func(event Event, err error) error) Middleware {
+	return func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			err := next(ctx, event)
+			if err != nil && strategy != nil {
+				return strategy(event, err)
+			}
+
+			return err
+		}
+	}
+}
+
+// MiddlewareErrorCorrelation returns a middleware that attaches a unique
+// correlation ID to errors. When the downstream handler returns an error,
+// the middleware wraps it with a correlation ID for distributed tracing.
+func MiddlewareErrorCorrelation(idGenerator func() string) Middleware {
+	if idGenerator == nil {
+		idGenerator = func() string {
+			return strconv.FormatInt(time.Now().UnixNano(), 10)
+		}
+	}
+
+	return func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			err := next(ctx, event)
+			if err != nil {
+				return fmt.Errorf("[correlation-id=%s]: %w", idGenerator(), err)
+			}
+
+			return nil
+		}
+	}
+}
+
+// MiddlewareErrorSanitization returns a middleware that sanitizes errors
+// by stripping sensitive file paths. The replacement function receives the
+// error string and returns a sanitized version.
+func MiddlewareErrorSanitization(sanitize func(string) string) Middleware {
+	if sanitize == nil {
+		sanitize = func(msg string) string {
+			return msg
+		}
+	}
+
+	return func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			err := next(ctx, event)
+			if err != nil {
+				//nolint:err113 // Sanitization must produce a new error string
+				return fmt.Errorf("%s", sanitize(err.Error()))
+			}
+
+			return nil
+		}
+	}
+}
+
+// BatchError represents an error paired with the event that caused it.
+type BatchError struct {
+	Event Event
+	Error error
+}
+
+// MiddlewareErrorBatch returns a middleware that collects errors and flushes them
+// in batches. The flush function receives all collected errors when the window
+// expires or the batch reaches maxSize. Events are always forwarded regardless
+// of errors.
+//
+//nolint:funlen // Complex batching logic requiring inline state management
+func MiddlewareErrorBatch(window time.Duration, maxSize int, flush func([]BatchError)) Middleware {
+	if window <= 0 {
+		window = defaultBatchWindow
+	}
+
+	if maxSize <= 0 {
+		maxSize = defaultBatchSize
+	}
+
+	type errorBatchState struct {
+		mu     sync.Mutex
+		errors []BatchError
+		timer  *time.Timer
+	}
+
+	state := &errorBatchState{
+		errors: make([]BatchError, 0, maxSize),
+		mu:     sync.Mutex{},
+		timer:  nil,
+	}
+
+	return func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			err := next(ctx, event)
+			if err == nil {
+				return nil
+			}
+
+			state.mu.Lock()
+
+			state.errors = append(state.errors, BatchError{Event: event, Error: err})
+
+			if len(state.errors) >= maxSize {
+				batch := state.errors
+				state.errors = make([]BatchError, 0, maxSize)
+
+				if state.timer != nil {
+					state.timer.Stop()
+					state.timer = nil
+				}
+
+				state.mu.Unlock()
+
+				flush(batch)
+
+				return err
+			}
+
+			if state.timer == nil {
+				state.timer = time.AfterFunc(window, func() {
+					state.mu.Lock()
+					batch := state.errors
+					state.errors = make([]BatchError, 0, maxSize)
+					state.timer = nil
+					state.mu.Unlock()
+
+					if len(batch) > 0 {
+						flush(batch)
+					}
+				})
+			}
+
+			state.mu.Unlock()
+
+			return err
+		}
+	}
 }

@@ -1,4 +1,3 @@
-//nolint:testpackage // Tests need internal access for phantom types
 package filewatcher
 
 import (

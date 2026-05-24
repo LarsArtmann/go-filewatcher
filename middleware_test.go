@@ -1,11 +1,15 @@
+//nolint:varnamelen // Idiomatic short names: mw (middleware), mu (mutex)
 package filewatcher
 
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"os"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -537,5 +541,268 @@ func runMiddlewareBenchmark(b *testing.B, mwFunc func() Middleware) {
 	for i := range b.N {
 		_ = handler(ctx, event)
 		_ = i
+	}
+}
+
+func TestMiddlewareCircuitBreaker_Closed(t *testing.T) {
+	t.Parallel()
+
+	mw := MiddlewareCircuitBreaker(3, time.Second)
+	handler := mw(noopHandler())
+
+	err := handler(context.Background(), testWriteEvent("/test"))
+	if err != nil {
+		t.Errorf("expected no error in closed circuit, got %v", err)
+	}
+}
+
+func TestMiddlewareCircuitBreaker_OpensAfterFailures(t *testing.T) {
+	t.Parallel()
+
+	mw := MiddlewareCircuitBreaker(3, 100*time.Millisecond)
+	errHandler := func(_ context.Context, _ Event) error {
+		return errTest
+	}
+
+	handler := mw(errHandler)
+
+	// First 3 calls should pass through (and return errors)
+	for i := range 3 {
+		err := handler(context.Background(), testWriteEvent("/test"))
+		if err == nil {
+			t.Errorf("call %d: expected error from handler", i+1)
+		}
+	}
+
+	// Circuit should now be open - events are dropped
+	err := handler(context.Background(), testWriteEvent("/test"))
+	if err != nil {
+		t.Errorf("expected nil when circuit is open, got %v", err)
+	}
+}
+
+func TestMiddlewareCircuitBreaker_HalfOpenRecovery(t *testing.T) {
+	t.Parallel()
+
+	mw := MiddlewareCircuitBreaker(2, 50*time.Millisecond)
+
+	var callCount atomic.Int32
+
+	failHandler := func(_ context.Context, _ Event) error {
+		if callCount.Add(1) <= 2 {
+			return errTest
+		}
+
+		return nil
+	}
+
+	handler := mw(failHandler)
+
+	// Trigger failures to open circuit
+	_ = handler(context.Background(), testWriteEvent("/test"))
+	_ = handler(context.Background(), testWriteEvent("/test"))
+
+	// Circuit is open - event dropped
+	err := handler(context.Background(), testWriteEvent("/test"))
+	if err != nil {
+		t.Errorf("expected nil when circuit is open, got %v", err)
+	}
+
+	// Wait for reset timeout
+	time.Sleep(60 * time.Millisecond)
+
+	// Circuit is now half-open - one event gets through
+	err = handler(context.Background(), testWriteEvent("/test"))
+	if err != nil {
+		t.Errorf("expected nil on recovery, got %v", err)
+	}
+}
+
+func TestMiddlewareErrorRateLimit(t *testing.T) {
+	t.Parallel()
+
+	mw := MiddlewareErrorRateLimit(3, time.Second)
+
+	var errCount atomic.Int32
+
+	errHandler := func(_ context.Context, _ Event) error {
+		errCount.Add(1)
+
+		return errTest
+	}
+
+	handler := mw(errHandler)
+
+	// First 2 errors pass through
+	for range 2 {
+		err := handler(context.Background(), testWriteEvent("/test"))
+		if err == nil {
+			t.Error("expected error to pass through")
+		}
+	}
+
+	// Third error triggers rate limiting
+	err := handler(context.Background(), testWriteEvent("/test"))
+	if err != nil {
+		t.Error("expected error to be suppressed after rate limit")
+	}
+}
+
+func TestMiddlewareErrorRecovery(t *testing.T) {
+	t.Parallel()
+
+	strategy := func(_ Event, err error) error {
+		return nil
+	}
+
+	mw := MiddlewareErrorRecovery(strategy)
+
+	errHandler := func(_ context.Context, _ Event) error {
+		return errTest
+	}
+
+	handler := mw(errHandler)
+
+	err := handler(context.Background(), testWriteEvent("/test"))
+	if err != nil {
+		t.Errorf("expected recovery to suppress error, got %v", err)
+	}
+}
+
+func TestMiddlewareErrorRecovery_NilStrategy(t *testing.T) {
+	t.Parallel()
+
+	mw := MiddlewareErrorRecovery(nil)
+
+	errHandler := func(_ context.Context, _ Event) error {
+		return errTest
+	}
+
+	handler := mw(errHandler)
+
+	err := handler(context.Background(), testWriteEvent("/test"))
+	if err == nil {
+		t.Error("expected error to pass through with nil strategy")
+	}
+}
+
+func TestMiddlewareErrorCorrelation(t *testing.T) {
+	t.Parallel()
+
+	counter := atomic.Int64{}
+
+	mw := MiddlewareErrorCorrelation(func() string {
+		return fmt.Sprintf("corr-%d", counter.Add(1))
+	})
+
+	errHandler := func(_ context.Context, _ Event) error {
+		return errTest
+	}
+
+	handler := mw(errHandler)
+
+	err := handler(context.Background(), testWriteEvent("/test"))
+	if err == nil {
+		t.Fatal("expected error")
+	}
+
+	if !strings.Contains(err.Error(), "correlation-id=corr-1") {
+		t.Errorf("expected correlation ID in error, got: %v", err)
+	}
+}
+
+func TestMiddlewareErrorCorrelation_DefaultGenerator(t *testing.T) {
+	t.Parallel()
+
+	mw := MiddlewareErrorCorrelation(nil)
+
+	errHandler := func(_ context.Context, _ Event) error {
+		return errTest
+	}
+
+	handler := mw(errHandler)
+
+	err := handler(context.Background(), testWriteEvent("/test"))
+	if err == nil {
+		t.Fatal("expected error")
+	}
+
+	if !strings.Contains(err.Error(), "correlation-id=") {
+		t.Errorf("expected correlation ID in error, got: %v", err)
+	}
+}
+
+func TestMiddlewareErrorSanitization(t *testing.T) {
+	t.Parallel()
+
+	sanitize := func(msg string) string {
+		return strings.ReplaceAll(msg, "/secret/", "/***REDACTED***/")
+	}
+
+	mw := MiddlewareErrorSanitization(sanitize)
+
+	errHandler := func(_ context.Context, _ Event) error {
+		return errors.New("file changed at /secret/key.pem") //nolint:err113
+	}
+
+	handler := mw(errHandler)
+
+	err := handler(context.Background(), testWriteEvent("/test"))
+	if err == nil {
+		t.Fatal("expected error")
+	}
+
+	if strings.Contains(err.Error(), "/secret/") {
+		t.Errorf("expected path to be sanitized, got: %v", err)
+	}
+
+	if !strings.Contains(err.Error(), "***REDACTED***") {
+		t.Errorf("expected redacted path in error, got: %v", err)
+	}
+}
+
+func TestMiddlewareErrorBatch(t *testing.T) {
+	t.Parallel()
+
+	var collected atomic.Int32
+
+	var mu sync.Mutex
+
+	var batches [][]BatchError
+
+	flush := func(errors []BatchError) {
+		mu.Lock()
+
+		batches = append(batches, errors)
+		mu.Unlock()
+
+		collected.Add(int32(len(errors))) //nolint:gosec
+	}
+
+	mw := MiddlewareErrorBatch(100*time.Millisecond, 3, flush)
+
+	errHandler := func(_ context.Context, _ Event) error {
+		return errTest
+	}
+
+	handler := mw(errHandler)
+
+	// Send 3 errors to trigger max size flush
+	for i := range 3 {
+		err := handler(context.Background(), testWriteEvent(fmt.Sprintf("/test-%d", i)))
+		if err == nil {
+			t.Errorf("call %d: expected error to pass through", i)
+		}
+	}
+
+	// Wait for flush
+	assertCount(t, &collected, 3)
+
+	mu.Lock()
+	batchCount := len(batches)
+	mu.Unlock()
+
+	if batchCount < 1 {
+		t.Error("expected at least one batch flush")
 	}
 }

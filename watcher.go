@@ -77,6 +77,7 @@ type Watcher struct {
 	polling         bool              // polling mode enabled (supplements fsnotify with periodic scans)
 	debug           bool              // enable verbose debug logging
 	debugLogger     *slog.Logger      // logger for debug output
+	followSymlinks  bool              // follow symbolic links during directory walking
 	done            chan struct{}     // closed by Close() to signal shutdown to in-flight goroutines
 
 	// Internal state
@@ -228,6 +229,7 @@ func New( //nolint:funlen // constructor with full field initialization
 		polling:           false,
 		debug:             false,
 		debugLogger:       nil,
+		followSymlinks:    false,
 		done:              make(chan struct{}),
 	}
 
@@ -284,6 +286,19 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 	w.wg.Add(1)
 
 	go w.watchLoop(ctx, eventCh)
+
+	if w.polling {
+		w.wg.Add(1)
+
+		go w.pollLoop(ctx, eventCh)
+	}
+
+	w.debugLog(
+		"watch started",
+		slog.Bool("polling", w.polling),
+		slog.Duration("poll_interval", w.pollInterval),
+		slog.Int("buffer_size", w.bufferSize),
+	)
 
 	return eventCh, nil
 }
@@ -343,6 +358,92 @@ func (w *Watcher) Add(path string) error {
 	pathErr := w.addPath(NewRootPath(abs))
 	if pathErr != nil {
 		return fmt.Errorf("adding resolved path %q to watcher: %w", abs, pathErr)
+	}
+
+	return nil
+}
+
+// AddRecursive adds a path with selective recursive depth.
+// If maxDepth is 0, only the immediate directory is watched (equivalent to Add).
+// If maxDepth is -1, full recursion is used (equivalent to the default recursive behavior).
+// If maxDepth is N > 0, directories up to N levels deep are watched.
+// This method is safe for concurrent use with other methods.
+func (w *Watcher) AddRecursive(path string, maxDepth int) error {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	err := w.checkClosedOp("add recursive path")
+	if err != nil {
+		return err
+	}
+
+	abs, resolveErr := filepath.Abs(path)
+	if resolveErr != nil {
+		return fmt.Errorf("resolving path %q in AddRecursive(): %w", path, resolveErr)
+	}
+
+	if maxDepth == 0 {
+		addErr := w.fswatcher.Add(abs)
+		if addErr != nil {
+			return fmt.Errorf("adding watch path %q: %w", abs, addErr)
+		}
+
+		w.watchList = append(w.watchList, abs)
+
+		return nil
+	}
+
+	if maxDepth < 0 {
+		addErr := w.walkAndAddPaths(NewRootPath(abs))
+		if addErr != nil {
+			return fmt.Errorf("adding resolved path %q to watcher: %w", abs, addErr)
+		}
+
+		return nil
+	}
+
+	// Depth-limited recursive add
+	currentDepth := 0
+
+	return w.addPathWithDepth(NewRootPath(abs), maxDepth, &currentDepth)
+}
+
+// addPathWithDepth adds directories up to the specified depth.
+func (w *Watcher) addPathWithDepth(root RootPath, maxDepth int, currentDepth *int) error {
+	entries, err := os.ReadDir(root.Get())
+	if err != nil {
+		return fmt.Errorf("reading directory %q: %w", root, err)
+	}
+
+	addErr := w.fswatcher.Add(root.Get())
+	if addErr != nil {
+		return fmt.Errorf("watching path %q: %w", root, addErr)
+	}
+
+	w.watchList = append(w.watchList, root.Get())
+
+	if *currentDepth >= maxDepth {
+		return nil
+	}
+
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+
+		if w.shouldSkipDir(entry.Name()) {
+			continue
+		}
+
+		subPath := filepath.Join(root.Get(), entry.Name())
+		*currentDepth++
+
+		addPathErr := w.addPathWithDepth(NewRootPath(subPath), maxDepth, currentDepth)
+		if addPathErr != nil {
+			return addPathErr
+		}
+
+		*currentDepth--
 	}
 
 	return nil

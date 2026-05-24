@@ -212,3 +212,13 @@ func WithWatchedIgnoreDirs(dirs ...string) Option {
 		w.filters = append(w.filters, FilterIgnoreDirs(dirs...))
 	}
 }
+
+// WithFollowSymlinks enables following symbolic links during directory walking.
+// When enabled, symlinked directories are resolved to their targets and
+// added to the watcher. This allows monitoring directories accessed through
+// symlinks. Default is false (symlinks are not followed).
+func WithFollowSymlinks(follow bool) Option {
+	return func(w *Watcher) {
+		w.followSymlinks = follow
+	}
+}

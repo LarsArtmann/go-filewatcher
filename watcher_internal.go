@@ -4,6 +4,7 @@ package filewatcher
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 	"slices"
 	"time"
@@ -16,6 +17,13 @@ const operationFsnotify = "fsnotify"
 // watchLoop is the main event processing goroutine.
 // Exits when ctx is cancelled or fsnotify watcher is closed.
 // Note: eventCh is closed by Close() after debouncer is stopped.
+// debugLog logs a debug message if debug mode is enabled.
+func (w *Watcher) debugLog(msg string, args ...any) {
+	if w.debug {
+		w.debugLogger.Debug(msg, args...)
+	}
+}
+
 func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
 	defer w.wg.Done()
 	defer func() {
@@ -26,13 +34,19 @@ func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
 		w.closeEventChOnce.Do(func() { close(eventCh) })
 	}()
 
+	w.debugLog("watch loop started")
+
 	for {
 		select {
 		case <-ctx.Done():
+			w.debugLog("watch loop exiting: context cancelled")
+
 			return
 
 		case fsEvent, ok := <-w.fswatcher.Events:
 			if !ok {
+				w.debugLog("watch loop exiting: fsnotify events channel closed")
+
 				return
 			}
 
@@ -40,6 +54,8 @@ func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
 
 		case err, ok := <-w.fswatcher.Errors:
 			if !ok {
+				w.debugLog("watch loop exiting: fsnotify errors channel closed")
+
 				return
 			}
 
@@ -53,11 +69,24 @@ func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
 func (w *Watcher) processEvent(ctx context.Context, fsEvent fsnotify.Event, eventCh chan<- Event) {
 	event := convertEvent(fsEvent, w.lazyIsDir)
 	if event == nil {
+		w.debugLog(
+			"event ignored: unrecognized fsnotify operation",
+			slog.String("name", fsEvent.Name),
+			slog.String("op", fsEvent.Op.String()),
+		)
+
 		return
 	}
 
+	w.debugLog(
+		"event received",
+		slog.String("path", event.Path),
+		slog.String("op", event.Op.String()),
+	)
+
 	if !w.passesFilters(*event) {
 		w.eventsFilteredOut.Add(1)
+		w.debugLog("event filtered out", slog.String("path", event.Path))
 		w.handleFilteredEvent(fsEvent, *event)
 
 		return
@@ -89,12 +118,18 @@ func (w *Watcher) emitEvent(ctx context.Context, event Event, eventCh chan<- Eve
 	}
 
 	if w.debounceInterface == nil {
+		w.debugLog(
+			"emitting event directly",
+			slog.String("path", event.Path),
+			slog.String("op", event.Op.String()),
+		)
 		execute()
 
 		return
 	}
 
 	key := w.getDebounceKey(event.Path)
+	w.debugLog("debouncing event", slog.String("path", event.Path), slog.String("key", string(key)))
 	w.debounceInterface.Debounce(key, execute)
 }
 
@@ -181,6 +216,8 @@ func (w *Watcher) handleNewDirectory(path string) {
 		return
 	}
 
+	w.debugLog("new directory detected", slog.String("path", path))
+
 	w.mu.RLock()
 	closed := w.state&flagClosed != 0
 	w.mu.RUnlock()
@@ -212,6 +249,14 @@ func (w *Watcher) passesFilters(event Event) bool {
 
 // handleError dispatches errors to the configured handler, errors channel, or stderr.
 func (w *Watcher) handleError(ctx ErrorContext, err error) {
+	w.debugLog(
+		"error occurred",
+		slog.String("operation", ctx.Operation),
+		slog.String("path", ctx.Path),
+		slog.Bool("retryable", ctx.Retryable),
+		slog.String("error", err.Error()),
+	)
+
 	// Increment error counter
 	w.errorsEncountered.Add(1)
 

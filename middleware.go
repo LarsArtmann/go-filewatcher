@@ -396,7 +396,7 @@ func (s CircuitState) String() string {
 	case CircuitHalfOpen:
 		return "half-open"
 	default:
-		return categoryStrUnknown
+		return "unknown"
 	}
 }
 

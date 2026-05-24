@@ -88,23 +88,15 @@ const (
 	CategoryPermanent
 )
 
-const (
-	categoryStrTransient = "transient"
-	categoryStrPermanent = "permanent"
-	categoryStrUnknown   = "unknown"
-)
-
 // String returns a human-readable name for the error category.
 func (c ErrorCategory) String() string {
 	switch c {
 	case CategoryTransient:
-		return categoryStrTransient
+		return "transient"
 	case CategoryPermanent:
-		return categoryStrPermanent
-	case CategoryUnknown:
-		return categoryStrUnknown
+		return "permanent"
 	default:
-		return categoryStrUnknown
+		return "unknown"
 	}
 }
 

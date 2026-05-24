@@ -130,8 +130,8 @@ func TestEvent_LogValue(t *testing.T) {
 	}
 
 	attrs := val.Group()
-	if len(attrs) != 4 {
-		t.Fatalf("LogValue group length = %d, want 4", len(attrs))
+	if len(attrs) != 6 {
+		t.Fatalf("LogValue group length = %d, want 6", len(attrs))
 	}
 
 	found := map[string]bool{}
@@ -139,7 +139,7 @@ func TestEvent_LogValue(t *testing.T) {
 		found[attr.Key] = true
 	}
 
-	for _, key := range []string{"path", "op", "timestamp", "isDir"} {
+	for _, key := range []string{"path", "op", "timestamp", "isDir", "size", "modTime"} {
 		if !found[key] {
 			t.Errorf("missing key %q in LogValue attrs", key)
 		}

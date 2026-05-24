@@ -110,7 +110,7 @@ type Event struct {
 	Size int64 `json:"size"`
 	// ModTime is the file modification time, if available. Zero time.Time if
 	// the information could not be obtained.
-	ModTime time.Time `json:"modTime,omitempty"` //nolint:modernize // omitempty intentional: zero ModTime omits field from JSON
+	ModTime time.Time `json:"modTime,omitzero"` //nolint:modernize // omitzero: zero ModTime omits field from JSON
 }
 
 // String returns a human-readable representation of the event.
@@ -125,6 +125,8 @@ func (e Event) LogValue() slog.Value {
 		slog.String("op", e.Op.String()),
 		slog.Time("timestamp", e.Timestamp),
 		slog.Bool("isDir", e.IsDir),
+		slog.Int64("size", e.Size),
+		slog.Time("modTime", e.ModTime),
 	)
 }
 

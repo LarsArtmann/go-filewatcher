@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"log/slog"
+	"os"
 	"time"
 
 	"github.com/larsartmann/go-filewatcher"
@@ -290,6 +292,8 @@ func ExampleEvent() {
 		Op:        filewatcher.Write,
 		Timestamp: fixedTime,
 		IsDir:     false,
+		Size:      0,
+		ModTime:   time.Time{},
 	}
 
 	fmt.Printf("Event: %s\n", event.String())
@@ -332,7 +336,7 @@ func ExampleFilterOr() {
 // ExampleEventPath demonstrates phantom type usage for type-safe paths.
 func ExampleEventPath() {
 	// Create an event and extract its path as a phantom type
-	//nolint:exhaustruct // example demonstrating minimal fields
+
 	event := filewatcher.Event{
 		Path: "/home/user/project/main.go",
 		Op:   filewatcher.Write,
@@ -402,4 +406,31 @@ func ExampleFilterModifiedSince() {
 
 	fmt.Println("Watcher with time filter created")
 	// Output: Watcher with time filter created
+}
+
+// ExampleMiddlewareLogging_structured demonstrates structured logging with a custom logger.
+func ExampleMiddlewareLogging_structured() {
+	logger := slog.New(
+		slog.NewTextHandler(
+			os.Stdout,
+			&slog.HandlerOptions{
+				Level: slog.LevelInfo,
+			},
+		),
+	)
+
+	watcher, err := filewatcher.New(
+		[]string{"."},
+		filewatcher.WithMiddleware(
+			filewatcher.MiddlewareLogging(logger),
+		),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	fmt.Println("Watcher with custom structured logger created")
+	// Output: Watcher with custom structured logger created
 }

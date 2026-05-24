@@ -10,8 +10,9 @@ import (
 
 // Test name constants for repeated filter test names.
 const (
-	testNameGoFile  = "go file"
-	testNameTxtFile = "txt file"
+	testNameGoFile      = "go file"
+	testNameTxtFile     = "txt file"
+	testNameNonexistent = "nonexistent file"
 )
 
 // runFilterTests is a helper function that runs table-driven filter tests.
@@ -57,7 +58,14 @@ type filterTests []struct {
 
 // testDirEvent creates a directory create event for testing.
 func testDirEvent(path string) Event {
-	return Event{Path: path, Op: Create, Timestamp: time.Now(), IsDir: true}
+	return Event{
+		Path:      path,
+		Op:        Create,
+		Timestamp: time.Now(),
+		IsDir:     true,
+		Size:      0,
+		ModTime:   time.Time{},
+	}
 }
 
 // Time helpers for test fixtures.
@@ -204,7 +212,14 @@ func TestFilterExcludePaths(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			event := Event{Path: tc.path, Op: Write, Timestamp: time.Now(), IsDir: false}
+			event := Event{
+				Path:      tc.path,
+				Op:        Write,
+				Timestamp: time.Now(),
+				IsDir:     false,
+				Size:      0,
+				ModTime:   time.Time{},
+			}
 			if got := filter(event); got != tc.want {
 				t.Errorf("FilterExcludePaths(%q) = %v, want %v", tc.path, got, tc.want)
 			}
@@ -346,7 +361,7 @@ func TestFilterMinSize(t *testing.T) {
 			true,
 		},
 		{
-			"nonexistent file",
+			testNameNonexistent,
 			testWriteEvent("/nonexistent/file.txt"),
 			false,
 		},
@@ -402,7 +417,7 @@ func TestFilterMaxSize(t *testing.T) {
 			true,
 		},
 		{
-			"nonexistent file",
+			testNameNonexistent,
 			testWriteEvent("/nonexistent/file.txt"),
 			false,
 		},
@@ -470,7 +485,7 @@ func TestFilterMinAge(t *testing.T) {
 	runFilterTestsInline(t, f, tests)
 }
 
-func TestFilterModifiedSince(t *testing.T) { //nolint:funlen // comprehensive table-driven test
+func TestFilterModifiedSince(t *testing.T) {
 	t.Parallel()
 
 	tmpDir := t.TempDir()
@@ -655,5 +670,45 @@ func BenchmarkFilterOr(b *testing.B) {
 		f(event)
 
 		_ = i
+	}
+}
+
+func TestFilterContentHash(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	content := []byte("hello world")
+	testFile := tmpDir + "/test.txt"
+
+	err := os.WriteFile(testFile, content, 0o600)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Compute the expected SHA-256 of "hello world"
+	// echo -n "hello world" | sha256sum = b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9
+	expectedHash := "b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9"
+
+	f := FilterContentHash(expectedHash)
+
+	tests := []struct {
+		name  string
+		event Event
+		want  bool
+	}{
+		{"matching content", testWriteEvent(testFile), true},
+		{"directory passes", testDirEvent(tmpDir), true},
+		{testNameNonexistent, testWriteEvent("/nonexistent/file.txt"), false},
+	}
+
+	runFilterTestsInline(t, f, tests)
+
+	// Test mismatch
+	wrongHash := "0000000000000000000000000000000000000000000000000000000000000000"
+
+	fWrong := FilterContentHash(wrongHash)
+	if fWrong(testWriteEvent(testFile)) {
+		t.Error("expected mismatched hash to be filtered out")
 	}
 }

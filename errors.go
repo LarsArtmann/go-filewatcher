@@ -3,6 +3,7 @@ package filewatcher
 import (
 	"errors"
 	"fmt"
+	"runtime/debug"
 )
 
 // Sentinel errors for common failure modes.
@@ -39,6 +40,36 @@ var (
 
 	// ErrMiddlewareFailed is returned when middleware execution fails.
 	ErrMiddlewareFailed = errors.New("middleware execution failed")
+)
+
+// ErrorCode is a string identifier for categorizing watcher errors.
+// Use these constants for programmatic error matching instead of
+// comparing error messages.
+type ErrorCode string
+
+const (
+	// ErrorCodeWatcherClosed indicates an operation on a closed watcher.
+	ErrorCodeWatcherClosed ErrorCode = "WATCHER_CLOSED"
+	// ErrorCodeNoPaths indicates no paths were provided.
+	ErrorCodeNoPaths ErrorCode = "NO_PATHS"
+	// ErrorCodePathNotFound indicates a specified path does not exist.
+	ErrorCodePathNotFound ErrorCode = "PATH_NOT_FOUND"
+	// ErrorCodePathNotDir indicates a path is not a directory.
+	ErrorCodePathNotDir ErrorCode = "PATH_NOT_DIR"
+	// ErrorCodeAlreadyRunning indicates Watch() was called while running.
+	ErrorCodeAlreadyRunning ErrorCode = "ALREADY_RUNNING"
+	// ErrorCodeFsnotify indicates an fsnotify-level failure.
+	ErrorCodeFsnotify ErrorCode = "FSNOTIFY_ERROR"
+	// ErrorCodeWalk indicates a directory walk failure.
+	ErrorCodeWalk ErrorCode = "WALK_ERROR"
+	// ErrorCodePathResolve indicates a path resolution failure.
+	ErrorCodePathResolve ErrorCode = "PATH_RESOLVE_ERROR"
+	// ErrorCodeEventProcessing indicates an event processing failure.
+	ErrorCodeEventProcessing ErrorCode = "EVENT_PROCESSING_ERROR"
+	// ErrorCodeMiddleware indicates a middleware execution failure.
+	ErrorCodeMiddleware ErrorCode = "MIDDLEWARE_ERROR"
+	// ErrorCodeUnknown indicates an uncategorized error.
+	ErrorCodeUnknown ErrorCode = "UNKNOWN"
 )
 
 // ErrorCategory classifies errors as transient (retryable) or permanent.
@@ -90,6 +121,10 @@ type WatcherError struct {
 
 	// Category indicates whether this is a transient or permanent error.
 	Category ErrorCategory
+
+	// Stack holds the goroutine stack trace captured at the time the error
+	// was created. This is populated automatically by NewWatcherError.
+	Stack []byte
 }
 
 // Error implements the error interface.
@@ -127,6 +162,46 @@ func (e *WatcherError) IsPermanent() bool {
 	return e.Category == CategoryPermanent
 }
 
+// Code returns the ErrorCode for this error based on the underlying sentinel.
+// This enables programmatic error matching without string comparisons.
+func (e *WatcherError) Code() ErrorCode {
+	return errorToCode(e.Err)
+}
+
+// errorToCode maps a sentinel error to an ErrorCode.
+//
+//nolint:cyclop // switch-based error mapping requires n cases
+func errorToCode(err error) ErrorCode {
+	if err == nil {
+		return ErrorCodeUnknown
+	}
+
+	switch {
+	case errors.Is(err, ErrWatcherClosed):
+		return ErrorCodeWatcherClosed
+	case errors.Is(err, ErrNoPaths):
+		return ErrorCodeNoPaths
+	case errors.Is(err, ErrPathNotFound):
+		return ErrorCodePathNotFound
+	case errors.Is(err, ErrPathNotDir):
+		return ErrorCodePathNotDir
+	case errors.Is(err, ErrWatcherRunning):
+		return ErrorCodeAlreadyRunning
+	case errors.Is(err, ErrFsnotifyFailed):
+		return ErrorCodeFsnotify
+	case errors.Is(err, ErrWalkFailed):
+		return ErrorCodeWalk
+	case errors.Is(err, ErrPathResolveFailed):
+		return ErrorCodePathResolve
+	case errors.Is(err, ErrEventProcessingFailed):
+		return ErrorCodeEventProcessing
+	case errors.Is(err, ErrMiddlewareFailed):
+		return ErrorCodeMiddleware
+	default:
+		return ErrorCodeUnknown
+	}
+}
+
 // NewWatcherError creates a new WatcherError with the given parameters.
 // It automatically categorizes common error types.
 func NewWatcherError(op OpString, path string, err error) *WatcherError {
@@ -135,6 +210,7 @@ func NewWatcherError(op OpString, path string, err error) *WatcherError {
 		Path:     path,
 		Err:      err,
 		Category: categorizeError(err),
+		Stack:    debug.Stack(),
 	}
 }
 

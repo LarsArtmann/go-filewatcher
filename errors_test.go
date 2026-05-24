@@ -458,3 +458,68 @@ func captureStderr(t *testing.T, fn func()) string {
 
 	return buf.String()
 }
+
+func TestWatcherError_StackTrace(t *testing.T) {
+	t.Parallel()
+
+	werr := NewWatcherError(NewOpString("test"), "/some/path", ErrPathNotFound)
+
+	if len(werr.Stack) == 0 {
+		t.Error("expected non-empty stack trace in NewWatcherError")
+	}
+
+	if !bytes.Contains(werr.Stack, []byte("TestWatcherError_StackTrace")) {
+		t.Errorf("expected stack trace to contain test function name, got:\n%s", werr.Stack)
+	}
+}
+
+func TestWatcher_ErrorCode(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		err      error
+		expected ErrorCode
+	}{
+		{"watcher closed", ErrWatcherClosed, ErrorCodeWatcherClosed},
+		{"no paths", ErrNoPaths, ErrorCodeNoPaths},
+		{"path not found", ErrPathNotFound, ErrorCodePathNotFound},
+		{"path not dir", ErrPathNotDir, ErrorCodePathNotDir},
+		{"already running", ErrWatcherRunning, ErrorCodeAlreadyRunning},
+		{"fsnotify", ErrFsnotifyFailed, ErrorCodeFsnotify},
+		{"walk", ErrWalkFailed, ErrorCodeWalk},
+		{"path resolve", ErrPathResolveFailed, ErrorCodePathResolve},
+		{"event processing", ErrEventProcessingFailed, ErrorCodeEventProcessing},
+		{"middleware", ErrMiddlewareFailed, ErrorCodeMiddleware},
+		{"unknown", errors.New("custom"), ErrorCodeUnknown}, //nolint:err113
+		{"nil", nil, ErrorCodeUnknown},
+	}
+
+	for _, tt := range tests {
+		werr := NewWatcherError(NewOpString("test"), "", tt.err)
+		got := werr.Code()
+
+		if got != tt.expected {
+			t.Errorf("Code() for %q = %q, want %q", tt.name, got, tt.expected)
+		}
+	}
+}
+
+func TestErrorCode_String(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		code ErrorCode
+		want string
+	}{
+		{ErrorCodeWatcherClosed, "WATCHER_CLOSED"},
+		{ErrorCodeNoPaths, "NO_PATHS"},
+		{ErrorCodeUnknown, "UNKNOWN"},
+	}
+
+	for _, tt := range tests {
+		if string(tt.code) != tt.want {
+			t.Errorf("ErrorCode %q = %q, want %q", tt.code, string(tt.code), tt.want)
+		}
+	}
+}

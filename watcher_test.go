@@ -692,9 +692,9 @@ func TestWatcher_Stats_Metrics(t *testing.T) { //nolint:cyclop,funlen // compreh
 
 	// Verify initial metrics are zero
 	stats := w.Stats()
-	assertStat(t, stats.EventsProcessed, 0, "EventsProcessed", "initially")
-	assertStat(t, stats.EventsFilteredOut, 0, "EventsFilteredOut", "initially")
-	assertStat(t, stats.ErrorsEncountered, 0, "ErrorsEncountered", "initially")
+	assertStatZero(t, stats.EventsProcessed, "EventsProcessed", "initially")
+	assertStatZero(t, stats.EventsFilteredOut, "EventsFilteredOut", "initially")
+	assertStatZero(t, stats.ErrorsEncountered, "ErrorsEncountered", "initially")
 
 	if stats.Uptime != 0 {
 		t.Error("expected 0 uptime before Watch()")
@@ -736,7 +736,13 @@ func TestWatcher_Stats_Metrics(t *testing.T) { //nolint:cyclop,funlen // compreh
 
 	// Check stats
 	stats = w.Stats()
-	assertStat(t, stats.EventsProcessed, 1, "EventsProcessed", "after .go file")
+
+	if stats.EventsProcessed < 1 {
+		t.Errorf(
+			"expected at least 1 event processed after .go file, got %d",
+			stats.EventsProcessed,
+		)
+	}
 
 	// Should have filtered the .txt file
 	if stats.EventsFilteredOut == 0 {
@@ -748,7 +754,7 @@ func TestWatcher_Stats_Metrics(t *testing.T) { //nolint:cyclop,funlen // compreh
 		t.Error("expected non-zero uptime after Watch()")
 	}
 
-	assertStat(t, stats.ErrorsEncountered, 0, "ErrorsEncountered", "after events")
+	assertStatZero(t, stats.ErrorsEncountered, "ErrorsEncountered", "after events")
 
 	// Drain remaining events
 	for {
@@ -1084,12 +1090,12 @@ func TestWatcher_Errors_ReceivesErrors(t *testing.T) {
 	assertChannelClosed(t, errorsCh, time.Second, "errors channel")
 }
 
-// assertStat asserts that a stat value matches the expected value.
-func assertStat(t *testing.T, got, expected uint64, name, msg string) {
+// assertStatZero asserts that a stat value is zero.
+func assertStatZero(t *testing.T, got uint64, name, msg string) {
 	t.Helper()
 
-	if got < expected {
-		t.Errorf("expected %s>=%d, got %d: %s", name, expected, got, msg)
+	if got != 0 {
+		t.Errorf("expected %s=0, got %d: %s", name, got, msg)
 	}
 }
 
@@ -1176,7 +1182,7 @@ func TestWatcher_ContextCancellation_WithPerPathDebounce(t *testing.T) {
 	defer timeout.Stop()
 
 	// Drain any pending events
-	//nolint:revive // intentional drain loop
+
 	for range events {
 	}
 }

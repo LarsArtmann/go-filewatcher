@@ -169,7 +169,7 @@
             program = "${pkgs.writeShellScriptBin "bench" ''
               cd "${self}"
               export GOWORK=off
-              ${pkgs.go_1_26}/bin/go test -bench=. -benchmem ./...
+              ${pkgs.go_1_26}/bin/go test -bench=. -benchmem -race ./...
             ''}/bin/bench";
             meta = with pkgs.lib; {
               description = "Run Go benchmarks with memory stats";
@@ -181,8 +181,9 @@
             program = "${pkgs.writeShellScriptBin "coverage" ''
               cd "${self}"
               export GOWORK=off
-              ${pkgs.go_1_26}/bin/go test -coverprofile="/tmp/coverage.out" ./...
-              ${pkgs.go_1_26}/bin/go tool cover -func="/tmp/coverage.out"
+              COVERAGE_OUT="${TMPDIR:-/tmp}/coverage.out"
+              ${pkgs.go_1_26}/bin/go test -coverprofile="$COVERAGE_OUT" ./...
+              ${pkgs.go_1_26}/bin/go tool cover -func="$COVERAGE_OUT"
             ''}/bin/coverage";
             meta = with pkgs.lib; {
               description = "Generate Go test coverage report";

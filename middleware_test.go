@@ -1,4 +1,3 @@
-//nolint:testpackage // Tests need internal access to middleware types
 package filewatcher
 
 import (
@@ -523,7 +522,14 @@ func runMiddlewareBenchmark(b *testing.B, mwFunc func() Middleware) {
 	b.Helper()
 
 	handler := mwFunc()(noopHandler())
-	event := Event{Op: Write, Path: benchmarkTestPathTestGo, Timestamp: time.Now(), IsDir: false}
+	event := Event{
+		Op:        Write,
+		Path:      benchmarkTestPathTestGo,
+		Timestamp: time.Now(),
+		IsDir:     false,
+		Size:      0,
+		ModTime:   time.Time{},
+	}
 	ctx := context.Background()
 
 	b.ResetTimer()

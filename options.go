@@ -2,6 +2,7 @@ package filewatcher
 
 import (
 	"fmt"
+	"log/slog"
 	"time"
 )
 
@@ -153,5 +154,61 @@ func WithLazyIsDir() Option {
 func WithIgnorePatterns(patterns ...string) Option {
 	return func(w *Watcher) {
 		w.filters = append(w.filters, FilterIgnoreGlobs(patterns...))
+	}
+}
+
+// WithPollInterval sets a polling interval for filesystem change detection.
+// When set to a non-zero duration, the watcher will periodically poll watched
+// paths instead of relying solely on OS-native file events. This is useful
+// for NFS mounts, FUSE filesystems, and other environments where inotify/FSEvents
+// are unreliable or unavailable.
+//
+// A typical value is 1–5 seconds. Shorter intervals detect changes faster
+// but consume more CPU. Set to 0 (default) to disable polling.
+func WithPollInterval(interval time.Duration) Option {
+	return func(w *Watcher) {
+		w.pollInterval = interval
+	}
+}
+
+const defaultPollInterval = 2 * time.Second // Default polling interval for NFS/FUSE
+
+// WithPolling enables or disables polling-based filesystem watching as a
+// complement to OS-native events. When enabled (fallback=true), the watcher
+// supplements fsnotify with periodic polling at the configured poll interval
+// (default 2s, customizable via WithPollInterval). This detects changes on
+// NFS mounts, FUSE filesystems, Docker volumes, and other environments where
+// inotify/FSEvents may not fire.
+//
+// When fallback=false, polling is fully disabled (identical to not calling
+// this option).
+func WithPolling(fallback bool) Option {
+	return func(w *Watcher) {
+		w.polling = fallback
+		if fallback && w.pollInterval == 0 {
+			w.pollInterval = defaultPollInterval
+		}
+	}
+}
+
+// WithDebug enables verbose debug logging to the provided logger.
+// If logger is nil, log/slog.Default() is used. When enabled, the watcher
+// logs detailed information about event processing, filter decisions,
+// debounce actions, and error handling.
+func WithDebug(logger *slog.Logger) Option {
+	return func(w *Watcher) {
+		w.debug = true
+		w.debugLogger = logger
+	}
+}
+
+// WithWatchedIgnoreDirs adds directory names that are ignored at the event
+// filtering level only, without affecting directory walking. This differs
+// from WithIgnoreDirs which both filters events AND skips directories during
+// recursive walking. Use this when you want to walk into a directory (to watch
+// its subdirectories) but ignore file events within it.
+func WithWatchedIgnoreDirs(dirs ...string) Option {
+	return func(w *Watcher) {
+		w.filters = append(w.filters, FilterIgnoreDirs(dirs...))
 	}
 }

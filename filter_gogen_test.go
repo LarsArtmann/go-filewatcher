@@ -1,4 +1,3 @@
-//nolint:testpackage // Tests internal functions, must be in same package
 package filewatcher
 
 import (
@@ -10,7 +9,6 @@ import (
 	"github.com/LarsArtmann/gogenfilter/v3"
 )
 
-//nolint:gochecknoglobals // Test data must be package-level for funlen compliance
 var (
 	generatedCodeFilterOptions = []gogenfilter.FilterOption{
 		gogenfilter.FilterSQLC,
@@ -59,13 +57,13 @@ var (
 )
 
 var (
-	protobufEventCases = twoTestCases( //nolint:gochecknoglobals // table-driven test data
+	protobufEventCases = twoTestCases(
 		"user.pb.go",
 		"/project/api/user.pb.go",
 		"user_grpc.pb.go",
 		"/project/api/user_grpc.pb.go",
 	)
-	mockgenEventCases = twoTestCases( //nolint:gochecknoglobals // table-driven test data
+	mockgenEventCases = twoTestCases(
 		"service_mock.go",
 		"/project/mocks/service_mock.go",
 		"mock_service.go",
@@ -102,6 +100,8 @@ func TestFilterGeneratedCode_SingleFilters(t *testing.T) {
 			Op:        Op(0),
 			Timestamp: time.Time{},
 			IsDir:     true,
+			Size:      0,
+			ModTime:   time.Time{},
 		}
 		if filter(event) != true {
 			t.Error("directories should never be filtered")
@@ -135,7 +135,14 @@ func testFilter(filter Filter, path string, expected bool) func(*testing.T) {
 
 // newTestEvent creates a test event for the given path.
 func newTestEvent(path string) Event {
-	return Event{Path: path, Op: Op(0), Timestamp: time.Time{}, IsDir: false}
+	return Event{
+		Path:      path,
+		Op:        Op(0),
+		Timestamp: time.Time{},
+		IsDir:     false,
+		Size:      0,
+		ModTime:   time.Time{},
+	}
 }
 
 //nolint:paralleltest // Test files cannot be parallel due to file system operations
@@ -212,6 +219,8 @@ func TestFilterGeneratedCodeFull_WithContent(t *testing.T) {
 		Op:        Op(0),
 		Timestamp: time.Time{},
 		IsDir:     false,
+		Size:      0,
+		ModTime:   time.Time{},
 	}
 	if filter(sqlcFilenameEvent) {
 		t.Errorf("Expected sqlc filename pattern file to be filtered (return false)")
@@ -219,7 +228,14 @@ func TestFilterGeneratedCodeFull_WithContent(t *testing.T) {
 
 	// File with sqlc content marker should also be filtered
 	// Filter returns false to discard
-	sqlcEvent := Event{Path: sqlcFile, Op: Op(0), Timestamp: time.Time{}, IsDir: false}
+	sqlcEvent := Event{
+		Path:      sqlcFile,
+		Op:        Op(0),
+		Timestamp: time.Time{},
+		IsDir:     false,
+		Size:      0,
+		ModTime:   time.Time{},
+	}
 	if filter(sqlcEvent) {
 		t.Errorf("Expected sqlc file to be filtered with content check (return false)")
 	}

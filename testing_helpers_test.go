@@ -1,4 +1,3 @@
-//nolint:testpackage // Tests need internal access to unexported functions
 package filewatcher
 
 import (
@@ -15,7 +14,14 @@ import (
 const testFilePermission = 0o600 // rw------- (owner read/write only)
 
 func testEvent(path string, op Op) Event {
-	return Event{Path: path, Op: op, Timestamp: time.Now(), IsDir: false}
+	return Event{
+		Path:      path,
+		Op:        op,
+		Timestamp: time.Now(),
+		IsDir:     false,
+		Size:      0,
+		ModTime:   time.Time{},
+	}
 }
 
 func testWriteEvent(path string) Event {
@@ -28,6 +34,8 @@ func fixedTimeEvent(path string, op Op, hour int) Event {
 		Op:        op,
 		Timestamp: time.Date(2025, 1, 1, hour, 0, 0, 0, time.UTC),
 		IsDir:     false,
+		Size:      0,
+		ModTime:   time.Time{},
 	}
 }
 
@@ -103,6 +111,7 @@ func testWatcherError(category ErrorCategory) *WatcherError {
 		Path:     "test-path",
 		Err:      errTest,
 		Category: category,
+		Stack:    nil,
 	}
 }
 
@@ -112,6 +121,7 @@ func testError(err error, category ErrorCategory) *WatcherError {
 		Path:     "test-path",
 		Err:      err,
 		Category: category,
+		Stack:    nil,
 	}
 }
 

@@ -1,6 +1,9 @@
 package filewatcher
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
+	"io"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -294,5 +297,37 @@ func FilterIgnoreGlobs(patterns ...string) Filter {
 		}
 
 		return true
+	}
+}
+
+// FilterContentHash creates a filter that only passes events for files whose
+// SHA-256 content hash matches the expected hash. This is useful for detecting
+// when a file's content has actually changed, ignoring touch-only modifications.
+// Directory events always pass through. Files that cannot be read are filtered out.
+func FilterContentHash(expectedHex string) Filter {
+	expected := strings.ToLower(strings.TrimSpace(expectedHex))
+
+	return func(event Event) bool {
+		if event.IsDir {
+			return true
+		}
+
+		file, err := os.Open(event.Path)
+		if err != nil {
+			return false
+		}
+
+		defer func() { _ = file.Close() }()
+
+		hasher := sha256.New()
+
+		_, copyErr := io.Copy(hasher, file)
+		if copyErr != nil {
+			return false
+		}
+
+		actual := hex.EncodeToString(hasher.Sum(nil))
+
+		return strings.EqualFold(actual, expected)
 	}
 }

@@ -1,9 +1,9 @@
-//nolint:testpackage // Tests need internal access to verify Watcher fields
 package filewatcher
 
 import (
 	"errors"
 	"testing"
+	"time"
 )
 
 func TestWithIgnoreHidden(t *testing.T) {
@@ -82,7 +82,7 @@ func TestWithOnError(t *testing.T) {
 
 	testErr := errors.New("test error") //nolint:err113 // test-specific dynamic error
 	watcher.errorHandler(
-		ErrorContext{ //nolint:exhaustruct // test-specific minimal fields
+		ErrorContext{
 			Operation: "test operation",
 			Path:      "test path",
 		},
@@ -108,5 +108,77 @@ func TestWithLazyIsDir(t *testing.T) {
 
 	if !watcher.lazyIsDir {
 		t.Error("expected lazyIsDir to be true")
+	}
+}
+
+func TestWithPollInterval(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+
+	watcher, err := New([]string{dir}, WithPollInterval(5*time.Second))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	if watcher.pollInterval != 5*time.Second {
+		t.Errorf("expected pollInterval 5s, got %v", watcher.pollInterval)
+	}
+}
+
+func TestWithPolling(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+
+	watcher, err := New([]string{dir}, WithPolling(true))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	if !watcher.polling {
+		t.Error("expected polling to be true")
+	}
+
+	if watcher.pollInterval != 2*time.Second {
+		t.Errorf("expected default pollInterval 2s, got %v", watcher.pollInterval)
+	}
+}
+
+func TestWithPolling_False(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+
+	watcher, err := New([]string{dir}, WithPolling(false))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	if watcher.polling {
+		t.Error("expected polling to be false")
+	}
+}
+
+func TestWithDebug(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+
+	watcher, err := New([]string{dir}, WithDebug(nil))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	if !watcher.debug {
+		t.Error("expected debug to be true")
 	}
 }

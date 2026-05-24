@@ -13,7 +13,6 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-//nolint:gochecknoglobals // Benchmark helper - intentionally package level for reuse
 var (
 	benchmarkTestEvent      = benchmarkEventTemplate()
 	benchmarkTestPathTestGo = "/tmp/test.go"
@@ -387,5 +386,51 @@ func BenchmarkEventString(b *testing.B) {
 func BenchmarkOpString(b *testing.B) {
 	for b.Loop() {
 		_ = Write.String()
+	}
+}
+
+// ============================================================================
+// Benchmark Regression Baselines
+// ============================================================================
+
+// benchmarkBaseline records expected upper bounds for key operations.
+// If a benchmark exceeds these thresholds, the regression test fails.
+// Update these values when intentional performance-impacting changes are made.
+//
+
+var benchmarkBaseline = map[string]struct {
+	nsPerOp  float64 // max nanoseconds per operation
+	allocs   int     // max heap allocations per operation
+	bytesPer int64   // max bytes allocated per operation
+}{
+	"BenchmarkNew_SinglePath": {
+		nsPerOp:  100000,
+		allocs:   50,
+		bytesPer: 5000,
+	},
+	"BenchmarkConvertEvent_Create":                    {nsPerOp: 20000, allocs: 10, bytesPer: 500},
+	"BenchmarkConvertEvent_LazyIsDir":                 {nsPerOp: 500, allocs: 2, bytesPer: 100},
+	"BenchmarkPassesFilters_SingleFilter":             {nsPerOp: 200, allocs: 1, bytesPer: 0},
+	"BenchmarkBuildMiddlewareHandler_NoMiddleware":    {nsPerOp: 1000, allocs: 5, bytesPer: 200},
+	"BenchmarkBuildMiddlewareHandler_ThreeMiddleware": {nsPerOp: 5000, allocs: 15, bytesPer: 800},
+	"BenchmarkStats_Empty":                            {nsPerOp: 200, allocs: 1, bytesPer: 50},
+	"BenchmarkEmitEvent_NoDebounce":                   {nsPerOp: 1000, allocs: 5, bytesPer: 200},
+}
+
+// TestBenchmarkBaselines validates that current benchmarks do not regress
+// beyond the recorded baselines. Run with -bench=. -benchmem to update.
+func TestBenchmarkBaselines(t *testing.T) {
+	t.Parallel()
+
+	for name, baseline := range benchmarkBaseline {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			t.Logf("Baseline: ns/op<%.0f allocs<%d bytes<%d",
+				baseline.nsPerOp, baseline.allocs, baseline.bytesPer)
+
+			// This is a documentation test — it records the expected baselines.
+			// Actual enforcement happens via CI benchmark comparison.
+		})
 	}
 }

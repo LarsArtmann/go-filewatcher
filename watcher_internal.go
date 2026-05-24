@@ -11,6 +11,8 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
+const operationFsnotify = "fsnotify"
+
 // watchLoop is the main event processing goroutine.
 // Exits when ctx is cancelled or fsnotify watcher is closed.
 // Note: eventCh is closed by Close() after debouncer is stopped.
@@ -41,7 +43,7 @@ func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
 				return
 			}
 
-			w.handleError(ErrorContext{Operation: "fsnotify", Retryable: true}, err)
+			w.handleError(ErrorContext{Operation: operationFsnotify, Retryable: true}, err)
 		}
 	}
 }
@@ -266,12 +268,18 @@ func convertEvent(fsEvent fsnotify.Event, lazyIsDir bool) *Event {
 	// Check if path is a directory. For Remove events, the file may already
 	// be gone, so we ignore stat errors in that case.
 	// If lazyIsDir is true, skip the stat call for performance.
-	isDir := false
+	var (
+		isDir   bool
+		size    int64
+		modTime time.Time
+	)
 
 	if !lazyIsDir {
 		info, err := os.Stat(fsEvent.Name)
 		if err == nil {
 			isDir = info.IsDir()
+			size = info.Size()
+			modTime = info.ModTime()
 		}
 	}
 
@@ -280,5 +288,7 @@ func convertEvent(fsEvent fsnotify.Event, lazyIsDir bool) *Event {
 		Op:        op,
 		Timestamp: time.Now(),
 		IsDir:     isDir,
+		Size:      size,
+		ModTime:   modTime,
 	}
 }

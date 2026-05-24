@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log/slog"
 	"testing"
+	"time"
 )
 
 // Test constants for repeated strings.
@@ -118,6 +119,8 @@ func TestEvent_LogValue(t *testing.T) {
 		Op:        Write,
 		Timestamp: ts,
 		IsDir:     false,
+		Size:      0,
+		ModTime:   time.Time{},
 	}
 
 	val := event.LogValue()

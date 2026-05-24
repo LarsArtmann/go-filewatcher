@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"sync"
@@ -72,6 +73,10 @@ type Watcher struct {
 	ignoreDirNames  []string          // user-configured dir names to skip during walk
 	errorHandler    ErrorHandler      // callback for errors during event processing
 	lazyIsDir       bool              // skip os.Stat calls in convertEvent for performance
+	pollInterval    time.Duration     // polling interval for NFS/FUSE filesystems (0 = disabled)
+	polling         bool              // polling mode enabled (supplements fsnotify with periodic scans)
+	debug           bool              // enable verbose debug logging
+	debugLogger     *slog.Logger      // logger for debug output
 	done            chan struct{}     // closed by Close() to signal shutdown to in-flight goroutines
 
 	// Internal state
@@ -219,6 +224,10 @@ func New( //nolint:funlen // constructor with full field initialization
 		errorsEncountered: atomic.Uint64{},
 		startTime:         time.Time{},
 		lazyIsDir:         false,
+		pollInterval:      0,
+		polling:           false,
+		debug:             false,
+		debugLogger:       nil,
 		done:              make(chan struct{}),
 	}
 

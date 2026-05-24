@@ -105,6 +105,12 @@ type Event struct {
 	Timestamp time.Time `json:"timestamp"`
 	// IsDir indicates whether the event is for a directory (true) or file (false).
 	IsDir bool `json:"isDir"`
+	// Size is the file size in bytes, if available. Zero if the information
+	// could not be obtained (e.g., file already removed, or lazy mode enabled).
+	Size int64 `json:"size"`
+	// ModTime is the file modification time, if available. Zero time.Time if
+	// the information could not be obtained.
+	ModTime time.Time `json:"modTime,omitempty"` //nolint:modernize // omitempty intentional: zero ModTime omits field from JSON
 }
 
 // String returns a human-readable representation of the event.

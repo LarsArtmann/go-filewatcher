@@ -394,6 +394,8 @@ type Event struct {
     Op        Op        // Operation type
     Timestamp time.Time // When the event was detected
     IsDir     bool      // True if directory, false if file
+    Size      int64     // File size in bytes (0 if unavailable)
+    ModTime   time.Time // File modification time (zero if unavailable)
 }
 ```
 
@@ -533,6 +535,106 @@ filewatcher.DefaultIgnoreDirs
 // }
 ```
 
+### Structured Logging
+
+```go
+import "log/slog"
+
+// Create a custom JSON logger for production
+logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+    Level: slog.LevelInfo,
+}))
+
+watcher, _ := filewatcher.New(paths,
+    filewatcher.WithMiddleware(
+        filewatcher.MiddlewareRecovery(),
+        filewatcher.MiddlewareLogging(logger), // Uses your custom logger
+    ),
+)
+```
+
+### Dependency Injection Patterns
+
+go-filewatcher integrates naturally with Go DI frameworks:
+
+#### Manual DI (Constructor Injection)
+
+```go
+type FileProcessor struct {
+    watcher *filewatcher.Watcher
+}
+
+func NewFileProcessor(dirs []string, logger *slog.Logger) (*FileProcessor, error) {
+    w, err := filewatcher.New(dirs,
+        filewatcher.WithExtensions(".go"),
+        filewatcher.WithMiddleware(
+            filewatcher.MiddlewareRecovery(),
+            filewatcher.MiddlewareLogging(logger),
+        ),
+    )
+    if err != nil {
+        return nil, fmt.Errorf("creating watcher: %w", err)
+    }
+
+    return &FileProcessor{watcher: w}, nil
+}
+
+func (fp *FileProcessor) Run(ctx context.Context) error {
+    defer fp.watcher.Close()
+
+    events, err := fp.watcher.Watch(ctx)
+    if err != nil {
+        return err
+    }
+
+    for event := range events {
+        // Process events
+    }
+
+    return nil
+}
+```
+
+#### Interface-based Testing
+
+```go
+// Define an interface for the watcher dependency
+type Watcher interface {
+    Watch(ctx context.Context) (<-chan filewatcher.Event, error)
+    Close() error
+}
+
+// Production implementation
+func NewWatcher(paths []string, opts ...filewatcher.Option) (Watcher, error) {
+    return filewatcher.New(paths, opts...)
+}
+
+// Test mock
+type mockWatcher struct {
+    events chan filewatcher.Event
+}
+
+func (m *mockWatcher) Watch(_ context.Context) (<-chan filewatcher.Event, error) {
+    return m.events, nil
+}
+
+func (m *mockWatcher) Close() error {
+    close(m.events)
+    return nil
+}
+```
+
+### Polling Mode (NFS/Docker Volumes)
+
+```go
+// For environments where OS-native events don't work
+watcher, _ := filewatcher.New(
+    []string{"/mnt/nfs/share"},
+    filewatcher.WithPolling(true),
+    filewatcher.WithPollInterval(2 * time.Second),
+)
+```
+
 ---
 
 ## Benchmarks
@@ -566,6 +668,8 @@ Run benchmarks: `nix run .#bench` or `go test -bench=. -benchmem`
 - **Middleware Chains** — Composable cross-cutting concerns
 - **Composition** — Filters and middleware compose elegantly
 - **Minimal Dependencies** — Only `fsnotify`, stdlib for rest
+
+**Related docs:** [API Stability](./API_STABILITY.md) · [Troubleshooting](./Troubleshooting.md) · [Migration Guide](./MIGRATION.md)
 
 ---
 

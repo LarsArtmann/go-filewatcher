@@ -741,8 +741,9 @@ func TestMiddlewareErrorSanitization(t *testing.T) {
 
 	mw := MiddlewareErrorSanitization(sanitize)
 
+	innerErr := errors.New("file changed at /secret/key.pem") //nolint:err113
 	errHandler := func(_ context.Context, _ Event) error {
-		return errors.New("file changed at /secret/key.pem") //nolint:err113
+		return innerErr
 	}
 
 	handler := mw(errHandler)
@@ -752,12 +753,13 @@ func TestMiddlewareErrorSanitization(t *testing.T) {
 		t.Fatal("expected error")
 	}
 
-	if strings.Contains(err.Error(), "/secret/") {
-		t.Errorf("expected path to be sanitized, got: %v", err)
+	sanitizedMsg := err.Error()
+	if !strings.Contains(sanitizedMsg, "***REDACTED***") {
+		t.Errorf("expected redacted path in error, got: %v", sanitizedMsg)
 	}
 
-	if !strings.Contains(err.Error(), "***REDACTED***") {
-		t.Errorf("expected redacted path in error, got: %v", err)
+	if !errors.Is(err, innerErr) {
+		t.Errorf("expected errors.Is to match original error via %%w chain")
 	}
 }
 

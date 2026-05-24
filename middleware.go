@@ -597,8 +597,7 @@ func MiddlewareErrorSanitization(sanitize func(string) string) Middleware {
 		return func(ctx context.Context, event Event) error {
 			err := next(ctx, event)
 			if err != nil {
-				//nolint:err113 // Sanitization must produce a new error string
-				return fmt.Errorf("%s", sanitize(err.Error()))
+				return fmt.Errorf("sanitized: %s: %w", sanitize(err.Error()), err)
 			}
 
 			return nil

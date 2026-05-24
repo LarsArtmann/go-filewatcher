@@ -481,9 +481,8 @@ func (w *Watcher) Remove(path string) error {
 	return nil
 }
 
-// WatchList returns a copy of the list of paths currently being watched.
-// This method is safe for concurrent use with other methods.
-func (w *Watcher) WatchList() []string {
+// copyWatchList returns a defensive copy of the watch list under RLock.
+func (w *Watcher) copyWatchList() []string {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
@@ -491,6 +490,12 @@ func (w *Watcher) WatchList() []string {
 	copy(result, w.watchList)
 
 	return result
+}
+
+// WatchList returns a copy of the list of paths currently being watched.
+// This method is safe for concurrent use with other methods.
+func (w *Watcher) WatchList() []string {
+	return w.copyWatchList()
 }
 
 // Stats provides observability metrics for the watcher.

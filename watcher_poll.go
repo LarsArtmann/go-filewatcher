@@ -51,12 +51,7 @@ func (w *Watcher) pollLoop(ctx context.Context, eventCh chan<- Event) {
 
 // pollSnapshot takes a snapshot of all currently watched directories.
 func (w *Watcher) pollSnapshot(snapshot map[string]fileState) {
-	w.mu.RLock()
-	paths := make([]string, len(w.watchList))
-	copy(paths, w.watchList)
-	w.mu.RUnlock()
-
-	for _, rootPath := range paths {
+	for _, rootPath := range w.copyWatchList() {
 		w.pollWalkDir(rootPath, snapshot)
 	}
 }
@@ -96,12 +91,7 @@ func (w *Watcher) pollDetectChanges(
 ) {
 	current := make(map[string]fileState)
 
-	w.mu.RLock()
-	paths := make([]string, len(w.watchList))
-	copy(paths, w.watchList)
-	w.mu.RUnlock()
-
-	for _, rootPath := range paths {
+	for _, rootPath := range w.copyWatchList() {
 		w.pollWalkDir(rootPath, current)
 	}
 

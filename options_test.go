@@ -182,3 +182,21 @@ func TestWithDebug(t *testing.T) {
 		t.Error("expected debug to be true")
 	}
 }
+
+func TestWithWatchedIgnoreDirs(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+
+	watcher, err := New([]string{dir}, WithWatchedIgnoreDirs("node_modules", ".cache"))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	filterCount := len(watcher.filters)
+	if filterCount == 0 {
+		t.Error("expected at least one filter to be added")
+	}
+}

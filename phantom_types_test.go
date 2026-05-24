@@ -125,3 +125,75 @@ func TestEventPath_Join(t *testing.T) {
 		}
 	}
 }
+
+func TestEventPath_GetAndIsZero(t *testing.T) {
+	t.Parallel()
+
+	ep := NewEventPath("/test")
+	if ep.Get() != "/test" {
+		t.Errorf("EventPath.Get() = %q, want %q", ep.Get(), "/test")
+	}
+
+	if ep.IsZero() {
+		t.Error("EventPath.IsZero() = true for non-zero path")
+	}
+
+	var zero EventPath
+	if !zero.IsZero() {
+		t.Error("EventPath.IsZero() = false for zero value")
+	}
+}
+
+func TestRootPath_IsZero(t *testing.T) {
+	t.Parallel()
+
+	rp := NewRootPath("/test")
+	if rp.IsZero() {
+		t.Error("RootPath.IsZero() = true for non-zero path")
+	}
+
+	var zero RootPath
+	if !zero.IsZero() {
+		t.Error("RootPath.IsZero() = false for zero value")
+	}
+}
+
+func TestDebounceKey_GetAndIsZeroAndString(t *testing.T) {
+	t.Parallel()
+
+	dk := NewDebounceKey("test-key")
+	if dk.Get() != "test-key" {
+		t.Errorf("DebounceKey.Get() = %q, want %q", dk.Get(), "test-key")
+	}
+
+	if dk.IsZero() {
+		t.Error("DebounceKey.IsZero() = true for non-zero key")
+	}
+
+	if dk.String() != "test-key" {
+		t.Errorf("DebounceKey.String() = %q, want %q", dk.String(), "test-key")
+	}
+
+	var zero DebounceKey
+	if !zero.IsZero() {
+		t.Error("DebounceKey.IsZero() = false for zero value")
+	}
+}
+
+func TestTempDir_String(t *testing.T) {
+	t.Parallel()
+
+	td := NewTempDir("/tmp/test")
+	if td.String() != "/tmp/test" {
+		t.Errorf("TempDir.String() = %q, want %q", td.String(), "/tmp/test")
+	}
+}
+
+func TestOpString_String(t *testing.T) {
+	t.Parallel()
+
+	os := NewOpString("test-op")
+	if os.String() != "test-op" {
+		t.Errorf("OpString.String() = %q, want %q", os.String(), "test-op")
+	}
+}

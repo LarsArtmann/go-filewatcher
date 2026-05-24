@@ -523,3 +523,23 @@ func TestErrorCode_String(t *testing.T) {
 		}
 	}
 }
+
+func TestErrorCategory_String(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		cat  ErrorCategory
+		want string
+	}{
+		{CategoryTransient, "transient"},
+		{CategoryPermanent, "permanent"},
+		{CategoryUnknown, "unknown"},
+		{ErrorCategory(99), "unknown"},
+	}
+
+	for _, tt := range tests {
+		if got := tt.cat.String(); got != tt.want {
+			t.Errorf("ErrorCategory(%d).String() = %q, want %q", tt.cat, got, tt.want)
+		}
+	}
+}

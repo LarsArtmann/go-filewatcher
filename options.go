@@ -207,6 +207,8 @@ func WithDebug(logger *slog.Logger) Option {
 // from WithIgnoreDirs which both filters events AND skips directories during
 // recursive walking. Use this when you want to walk into a directory (to watch
 // its subdirectories) but ignore file events within it.
+//
+// Deprecated: Use WithFilter(FilterIgnoreDirs(dirs...)) instead for better composability.
 func WithWatchedIgnoreDirs(dirs ...string) Option {
 	return func(w *Watcher) {
 		w.filters = append(w.filters, FilterIgnoreDirs(dirs...))

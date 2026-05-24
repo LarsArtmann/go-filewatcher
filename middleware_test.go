@@ -808,3 +808,44 @@ func TestMiddlewareErrorBatch(t *testing.T) {
 		t.Error("expected at least one batch flush")
 	}
 }
+
+func TestCircuitState_String(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		state CircuitState
+		want  string
+	}{
+		{CircuitClosed, "closed"},
+		{CircuitOpen, "open"},
+		{CircuitHalfOpen, "half-open"},
+		{CircuitState(99), "unknown"},
+	}
+
+	for _, tt := range tests {
+		if got := tt.state.String(); got != tt.want {
+			t.Errorf("CircuitState(%d).String() = %q, want %q", tt.state, got, tt.want)
+		}
+	}
+}
+
+func TestMiddlewareErrorSanitization_Nil(t *testing.T) {
+	t.Parallel()
+
+	mw := MiddlewareErrorSanitization(nil)
+
+	errHandler := func(_ context.Context, _ Event) error {
+		return errors.New("test error") //nolint:err113
+	}
+
+	handler := mw(errHandler)
+
+	err := handler(context.Background(), testWriteEvent("/test"))
+	if err == nil {
+		t.Fatal("expected error to pass through with nil sanitize")
+	}
+
+	if err.Error() == "" {
+		t.Error("expected non-empty error message")
+	}
+}

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -603,4 +604,61 @@ func TestWithIgnorePatterns(t *testing.T) {
 	}
 
 	runFilterTestsTable(t, filter, tests)
+}
+
+func TestWatcher_ExecuteHandler_ErrorPath(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := NewTempDir(t.TempDir())
+
+	var (
+		mu            sync.Mutex
+		receivedError bool
+	)
+
+	handler := func(_ ErrorContext, _ error) {
+		mu.Lock()
+		receivedError = true
+		mu.Unlock()
+	}
+
+	errorMiddleware := func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			_ = next(ctx, event)
+
+			return errors.New("forced handler error") //nolint:err113
+		}
+	}
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	w, err := New(
+		[]string{tmpDir.Get()},
+		WithMiddleware(errorMiddleware),
+		WithErrorHandler(handler),
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	events, watchErr := w.Watch(ctx)
+	if watchErr != nil {
+		t.Fatal(watchErr)
+	}
+
+	createTestFile(t, tmpDir, "trigger.txt", "content")
+
+	waitForEventOrFail(t, events, 5*time.Second)
+
+	time.Sleep(100 * time.Millisecond) // wait for async error handler
+
+	mu.Lock()
+	got := receivedError
+	mu.Unlock()
+
+	if !got {
+		t.Error("expected error handler to be called")
+	}
 }

@@ -22,41 +22,68 @@
             pkgs = nixpkgs.legacyPackages.${system};
           }
         );
+
+      version = self.rev or self.dirtyRev or "dev";
+      vendorHash = "sha256-SbRsHezFCzQAMxcsySP8OdV6DqYaBY4+aR26HtqoF3k=";
+
+      src = nixpkgs.lib.fileset.toSource {
+        root = ./.;
+        fileset = nixpkgs.lib.fileset.unions [
+          ./go.mod
+          ./go.sum
+          ./doc.go
+          ./debouncer.go
+          ./errors.go
+          ./event.go
+          ./filter.go
+          ./filter_gogen.go
+          ./middleware.go
+          ./options.go
+          ./phantom_types.go
+          ./watcher.go
+          ./watcher_internal.go
+          ./watcher_poll.go
+          ./watcher_walk.go
+        ];
+      };
     in
     {
+      overlays.default = final: _prev: {
+        go-filewatcher = final.callPackage ./package.nix { };
+      };
+
       packages = forEachSystem (
-        { pkgs, system }:
+        { pkgs, ... }:
         {
           default = pkgs.buildGoModule {
             pname = "go-filewatcher";
-            version = "0.0.0";
-            src = self;
-            vendorHash = "sha256-k7cUWDloqRcDOL2Npmh3+9NOhiV5DVELIH5PuaGFrDs=";
+            inherit src version vendorHash;
             doCheck = false;
-            meta = with pkgs.lib; {
+            meta = {
               description = "High-performance, composable file system watcher for Go";
               homepage = "https://github.com/larsartmann/go-filewatcher";
-              license = licenses.mit;
+              license = pkgs.lib.licenses.mit;
+              maintainers = [ ];
             };
           };
         }
       );
 
       devShells = forEachSystem (
-        { pkgs, system }:
+        { pkgs, ... }:
         {
           default = pkgs.mkShell {
             name = "go-filewatcher";
 
-            packages = with pkgs; [
-              go_1_26
-              golangci-lint
-              gofumpt
-              golines
-              gopls
-              delve
-              gotools
-              git
+            packages = [
+              pkgs.go_1_26
+              pkgs.golangci-lint
+              pkgs.gofumpt
+              pkgs.golines
+              pkgs.gopls
+              pkgs.delve
+              pkgs.gotools
+              pkgs.git
             ];
 
             shellHook = ''
@@ -90,157 +117,95 @@
 
       apps = forEachSystem (
         { pkgs, system }:
+        let
+          mkApp = name: text: {
+            type = "app";
+            program = "${
+              pkgs.writeShellApplication {
+                inherit name text;
+                runtimeInputs = with pkgs; [
+                  go_1_26
+                  golangci-lint
+                  gofumpt
+                ];
+              }
+            }/bin/${name}";
+          };
+        in
         {
-          test = {
-            type = "app";
-            program = "${pkgs.writeShellScriptBin "test" ''
-              cd "${self}"
-              export GOWORK=off
-              ${pkgs.go_1_26}/bin/go test -race -count=1 ./...
-            ''}/bin/test";
-            meta = with pkgs.lib; {
-              description = "Run tests with -race flag";
-            };
-          };
+          test = mkApp "test" ''
+            cd "${self}"
+            go test -race -count=1 ./...
+          '';
 
-          test-v = {
-            type = "app";
-            program = "${pkgs.writeShellScriptBin "test-v" ''
-              cd "${self}"
-              export GOWORK=off
-              ${pkgs.go_1_26}/bin/go test -v -race -count=1 ./...
-            ''}/bin/test-v";
-            meta = with pkgs.lib; {
-              description = "Run tests with -race and verbose flags";
-            };
-          };
+          test-v = mkApp "test-v" ''
+            cd "${self}"
+            go test -v -race -count=1 ./...
+          '';
 
-          lint = {
-            type = "app";
-            program = "${pkgs.writeShellScriptBin "lint" ''
-              cd "${self}"
-              export GOWORK=off
-              ${pkgs.golangci-lint}/bin/golangci-lint run ./...
-            ''}/bin/lint";
-            meta = with pkgs.lib; {
-              description = "Run golangci-lint linter";
-            };
-          };
+          lint = mkApp "lint" ''
+            cd "${self}"
+            golangci-lint run ./...
+          '';
 
-          lint-fix = {
-            type = "app";
-            program = "${pkgs.writeShellScriptBin "lint-fix" ''
-              cd "${self}"
-              export GOWORK=off
-              ${pkgs.golangci-lint}/bin/golangci-lint run --fix ./...
-            ''}/bin/lint-fix";
-            meta = with pkgs.lib; {
-              description = "Auto-fix linter issues with golangci-lint";
-            };
-          };
+          lint-fix = mkApp "lint-fix" ''
+            cd "${self}"
+            golangci-lint run --fix ./...
+          '';
 
-          vet = {
-            type = "app";
-            program = "${pkgs.writeShellScriptBin "vet" ''
-              cd "${self}"
-              export GOWORK=off
-              ${pkgs.go_1_26}/bin/go vet ./...
-            ''}/bin/vet";
-            meta = with pkgs.lib; {
-              description = "Run go vet static analyzer";
-            };
-          };
+          vet = mkApp "vet" ''
+            cd "${self}"
+            go vet ./...
+          '';
 
-          fmt = {
-            type = "app";
-            program = "${pkgs.writeShellScriptBin "fmt" ''
-              cd "${self}"
-              export GOWORK=off
-              ${pkgs.go_1_26}/bin/go fmt ./...
-              ${pkgs.gofumpt}/bin/gofumpt -w .
-            ''}/bin/fmt";
-            meta = with pkgs.lib; {
-              description = "Format Go code with gofmt and gofumpt";
-            };
-          };
+          fmt = mkApp "fmt" ''
+            cd "${self}"
+            go fmt ./...
+            gofumpt -w .
+          '';
 
-          bench = {
-            type = "app";
-            program = "${pkgs.writeShellScriptBin "bench" ''
-              cd "${self}"
-              export GOWORK=off
-              ${pkgs.go_1_26}/bin/go test -bench=. -benchmem -race ./...
-            ''}/bin/bench";
-            meta = with pkgs.lib; {
-              description = "Run Go benchmarks with memory stats";
-            };
-          };
+          bench = mkApp "bench" ''
+            cd "${self}"
+            go test -bench=. -benchmem -race ./...
+          '';
 
-          coverage = {
-            type = "app";
-            program = "${pkgs.writeShellScriptBin "coverage" ''
-              cd "${self}"
-              export GOWORK=off
-              COVERAGE_OUT="${TMPDIR:-/tmp}/coverage.out"
-              ${pkgs.go_1_26}/bin/go test -coverprofile="$COVERAGE_OUT" ./...
-              ${pkgs.go_1_26}/bin/go tool cover -func="$COVERAGE_OUT"
-            ''}/bin/coverage";
-            meta = with pkgs.lib; {
-              description = "Generate Go test coverage report";
-            };
-          };
+          coverage = mkApp "coverage" ''
+            cd "${self}"
+            COVERAGE_OUT="''${TMPDIR:-/tmp}/coverage.out"
+            go test -coverprofile="$COVERAGE_OUT" ./...
+            go tool cover -func="$COVERAGE_OUT"
+          '';
 
-          tidy = {
-            type = "app";
-            program = "${pkgs.writeShellScriptBin "tidy" ''
-              cd "${self}"
-              export GOWORK=off
-              ${pkgs.go_1_26}/bin/go mod tidy
-            ''}/bin/tidy";
-            meta = with pkgs.lib; {
-              description = "Run go mod tidy to clean up dependencies";
-            };
-          };
+          tidy = mkApp "tidy" ''
+            cd "${self}"
+            go mod tidy
+          '';
 
-          check = {
-            type = "app";
-            program = "${pkgs.writeShellScriptBin "check" ''
-              cd "${self}"
-              export GOWORK=off
-              echo "Running vet..."
-              ${pkgs.go_1_26}/bin/go vet ./...
-              echo "Running lint..."
-              ${pkgs.golangci-lint}/bin/golangci-lint run ./...
-              echo "Running tests..."
-              ${pkgs.go_1_26}/bin/go test -race -count=1 ./...
-              echo "All checks passed."
-            ''}/bin/check";
-            meta = with pkgs.lib; {
-              description = "Run vet, lint, and tests";
-            };
-          };
+          check = mkApp "check" ''
+            cd "${self}"
+            echo "Running vet..."
+            go vet ./...
+            echo "Running lint..."
+            golangci-lint run ./...
+            echo "Running tests..."
+            go test -race -count=1 ./...
+            echo "All checks passed."
+          '';
 
-          ci = {
-            type = "app";
-            program = "${pkgs.writeShellScriptBin "ci" ''
-              cd "${self}"
-              export GOWORK=off
-              echo "Running tidy..."
-              ${pkgs.go_1_26}/bin/go mod tidy
-              echo "Running fmt..."
-              ${pkgs.go_1_26}/bin/go fmt ./...
-              echo "Running vet..."
-              ${pkgs.go_1_26}/bin/go vet ./...
-              echo "Running lint..."
-              ${pkgs.golangci-lint}/bin/golangci-lint run ./...
-              echo "Running tests..."
-              ${pkgs.go_1_26}/bin/go test -race -count=1 ./...
-              echo "CI complete."
-            ''}/bin/ci";
-            meta = with pkgs.lib; {
-              description = "Full CI pipeline: tidy, fmt, vet, lint, test";
-            };
-          };
+          ci = mkApp "ci" ''
+            cd "${self}"
+            echo "Running tidy..."
+            go mod tidy
+            echo "Running fmt..."
+            go fmt ./...
+            echo "Running vet..."
+            go vet ./...
+            echo "Running lint..."
+            golangci-lint run ./...
+            echo "Running tests..."
+            go test -race -count=1 ./...
+            echo "CI complete."
+          '';
 
           default = self.apps.${system}.check;
         }
@@ -257,9 +222,9 @@
           test =
             pkgs.runCommand "test"
               {
-                nativeBuildInputs = with pkgs; [
-                  go_1_26
-                  gcc
+                nativeBuildInputs = [
+                  pkgs.go_1_26
+                  pkgs.gcc
                 ];
               }
               ''
@@ -274,9 +239,9 @@
           lint =
             pkgs.runCommand "lint"
               {
-                nativeBuildInputs = with pkgs; [
-                  go_1_26
-                  golangci-lint
+                nativeBuildInputs = [
+                  pkgs.go_1_26
+                  pkgs.golangci-lint
                 ];
               }
               ''
@@ -291,9 +256,9 @@
           vet =
             pkgs.runCommand "vet"
               {
-                nativeBuildInputs = with pkgs; [
-                  go_1_26
-                  gcc
+                nativeBuildInputs = [
+                  pkgs.go_1_26
+                  pkgs.gcc
                 ];
               }
               ''
@@ -308,15 +273,15 @@
           go-fmt =
             pkgs.runCommand "go-fmt"
               {
-                nativeBuildInputs = with pkgs; [
-                  go_1_26
-                  gofumpt
+                nativeBuildInputs = [
+                  pkgs.go_1_26
+                  pkgs.gofumpt
                 ];
               }
               ''
                 export GOWORK=off
                 export HOME="$TMPDIR"
-                cd "${self}"
+                cp -r "${self}" src && chmod -R u+w src && cd src
                 unformatted=$(gofmt -l .)
                 if [ -n "$unformatted" ]; then
                   echo "Files need formatting:"

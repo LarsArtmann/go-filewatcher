@@ -150,10 +150,7 @@ linters:
           pattern: ^(fmt\.Print(|f|ln)|print|println)$
     gocritic:
       disabled-checks:
-        - dupImport
         - ifElseChain
-        - octalLiteral
-        - whyNoLint
     gomoddirectives:
       replace-allow-list:
         - github.com/LarsArtmann/gogenfilter

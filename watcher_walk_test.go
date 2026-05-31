@@ -1,4 +1,4 @@
-//nolint:testpackage,varnamelen // Tests need internal access; idiomatic short names
+//nolint:varnamelen // idiomatic short names
 package filewatcher
 
 import (

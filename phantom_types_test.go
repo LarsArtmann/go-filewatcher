@@ -161,17 +161,17 @@ func TestRootPath_IsZero(t *testing.T) {
 func TestDebounceKey_GetAndIsZeroAndString(t *testing.T) {
 	t.Parallel()
 
-	dk := NewDebounceKey("test-key")
-	if dk.Get() != "test-key" {
-		t.Errorf("DebounceKey.Get() = %q, want %q", dk.Get(), "test-key")
+	debounceKey := NewDebounceKey("test-key")
+	if debounceKey.Get() != "test-key" {
+		t.Errorf("DebounceKey.Get() = %q, want %q", debounceKey.Get(), "test-key")
 	}
 
-	if dk.IsZero() {
+	if debounceKey.IsZero() {
 		t.Error("DebounceKey.IsZero() = true for non-zero key")
 	}
 
-	if dk.String() != "test-key" {
-		t.Errorf("DebounceKey.String() = %q, want %q", dk.String(), "test-key")
+	if debounceKey.String() != "test-key" {
+		t.Errorf("DebounceKey.String() = %q, want %q", debounceKey.String(), "test-key")
 	}
 
 	var zero DebounceKey

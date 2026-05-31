@@ -110,7 +110,7 @@ type Event struct {
 	Size int64 `json:"size"`
 	// ModTime is the file modification time, if available. Zero time.Time if
 	// the information could not be obtained.
-	ModTime time.Time `json:"modTime,omitzero"` //nolint:modernize // omitzero: zero ModTime omits field from JSON
+	ModTime time.Time `json:"modTime,omitzero"`
 }
 
 // String returns a human-readable representation of the event.

@@ -1,4 +1,4 @@
-//nolint:testpackage,exhaustruct,wsl,varnamelen // Benchmarks prioritize readability
+//nolint:wsl,varnamelen // Benchmarks prioritize readability
 package filewatcher
 
 import (

@@ -48,6 +48,12 @@ var (
 type ErrorCode string
 
 const (
+	categoryStringTransient = "transient"
+	categoryStringPermanent = "permanent"
+	categoryStringUnknown   = "unknown"
+)
+
+const (
 	// ErrorCodeWatcherClosed indicates an operation on a closed watcher.
 	ErrorCodeWatcherClosed ErrorCode = "WATCHER_CLOSED"
 	// ErrorCodeNoPaths indicates no paths were provided.
@@ -91,12 +97,14 @@ const (
 // String returns a human-readable name for the error category.
 func (c ErrorCategory) String() string {
 	switch c {
+	case CategoryUnknown:
+		return categoryStringUnknown
 	case CategoryTransient:
-		return "transient"
+		return categoryStringTransient
 	case CategoryPermanent:
-		return "permanent"
+		return categoryStringPermanent
 	default:
-		return "unknown"
+		return categoryStringUnknown
 	}
 }
 

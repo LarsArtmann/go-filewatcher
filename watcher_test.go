@@ -1,4 +1,4 @@
-//nolint:testpackage,varnamelen,exhaustruct // Tests need internal access; idiomatic short names; partial struct initialization acceptable
+//nolint:varnamelen // idiomatic short names
 package filewatcher
 
 import (
@@ -676,7 +676,7 @@ func TestWatcher_Stats(t *testing.T) {
 	}
 }
 
-func TestWatcher_Stats_Metrics(t *testing.T) { //nolint:cyclop,funlen // comprehensive metrics test
+func TestWatcher_Stats_Metrics(t *testing.T) {
 	t.Parallel()
 
 	tmpDir := t.TempDir()

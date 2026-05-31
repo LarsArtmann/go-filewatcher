@@ -1,4 +1,4 @@
-module github.com/larsartmann/go-filewatcher
+module github.com/larsartmann/go-filewatcher/v2
 
 go 1.26.3
 

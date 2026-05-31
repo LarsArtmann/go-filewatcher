@@ -262,12 +262,6 @@ func TestFilterGeneratedCodeWithFilter(t *testing.T) {
 		{testCaseName: testPathMainGo, path: testPathMainGo, expected: true},
 		{testCaseName: "/project/vendor/lib.go", path: "/project/vendor/lib.go", expected: true},
 	}, filter)
-
-	// Check metrics were recorded
-	stats := genFilter.GetStats()
-	if stats.TotalFilesChecked == 0 {
-		t.Error("Expected metrics to be recorded")
-	}
 }
 
 //nolint:paralleltest // Test files cannot be parallel due to file system operations

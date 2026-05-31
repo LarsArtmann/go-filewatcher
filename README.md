@@ -44,10 +44,10 @@ A high-performance, composable file system watcher for Go, built on [fsnotify](h
 ## Installation
 
 ```bash
-go get github.com/larsartmann/go-filewatcher
+go get github.com/larsartmann/go-filewatcher/v2
 ```
 
-Requires Go 1.26.1 or later.
+Requires Go 1.26.2 or later.
 
 ### Development with Nix
 

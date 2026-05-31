@@ -183,18 +183,6 @@ Don't remove the nolint — this is intentional.
 
 `MiddlewareCircuitBreaker` uses three states: `CircuitClosed` → `CircuitOpen` → `CircuitHalfOpen`. In half-open, only one event passes through to test recovery.
 
-### 8. WithDebug is Active (not a stub)
-
-`WithDebug(logger)` wires real debug logging throughout the pipeline. The `debugLog` helper checks `w.debug` and calls `w.debugLogger.Debug()`. Log calls are in `watchLoop`, `processEvent`, `emitEvent`, `handleError`, `handleNewDirectory`, and `pollLoop`.
-
-### 9. WithPolling is Active (not a stub)
-
-`WithPolling(true)` starts a `pollLoop` goroutine in `Watch()` that maintains a filesystem snapshot and detects new/modified/removed files at `pollInterval`. Works alongside fsnotify for NFS/FUSE environments.
-
-### 10. Circuit Breaker States
-
-`MiddlewareCircuitBreaker` uses three states: `CircuitClosed` → `CircuitOpen` → `CircuitHalfOpen`. In half-open, only one event passes through to test recovery.
-
 ---
 
 ## Key Patterns
@@ -232,8 +220,6 @@ golang.org/x/time/rate              # rate.Limiter for rate limiting middleware
 ```
 
 ### gogenfilter v3 API
-
-Uses `replace` directive in `go.mod` pointing to `../gogenfilter` (module path issue: v3.0.0 doesn't include `/v3` in module path).
 
 **Breaking changes from v3:**
 

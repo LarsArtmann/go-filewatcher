@@ -7,8 +7,8 @@ import (
 	"log"
 	"time"
 
-	filewatcher "github.com/larsartmann/go-filewatcher"
-	demo "github.com/larsartmann/go-filewatcher/examples/demo"
+	filewatcher "github.com/larsartmann/go-filewatcher/v2"
+	demo "github.com/larsartmann/go-filewatcher/v2/examples/demo"
 )
 
 const debounceDelay = 500 * time.Millisecond // Delay for per-path debouncing

@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/larsartmann/go-filewatcher"
+	"github.com/larsartmann/go-filewatcher/v2"
 )
 
 // ExampleNew demonstrates creating a basic watcher with options.

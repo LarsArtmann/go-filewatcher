@@ -4,6 +4,58 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+## [2.1.0] - 2026-06-01
+
+### Added
+
+- `Event.Size` and `Event.ModTime` fields for file metadata in events
+- `WithPolling()` and `WithPollInterval()` options for NFS/FUSE filesystem support
+- `WithDebug()` option with structured `slog` debug logging throughout the pipeline
+- `ErrorCode` typed constants for programmatic error matching (`WATCHER_CLOSED`, `PATH_NOT_FOUND`, etc.)
+- `WatcherError.Stack` — auto-captured `debug.Stack()` traces for debugging
+- `FilterContentHash()` filter for SHA-256 content-change detection
+- `MiddlewareCircuitBreaker()` — fault tolerance with closed/open/half-open states
+- `MiddlewareThrottle()` — fixed-window rate limiting
+- `MiddlewareWriteFileLog()` — audit trail to filesystem
+- `MiddlewareErrorSanitization()` — safe error message scrubbing preserving error chains
+- `MiddlewareErrorRateLimit()` — per-error-type rate limiting
+- `MiddlewareErrorRecovery()` — recoverable error handling with custom strategies
+- `MiddlewareErrorCorrelation()` — request tracing across handler chains
+- `MiddlewareErrorBatch()` — batch error flushing for analytics
+- `WithFollowSymlinks()` option for symbolic link traversal during directory walking
+- Fuzz tests for `ParseFamily`, `Classify`, and error formatting
+- `.goreleaser.yml` configuration for cross-platform release artifacts
+- `API_STABILITY.md` — public API stability policy and guarantees
+- `Troubleshooting.md` — common issues and resolutions
+- `CODE_OF_CONDUCT.md` — contributor code of conduct
+- `docs/research/` directory for architecture and adoption research
+
+### Changed
+
+- Go version bumped to 1.26.3 (was 1.26.2)
+- `Event.ModTime` JSON tag changed from `omitempty` to `omitzero` for correct zero-time handling
+- `Event` `LogValue` now includes `size` and `modTime` fields
+- Refactored `copyWatchList()` helper, eliminating 3× lock+copy duplication in path management
+- Refactored `ErrorCategory.String()` to inline string constants, removing redundant `categoryStr` variables
+- Streamlined nolint directives and extracted magic strings to named constants across the codebase
+- Project documentation and configuration files reorganized
+
+### Fixed
+
+- `WatchOnce()` double `%w` formatting caused silent error dropping
+- `MiddlewareErrorSanitization` now preserves error chains via `%w` instead of discarding them
+- `categorizeError()` was missing several sentinel errors in its classification mapping
+- `OpString` receiver variable shadowed the `os` package import
+- `Event.ModTime` JSON serialization now correctly distinguishes zero values
+- CI: aligned `golangci-lint-action` to v7
+- CI: added `go vet` and `go fmt` checks to the lint workflow
+
+### Deprecated
+
+- `WithWatchedIgnoreDirs()` — superseded by `WithIgnoreDirs()`. Will be removed in v3.0.0.
+
 ## [2.0.0] - 2026-05-23
 
 ### Added
@@ -27,46 +79,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **BREAKING**: Relicensed from Proprietary to MIT
 - **BREAKING**: Module path changed to `github.com/larsartmann/go-filewatcher/v2`
-- Replaced hand-rolled `Op.MarshalJSON` with `json.Marshal` for robustness
-- Modernized `errors.As` to Go 1.26 `AsType` pattern
-- `testing_helpers.go` renamed to `testing_helpers_test.go` (no longer ships to consumers)
-- `flake.nix` Go version aligned to 1.26 (was 1.24)
-- `FilterExcludePaths` no longer calls `filepath.Abs` per event
-- `WithBuffer(0)` now allowed with documented caveat
-
-### Fixed
-
-- `Add()` no longer double-appends to `WatchList()` in recursive mode
-- `MiddlewareBatch` timer-triggered flush errors now logged via `slog.Error` instead of silently dropped
-- `handleNewDirectory` now propagates `addPath` errors to the error handler
-- `MiddlewareSlidingWindowRateLimit` uses in-place slice compaction instead of per-event allocation
-
-### Removed
-
-- 306 lines of test-only code from production binary
-
-## [Unreleased]
-
-### Added
-
-- `DefaultIgnoreDirsCopy()` function for safe access without mutation risk
-- Debounce option validation: panics on negative durations
-- `Errors() <-chan error` method for channel-based error consumption
-- `IsWatching()` and `IsClosed()` state inspection methods
-- `WithLazyIsDir()` option to skip `os.Stat` calls for performance
-- `WithOnAdd()` callback option for path tracking
-- `WithOnError()` simplified error callback option
-- `FilterMaxSize()`, `FilterMinAge()`, `FilterModifiedSince()` filters
-- `MiddlewareDeduplicate()`, `MiddlewareBatch()`, `MiddlewareSlidingWindowRateLimit()`
-- `FilterGeneratedCode()`, `FilterGeneratedCodeFull()` via gogenfilter integration
-- Compile-time phantom types for `EventPath`, `RootPath`, `DebounceKey`, `OpString`
-- `Event.GetPath()` returning phantom-typed `EventPath`
-- `slog.LogValuer` on `Event` for structured logging
-- 15 new tests covering rename events, multi-directory init, concurrent ops, state transitions
-
-### Changed
-
-- Relicensed from Proprietary to MIT
 - Replaced hand-rolled `Op.MarshalJSON` with `json.Marshal` for robustness
 - Modernized `errors.As` to Go 1.26 `AsType` pattern
 - `testing_helpers.go` renamed to `testing_helpers_test.go` (no longer ships to consumers)

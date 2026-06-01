@@ -1,6 +1,6 @@
 # go-filewatcher
 
-[![Go Version](https://img.shields.io/badge/go-1.26.2+-blue.svg)](https://golang.org/dl/)
+[![Go Version](https://img.shields.io/badge/go-1.26.3+-blue.svg)](https://golang.org/dl/)
 [![Go Reference](https://pkg.go.dev/badge/github.com/larsartmann/go-filewatcher/v2.svg)](https://pkg.go.dev/github.com/larsartmann/go-filewatcher/v2)
 [![CI](https://github.com/larsartmann/go-filewatcher/actions/workflows/ci.yml/badge.svg)](https://github.com/larsartmann/go-filewatcher/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -47,7 +47,7 @@ A high-performance, composable file system watcher for Go, built on [fsnotify](h
 go get github.com/larsartmann/go-filewatcher/v2
 ```
 
-Requires Go 1.26.2 or later.
+Requires Go 1.26.3 or later.
 
 ### Development with Nix
 

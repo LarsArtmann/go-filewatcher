@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adoption Analysis: go-error-family in go-filewatcher</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --fg: #c9d1d9;
+    --muted: #8b949e;
+    --border: #30363d;
+    --pro: #3fb950;
+    --pro-bg: #2386361a;
+    --contra: #f85149;
+    --contra-bg: #da36331a;
+    --neutral: #d29922;
+    --neutral-bg: #bb80091a;
+    --header: #f0f6fc;
+    --code-bg: #161b22;
+    --link: #58a6ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.6;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+  h1, h2, h3 { color: var(--header); margin-top: 2rem; }
+  h1 { border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+  .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.95rem;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: var(--code-bg); color: var(--header); }
+  tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+  code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    background: var(--code-bg);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  pre code { display: block; padding: 1rem; overflow-x: auto; }
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .pro { background: var(--pro-bg); color: var(--pro); }
+  .contra { background: var(--contra-bg); color: var(--contra); }
+  .neutral { background: var(--neutral-bg); color: var(--neutral); }
+  .section { margin-bottom: 2.5rem; }
+  .verdict {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    background: var(--code-bg);
+  }
+  .verdict h3 { margin-top: 0; }
+  ul { padding-left: 1.3rem; }
+  li { margin-bottom: 0.4rem; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<h1>Adoption Analysis: <code>go-error-family</code> in <code>go-filewatcher</code></h1>
+<div class="meta">
+  Research Date: 2026-06-01 &middot; Module: <code>github.com/larsartmann/go-filewatcher/v2</code> &middot;
+  Candidate: <code>github.com/larsartmann/go-error-family</code>
+</div>
+
+<div class="section">
+<h2>1. Executive Summary</h2>
+<p>
+This report evaluates whether <code>go-filewatcher</code> should adopt <code>go-error-family</code> as its
+structured error system. The current system is home-grown (<code>WatcherError</code>, <code>ErrorCategory</code>,
+10 sentinel errors). The candidate is a standalone library with five behavioral families,
+exit codes, diagnostics, and a template-driven CLI boundary.
+</p>
+<p>
+<strong>Verdict: Do not adopt at this time.</strong> The migration cost exceeds the value
+delivered for a library whose errors are almost entirely internal. A lighter integration path
+(diagnostics only, or a future v3) is preferred.
+</p>
+</div>
+
+<div class="section">
+<h2>2. Side-by-Side Capability Comparison</h2>
+<table>
+<thead>
+<tr><th>Capability</th><th>Current (go-filewatcher)</th><th>Candidate (go-error-family)</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td>Error struct</td>
+  <td><code>WatcherError</code> — Op, Path, Err, Category, Stack</td>
+  <td><code>Error</code> — code, message, family, context map, cause, timestamp</td>
+</tr>
+<tr>
+  <td>Categories</td>
+  <td>3: <code>Transient</code>, <code>Permanent</code>, <code>Unknown</code></td>
+  <td>5: <code>Rejection</code>, <code>Conflict</code>, <code>Transient</code>, <code>Corruption</code>, <code>Infrastructure</code></td>
+</tr>
+<tr>
+  <td>Machine-readable ID</td>
+  <td><code>ErrorCode</code> string (SNAKE_CASE constants)</td>
+  <td><code>code</code> string (dot-notation, e.g. <code>db.timeout</code>)</td>
+</tr>
+<tr>
+  <td>Sentinel errors</td>
+  <td>10 stdlib <code>errors.New</code> sentinels</td>
+  <td>Zero sentinels; classify via <code>RegisterClassification</code></td>
+</tr>
+<tr>
+  <td>Retryable detection</td>
+  <td><code>IsTransientError(err)</code> / <code>IsPermanentError(err)</code></td>
+  <td><code>Classify(err).IsRetryable()</code> or <code>IsRetryable(err)</code></td>
+</tr>
+<tr>
+  <td>Stack traces</td>
+  <td>Auto-captured via <code>debug.Stack()</code> in <code>NewWatcherError</code></td>
+  <td>None built-in</td>
+</tr>
+<tr>
+  <td>Exit codes</td>
+  <td>None</td>
+  <td>BSD sysexits.h per family (e.g. Transient=75)</td>
+</tr>
+<tr>
+  <td>CLI boundary</td>
+  <td>Manual: <code>fmt.Fprintf(os.Stderr, ...)</code></td>
+  <td><code>HandleError(err)</code> — classify, format, stderr, return exit code</td>
+</tr>
+<tr>
+  <td>User-facing messages</td>
+  <td>None (ad-hoc in handler)</td>
+  <td>Template system: What/Why/Fix/WayOut with <code>{{.key}}</code> substitution</td>
+</tr>
+<tr>
+  <td>Diagnostics</td>
+  <td>None</td>
+  <td>Pluggable rules (Filesystem, Network, Git, Postgres) with confidence scoring</td>
+</tr>
+<tr>
+  <td>Multi-error</td>
+  <td>None</td>
+  <td><code>Compose(err1, err2)</code> — <code>errors.Join</code> wrapper</td>
+</tr>
+<tr>
+  <td>Third-party classification</td>
+  <td>None</td>
+  <td><code>RegisterClassification(sql.ErrConnDone, Transient)</code></td>
+</tr>
+<tr>
+  <td>Audience / Tone</td>
+  <td>None</td>
+  <td>Per-family: Audience (User/Ops/All) + Tone (instructional, urgent, etc.)</td>
+</tr>
+<tr>
+  <td>Context</td>
+  <td><code>ErrorContext</code> struct (Operation, Path, Event*, Retryable bool)</td>
+  <td><code>map[string]string</code> only (string values enforced)</td>
+</tr>
+<tr>
+  <td>Error handler callback</td>
+  <td><code>ErrorHandler func(ctx ErrorContext, err error)</code></td>
+  <td>No direct equivalent; CLI uses <code>HandleError</code></td>
+</tr>
+<tr>
+  <td><code>errors.AsType</code> support</td>
+  <td>Yes: <code>errors.AsType[*WatcherError]</code></td>
+  <td>Yes: <code>Coded</code>, <code>Classified</code>, <code>Contextual</code>, <code>Retryable</code> interfaces embed <code>error</code></td>
+</tr>
+<tr>
+  <td>External deps</td>
+  <td>Zero (stdlib only)</td>
+  <td>Zero (stdlib only)</td>
+</tr>
+<tr>
+  <td>Test coverage</td>
+  <td>Good (unit tests for errors)</td>
+  <td>Excellent (root 95.9%, fuzz tests, benchmarks)</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="section">
+<h2>3. PRO <span class="badge pro">Advantages</span></h2>
+<ul>
+  <li><strong>Richer semantic taxonomy.</strong> Five families vs. three categories gives callers
+  finer-grained recovery logic. A <code>Conflict</code> (version mismatch) deserves different handling
+  than a <code>Rejection</code> (bad input).</li>
+
+  <li><strong>Built-in exit codes.</strong> go-filewatcher is a <em>library</em>, but its consumers are
+  often CLI tools. Returning a family-derived exit code (e.g. 75 for Transient) is valuable
+  for shell scripts and CI pipelines.</li>
+
+  <li><strong>Template-driven user messages.</strong> The <code>MessageTemplate</code> system (What/Why/Fix/WayOut)
+  produces production-ready CLI output without each consumer reinventing formatting.</li>
+
+  <li><strong>Diagnostic rules.</strong> The <code>diagnose</code> package can automatically detect common
+  root causes (missing files, unreachable hosts, Git issues, Postgres down). This is
+  especially useful for a file watcher where “path not found” often means a symlink is broken
+  or a network mount dropped.</li>
+
+  <li><strong>Third-party error registration.</strong> <code>RegisterClassification</code> lets consumers teach
+  the system about <code>fsnotify</code> or OS errors without forking the library.</li>
+
+  <li><strong>Composition primitive.</strong> <code>Compose()</code> provides a standardized way to surface
+  multiple watch-path failures without custom aggregation logic.</li>
+
+  <li><strong>Ecosystem alignment.</strong> Adopting a shared error vocabulary across
+  LarsArtmann projects reduces cognitive load for engineers working across repos.</li>
+
+  <li><strong>Better <code>nil</code> handling.</strong> <code>Classify(nil)</code> returns <code>Rejection</code>
+  (caller’s fault) rather than <code>Unknown</code>, making nil-check bugs explicit.</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>4. CONTRA <span class="badge contra">Blockers & Costs</span></h2>
+<ul>
+  <li><strong>Massive breaking change.</strong> <code>WatcherError</code>, <code>ErrorCategory</code>,
+  <code>ErrorCode</code>, all 10 sentinel errors, <code>ErrorContext</code>, and <code>ErrorHandler</code>
+  are declared <strong>Stable</strong> in <code>API_STABILITY.md</code>. A major version bump
+  (<code>v3</code>) would be required.</li>
+
+  <li><strong>Loss of typed fields.</strong> go-filewatcher’s <code>WatcherError</code> has first-class
+  <code>Op</code> (<code>OpString</code>) and <code>Path</code> fields. go-error-family flattens everything
+  into <code>map[string]string</code>. Callers lose compile-time field access and must use string keys.</li>
+
+  <li><strong>Loss of stack traces.</strong> go-error-family has no built-in stack capture.
+  go-filewatcher currently auto-captures <code>debug.Stack()</code> on every <code>NewWatcherError</code>.
+  This would need to be reimplemented as a wrapper or extension.</li>
+
+  <li><strong>Handler pattern mismatch.</strong> go-filewatcher’s async error pipeline
+  (channel + <code>ErrorHandler</code> callback with <code>ErrorContext</code>) does not map to
+  go-error-family’s synchronous <code>HandleError(err)</code> CLI boundary. Rewiring the
+  <code>Watcher.handleError</code> dispatcher is non-trivial.</li>
+
+  <li><strong>Context type restriction.</strong> go-error-family enforces <code>map[string]string</code>
+  values only. go-filewatcher’s <code>ErrorContext</code> carries an <code>*Event</code> pointer and
+  a <code>bool</code>. These would need serialization or a parallel side-channel.</li>
+
+  <li><strong>Naming convention churn.</strong> Error codes migrate from <code>SNAKE_CASE</code>
+  (<code>PATH_NOT_FOUND</code>) to dot-notation (<code>file.not_found</code>). Every consumer
+  doing programmatic matching breaks.</li>
+
+  <li><strong>False precision in families.</strong> Most go-filewatcher errors are simple:
+  path missing, watcher closed, fsnotify failed. The five-family model is overkill for
+  a domain where “permanent vs. transient” is usually sufficient.</li>
+
+  <li><strong>Diagnostics are heavy for a library.</strong> The <code>diagnose</code> subsystem shells
+  out to commands (<code>pg_isready</code>, <code>git status</code>, DNS lookups). For a library
+  that runs inside long-lived daemons, unexpected subprocess spawning is a liability.</li>
+
+  <li><strong>New dependency.</strong> Despite being same-org, adding a module dependency
+  increases supply-chain surface and vendor-hash maintenance in <code>flake.nix</code>.</li>
+
+  <li><strong>Test rewrite burden.</strong> <code>errors_test.go</code> (500+ lines),
+  <code>watcher_test.go</code>, <code>watcher_coverage_test.go</code>, and helper files all
+  reference <code>WatcherError</code> and <code>ErrorCategory</code> directly.</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>5. Neutral Considerations <span class="badge neutral">Context</span></h2>
+<ul>
+  <li>Both libraries target Go 1.26+ and use <code>errors.AsType[T]()</code>.</li>
+  <li>Both are zero-dependency (stdlib only) — dependency weight is not a differentiator.</li>
+  <li>Both support <code>errors.Is</code> / <code>errors.As</code> chaining.</li>
+  <li>go-error-family’s <code>Classify</code> fail-open default (<code>Transient</code>) matches
+  go-filewatcher’s current <code>CategoryUnknown</code> behavior in spirit.</li>
+  <li>go-filewatcher’s pre-existing TODOs suggest making stack capture <em>opt-in</em>;
+  this reduces the “loss of stacks” concern because the current behavior is already flagged
+  as expensive and undesirable.</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>6. Migration Path Assessment</h2>
+<table>
+<thead>
+<tr><th>Approach</th><th>Effort</th><th>Risk</th><th>Recommendation</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Full replacement (v3)</strong></td>
+  <td>High (2–3 days)</td>
+  <td>High — breaks every consumer</td>
+  <td class="contra">Reject</td>
+</tr>
+<tr>
+  <td><strong>Adapter layer</strong><br><small>Wrap go-error-family inside <code>WatcherError</code></small></td>
+  <td>Medium (1 day)</td>
+  <td>Medium — adds indirection, still breaks <code>ErrorCategory</code></td>
+  <td class="contra">Reject</td>
+</tr>
+<tr>
+  <td><strong>Import diagnostics only</strong><br><small>Use <code>diagnose.RunAuto</code> in <code>handleError</code></small></td>
+  <td>Low (2–4 hours)</td>
+  <td>Low — additive only</td>
+  <td class="neutral">Consider for v2.x</td>
+</tr>
+<tr>
+  <td><strong>Status quo</strong><br><small>Keep current system; monitor go-error-family</small></td>
+  <td>None</td>
+  <td>None</td>
+  <td class="pro">Accept for now</td>
+</tr>
+<tr>
+  <td><strong>Future v3 alignment</strong><br><small>Design v3 API around go-error-family primitives</small></td>
+  <td>Future</td>
+  <td>Low — clean-slate design</td>
+  <td class="pro">Accept as roadmap item</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="section">
+<h2>7. Concrete Use-Case Test</h2>
+<p>How would go-filewatcher’s most common error paths look under each system?</p>
+
+<h3>Current: <code>watcher.go</code> constructor failure</h3>
+<pre><code>if len(paths) == 0 {
+    return nil, fmt.Errorf("%w: at least one path must be provided", ErrNoPaths)
+}
+// Consumer checks: errors.Is(err, ErrNoPaths)
+</code></pre>
+
+<h3>With go-error-family</h3>
+<pre><code>if len(paths) == 0 {
+    return nil, errorfamily.NewRejection(
+        "watcher.no_paths",
+        "at least one path must be provided",
+    )
+}
+// Consumer checks: errorfamily.Classify(err) == errorfamily.Rejection
+</code></pre>
+
+<p>The go-error-family version is more verbose for simple cases and loses the direct
+<code>errors.Is</code> sentinel match that Go engineers expect.</p>
+
+<h3>Current: <code>handleError</code> dispatch</h3>
+<pre><code>func (w *Watcher) handleError(ctx ErrorContext, err error) {
+    w.errorsEncountered.Add(1)
+    select {
+    case w.errorsCh <- err:
+    default:
+    }
+    if w.errorHandler != nil {
+        w.errorHandler(ctx, err)
+        return
+    }
+    fmt.Fprintf(os.Stderr, "filewatcher: %s: %v\n", ctx.Operation, err)
+}
+</code></pre>
+
+<h3>With go-error-family</h3>
+<pre><code>// No direct equivalent. HandleError writes to a given io.Writer and returns
+// an exit code. It does not support async channel dispatch or typed callbacks.
+// A custom bridge would be required, negating the "drop-in" value.
+</code></pre>
+</div>
+
+<div class="section">
+<h2>8. Decision Matrix</h2>
+<table>
+<thead>
+<tr><th>Criterion</th><th>Weight</th><th>Current</th><th>go-error-family</th></tr>
+</thead>
+<tbody>
+<tr><td>API stability preservation</td><td>High</td><td class="pro">Perfect</td><td class="contra">Breaks v2</td></tr>
+<tr><td>Semantic expressiveness</td><td>Medium</td><td class="neutral">Adequate</td><td class="pro">Excellent</td></tr>
+<tr><td>Consumer ease-of-use</td><td>High</td><td class="pro">Simple</td><td class="contra">Verbose</td></tr>
+<tr><td>Internal error volume</td><td>Low</td><td class="pro">Low</td><td class="pro">Low</td></tr>
+<tr><td>Diagnostics value</td><td>Medium</td><td class="contra">None</td><td class="pro">High</td></tr>
+<tr><td>Migration cost</td><td>High</td><td class="pro">Zero</td><td class="contra">High</td></tr>
+<tr><td>Ecosystem consistency</td><td>Medium</td><td class="contra">Isolated</td><td class="pro">Aligned</td></tr>
+<tr><td>Performance overhead</td><td>Medium</td><td class="pro">Minimal</td><td class="neutral">Small (maps, classification walk)</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="section verdict">
+<h3>Final Verdict</h3>
+<p><strong>Do not adopt <code>go-error-family</code> in go-filewatcher v2.</strong></p>
+<p>
+The benefits (richer taxonomy, diagnostics, exit codes) are real but are primarily
+valued by <em>CLI applications</em>, not by a file-watching <em>library</em> whose errors
+are consumed programmatically via channels and callbacks. The adoption would force
+a v3 major version, rewrite hundreds of lines of stable tests, and discard typed
+fields (<code>Op</code>, <code>Path</code>) that are domain-specific to file watching.
+</p>
+<p>
+<strong>Recommended path:</strong>
+</p>
+<ol>
+  <li>Maintain the current error system for v2.</li>
+  <li>If a v3 is ever planned, design it around go-error-family primitives from day one.</li>
+  <li>Optionally, import <code>go-error-family/diagnose</code> as an <em>optional</em>
+  diagnostic helper in <code>handleError</code> (behind a build tag or option) without
+  replacing the core error types.</li>
+</ol>
+</div>
+
+<div class="section">
+<h2>9. Appendix: Files Requiring Change (if adopted)</h2>
+<table>
+<thead>
+<tr><th>File</th><th>Impact</th><th>Lines Affected (approx.)</th></tr>
+</thead>
+<tbody>
+<tr><td><code>errors.go</code></td><td>Complete rewrite</td><td>~318</td></tr>
+<tr><td><code>errors_test.go</code></td><td>Complete rewrite</td><td>~520</td></tr>
+<tr><td><code>watcher_internal.go</code></td><td>Refactor <code>handleError</code> signature</td><td>~40</td></tr>
+<tr><td><code>watcher.go</code></td><td>Update constructor errors</td><td>~20</td></tr>
+<tr><td><code>options.go</code></td><td>Update <code>ErrorHandler</code> signature</td><td>~10</td></tr>
+<tr><td><code>watcher_test.go</code></td><td>Update error assertions</td><td>~30</td></tr>
+<tr><td><code>watcher_coverage_test.go</code></td><td>Update error assertions</td><td>~20</td></tr>
+<tr><td><code>testing_helpers_test.go</code></td><td>Rewrite helpers</td><td>~30</td></tr>
+<tr><td><code>API_STABILITY.md</code></td><td>Document breaking changes</td><td>~15</td></tr>
+<tr><td><code>AGENTS.md</code></td><td>Update error conventions</td><td>~5</td></tr>
+<tr><td><code>go.mod</code></td><td>Add dependency</td><td>~2</td></tr>
+<tr><td><code>flake.nix</code></td><td>Update <code>vendorHash</code></td><td>~2</td></tr>
+</tbody>
+</table>
+<p><strong>Total estimated lines to change: ~1,012</strong> across 12 files.</p>
+</div>
+
+<footer style="margin-top:3rem; border-top:1px solid var(--border); padding-top:1rem; color:var(--muted); font-size:0.85rem;">
+Generated for go-filewatcher adoption research. Review against current <code>master</code> before acting.
+</footer>
+
+</body>
+</html>

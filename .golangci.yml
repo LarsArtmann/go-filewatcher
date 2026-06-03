@@ -138,6 +138,7 @@ linters:
             - github.com/LarsArtmann/gogenfilter
             - github.com/fsnotify/fsnotify
             - github.com/larsartmann/go-filewatcher
+            - github.com/sabhiram/go-gitignore
             - golang.org/x/time
           files:
             - "!examples/"

@@ -18,6 +18,7 @@ type gitignoreCache struct {
 
 func newGitignoreCache() *gitignoreCache {
 	return &gitignoreCache{
+		mu:       sync.RWMutex{},
 		matchers: make(map[string]*gitignore.GitIgnore),
 	}
 }
@@ -26,25 +27,27 @@ func newGitignoreCache() *gitignoreCache {
 // Returns the compiled matcher, or nil if no .gitignore exists or loading fails.
 func (c *gitignoreCache) load(dir string) *gitignore.GitIgnore {
 	c.mu.RLock()
-	if gi, ok := c.matchers[dir]; ok {
+
+	if ignoreMatcher, ok := c.matchers[dir]; ok {
 		c.mu.RUnlock()
 
-		return gi
+		return ignoreMatcher
 	}
 
 	c.mu.RUnlock()
 
 	gitignorePath := filepath.Join(dir, ".gitignore")
-	gi, compileErr := gitignore.CompileIgnoreFile(gitignorePath)
+
+	ignoreMatcher, compileErr := gitignore.CompileIgnoreFile(gitignorePath)
 	if compileErr != nil {
 		return nil
 	}
 
 	c.mu.Lock()
-	c.matchers[dir] = gi
+	c.matchers[dir] = ignoreMatcher
 	c.mu.Unlock()
 
-	return gi
+	return ignoreMatcher
 }
 
 // loadGitignoreForDir loads the .gitignore from the given directory if it exists.
@@ -70,7 +73,7 @@ func (w *Watcher) shouldSkipByGitignore(path string) bool {
 
 	sep := string(filepath.Separator)
 
-	for gitignoreDir, gi := range w.gitignoreCache.matchers {
+	for gitignoreDir, ignoreMatcher := range w.gitignoreCache.matchers {
 		// Only check matchers from ancestor directories
 		prefix := gitignoreDir + sep
 		if !strings.HasPrefix(path, prefix) && path != gitignoreDir {
@@ -82,7 +85,7 @@ func (w *Watcher) shouldSkipByGitignore(path string) bool {
 			continue
 		}
 
-		if gi.MatchesPath(relPath) {
+		if ignoreMatcher.MatchesPath(relPath) {
 			return true
 		}
 	}

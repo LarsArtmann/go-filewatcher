@@ -232,7 +232,7 @@ func (w *Watcher) handleNewDirectory(path string) {
 
 	addErr := w.addPath(NewRootPath(path))
 	if addErr != nil {
-		w.handleError(ErrorContext{Operation: "add-path", Path: path, Retryable: true}, addErr)
+		w.handleError(ErrorContext{Operation: opAddPath, Path: path, Event: nil, Retryable: true}, addErr)
 	}
 }
 

@@ -3,6 +3,7 @@ package filewatcher
 import (
 	"fmt"
 	"log/slog"
+	"path/filepath"
 	"time"
 )
 
@@ -222,5 +223,44 @@ func WithWatchedIgnoreDirs(dirs ...string) Option {
 func WithFollowSymlinks(follow bool) Option {
 	return func(w *Watcher) {
 		w.followSymlinks = follow
+	}
+}
+
+// WithExcludePaths excludes specific absolute paths (and their subtrees) from
+// being watched during directory walking. This is a walk-time exclusion — directories
+// matching these paths are never added to inotify. Paths are normalized to absolute paths.
+// Use this to exclude entire subtrees like "/home/user/projects/forks" without
+// affecting directories with the same name elsewhere.
+func WithExcludePaths(paths ...string) Option {
+	return func(w *Watcher) { //nolint:varnamelen // w is idiomatic for functional options
+		for _, p := range paths {
+			abs, err := filepath.Abs(p)
+			if err == nil {
+				w.excludePaths[abs] = struct{}{}
+			} else {
+				w.excludePaths[p] = struct{}{}
+			}
+		}
+	}
+}
+
+// WithGitignore enables or disables .gitignore-aware walk filtering.
+// When enabled (default: true), the watcher reads .gitignore files during
+// directory traversal and skips directories matching gitignore patterns.
+// This significantly reduces the number of inotify watches needed for
+// directories with large build artifacts, generated code, etc.
+func WithGitignore(enabled bool) Option {
+	return func(w *Watcher) {
+		w.gitignoreEnabled = enabled
+	}
+}
+
+// WithMaxWatches sets the maximum number of inotify watches the watcher
+// will attempt to create. When this limit is reached, additional directories
+// are skipped with a warning. If set to 0 (default), the limit is auto-detected
+// from /proc/sys/fs/inotify/max_user_watches on Linux, or unlimited on other platforms.
+func WithMaxWatches(n int) Option {
+	return func(w *Watcher) {
+		w.maxWatches = n
 	}
 }

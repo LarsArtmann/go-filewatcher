@@ -62,34 +62,34 @@ type Watcher struct {
 	fswatcher *fsnotify.Watcher
 
 	// Configuration
-	paths           []string
-	filters         []Filter
-	middleware      []Middleware
-	recursive       bool
-	globalDebounce  time.Duration
-	perPathDebounce time.Duration
-	skipDotDirs     bool
-	bufferSize      int
-	onAdd           func(path string) // callback when a path is added
-	ignoreDirNames  []string          // user-configured dir names to skip during walk
-	excludePaths    map[string]struct{} // absolute paths to exclude during walk
-	errorHandler    ErrorHandler      // callback for errors during event processing
-	lazyIsDir       bool              // skip os.Stat calls in convertEvent for performance
-	pollInterval    time.Duration     // polling interval for NFS/FUSE filesystems (0 = disabled)
-	polling         bool              // polling mode enabled (supplements fsnotify with periodic scans)
-	debug           bool              // enable verbose debug logging
-	debugLogger     *slog.Logger      // logger for debug output
-	followSymlinks  bool              // follow symbolic links during directory walking
-	gitignoreEnabled bool             // enable .gitignore-aware walk filtering
-	gitignoreCache  *gitignoreCache   // cache of compiled gitignore matchers
-	done            chan struct{}     // closed by Close() to signal shutdown to in-flight goroutines
+	paths            []string
+	filters          []Filter
+	middleware       []Middleware
+	recursive        bool
+	globalDebounce   time.Duration
+	perPathDebounce  time.Duration
+	skipDotDirs      bool
+	bufferSize       int
+	onAdd            func(path string)   // callback when a path is added
+	ignoreDirNames   []string            // user-configured dir names to skip during walk
+	excludePaths     map[string]struct{} // absolute paths to exclude during walk
+	errorHandler     ErrorHandler        // callback for errors during event processing
+	lazyIsDir        bool                // skip os.Stat calls in convertEvent for performance
+	pollInterval     time.Duration       // polling interval for NFS/FUSE filesystems (0 = disabled)
+	polling          bool                // polling mode enabled (supplements fsnotify with periodic scans)
+	debug            bool                // enable verbose debug logging
+	debugLogger      *slog.Logger        // logger for debug output
+	followSymlinks   bool                // follow symbolic links during directory walking
+	gitignoreEnabled bool                // enable .gitignore-aware walk filtering
+	gitignoreCache   *gitignoreCache     // cache of compiled gitignore matchers
+	done             chan struct{}       // closed by Close() to signal shutdown to in-flight goroutines
 
 	// Internal state
-	mu         sync.RWMutex
-	state      WatcherStateFlags // bit flags: closed, watching
-	watchList  []string          // tracked paths currently being watched
-	walkBatch  []string          // batch accumulator for walkDirFunc (nil when not batching)
-	wg         sync.WaitGroup    // tracks watchLoop goroutine for clean shutdown
+	mu        sync.RWMutex
+	state     WatcherStateFlags // bit flags: closed, watching
+	watchList []string          // tracked paths currently being watched
+	walkBatch []string          // batch accumulator for walkDirFunc (nil when not batching)
+	wg        sync.WaitGroup    // tracks watchLoop goroutine for clean shutdown
 
 	// Event channel - stored so Close() can close it after stopping debouncer
 	// This prevents race between debouncer callbacks and channel close
@@ -234,6 +234,7 @@ func New( //nolint:funlen // constructor with full field initialization
 		errorsEncountered: atomic.Uint64{},
 		watchErrors:       atomic.Uint64{},
 		startTime:         time.Time{},
+		maxWatches:        0,
 		lazyIsDir:         false,
 		pollInterval:      0,
 		polling:           false,
@@ -422,6 +423,8 @@ func (w *Watcher) AddRecursive(path string, maxDepth int) error {
 }
 
 // addPathWithDepth adds directories up to the specified depth.
+//
+//nolint:cyclop,funlen // depth-limited walk with multiple skip conditions
 func (w *Watcher) addPathWithDepth(root RootPath, maxDepth int, currentDepth *int) error {
 	entries, err := os.ReadDir(root.Get())
 	if err != nil {
@@ -437,8 +440,9 @@ func (w *Watcher) addPathWithDepth(root RootPath, maxDepth int, currentDepth *in
 	if addErr != nil {
 		w.watchErrors.Add(1)
 		w.handleError(ErrorContext{
-			Operation: "add-path",
+			Operation: opAddPath,
 			Path:      root.Get(),
+			Event:     nil,
 			Retryable: true,
 		}, fmt.Errorf("watching path %q: %w", root, addErr))
 
@@ -489,6 +493,9 @@ func (w *Watcher) addPathWithDepth(root RootPath, maxDepth int, currentDepth *in
 	return nil
 }
 
+// opAddPath is the operation name for adding a watch path.
+const opAddPath = "add-path"
+
 // Remove removes a path from the watcher. The watcher stops monitoring
 // this path and all its subdirectories (if recursive).
 // This method is safe for concurrent use with other methods.
@@ -511,6 +518,7 @@ func (w *Watcher) Remove(path string) error {
 
 	// Remove all subdirectory watches under this path
 	prefix := abs + string(filepath.Separator)
+
 	var remaining []string
 
 	for _, p := range w.watchList {
@@ -651,6 +659,9 @@ func (w *Watcher) Reset() error {
 	if w.gitignoreEnabled {
 		w.gitignoreCache = newGitignoreCache()
 	}
+
+	// Re-detect max watches from system
+	w.maxWatches = detectMaxWatches()
 
 	return nil
 }

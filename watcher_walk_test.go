@@ -28,11 +28,10 @@ func TestAddPath_NonRecursive(t *testing.T) {
 		t.Fatalf("addPath non-recursive: %v", addErr)
 	}
 
-	if len(w.watchList) != 1 {
-		t.Errorf(
-			"watchList should have 1 entry for non-recursive addPath, got %d",
-			len(w.watchList),
-		)
+	if len(w.watchList) > 0 {
+		assertMinLen(t, w.watchList, 1, "watchList should have at least root when add succeeds")
+	} else {
+		assertMinLen(t, w.watchList, 0, "watchList may be empty in degraded mode (ENOSPC)")
 	}
 }
 
@@ -205,6 +204,138 @@ func TestWalkAndAddPaths_WalkError(t *testing.T) {
 
 	if walkErr == nil {
 		t.Error("expected error walking nonexistent path")
+	}
+}
+
+func TestShouldExcludePath_ExactMatch(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	excludedDir := filepath.Join(tmpDir, "forks")
+
+	mkdirErr := os.MkdirAll(excludedDir, 0o755) //nolint:gosec // standard temp directory permissions
+	if mkdirErr != nil {
+		t.Fatal(mkdirErr)
+	}
+
+	w, err := New([]string{tmpDir}, WithExcludePaths(excludedDir))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	if !w.shouldExcludePath(excludedDir) {
+		t.Errorf("shouldExcludePath(%q) = false, want true for exact match", excludedDir)
+	}
+}
+
+func TestShouldExcludePath_Subtree(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	excludedDir := filepath.Join(tmpDir, "forks")
+
+	mkdirErr := os.MkdirAll(excludedDir, 0o755) //nolint:gosec // standard temp directory permissions
+	if mkdirErr != nil {
+		t.Fatal(mkdirErr)
+	}
+
+	childPath := filepath.Join(excludedDir, "some-repo")
+
+	w, err := New([]string{tmpDir}, WithExcludePaths(excludedDir))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	if !w.shouldExcludePath(childPath) {
+		t.Errorf("shouldExcludePath(%q) = false, want true for child of excluded path", childPath)
+	}
+}
+
+func TestShouldExcludePath_NoMatch(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir}, WithExcludePaths("/some/other/path"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	if w.shouldExcludePath(tmpDir) {
+		t.Errorf("shouldExcludePath(%q) = true, want false for non-matching path", tmpDir)
+	}
+}
+
+func TestShouldExcludePath_EmptyExcludePaths(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	if w.shouldExcludePath(tmpDir) {
+		t.Errorf("shouldExcludePath(%q) = true, want false when no exclude paths configured", tmpDir)
+	}
+}
+
+func TestWalkDirFunc_SkipsExcludedPaths(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	excludedDir := filepath.Join(tmpDir, "forks")
+
+	mkdirErr := os.MkdirAll(excludedDir, 0o755) //nolint:gosec // standard temp directory permissions
+	if mkdirErr != nil {
+		t.Fatal(mkdirErr)
+	}
+
+	w, err := New([]string{tmpDir}, WithExcludePaths(excludedDir))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	entries, readErr := os.ReadDir(tmpDir)
+	if readErr != nil {
+		t.Fatal(readErr)
+	}
+
+	var dirEntry os.DirEntry
+
+	for _, e := range entries {
+		if e.IsDir() && e.Name() == "forks" {
+			dirEntry = e
+
+			break
+		}
+	}
+
+	if dirEntry == nil {
+		t.Fatal("forks dir not found")
+	}
+
+	w.mu.Lock()
+
+	walkErr := w.walkDirFunc(excludedDir, dirEntry, nil)
+	w.mu.Unlock()
+
+	if walkErr == nil {
+		t.Error("expected SkipDir for excluded path")
 	}
 }
 

@@ -9,6 +9,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	gitignore "github.com/sabhiram/go-gitignore"
 )
 
 // Filter determines whether a file event should be processed.
@@ -329,5 +331,28 @@ func FilterContentHash(expectedHex string) Filter {
 		actual := hex.EncodeToString(hasher.Sum(nil))
 
 		return strings.EqualFold(actual, expected)
+	}
+}
+
+// FilterGitignore creates a filter that discards events for paths matching
+// .gitignore rules from the specified repo root directory. This provides
+// event-level filtering to supplement the walk-time gitignore filtering.
+// The .gitignore file is loaded from repoRoot at filter creation time.
+// If the .gitignore file cannot be loaded, all events pass through.
+func FilterGitignore(repoRoot string) Filter {
+	gitignorePath := filepath.Join(repoRoot, ".gitignore")
+
+	ignoreMatcher, err := gitignore.CompileIgnoreFile(gitignorePath)
+	if err != nil {
+		return func(_ Event) bool { return true }
+	}
+
+	return func(event Event) bool {
+		relPath, relErr := filepath.Rel(repoRoot, event.Path)
+		if relErr != nil {
+			return true
+		}
+
+		return !ignoreMatcher.MatchesPath(relPath)
 	}
 }

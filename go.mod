@@ -5,6 +5,7 @@ go 1.26.3
 require (
 	github.com/LarsArtmann/gogenfilter/v3 v3.0.3-0.20260527072437-63f00cf54986
 	github.com/fsnotify/fsnotify v1.10.1
+	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06
 	golang.org/x/time v0.15.0
 )
 

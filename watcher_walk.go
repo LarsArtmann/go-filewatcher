@@ -35,8 +35,9 @@ func (w *Watcher) addPath(root RootPath) error {
 		if err != nil {
 			w.watchErrors.Add(1)
 			w.handleError(ErrorContext{
-				Operation: "add-path",
+				Operation: opAddPath,
 				Path:      root.Get(),
+				Event:     nil,
 				Retryable: true,
 			}, fmt.Errorf("adding watch path %q: %w", root, err))
 
@@ -87,7 +88,7 @@ func (w *Watcher) walkAndAddPaths(root RootPath) error {
 // When walkBatch is set, it collects paths into the batch for batched registration.
 // When walkBatch is nil, it adds paths immediately (used by tests).
 //
-//nolint:cyclop // walk logic with multiple skip conditions
+//nolint:cyclop,funlen // walk logic with multiple skip conditions
 func (w *Watcher) walkDirFunc(path string, d os.DirEntry, walkErr error) error {
 	if walkErr != nil {
 		isDir := d != nil && d.IsDir()
@@ -148,8 +149,9 @@ func (w *Watcher) walkDirFunc(path string, d os.DirEntry, walkErr error) error {
 	if addErr != nil {
 		w.watchErrors.Add(1)
 		w.handleError(ErrorContext{
-			Operation: "add-path",
+			Operation: opAddPath,
 			Path:      path,
+			Event:     nil,
 			Retryable: true,
 		}, fmt.Errorf("watching path %q: %w", path, addErr))
 
@@ -221,12 +223,14 @@ func (w *Watcher) addBatch(paths []string) {
 			continue
 		}
 
-		if addErr := w.fswatcher.Add(p); addErr != nil {
+		addErr := w.fswatcher.Add(p)
+		if addErr != nil {
 			w.watchErrors.Add(1)
 			w.handleError(ErrorContext{
-				Operation: "add-path",
-				Path:       p,
-				Retryable:  true,
+				Operation: opAddPath,
+				Path:      p,
+				Event:     nil,
+				Retryable: true,
 			}, fmt.Errorf("watching path %q: %w", p, addErr))
 
 			continue

@@ -112,13 +112,7 @@ func rateLimiterMiddleware(limiter *rate.Limiter) Middleware {
 // using a token bucket algorithm. It allows maxEvents events per second
 // with burst=maxEvents. Events exceeding the limit are dropped.
 func MiddlewareRateLimit(maxEvents int) Middleware {
-	if maxEvents <= 0 {
-		maxEvents = 100
-	}
-
-	limiter := rate.NewLimiter(rate.Limit(maxEvents), maxEvents)
-
-	return rateLimiterMiddleware(limiter)
+	return MiddlewareThrottle(maxEvents, maxEvents)
 }
 
 // MiddlewareSlidingWindowRateLimit returns a middleware that limits events

@@ -7,6 +7,22 @@ import (
 	"testing"
 )
 
+// findDirEntry scans entries for a directory with the given name.
+// Fails the test if no matching directory is found.
+func findDirEntry(t *testing.T, entries []os.DirEntry, name string) os.DirEntry {
+	t.Helper()
+
+	for _, e := range entries {
+		if e.IsDir() && e.Name() == name {
+			return e
+		}
+	}
+
+	t.Fatalf("%s dir not found", name)
+
+	return nil
+}
+
 func TestAddPath_NonRecursive(t *testing.T) {
 	t.Parallel()
 
@@ -161,19 +177,7 @@ func TestWalkDirFunc_SkipsIgnoredDirs(t *testing.T) {
 		t.Fatal(readErr)
 	}
 
-	var dirEntry os.DirEntry
-
-	for _, e := range entries {
-		if e.IsDir() && e.Name() == "node_modules" {
-			dirEntry = e
-
-			break
-		}
-	}
-
-	if dirEntry == nil {
-		t.Fatal("node_modules dir not found")
-	}
+	dirEntry := findDirEntry(t, entries, "node_modules")
 
 	w.mu.Lock()
 
@@ -315,19 +319,7 @@ func TestWalkDirFunc_SkipsExcludedPaths(t *testing.T) {
 		t.Fatal(readErr)
 	}
 
-	var dirEntry os.DirEntry
-
-	for _, e := range entries {
-		if e.IsDir() && e.Name() == "forks" {
-			dirEntry = e
-
-			break
-		}
-	}
-
-	if dirEntry == nil {
-		t.Fatal("forks dir not found")
-	}
+	dirEntry := findDirEntry(t, entries, "forks")
 
 	w.mu.Lock()
 

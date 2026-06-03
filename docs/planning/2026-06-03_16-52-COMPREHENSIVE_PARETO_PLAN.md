@@ -54,7 +54,7 @@ Items that enable production deployment and observability. Total: ~110min.
 | T3.6  | Localizable error messages (i18n key + default text)    | LOW    | 10min  | LOW            | errors.go                 |
 | T3.7  | Dead letter queue for failed events (callback sink)     | MED    | 10min  | MED            | middleware.go, options.go |
 | T3.8  | Error analytics hooks (counter + sampling)              | LOW    | 8min   | LOW            | errors.go, options.go     |
-| T3.9  | Create standalone CLI tool (cmd/filewatcher/main.go)    | MED    | 12min  | HIGH (UX)      | cmd/filewatcher/          |
+| T3.9  | ~~Create standalone CLI tool~~ — CANCELLED: this is a library | ~~MED~~ | ~~12min~~ | ~~HIGH~~ | — |
 | T3.10 | Watcher.AddRecursive(path) for partial recursion        | LOW    | 8min   | MED            | watcher.go                |
 | T3.11 | Update TODO_LIST.md (mark T3 done)                      | LOW    | 5min   | Internal       | TODO_LIST.md              |
 

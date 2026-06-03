@@ -13,9 +13,7 @@ func TestSelfHeal_DisabledByDefault(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if watcher.selfHealInterval != 0 {
-		t.Errorf("selfHealInterval = %v, want 0 (disabled)", watcher.selfHealInterval)
-	}
+	assertEqual(t, "selfHealInterval", watcher.selfHealInterval, time.Duration(0))
 
 	_ = watcher.Close()
 }
@@ -49,9 +47,7 @@ func TestSelfHeal_ZeroIntervalIgnored(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if watcher.selfHealInterval != 0 {
-		t.Errorf("selfHealInterval = %v, want 0 (zero is ignored)", watcher.selfHealInterval)
-	}
+	assertEqual(t, "selfHealInterval (zero ignored)", watcher.selfHealInterval, time.Duration(0))
 
 	_ = watcher.Close()
 }
@@ -77,9 +73,7 @@ func TestSelfHeal_TracksFailedPaths(t *testing.T) {
 	// Remove one
 	watcher.removeFailedPathLocked("/nonexistent/path")
 
-	if got := watcher.failedPathCount(); got != 1 {
-		t.Errorf("failedPathCount = %d, want 1", got)
-	}
+	assertEqual(t, "failedPathCount (after remove)", watcher.failedPathCount(), 1)
 }
 
 func TestSelfHeal_NoOpWhenEmpty(t *testing.T) {
@@ -95,7 +89,5 @@ func TestSelfHeal_NoOpWhenEmpty(t *testing.T) {
 	// attemptSelfHeal should be a no-op when no paths have failed
 	watcher.attemptSelfHeal()
 
-	if got := watcher.failedPathCount(); got != 0 {
-		t.Errorf("failedPathCount = %d, want 0", got)
-	}
+	assertEqual(t, "failedPathCount (no-op)", watcher.failedPathCount(), 0)
 }

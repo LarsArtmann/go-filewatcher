@@ -35,45 +35,33 @@ func TestPrometheusCollector_CountersAndGauges(t *testing.T) {
 	}
 
 	counters := collector.Counters()
-	if len(counters) != 4 {
-		t.Errorf("expected 4 counters, got %d", len(counters))
-	}
+	assertLen(t, "counters", len(counters), 4)
 
 	// Verify a specific counter value
 	for _, counter := range counters {
-		if counter.Name == "filewatcher_events_processed_total" && counter.Value != 100 {
-			t.Errorf("events_processed_total = %d, want 100", counter.Value)
+		if counter.Name == "filewatcher_events_processed_total" {
+			assertEqual(t, "events_processed_total", counter.Value, uint64(100))
 		}
 
-		if counter.Name == "filewatcher_errors_encountered_total" && counter.Value != 2 {
-			t.Errorf("errors_encountered_total = %d, want 2", counter.Value)
+		if counter.Name == "filewatcher_errors_encountered_total" {
+			assertEqual(t, "errors_encountered_total", counter.Value, uint64(2))
 		}
 	}
 
 	gauges := collector.Gauges()
-	if len(gauges) != 6 {
-		t.Errorf("expected 6 gauges, got %d", len(gauges))
-	}
+	assertLen(t, "gauges", len(gauges), 6)
 
 	// Verify gauge values
 	for _, g := range gauges {
 		switch g.Name {
 		case "filewatcher_watch_count":
-			if g.Value != 42 {
-				t.Errorf("watch_count = %v, want 42", g.Value)
-			}
+			assertEqual(t, "watch_count", g.Value, 42.0)
 		case "filewatcher_is_watching":
-			if g.Value != 1 {
-				t.Errorf("is_watching = %v, want 1", g.Value)
-			}
+			assertEqual(t, "is_watching", g.Value, 1.0)
 		case "filewatcher_is_closed":
-			if g.Value != 0 {
-				t.Errorf("is_closed = %v, want 0", g.Value)
-			}
+			assertEqual(t, "is_closed", g.Value, 0.0)
 		case "filewatcher_uptime_seconds":
-			if g.Value != 5 {
-				t.Errorf("uptime_seconds = %v, want 5", g.Value)
-			}
+			assertEqual(t, "uptime_seconds", g.Value, 5.0)
 		}
 	}
 
@@ -90,9 +78,7 @@ func TestPrometheusCollector_NilStatsFunc(t *testing.T) {
 	collector := NewPrometheusCollector(nil)
 
 	counters := collector.Counters()
-	if len(counters) != 4 {
-		t.Errorf("expected 4 counters even with nil stats, got %d", len(counters))
-	}
+	assertLen(t, "counters (nil stats)", len(counters), 4)
 
 	for _, c := range counters {
 		if c.Value != 0 {

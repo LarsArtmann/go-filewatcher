@@ -36,6 +36,24 @@ func (s *testSpan) SetAttributes(attrs ...Attribute) {
 	}
 }
 
+// assertSpanStatus fails the test if span.status != want.
+func assertSpanStatus(t *testing.T, span *testSpan, want string) {
+	t.Helper()
+
+	if span.status != want {
+		t.Errorf("expected status=%s, got %q", want, span.status)
+	}
+}
+
+// assertSpanAttr fails the test if span.attrs[key] != want.
+func assertSpanAttr(t *testing.T, span *testSpan, key, want string) {
+	t.Helper()
+
+	if got := span.attrs[key]; got != want {
+		t.Errorf("expected %s=%q, got %q", key, want, got)
+	}
+}
+
 func TestOTelMiddleware_NilStartFunc(t *testing.T) {
 	t.Parallel()
 
@@ -64,9 +82,7 @@ func TestOTelMiddleware_Success(t *testing.T) {
 
 	span := &testSpan{}
 
-	middleware := OTelMiddleware(func(_, _ string) OTelSpan {
-		return span
-	})
+	middleware := OTelMiddleware(fixedOTelStart(span))
 
 	handler := middleware(noopHandler())
 
@@ -79,17 +95,10 @@ func TestOTelMiddleware_Success(t *testing.T) {
 		t.Error("expected span to be ended")
 	}
 
-	if span.status != "ok" {
-		t.Errorf("expected status=ok, got %q", span.status)
-	}
+	assertSpanStatus(t, span, "ok")
 
-	if span.attrs["filewatcher.path"] != "/tmp/file.go" {
-		t.Errorf("expected path attribute, got %q", span.attrs["filewatcher.path"])
-	}
-
-	if span.attrs["filewatcher.op"] != "WRITE" {
-		t.Errorf("expected op attribute, got %q", span.attrs["filewatcher.op"])
-	}
+	assertSpanAttr(t, span, "filewatcher.path", "/tmp/file.go")
+	assertSpanAttr(t, span, "filewatcher.op", "WRITE")
 }
 
 func TestOTelMiddleware_Error(t *testing.T) {
@@ -97,22 +106,16 @@ func TestOTelMiddleware_Error(t *testing.T) {
 
 	span := &testSpan{}
 
-	middleware := OTelMiddleware(func(_, _ string) OTelSpan {
-		return span
-	})
+	middleware := OTelMiddleware(fixedOTelStart(span))
 
-	handler := middleware(func(_ context.Context, _ Event) error {
-		return errTest
-	})
+	handler := middleware(errReturningHandler())
 
 	err := handler(context.Background(), testWriteEvent("/test"))
 	if err == nil {
 		t.Fatal("expected error")
 	}
 
-	if span.status != "error" {
-		t.Errorf("expected status=error, got %q", span.status)
-	}
+	assertSpanStatus(t, span, "error")
 
 	if span.attrs["filewatcher.error"] == "" {
 		t.Error("expected filewatcher.error attribute")
@@ -123,17 +126,11 @@ func TestOTelMiddleware_NilSpan(t *testing.T) {
 	t.Parallel()
 
 	// startSpan returns nil; middleware should pass through
-	otelMw := OTelMiddleware(func(_, _ string) OTelSpan {
-		return nil
-	})
+	otelMw := OTelMiddleware(fixedOTelStart(nil))
 
 	called := false
 
-	handler := otelMw(func(_ context.Context, _ Event) error {
-		called = true
-
-		return nil
-	})
+	handler := otelMw(calledFlagHandler(&called))
 
 	err := handler(context.Background(), testWriteEvent("/test"))
 	if err != nil {
@@ -150,15 +147,11 @@ func TestOTelMiddleware_PropagatesError(t *testing.T) {
 
 	span := &testSpan{}
 
-	otelMW := OTelMiddleware(func(_, _ string) OTelSpan {
-		return span
-	})
+	otelMW := OTelMiddleware(fixedOTelStart(span))
 
 	customErr := errors.New("custom error") //nolint:err113
 
-	handler := otelMW(func(_ context.Context, _ Event) error {
-		return customErr
-	})
+	handler := otelMW(handlerReturning(customErr))
 
 	err := handler(context.Background(), testWriteEvent("/test"))
 	if !errors.Is(err, customErr) {

@@ -221,6 +221,15 @@ const defaultBatchWindow = 100 * time.Millisecond
 // defaultBatchSize is the default maximum number of events in a batch.
 const defaultBatchSize = 100
 
+// stopAndClearTimer stops the timer if it exists and resets it to nil.
+// Centralizes the timer cleanup pattern used by batching middlewares.
+func stopAndClearTimer(t **time.Timer) {
+	if *t != nil {
+		(*t).Stop()
+		*t = nil
+	}
+}
+
 // MiddlewareBatch returns a middleware that batches events over a window
 // and emits them all at once. The flush function is called with all batched
 // events when the window expires or the batch reaches max size.
@@ -262,10 +271,7 @@ func MiddlewareBatch(window time.Duration, maxSize int, flush func([]Event) erro
 				events := state.events
 				state.events = make([]Event, 0, maxSize)
 
-				if state.timer != nil {
-					state.timer.Stop()
-					state.timer = nil
-				}
+				stopAndClearTimer(&state.timer)
 
 				state.mu.Unlock()
 
@@ -653,10 +659,7 @@ func MiddlewareErrorBatch(window time.Duration, maxSize int, flush func([]BatchE
 				batch := state.errors
 				state.errors = make([]BatchError, 0, maxSize)
 
-				if state.timer != nil {
-					state.timer.Stop()
-					state.timer = nil
-				}
+				stopAndClearTimer(&state.timer)
 
 				state.mu.Unlock()
 

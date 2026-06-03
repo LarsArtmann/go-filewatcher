@@ -440,39 +440,13 @@ func (w *Watcher) AddRecursive(path string, maxDepth int) error {
 }
 
 // addPathWithDepth adds directories up to the specified depth.
-//
-//nolint:cyclop,funlen // depth-limited walk with multiple skip conditions
 func (w *Watcher) addPathWithDepth(root RootPath, maxDepth int, currentDepth *int) error {
 	entries, err := os.ReadDir(root.Get())
 	if err != nil {
 		return fmt.Errorf("reading directory %q: %w", root, err)
 	}
 
-	// Budget check before adding
-	if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
-		return nil
-	}
-
-	addErr := w.fswatcher.Add(root.Get())
-	if addErr != nil {
-		w.watchErrors.Add(1)
-		w.failedPaths[root.Get()] = struct{}{}
-		w.handleError(ErrorContext{
-			Operation: opAddPath,
-			Path:      root.Get(),
-			Event:     nil,
-			Retryable: true,
-		}, fmt.Errorf("watching path %q: %w", root, addErr))
-
-		return nil
-	}
-
-	delete(w.failedPaths, root.Get())
-	w.watchList = append(w.watchList, root.Get())
-
-	if w.onAdd != nil {
-		w.onAdd(root.Get())
-	}
+	w.tryAddPath(root.Get())
 
 	if *currentDepth >= maxDepth {
 		return nil

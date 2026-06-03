@@ -112,9 +112,7 @@ func TestConvertEvent_WithoutHash(t *testing.T) {
 		t.Fatal("expected non-nil event")
 	}
 
-	if result.Hash != "" {
-		t.Errorf("Hash = %q, want empty when computeHash=false", result.Hash)
-	}
+	assertEmpty(t, "Hash", result.Hash)
 }
 
 func TestConvertEvent_HashForDirectory(t *testing.T) {
@@ -129,7 +127,5 @@ func TestConvertEvent_HashForDirectory(t *testing.T) {
 		t.Fatal("expected non-nil event")
 	}
 
-	if result.Hash != "" {
-		t.Errorf("Hash for directory = %q, want empty", result.Hash)
-	}
+	assertEmpty(t, "Hash for directory", result.Hash)
 }

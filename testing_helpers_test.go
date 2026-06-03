@@ -81,8 +81,43 @@ func assertGlobalPending(t *testing.T, d *GlobalDebouncer, want int) {
 	assertPendingFunc(t, d, want)
 }
 
+// noopHandler returns a Handler that does nothing and returns nil.
 func noopHandler() Handler {
 	return func(_ context.Context, _ Event) error {
+		return nil
+	}
+}
+
+// fixedOTelStart returns an OTel start-span function that always yields span.
+// Centralizes the "return a specific span" pattern used in OTel tests.
+func fixedOTelStart(span OTelSpan) func(string, string) OTelSpan {
+	return func(_, _ string) OTelSpan {
+		return span
+	}
+}
+
+// errReturningHandler returns a Handler that always returns errTest.
+// Centralizes the "always errors" test handler used across middleware tests.
+func errReturningHandler() Handler {
+	return func(_ context.Context, _ Event) error {
+		return errTest
+	}
+}
+
+// handlerReturning wraps an error in a Handler. Useful when a test needs
+// a custom error different from errTest.
+func handlerReturning(err error) Handler {
+	return func(_ context.Context, _ Event) error {
+		return err
+	}
+}
+
+// calledFlagHandler returns a Handler that sets *called to true and returns nil.
+// Centralizes the "flag-on-call" test handler pattern.
+func calledFlagHandler(called *bool) Handler {
+	return func(_ context.Context, _ Event) error {
+		*called = true
+
 		return nil
 	}
 }
@@ -125,11 +160,72 @@ func testError(err error, category ErrorCategory) *WatcherError {
 	}
 }
 
+// assertLogContains fails the test if substr is not found in content.
 func assertLogContains(t *testing.T, content string, substr LogSubstring) {
 	t.Helper()
 
 	if !strings.Contains(content, substr.Get()) {
 		t.Errorf("expected log to contain %q, got %q", substr, content)
+	}
+}
+
+// assertEqual fails the test if got != want. Centralizes the
+// "if got != want { t.Errorf(name = %v, want %v, got, want) }" pattern.
+func assertEqual(t *testing.T, name string, got, want any) {
+	t.Helper()
+
+	if got != want {
+		t.Errorf("%s = %v, want %v", name, got, want)
+	}
+}
+
+// assertErrContains fails the test if err's message does not contain substr.
+func assertErrContains(t *testing.T, err error, substr string) {
+	t.Helper()
+
+	if !strings.Contains(err.Error(), substr) {
+		t.Errorf("expected error to contain %q, got: %v", substr, err)
+	}
+}
+
+// assertEmpty fails the test if got is not the empty string.
+func assertEmpty(t *testing.T, name, got string) {
+	t.Helper()
+
+	if got != "" {
+		t.Errorf("%s = %q, want empty", name, got)
+	}
+}
+
+// assertContains fails the test if haystack does not contain needle.
+func assertContains(t *testing.T, haystack, needle, desc string) {
+	t.Helper()
+
+	if !strings.Contains(haystack, needle) {
+		t.Errorf("expected %s to contain %q, got: %s", desc, needle, haystack)
+	}
+}
+
+// assertErrOnCalls invokes handler n times and asserts each call returns an error.
+// desc is included in the failure message: "call %d: desc".
+func assertErrOnCalls(t *testing.T, handler Handler, n int, desc string) {
+	t.Helper()
+
+	for i := range n {
+		err := handler(context.Background(), testWriteEvent("/test"))
+		if err == nil {
+			t.Errorf("call %d: %s", i+1, desc)
+		}
+	}
+}
+
+// assertLen fails the test if got != want. Centralizes the
+// "if len(X) != Y { t.Errorf("X = %d, want Y", ...) }" pattern.
+func assertLen(t *testing.T, name string, got, want int) {
+	t.Helper()
+
+	if got != want {
+		t.Errorf("expected %s count to be %d, got %d", name, want, got)
 	}
 }
 

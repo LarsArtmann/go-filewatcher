@@ -16,6 +16,19 @@ import (
 	"time"
 )
 
+// newPollingWatcher creates a Watcher configured with polling enabled at
+// 200ms intervals. Fails the test if construction fails.
+func newPollingWatcher(t *testing.T, dir string) *Watcher {
+	t.Helper()
+
+	w, err := New([]string{dir}, WithPolling(true), WithPollInterval(200*time.Millisecond))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return w
+}
+
 func TestNew_NoPaths(t *testing.T) {
 	t.Parallel()
 
@@ -1223,13 +1236,8 @@ func TestWatcher_Watch_WithDebug(t *testing.T) {
 
 	logOutput := logBuf.String()
 
-	if !strings.Contains(logOutput, "watch started") {
-		t.Errorf("expected debug log to contain 'watch started', got: %s", logOutput)
-	}
-
-	if !strings.Contains(logOutput, "event received") {
-		t.Errorf("expected debug log to contain 'event received', got: %s", logOutput)
-	}
+	assertContains(t, logOutput, "watch started", "debug log")
+	assertContains(t, logOutput, "event received", "debug log")
 }
 
 func TestWatcher_Watch_WithPolling(t *testing.T) {
@@ -1237,10 +1245,7 @@ func TestWatcher_Watch_WithPolling(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithPolling(true), WithPollInterval(200*time.Millisecond))
-	if err != nil {
-		t.Fatal(err)
-	}
+	w := newPollingWatcher(t, tmpDir)
 
 	defer func() { _ = w.Close() }()
 

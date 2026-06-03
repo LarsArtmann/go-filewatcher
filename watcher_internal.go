@@ -27,6 +27,12 @@ func (w *Watcher) debugLog(msg string, args ...any) {
 	}
 }
 
+// debugLogEvent logs a debug message for the given event, including the path
+// and operation as structured attributes. Centralizes the "log with path+op" pattern.
+func (w *Watcher) debugLogEvent(msg string, event Event) {
+	w.debugLog(msg, slog.String("path", event.Path), slog.String("op", event.Op.String()))
+}
+
 func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
 	defer w.wg.Done()
 	defer func() {
@@ -81,11 +87,7 @@ func (w *Watcher) processEvent(ctx context.Context, fsEvent fsnotify.Event, even
 		return
 	}
 
-	w.debugLog(
-		"event received",
-		slog.String("path", event.Path),
-		slog.String("op", event.Op.String()),
-	)
+	w.debugLogEvent("event received", *event)
 
 	if !w.passesFilters(*event) {
 		w.eventsFilteredOut.Add(1)
@@ -121,11 +123,7 @@ func (w *Watcher) emitEvent(ctx context.Context, event Event, eventCh chan<- Eve
 	}
 
 	if w.debounceInterface == nil {
-		w.debugLog(
-			"emitting event directly",
-			slog.String("path", event.Path),
-			slog.String("op", event.Op.String()),
-		)
+		w.debugLogEvent("emitting event directly", event)
 		execute()
 
 		return

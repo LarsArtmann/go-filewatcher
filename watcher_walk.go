@@ -26,34 +26,51 @@ func (w *Watcher) initDebouncer() {
 // It also appends the root path to the watchList.
 func (w *Watcher) addPath(root RootPath) error {
 	if !w.recursive {
-		// Budget check before adding
-		if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
-			return nil
-		}
-
-		err := w.fswatcher.Add(root.Get())
-		if err != nil {
-			w.watchErrors.Add(1)
-			w.handleError(ErrorContext{
-				Operation: opAddPath,
-				Path:      root.Get(),
-				Event:     nil,
-				Retryable: true,
-			}, fmt.Errorf("adding watch path %q: %w", root, err))
-
-			return nil
-		}
-
-		w.watchList = append(w.watchList, root.Get())
-
-		if w.onAdd != nil {
-			w.onAdd(root.Get())
-		}
+		w.tryAddPath(root.Get())
 
 		return nil
 	}
 
 	return w.walkAndAddPaths(root)
+}
+
+// tryAddPath attempts to add a single path to the fsnotify watcher.
+// Centralizes the budget check, error handling, watchList update, failedPaths
+// tracking, and onAdd callback so callers can simply invoke it and move on.
+// Skips silently when the inotify budget is exhausted; otherwise handles
+// fswatcher.Add failures via handleError and failedPaths (for self-heal).
+func (w *Watcher) tryAddPath(path string) {
+	if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
+		w.debugLog(
+			"watch budget exhausted, skipping path",
+			slog.String("path", path),
+			slog.Int("max_watches", w.maxWatches),
+			slog.Int("current_watches", len(w.watchList)),
+		)
+
+		return
+	}
+
+	addErr := w.fswatcher.Add(path)
+	if addErr != nil {
+		w.watchErrors.Add(1)
+		w.failedPaths[path] = struct{}{}
+		w.handleError(ErrorContext{
+			Operation: opAddPath,
+			Path:      path,
+			Event:     nil,
+			Retryable: true,
+		}, fmt.Errorf("watching path %q: %w", path, addErr))
+
+		return
+	}
+
+	delete(w.failedPaths, path)
+	w.watchList = append(w.watchList, path)
+
+	if w.onAdd != nil {
+		w.onAdd(path)
+	}
 }
 
 // walkAndAddPaths walks a directory tree and adds all directories to the watcher.
@@ -88,7 +105,7 @@ func (w *Watcher) walkAndAddPaths(root RootPath) error {
 // When walkBatch is set, it collects paths into the batch for batched registration.
 // When walkBatch is nil, it adds paths immediately (used by tests).
 //
-//nolint:cyclop,funlen // walk logic with multiple skip conditions
+//nolint:cyclop // walk logic with multiple skip conditions
 func (w *Watcher) walkDirFunc(path string, d os.DirEntry, walkErr error) error {
 	if walkErr != nil {
 		isDir := d != nil && d.IsDir()
@@ -145,24 +162,7 @@ func (w *Watcher) walkDirFunc(path string, d os.DirEntry, walkErr error) error {
 	}
 
 	// Direct mode: add immediately (used by tests and depth-limited walking)
-	addErr := w.fswatcher.Add(path)
-	if addErr != nil {
-		w.watchErrors.Add(1)
-		w.handleError(ErrorContext{
-			Operation: opAddPath,
-			Path:      path,
-			Event:     nil,
-			Retryable: true,
-		}, fmt.Errorf("watching path %q: %w", path, addErr))
-
-		return nil
-	}
-
-	w.watchList = append(w.watchList, path)
-
-	if w.onAdd != nil {
-		w.onAdd(path)
-	}
+	w.tryAddPath(path)
 
 	return nil
 }
@@ -213,35 +213,7 @@ const watchBatchSize = 1000
 // Respects the maxWatches budget — stops adding when budget is exhausted.
 func (w *Watcher) addBatch(paths []string) {
 	for _, p := range paths {
-		if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
-			w.debugLog(
-				"watch budget exhausted, skipping path",
-				slog.String("path", p),
-				slog.Int("max_watches", w.maxWatches),
-				slog.Int("current_watches", len(w.watchList)),
-			)
-
-			continue
-		}
-
-		addErr := w.fswatcher.Add(p)
-		if addErr != nil {
-			w.watchErrors.Add(1)
-			w.handleError(ErrorContext{
-				Operation: opAddPath,
-				Path:      p,
-				Event:     nil,
-				Retryable: true,
-			}, fmt.Errorf("watching path %q: %w", p, addErr))
-
-			continue
-		}
-
-		w.watchList = append(w.watchList, p)
-
-		if w.onAdd != nil {
-			w.onAdd(p)
-		}
+		w.tryAddPath(p)
 	}
 
 	runtime.Gosched()

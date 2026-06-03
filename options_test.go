@@ -123,9 +123,7 @@ func TestWithPollInterval(t *testing.T) {
 
 	defer func() { _ = watcher.Close() }()
 
-	if watcher.pollInterval != 5*time.Second {
-		t.Errorf("expected pollInterval 5s, got %v", watcher.pollInterval)
-	}
+	assertEqual(t, "pollInterval", watcher.pollInterval, 5*time.Second)
 }
 
 func TestWithPolling(t *testing.T) {
@@ -144,9 +142,7 @@ func TestWithPolling(t *testing.T) {
 		t.Error("expected polling to be true")
 	}
 
-	if watcher.pollInterval != 2*time.Second {
-		t.Errorf("expected default pollInterval 2s, got %v", watcher.pollInterval)
-	}
+	assertEqual(t, "default pollInterval", watcher.pollInterval, 2*time.Second)
 }
 
 func TestWithPolling_False(t *testing.T) {

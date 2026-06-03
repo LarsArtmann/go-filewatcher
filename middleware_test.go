@@ -90,9 +90,7 @@ func TestMiddlewareRecovery(t *testing.T) {
 		t.Error("expected error from panic recovery, got nil")
 	}
 
-	if !strings.Contains(err.Error(), "panic in handler") {
-		t.Errorf("expected error to contain 'panic in handler', got: %v", err)
-	}
+	assertErrContains(t, err, "panic in handler")
 }
 
 func TestMiddlewareRecovery_NoPanic(t *testing.T) {
@@ -100,11 +98,7 @@ func TestMiddlewareRecovery_NoPanic(t *testing.T) {
 
 	var called bool
 
-	normalHandler := func(_ context.Context, _ Event) error {
-		called = true
-
-		return nil
-	}
+	normalHandler := calledFlagHandler(&called)
 
 	mw := MiddlewareRecovery()
 	testHandler := mw(normalHandler)
@@ -164,11 +158,7 @@ func TestMiddlewareOnError(t *testing.T) {
 
 	mw := MiddlewareOnError(onError)    //nolint:varnamelen // idiomatic middleware abbreviation
 	testErr := errors.New("test error") //nolint:err113 // test-specific dynamic error
-	errorHandler := func(_ context.Context, _ Event) error {
-		return testErr
-	}
-
-	testHandler := mw(errorHandler)
+	testHandler := mw(handlerReturning(testErr))
 
 	err := testHandler(context.Background(), testWriteEvent("/tmp/test.go"))
 
@@ -284,10 +274,7 @@ func TestMiddlewareMetrics_ErrorNotCounted(t *testing.T) {
 	}
 
 	mw := MiddlewareMetrics(counter)
-	errorHandler := func(_ context.Context, _ Event) error {
-		return errors.New("test error") //nolint:err113 // test-specific dynamic error
-	}
-	testHandler := mw(errorHandler)
+	testHandler := mw(handlerReturning(errors.New("test error"))) //nolint:err113 // test-specific dynamic error
 
 	_ = testHandler(context.Background(), testWriteEvent("/tmp/test.go"))
 
@@ -560,19 +547,10 @@ func TestMiddlewareCircuitBreaker_OpensAfterFailures(t *testing.T) {
 	t.Parallel()
 
 	mw := MiddlewareCircuitBreaker(3, 100*time.Millisecond)
-	errHandler := func(_ context.Context, _ Event) error {
-		return errTest
-	}
-
-	handler := mw(errHandler)
+	handler := mw(errReturningHandler())
 
 	// First 3 calls should pass through (and return errors)
-	for i := range 3 {
-		err := handler(context.Background(), testWriteEvent("/test"))
-		if err == nil {
-			t.Errorf("call %d: expected error from handler", i+1)
-		}
-	}
+	assertErrOnCalls(t, handler, 3, "expected error from handler")
 
 	// Circuit should now be open - events are dropped
 	err := handler(context.Background(), testWriteEvent("/test"))
@@ -656,12 +634,7 @@ func TestMiddlewareErrorRecovery(t *testing.T) {
 	}
 
 	mw := MiddlewareErrorRecovery(strategy)
-
-	errHandler := func(_ context.Context, _ Event) error {
-		return errTest
-	}
-
-	handler := mw(errHandler)
+	handler := mw(errReturningHandler())
 
 	err := handler(context.Background(), testWriteEvent("/test"))
 	if err != nil {
@@ -673,12 +646,7 @@ func TestMiddlewareErrorRecovery_NilStrategy(t *testing.T) {
 	t.Parallel()
 
 	mw := MiddlewareErrorRecovery(nil)
-
-	errHandler := func(_ context.Context, _ Event) error {
-		return errTest
-	}
-
-	handler := mw(errHandler)
+	handler := mw(errReturningHandler())
 
 	err := handler(context.Background(), testWriteEvent("/test"))
 	if err == nil {
@@ -694,42 +662,28 @@ func TestMiddlewareErrorCorrelation(t *testing.T) {
 	mw := MiddlewareErrorCorrelation(func() string {
 		return fmt.Sprintf("corr-%d", counter.Add(1))
 	})
-
-	errHandler := func(_ context.Context, _ Event) error {
-		return errTest
-	}
-
-	handler := mw(errHandler)
+	handler := mw(errReturningHandler())
 
 	err := handler(context.Background(), testWriteEvent("/test"))
 	if err == nil {
 		t.Fatal("expected error")
 	}
 
-	if !strings.Contains(err.Error(), "correlation-id=corr-1") {
-		t.Errorf("expected correlation ID in error, got: %v", err)
-	}
+	assertErrContains(t, err, "correlation-id=corr-1")
 }
 
 func TestMiddlewareErrorCorrelation_DefaultGenerator(t *testing.T) {
 	t.Parallel()
 
 	mw := MiddlewareErrorCorrelation(nil)
-
-	errHandler := func(_ context.Context, _ Event) error {
-		return errTest
-	}
-
-	handler := mw(errHandler)
+	handler := mw(errReturningHandler())
 
 	err := handler(context.Background(), testWriteEvent("/test"))
 	if err == nil {
 		t.Fatal("expected error")
 	}
 
-	if !strings.Contains(err.Error(), "correlation-id=") {
-		t.Errorf("expected correlation ID in error, got: %v", err)
-	}
+	assertErrContains(t, err, "correlation-id=")
 }
 
 func TestMiddlewareErrorSanitization(t *testing.T) {
@@ -742,11 +696,7 @@ func TestMiddlewareErrorSanitization(t *testing.T) {
 	mw := MiddlewareErrorSanitization(sanitize)
 
 	innerErr := errors.New("file changed at /secret/key.pem") //nolint:err113
-	errHandler := func(_ context.Context, _ Event) error {
-		return innerErr
-	}
-
-	handler := mw(errHandler)
+	handler := mw(handlerReturning(innerErr))
 
 	err := handler(context.Background(), testWriteEvent("/test"))
 	if err == nil {
@@ -782,12 +732,7 @@ func TestMiddlewareErrorBatch(t *testing.T) {
 	}
 
 	mw := MiddlewareErrorBatch(100*time.Millisecond, 3, flush)
-
-	errHandler := func(_ context.Context, _ Event) error {
-		return errTest
-	}
-
-	handler := mw(errHandler)
+	handler := mw(errReturningHandler())
 
 	// Send 3 errors to trigger max size flush
 	for i := range 3 {
@@ -833,12 +778,7 @@ func TestMiddlewareErrorSanitization_Nil(t *testing.T) {
 	t.Parallel()
 
 	mw := MiddlewareErrorSanitization(nil)
-
-	errHandler := func(_ context.Context, _ Event) error {
-		return errors.New("test error") //nolint:err113
-	}
-
-	handler := mw(errHandler)
+	handler := mw(handlerReturning(errors.New("test error"))) //nolint:err113 // test-specific dynamic error
 
 	err := handler(context.Background(), testWriteEvent("/test"))
 	if err == nil {
@@ -866,12 +806,7 @@ func TestMiddlewareExponentialBackoff_DropsAfterFailures(t *testing.T) {
 	handler := mw(errHandler)
 
 	// First 2 calls reach the inner handler (maxFailures=2)
-	for i := range 2 {
-		err := handler(context.Background(), testWriteEvent("/test"))
-		if err == nil {
-			t.Errorf("call %d: expected error to pass through", i+1)
-		}
-	}
+	assertErrOnCalls(t, handler, 2, "expected error to pass through")
 
 	// Subsequent calls should be dropped during the backoff window
 	for i := range 3 {

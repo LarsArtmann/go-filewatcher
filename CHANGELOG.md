@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- `MiddlewareExponentialBackoff()` — configurable exponential backoff for event processing with initial/max intervals
+- `WithContentHashing()` option — SHA-256 content hash in `Event.Hash` field (opt-in, capped at 10 MiB)
+- `WithSelfHeal(interval)` option — self-healing watcher that auto-retries failed watch paths
+- `FilterWithMeta` type, `MatchResult` struct, `FilterFromWithMeta()`, `FilterWithMetaAnd/Or/Not()`, `WithMeta()` wrapper — filter functions that return match metadata
+- `PrometheusCollector` — zero-dependency Prometheus collector with `StatsFunc`, `CounterMetric`, `GaugeMetric` interfaces
+- `OTelMiddleware` — zero-dependency OpenTelemetry tracing middleware with `OTelSpan` interface
+- `Event.Hash` field for content hash metadata
+- 7 new godoc examples: `ExampleWatcher_Add`, `ExampleWatcher_Errors`, `ExampleWithErrorHandler`, `ExampleWithDebug`, `ExampleFilterMinSize`, `ExampleOp`, `ExampleOp_MarshalJSON`
+- CI: `examples-build` job and benchmark artifact upload for regression detection
+
 ## [2.1.0] - 2026-06-01
 
 ### Added

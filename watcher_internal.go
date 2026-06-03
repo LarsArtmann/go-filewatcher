@@ -3,10 +3,7 @@ package filewatcher
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
-	"io"
 	"log/slog"
 	"os"
 	"slices"
@@ -353,26 +350,5 @@ func convertEvent(fsEvent fsnotify.Event, lazyIsDir, computeHash bool) *Event {
 // Returns empty string on any error (file missing, permission denied, etc.).
 // Hashing is bounded by maxHashFileSize to avoid reading huge files.
 func hashFileContents(path string) string {
-	const maxHashFileSize = 10 * 1024 * 1024 // 10 MiB cap
-
-	info, err := os.Stat(path)
-	if err != nil || info.IsDir() || info.Size() > maxHashFileSize {
-		return ""
-	}
-
-	f, err := os.Open(path) //nolint:gosec // path comes from fsnotify event, not user input
-	if err != nil {
-		return ""
-	}
-
-	defer func() { _ = f.Close() }()
-
-	hasher := sha256.New()
-
-	_, copyErr := io.Copy(hasher, f)
-	if copyErr != nil {
-		return ""
-	}
-
-	return hex.EncodeToString(hasher.Sum(nil))
+	return hashFile(path)
 }

@@ -404,24 +404,41 @@ func FilterContentHash(expectedHex string) Filter {
 			return true
 		}
 
-		file, err := os.Open(event.Path)
-		if err != nil {
+		actual := hashFile(event.Path)
+		if actual == "" {
 			return false
 		}
-
-		defer func() { _ = file.Close() }()
-
-		hasher := sha256.New()
-
-		_, copyErr := io.Copy(hasher, file)
-		if copyErr != nil {
-			return false
-		}
-
-		actual := hex.EncodeToString(hasher.Sum(nil))
 
 		return strings.EqualFold(actual, expected)
 	}
+}
+
+// hashFile computes the hex-encoded SHA-256 hash of the file at path.
+// Returns empty string on any error (file missing, permission denied, etc.).
+// Files larger than maxHashFileSize are skipped to avoid reading huge files.
+func hashFile(path string) string {
+	const maxHashFileSize = 10 * 1024 * 1024 // 10 MiB cap
+
+	info, err := os.Stat(path)
+	if err != nil || info.IsDir() || info.Size() > maxHashFileSize {
+		return ""
+	}
+
+	f, err := os.Open(path) //nolint:gosec // path comes from fsnotify event, not user input
+	if err != nil {
+		return ""
+	}
+
+	defer func() { _ = f.Close() }()
+
+	hasher := sha256.New()
+
+	_, copyErr := io.Copy(hasher, f)
+	if copyErr != nil {
+		return ""
+	}
+
+	return hex.EncodeToString(hasher.Sum(nil))
 }
 
 // FilterGitignore creates a filter that discards events for paths matching

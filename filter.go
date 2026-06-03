@@ -30,18 +30,37 @@ func FilterIgnoreExtensions(exts ...string) Filter {
 	return makeExtFilter(exts, false)
 }
 
-func makeExtFilter(exts []string, include bool) Filter {
-	extSet := make(map[string]struct{}, len(exts))
-	for _, ext := range exts {
-		extSet[strings.ToLower(ext)] = struct{}{}
+// makeSetFilter builds a Filter from a set of comparable items.
+// extract retrieves the comparison key from an Event.
+// include=true means pass events matching the set; include=false means reject them.
+func makeSetFilter[T comparable](items []T, extract func(Event) T, include bool) Filter {
+	set := make(map[T]struct{}, len(items))
+	for _, item := range items {
+		set[item] = struct{}{}
 	}
 
 	return func(event Event) bool {
-		ext := strings.ToLower(filepath.Ext(event.Path))
-		_, found := extSet[ext]
+		_, found := set[extract(event)]
 
 		return found == include
 	}
+}
+
+func makeExtFilter(exts []string, include bool) Filter {
+	normalized := make([]string, len(exts))
+	for i, ext := range exts {
+		normalized[i] = strings.ToLower(ext)
+	}
+
+	return makeSetFilter(normalized, func(event Event) string {
+		return strings.ToLower(filepath.Ext(event.Path))
+	}, include)
+}
+
+func makeOpFilter(ops []Op, include bool) Filter {
+	return makeSetFilter(ops, func(event Event) Op {
+		return event.Op
+	}, include)
 }
 
 // FilterIgnoreDirs creates a filter that discards events for files
@@ -133,19 +152,6 @@ func FilterOperations(ops ...Op) Filter {
 // any of the given operations.
 func FilterNotOperations(ops ...Op) Filter {
 	return makeOpFilter(ops, false)
-}
-
-func makeOpFilter(ops []Op, include bool) Filter {
-	opSet := make(map[Op]struct{}, len(ops))
-	for _, op := range ops {
-		opSet[op] = struct{}{}
-	}
-
-	return func(event Event) bool {
-		_, found := opSet[event.Op]
-
-		return found == include
-	}
 }
 
 // FilterGlob creates a filter that only passes events for files

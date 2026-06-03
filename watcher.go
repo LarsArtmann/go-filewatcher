@@ -442,19 +442,28 @@ func (w *Watcher) addPathWithDepth(root RootPath, maxDepth int, currentDepth *in
 		return fmt.Errorf("reading directory %q: %w", root, err)
 	}
 
+	// Budget check before adding
+	if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
+		return nil
+	}
+
 	addErr := w.fswatcher.Add(root.Get())
 	if addErr != nil {
 		w.watchErrors.Add(1)
 		w.handleError(ErrorContext{
 			Operation: "add-path",
-			Path:       root.Get(),
-			Retryable:  true,
+			Path:      root.Get(),
+			Retryable: true,
 		}, fmt.Errorf("watching path %q: %w", root, addErr))
 
 		return nil
 	}
 
 	w.watchList = append(w.watchList, root.Get())
+
+	if w.onAdd != nil {
+		w.onAdd(root.Get())
+	}
 
 	if *currentDepth >= maxDepth {
 		return nil
@@ -470,6 +479,17 @@ func (w *Watcher) addPathWithDepth(root RootPath, maxDepth int, currentDepth *in
 		}
 
 		subPath := filepath.Join(root.Get(), entry.Name())
+
+		if w.shouldExcludePath(subPath) {
+			continue
+		}
+
+		w.loadGitignoreForDir(subPath)
+
+		if w.shouldSkipByGitignore(subPath) {
+			continue
+		}
+
 		*currentDepth++
 
 		addPathErr := w.addPathWithDepth(NewRootPath(subPath), maxDepth, currentDepth)

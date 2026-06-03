@@ -24,14 +24,14 @@ func newGitignoreCache() *gitignoreCache {
 }
 
 // load loads and caches a .gitignore file from the given directory.
-// Returns the compiled matcher, or nil if no .gitignore exists or loading fails.
-func (c *gitignoreCache) load(dir string) *gitignore.GitIgnore {
+// No-op if no .gitignore exists or loading fails.
+func (c *gitignoreCache) load(dir string) {
 	c.mu.RLock()
 
-	if ignoreMatcher, ok := c.matchers[dir]; ok {
+	if _, ok := c.matchers[dir]; ok {
 		c.mu.RUnlock()
 
-		return ignoreMatcher
+		return
 	}
 
 	c.mu.RUnlock()
@@ -40,14 +40,12 @@ func (c *gitignoreCache) load(dir string) *gitignore.GitIgnore {
 
 	ignoreMatcher, compileErr := gitignore.CompileIgnoreFile(gitignorePath)
 	if compileErr != nil {
-		return nil
+		return
 	}
 
 	c.mu.Lock()
 	c.matchers[dir] = ignoreMatcher
 	c.mu.Unlock()
-
-	return ignoreMatcher
 }
 
 // loadGitignoreForDir loads the .gitignore from the given directory if it exists.

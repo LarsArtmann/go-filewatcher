@@ -478,7 +478,7 @@ func BenchmarkGitignoreCache_Load(b *testing.B) {
 	cache := newGitignoreCache()
 
 	for b.Loop() {
-		_ = cache.load(tmpDir)
+		cache.load(tmpDir)
 	}
 }
 

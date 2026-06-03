@@ -4,19 +4,48 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## [2.2.0] - 2026-06-03
 
 ### Added
 
-- `MiddlewareExponentialBackoff()` — configurable exponential backoff for event processing with initial/max intervals
+- `WithGitignore(enabled bool)` option — `.gitignore`-aware directory walking, enabled by default
+- `WithExcludePaths(paths...)` option — exclude absolute paths during walk (prefix matching, skips subdirectories)
+- `WithMaxWatches(n int)` option — override inotify watch budget; auto-detected from `/proc/sys/fs/inotify/max_user_watches` on Linux
 - `WithContentHashing()` option — SHA-256 content hash in `Event.Hash` field (opt-in, capped at 10 MiB)
-- `WithSelfHeal(interval)` option — self-healing watcher that auto-retries failed watch paths
+- `WithSelfHeal(interval)` option — self-healing watcher that auto-retries failed watch paths at configurable intervals
+- `FilterGitignore(repoRoot string)` filter — match files against `.gitignore` patterns from a repository root
 - `FilterWithMeta` type, `MatchResult` struct, `FilterFromWithMeta()`, `FilterWithMetaAnd/Or/Not()`, `WithMeta()` wrapper — filter functions that return match metadata
+- `MiddlewareExponentialBackoff()` — configurable exponential backoff for event processing with initial/max intervals
 - `PrometheusCollector` — zero-dependency Prometheus collector with `StatsFunc`, `CounterMetric`, `GaugeMetric` interfaces
 - `OTelMiddleware` — zero-dependency OpenTelemetry tracing middleware with `OTelSpan` interface
 - `Event.Hash` field for content hash metadata
+- `Watcher.Reset()` method — clears runtime state while preserving configuration (filters, middleware, debounce, options)
+- `Remove()` now cleans up all subdirectory watches under the given path to prevent watch leaks
+- `Stats.WatchErrors` — tracks how many paths failed to add during walk
+- `Stats.WatchLimit` and `Stats.WatchBudgetUsed` — track inotify budget usage
+- Batched watch registration — directories collected during walk and added in batches of 1000 with `runtime.Gosched()` between batches
+- Graceful ENOSPC handling — `fswatcher.Add()` errors no longer abort the entire walk; errors are logged and walking continues in degraded mode
 - 7 new godoc examples: `ExampleWatcher_Add`, `ExampleWatcher_Errors`, `ExampleWithErrorHandler`, `ExampleWithDebug`, `ExampleFilterMinSize`, `ExampleOp`, `ExampleOp_MarshalJSON`
 - CI: `examples-build` job and benchmark artifact upload for regression detection
+
+### Changed
+
+- `MiddlewareRateLimit` now delegates to `MiddlewareThrottle` internally, eliminating duplicate rate-limiting logic
+- `addPath` unified into a single code path — eliminated `walkDirFunc` duplication for recursive and non-recursive walks
+- Generic `makeSetFilter[T]` replaces duplicate extension and operation filter factories
+- Shared `hashFile` function consolidates SHA-256 logic from filter and self-heal modules
+
+### Fixed
+
+- `.gitignore` matching now correctly handles ancestor-only patterns and avoids double `os.Stat` calls
+- `maxWatches` budget check applied to all direct `addPath` calls, not just walked directories
+- Gitignore, exclude paths, watch budget, and ENOSPC handling now apply to `addPathWithDepth` for nested directories
+- Duplicate root paths no longer appear in `WatchList()` after recursive walks
+
+### Dependencies
+
+- `github.com/sabhiram/go-gitignore` added for `.gitignore` pattern matching (zero transitive deps)
+- `github.com/LarsArtmann/gogenfilter` updated to v3.0.3
 
 ## [2.1.0] - 2026-06-01
 

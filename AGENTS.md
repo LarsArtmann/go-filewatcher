@@ -1,6 +1,6 @@
 # Agent Guide: go-filewatcher
 
-**Go 1.26.2** | `github.com/larsartmann/go-filewatcher/v2` | **MIT License**
+**Go 1.26.3** | `github.com/larsartmann/go-filewatcher/v2` | **MIT License**
 
 ---
 
@@ -101,8 +101,12 @@ All code in **root package** (`filewatcher`). No `internal/` or `pkg/` subdirect
 | `watcher_internal.go`  | Event processing: watchLoop, middleware, emitEvent, debugLog, handleError                   |
 | `watcher_walk.go`      | Directory walking: addPath, walkAndAddPaths, addBatch, symlink resolution, budget detection |
 | `watcher_gitignore.go` | .gitignore loading and matching: gitignoreCache, shouldSkipByGitignore                      |
-| `filter.go`            | All Filter functions                                                                        |
-| `middleware.go`        | All Middleware functions (circuit breaker, error batch, correlation, etc.)                  |
+| `watcher_selfheal.go`  | Self-healing: selfHealLoop, attemptSelfHeal, failed path tracking                           |
+| `watcher_poll.go`      | Polling mode: pollLoop for NFS/FUSE environments                                            |
+| `filter.go`            | All Filter functions + FilterWithMeta and combinators                                       |
+| `middleware.go`        | All Middleware functions (circuit breaker, error batch, correlation, exponential backoff)   |
+| `metrics.go`           | PrometheusCollector, StatsFunc, CounterMetric, GaugeMetric                                  |
+| `otel.go`              | OTelMiddleware, OTelSpan interface                                                          |
 | `debouncer.go`         | Debouncer + GlobalDebouncer                                                                 |
 | `event.go`             | Op type, Event type, JSON/Text marshaling                                                   |
 | `errors.go`            | Sentinel errors, ErrorCode, ErrorCategory, WatcherError                                     |
@@ -183,7 +187,7 @@ Don't remove the nolint — this is intentional.
 
 `MiddlewareCircuitBreaker` uses three states: `CircuitClosed` → `CircuitOpen` → `CircuitHalfOpen`. In half-open, only one event passes through to test recovery.
 
-### 11. Graceful ENOSPC Handling (v0.4.0)
+### 11. Graceful ENOSPC Handling (v2.2.0)
 
 `fswatcher.Add()` errors (including ENOSPC) no longer abort the entire walk. Instead:
 
@@ -193,14 +197,14 @@ Don't remove the nolint — this is intentional.
 - `Stats.WatchErrors` tracks how many paths failed to add
 - This allows the watcher to start in degraded mode instead of failing entirely
 
-### 12. Inotify Budget Awareness (v0.4.0)
+### 12. Inotify Budget Awareness (v2.2.0)
 
 - `maxWatches` is auto-detected from `/proc/sys/fs/inotify/max_user_watches` on Linux
 - Override with `WithMaxWatches(n)`
 - When budget is exhausted, directories are skipped silently
 - `Stats.WatchLimit` and `Stats.WatchBudgetUsed` track budget usage
 
-### 13. .gitignore-Aware Walking (v0.4.0)
+### 13. .gitignore-Aware Walking (v2.2.0)
 
 - Enabled by default (`WithGitignore(true)`)
 - Loads `.gitignore` files during directory walking
@@ -208,23 +212,23 @@ Don't remove the nolint — this is intentional.
 - Uses `github.com/sabhiram/go-gitignore` (zero transitive deps)
 - gitignore cache is stored per-directory for hierarchical matching
 
-### 14. Batched Watch Registration (v0.4.0)
+### 14. Batched Watch Registration (v2.2.0)
 
 - Directories are collected during walk and added in batches of 1000
 - `runtime.Gosched()` is called between batches to yield to event processing
 - Reduces startup latency for large directory trees
 
-### 15. Path-Level Exclusions (v0.4.0)
+### 15. Path-Level Exclusions (v2.2.0)
 
 - `WithExcludePaths(paths...)` excludes absolute paths during walk
 - Prefix matching: excluding `/home/user/forks` skips all subdirectories too
 - Walk-time only: does not affect event filtering
 
-### 16. Remove() Now Cleans Up Subdirectories (v0.4.0)
+### 16. Remove() Now Cleans Up Subdirectories (v2.2.0)
 
 `Remove(path)` now removes all subdirectory watches under the given path, not just the top-level directory. This prevents watch leaks.
 
-### 17. Reset() Method (v0.4.0)
+### 17. Reset() Method (v2.2.0)
 
 `Reset()` clears runtime state while preserving configuration (filters, middleware, debounce, options). Allows re-calling `Watch()` after `Close()` without rebuilding from scratch.
 

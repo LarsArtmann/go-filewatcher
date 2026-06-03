@@ -3,7 +3,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -34,11 +33,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Watching for .go and .md file changes (10s timeout)...")
+	log.Println("Watching for .go and .md file changes (10s timeout)...")
 
 	for event := range events {
 		demo.PrintEvent(event)
 	}
 
-	fmt.Println("Done.")
+	log.Println("Done.")
 }

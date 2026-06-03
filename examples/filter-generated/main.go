@@ -18,7 +18,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -57,8 +56,8 @@ func main() {
 		}
 	}
 
-	fmt.Println("Watching directory:", watchDir)
-	fmt.Println()
+	log.Println("Watching directory:", watchDir)
+	log.Println()
 
 	// Example 1: Filter specific generator types
 	demonstrateSpecificFilters(watchDir)
@@ -92,9 +91,9 @@ func collectEvents(ctx context.Context, events <-chan filewatcher.Event) []strin
 
 // demonstrateSpecificFilters shows filtering specific generator types.
 func demonstrateSpecificFilters(watchDir string) {
-	fmt.Println("=== Example 1: Filter Specific Generator Types ===")
-	fmt.Println("Filtering: sqlc and protobuf files only")
-	fmt.Println()
+	log.Println("=== Example 1: Filter Specific Generator Types ===")
+	log.Println("Filtering: sqlc and protobuf files only")
+	log.Println()
 
 	// Create watcher that filters sqlc and protobuf files
 	watcher, err := filewatcher.New(
@@ -130,23 +129,23 @@ func demonstrateSpecificFilters(watchDir string) {
 
 	receivedEvents := collectEvents(ctx, events)
 
-	fmt.Println("Files that triggered events:")
+	log.Println("Files that triggered events:")
 
 	for _, name := range receivedEvents {
-		fmt.Printf("  - %s\n", name)
+		log.Printf("  - %s\n", name)
 	}
 
-	fmt.Println()
-	fmt.Println("Filtered (no events):")
-	fmt.Println("  - models.go (sqlc)")
-	fmt.Println("  - user.pb.go (protobuf)")
-	fmt.Println()
+	log.Println()
+	log.Println("Filtered (no events):")
+	log.Println("  - models.go (sqlc)")
+	log.Println("  - user.pb.go (protobuf)")
+	log.Println()
 }
 
 // demonstrateAllFilters shows filtering all generator types.
 func demonstrateAllFilters(watchDir string) {
-	fmt.Println("=== Example 2: Filter All Generated Code ===")
-	fmt.Println()
+	log.Println("=== Example 2: Filter All Generated Code ===")
+	log.Println()
 
 	// Create watcher that filters ALL generated code types
 	watcher, err := filewatcher.New(
@@ -176,21 +175,21 @@ func demonstrateAllFilters(watchDir string) {
 
 	receivedEvents := collectEvents(ctx, events)
 
-	fmt.Println("Files that triggered events:")
+	log.Println("Files that triggered events:")
 
 	for _, name := range receivedEvents {
-		fmt.Printf("  - %s\n", name)
+		log.Printf("  - %s\n", name)
 	}
 
-	fmt.Println()
-	fmt.Println("All generated files are filtered!")
-	fmt.Println()
+	log.Println()
+	log.Println("All generated files are filtered!")
+	log.Println()
 }
 
 // demonstrateDetector shows using the detector directly.
 func demonstrateDetector(watchDir string) {
-	fmt.Println("=== Example 3: Direct Detector Usage ===")
-	fmt.Println()
+	log.Println("=== Example 3: Direct Detector Usage ===")
+	log.Println()
 
 	// Create a detector for specific generator types
 	detector := filewatcher.NewGeneratedCodeDetector(
@@ -208,7 +207,7 @@ func demonstrateDetector(watchDir string) {
 		filepath.Join(watchDir, "utils.go"),
 	}
 
-	fmt.Println("Checking files with detector:")
+	log.Println("Checking files with detector:")
 
 	for _, path := range testFiles {
 		isGenerated := detector.IsGenerated(path)
@@ -219,10 +218,10 @@ func demonstrateDetector(watchDir string) {
 			status = string(reason)
 		}
 
-		fmt.Printf("  - %s: %s\n", filepath.Base(path), status)
+		log.Printf("  - %s: %s\n", filepath.Base(path), status)
 	}
 
-	fmt.Println()
+	log.Println()
 }
 
 // createTestFile creates a test file with the given content.

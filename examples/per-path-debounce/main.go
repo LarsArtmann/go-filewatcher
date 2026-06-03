@@ -3,7 +3,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -35,9 +34,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Per-path debounce: each file debounced independently")
-	fmt.Println("Edit multiple files quickly - each will trigger separately after 500ms")
-	fmt.Println("Watching for .go file changes...")
+	log.Println("Per-path debounce: each file debounced independently")
+	log.Println("Edit multiple files quickly - each will trigger separately after 500ms")
+	log.Println("Watching for .go file changes...")
 
 	for event := range events {
 		demo.PrintEvent(event)

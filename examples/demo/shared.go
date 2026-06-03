@@ -3,7 +3,7 @@ package demo
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"time"
 
 	filewatcher "github.com/larsartmann/go-filewatcher/v2"
@@ -13,10 +13,10 @@ const timeFormat = "15:04:05.000"
 
 const defaultTimeout = 10 * time.Second
 
-// PrintEvent prints an event with millisecond precision.
+// PrintEvent logs an event with millisecond precision.
 func PrintEvent(event filewatcher.Event) {
 	ts := event.Timestamp.Format(timeFormat)
-	fmt.Printf("[%s] %s: %s\n", ts, event.Op.String(), event.Path)
+	log.Printf("[%s] %s: %s\n", ts, event.Op.String(), event.Path)
 }
 
 // DefaultTimeout returns the default timeout duration for examples.

@@ -18,6 +18,11 @@ import (
 
 const defaultEventBufferSize = 64 // Default capacity for the event channel buffer
 
+// buildDir is the canonical name for build-output directories.
+// Extracted to a constant to satisfy goconst (the string "build" appears in
+// examples, benchmarks, and DefaultIgnoreDirs).
+const buildDir = "build"
+
 // WatcherStateFlags holds state booleans as bit flags for memory efficiency.
 // 4 bools (4 bytes) → 1 byte with 4 bit flags.
 type WatcherStateFlags byte
@@ -34,7 +39,7 @@ const (
 var DefaultIgnoreDirs = []string{
 	".git", ".hg", ".svn",
 	"vendor", "node_modules",
-	"dist", "build", "bin", "out",
+	"dist", buildDir, "bin", "out",
 	"__pycache__", ".cache",
 }
 

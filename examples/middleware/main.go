@@ -4,7 +4,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"sync/atomic"
 	"time"
@@ -53,8 +52,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Watching with middleware: logging + metrics")
-	fmt.Println("Press Ctrl+C or wait 10s to exit")
+	log.Println("Watching with middleware: logging + metrics")
+	log.Println("Press Ctrl+C or wait 10s to exit")
 
 	counter := 0
 	for range events {
@@ -64,7 +63,7 @@ func main() {
 		}
 	}
 
-	fmt.Printf("\nFinal counts - Create: %d, Write: %d, Remove: %d\n",
+	log.Printf("\nFinal counts - Create: %d, Write: %d, Remove: %d\n",
 		createCount.Load(), writeCount.Load(), removeCount.Load())
 
 	_ = watcher.Close()

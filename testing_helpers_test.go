@@ -141,13 +141,7 @@ func assertOpCount(t *testing.T, opCounts [4]int, op Op, want int) {
 var errTest = errors.New("test")
 
 func testWatcherError(category ErrorCategory) *WatcherError {
-	return &WatcherError{
-		Op:       NewOpString("test"),
-		Path:     "test-path",
-		Err:      errTest,
-		Category: category,
-		Stack:    nil,
-	}
+	return testError(errTest, category)
 }
 
 func testError(err error, category ErrorCategory) *WatcherError {

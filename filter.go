@@ -430,16 +430,16 @@ func hashFile(path string) string {
 		return ""
 	}
 
-	f, err := os.Open(path) //nolint:gosec // path comes from fsnotify event, not user input
+	file, err := os.Open(path) //nolint:gosec // path comes from fsnotify event, not user input
 	if err != nil {
 		return ""
 	}
 
-	defer func() { _ = f.Close() }()
+	defer func() { _ = file.Close() }()
 
 	hasher := sha256.New()
 
-	_, copyErr := io.Copy(hasher, f)
+	_, copyErr := io.Copy(hasher, file)
 	if copyErr != nil {
 		return ""
 	}

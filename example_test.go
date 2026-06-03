@@ -62,22 +62,6 @@ func ExampleWatcher_Watch() {
 	// Watcher created and started
 }
 
-// ExampleWithFilter demonstrates using size-based filters.
-func ExampleWithFilter() {
-	watcher, err := filewatcher.New(
-		[]string{"."},
-		filewatcher.WithFilter(filewatcher.FilterMinSize(100)),
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer func() { _ = watcher.Close() }()
-
-	fmt.Println("Watcher with minimum size filter created")
-	// Output: Watcher with minimum size filter created
-}
-
 // ExampleWithMiddleware demonstrates using middleware.
 func ExampleWithMiddleware() {
 	watcher, err := filewatcher.New(

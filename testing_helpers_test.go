@@ -219,6 +219,19 @@ func assertErrOnCalls(t *testing.T, handler Handler, n int, desc string) {
 	}
 }
 
+// assertNilOnCalls invokes handler n times and asserts each call returns nil error.
+// desc is included in the failure message: "call %d: desc".
+func assertNilOnCalls(t *testing.T, handler Handler, n int, desc string) {
+	t.Helper()
+
+	for i := range n {
+		err := handler(context.Background(), testWriteEvent("/test"))
+		if err != nil {
+			t.Errorf("call %d: %s, got %v", i+1, desc, err)
+		}
+	}
+}
+
 // assertLen fails the test if got != want. Centralizes the
 // "if len(X) != Y { t.Errorf("X = %d, want Y", ...) }" pattern.
 func assertLen(t *testing.T, name string, got, want int) {

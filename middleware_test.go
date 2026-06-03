@@ -809,12 +809,7 @@ func TestMiddlewareExponentialBackoff_DropsAfterFailures(t *testing.T) {
 	assertErrOnCalls(t, handler, 2, "expected error to pass through")
 
 	// Subsequent calls should be dropped during the backoff window
-	for i := range 3 {
-		err := handler(context.Background(), testWriteEvent("/test"))
-		if err != nil {
-			t.Errorf("call %d: expected error to be dropped during backoff, got %v", i+3, err)
-		}
-	}
+	assertNilOnCalls(t, handler, 3, "expected error to be dropped during backoff")
 
 	// The inner handler should only have been called twice
 	if got := innerCalls.Load(); got != 2 {

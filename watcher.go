@@ -87,6 +87,7 @@ type Watcher struct {
 	followSymlinks   bool                // follow symbolic links during directory walking
 	gitignoreEnabled bool                // enable .gitignore-aware walk filtering
 	gitignoreCache   *gitignoreCache     // cache of compiled gitignore matchers
+	contentHashing   bool                // compute SHA-256 hash of file content on events
 	done             chan struct{}       // closed by Close() to signal shutdown to in-flight goroutines
 
 	// Internal state
@@ -248,6 +249,7 @@ func New( //nolint:funlen // constructor with full field initialization
 		followSymlinks:    false,
 		gitignoreEnabled:  true,
 		gitignoreCache:    newGitignoreCache(),
+		contentHashing:    false,
 		done:              make(chan struct{}),
 	}
 

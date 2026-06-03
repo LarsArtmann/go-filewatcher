@@ -147,6 +147,7 @@ func (w *Watcher) pollEmitEvent(
 		IsDir:     state.isDir,
 		Size:      state.size,
 		ModTime:   state.modTime,
+		Hash:      "",
 	}
 
 	w.debugLog("poll detected change", "op", op.String(), "path", path)

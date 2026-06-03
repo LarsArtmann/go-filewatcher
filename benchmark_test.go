@@ -116,7 +116,7 @@ func BenchmarkConvertEvent_Create(b *testing.B) {
 	fsEvent := fsnotify.Event{Name: tmpFile, Op: fsnotify.Create}
 
 	for b.Loop() {
-		_ = convertEvent(fsEvent, false)
+		_ = convertEvent(fsEvent, false, false)
 	}
 }
 
@@ -127,7 +127,7 @@ func BenchmarkConvertEvent_Write(b *testing.B) {
 	fsEvent := fsnotify.Event{Name: tmpFile, Op: fsnotify.Write}
 
 	for b.Loop() {
-		_ = convertEvent(fsEvent, false)
+		_ = convertEvent(fsEvent, false, false)
 	}
 }
 
@@ -138,7 +138,7 @@ func BenchmarkConvertEvent_Chmod(b *testing.B) {
 	fsEvent := fsnotify.Event{Name: tmpFile, Op: fsnotify.Chmod}
 
 	for b.Loop() {
-		_ = convertEvent(fsEvent, false)
+		_ = convertEvent(fsEvent, false, false)
 	}
 }
 
@@ -149,7 +149,7 @@ func BenchmarkConvertEvent_LazyIsDir(b *testing.B) {
 	fsEvent := fsnotify.Event{Name: tmpFile, Op: fsnotify.Create}
 
 	for b.Loop() {
-		_ = convertEvent(fsEvent, true) // lazyIsDir=true for performance
+		_ = convertEvent(fsEvent, true, false) // lazyIsDir=true for performance
 	}
 }
 

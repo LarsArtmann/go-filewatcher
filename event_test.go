@@ -130,8 +130,8 @@ func TestEvent_LogValue(t *testing.T) {
 	}
 
 	attrs := val.Group()
-	if len(attrs) != 6 {
-		t.Fatalf("LogValue group length = %d, want 6", len(attrs))
+	if len(attrs) != 7 {
+		t.Fatalf("LogValue group length = %d, want 7", len(attrs))
 	}
 
 	found := map[string]bool{}

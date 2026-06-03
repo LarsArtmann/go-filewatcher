@@ -111,6 +111,11 @@ type Event struct {
 	// ModTime is the file modification time, if available. Zero time.Time if
 	// the information could not be obtained.
 	ModTime time.Time `json:"modTime,omitzero"`
+	// Hash is the hex-encoded SHA-256 content hash, if available.
+	// Only populated when the watcher is created with WithContentHashing().
+	// Empty string if hashing is disabled or the file could not be read
+	// (e.g., directory, removed file, or permission denied).
+	Hash string `json:"hash,omitempty"`
 }
 
 // String returns a human-readable representation of the event.
@@ -127,6 +132,7 @@ func (e Event) LogValue() slog.Value {
 		slog.Bool("isDir", e.IsDir),
 		slog.Int64("size", e.Size),
 		slog.Time("modTime", e.ModTime),
+		slog.String("hash", e.Hash),
 	)
 }
 

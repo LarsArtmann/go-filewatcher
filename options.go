@@ -264,3 +264,18 @@ func WithMaxWatches(n int) Option {
 		w.maxWatches = n
 	}
 }
+
+// WithContentHashing enables SHA-256 content hashing of file events.
+// When enabled, Event.Hash is populated with the hex-encoded SHA-256 digest
+// of the file content for Create and Write events on regular files. Hashing
+// is skipped for directories, removed files, and files larger than 10 MiB.
+//
+// Performance: each hashed event requires reading the entire file. This adds
+// filesystem I/O proportional to file size. Use this option when content
+// verification is needed (e.g., cache invalidation, deduplication) and
+// disable it for high-throughput scenarios.
+func WithContentHashing() Option {
+	return func(w *Watcher) {
+		w.contentHashing = true
+	}
+}

@@ -685,3 +685,100 @@ func MiddlewareErrorBatch(window time.Duration, maxSize int, flush func([]BatchE
 		}
 	}
 }
+
+// defaultExponentialBackoffInitial is the starting backoff for
+// MiddlewareExponentialBackoff when the caller does not specify one.
+const defaultExponentialBackoffInitial = 100 * time.Millisecond
+
+// defaultExponentialBackoffMax is the upper bound on the backoff window.
+const defaultExponentialBackoffMax = 30 * time.Second
+
+// MiddlewareExponentialBackoff returns a middleware that drops events for an
+// exponentially increasing duration after consecutive failures. This protects
+// downstream consumers from being overwhelmed during error storms.
+//
+// Behavior:
+//   - On success: resets the failure counter and forwards the event.
+//   - On failure: increments counter; if >= maxFailures, drops subsequent events
+//     for the backoff window. The window doubles after each consecutive failure
+//     burst, capped at maxBackoff.
+//   - After the backoff window expires, the next event is forwarded as a probe.
+//     If it succeeds, the counter resets; if it fails, the cycle repeats.
+//
+// This is similar to circuit breaker semantics but without explicit state names —
+// the drop window simply grows. Use MiddlewareCircuitBreaker for strict
+// open/closed/half-open semantics.
+//
+//nolint:funlen // Exponential backoff state machine with inline mutex locking
+func MiddlewareExponentialBackoff(maxFailures int, initialBackoff, maxBackoff time.Duration) Middleware {
+	if maxFailures <= 0 {
+		maxFailures = 5
+	}
+
+	if initialBackoff <= 0 {
+		initialBackoff = defaultExponentialBackoffInitial
+	}
+
+	if maxBackoff <= 0 {
+		maxBackoff = defaultExponentialBackoffMax
+	}
+
+	type backoffState struct {
+		mu          sync.Mutex
+		failures    int
+		dropUntil   time.Time
+		currentWait time.Duration
+	}
+
+	state := &backoffState{
+		mu:          sync.Mutex{},
+		failures:    0,
+		dropUntil:   time.Time{},
+		currentWait: initialBackoff,
+	}
+
+	return func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			state.mu.Lock()
+
+			now := time.Now()
+			if !state.dropUntil.IsZero() && now.Before(state.dropUntil) {
+				state.mu.Unlock()
+
+				return nil // drop event during backoff
+			}
+
+			state.mu.Unlock()
+
+			err := next(ctx, event)
+
+			state.mu.Lock()
+			defer state.mu.Unlock()
+
+			if err == nil {
+				state.failures = 0
+				state.currentWait = initialBackoff
+				state.dropUntil = time.Time{}
+
+				return nil
+			}
+
+			state.failures++
+			if state.failures < maxFailures {
+				return err
+			}
+
+			// Failure threshold exceeded — apply exponential backoff.
+			wait := state.currentWait
+			state.dropUntil = time.Now().Add(wait)
+
+			// Double the wait for the next cycle, capped at maxBackoff.
+			state.currentWait *= 2
+			if state.currentWait > maxBackoff {
+				state.currentWait = maxBackoff
+			}
+
+			return err
+		}
+	}
+}

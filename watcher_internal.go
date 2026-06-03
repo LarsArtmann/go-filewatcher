@@ -3,7 +3,10 @@ package filewatcher
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
+	"io"
 	"log/slog"
 	"os"
 	"slices"
@@ -67,7 +70,7 @@ func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
 // processEvent converts an fsnotify event, applies filters and debounce,
 // and emits it to the channel.
 func (w *Watcher) processEvent(ctx context.Context, fsEvent fsnotify.Event, eventCh chan<- Event) {
-	event := convertEvent(fsEvent, w.lazyIsDir)
+	event := convertEvent(fsEvent, w.lazyIsDir, w.contentHashing)
 	if event == nil {
 		w.debugLog(
 			"event ignored: unrecognized fsnotify operation",
@@ -294,7 +297,10 @@ func (w *Watcher) handleError(ctx ErrorContext, err error) {
 // operations occur simultaneously.
 //
 // If lazyIsDir is true, skips the os.Stat call and always returns IsDir=false.
-func convertEvent(fsEvent fsnotify.Event, lazyIsDir bool) *Event {
+// If computeHash is true and the event is a Create or Write for a regular file,
+// reads the file and computes a SHA-256 hex hash. Hash is empty for directories,
+// removed files, permission errors, or when lazyIsDir is true.
+func convertEvent(fsEvent fsnotify.Event, lazyIsDir, computeHash bool) *Event {
 	var op Op
 
 	switch {
@@ -328,6 +334,12 @@ func convertEvent(fsEvent fsnotify.Event, lazyIsDir bool) *Event {
 		}
 	}
 
+	hash := ""
+
+	if computeHash && !isDir && (op == Create || op == Write) {
+		hash = hashFileContents(fsEvent.Name)
+	}
+
 	return &Event{
 		Path:      fsEvent.Name,
 		Op:        op,
@@ -335,5 +347,34 @@ func convertEvent(fsEvent fsnotify.Event, lazyIsDir bool) *Event {
 		IsDir:     isDir,
 		Size:      size,
 		ModTime:   modTime,
+		Hash:      hash,
 	}
+}
+
+// hashFileContents returns the hex-encoded SHA-256 hash of the file at path.
+// Returns empty string on any error (file missing, permission denied, etc.).
+// Hashing is bounded by maxHashFileSize to avoid reading huge files.
+func hashFileContents(path string) string {
+	const maxHashFileSize = 10 * 1024 * 1024 // 10 MiB cap
+
+	info, err := os.Stat(path)
+	if err != nil || info.IsDir() || info.Size() > maxHashFileSize {
+		return ""
+	}
+
+	f, err := os.Open(path) //nolint:gosec // path comes from fsnotify event, not user input
+	if err != nil {
+		return ""
+	}
+
+	defer func() { _ = f.Close() }()
+
+	hasher := sha256.New()
+
+	_, copyErr := io.Copy(hasher, f)
+	if copyErr != nil {
+		return ""
+	}
+
+	return hex.EncodeToString(hasher.Sum(nil))
 }

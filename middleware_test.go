@@ -849,3 +849,74 @@ func TestMiddlewareErrorSanitization_Nil(t *testing.T) {
 		t.Error("expected non-empty error message")
 	}
 }
+
+func TestMiddlewareExponentialBackoff_DropsAfterFailures(t *testing.T) {
+	t.Parallel()
+
+	mw := MiddlewareExponentialBackoff(2, 50*time.Millisecond, 200*time.Millisecond)
+
+	var innerCalls atomic.Int32
+
+	errHandler := func(_ context.Context, _ Event) error {
+		innerCalls.Add(1)
+
+		return errTest
+	}
+
+	handler := mw(errHandler)
+
+	// First 2 calls reach the inner handler (maxFailures=2)
+	for i := range 2 {
+		err := handler(context.Background(), testWriteEvent("/test"))
+		if err == nil {
+			t.Errorf("call %d: expected error to pass through", i+1)
+		}
+	}
+
+	// Subsequent calls should be dropped during the backoff window
+	for i := range 3 {
+		err := handler(context.Background(), testWriteEvent("/test"))
+		if err != nil {
+			t.Errorf("call %d: expected error to be dropped during backoff, got %v", i+3, err)
+		}
+	}
+
+	// The inner handler should only have been called twice
+	if got := innerCalls.Load(); got != 2 {
+		t.Errorf("inner handler called %d times, want 2", got)
+	}
+}
+
+func TestMiddlewareExponentialBackoff_RecoversAfterBackoff(t *testing.T) {
+	t.Parallel()
+
+	mw := MiddlewareExponentialBackoff(2, 30*time.Millisecond, 100*time.Millisecond)
+
+	var failNext atomic.Bool
+
+	failNext.Store(true)
+
+	handler := mw(func(_ context.Context, _ Event) error {
+		if failNext.Load() {
+			return errTest
+		}
+
+		return nil
+	})
+
+	// Trigger 2 failures to enter backoff
+	_ = handler(context.Background(), testWriteEvent("/test"))
+	_ = handler(context.Background(), testWriteEvent("/test"))
+
+	// Now succeed and verify the backoff resets
+	failNext.Store(false)
+
+	// Wait for backoff window to expire
+	time.Sleep(50 * time.Millisecond)
+
+	// Should call inner handler again with success
+	err := handler(context.Background(), testWriteEvent("/test"))
+	if err != nil {
+		t.Errorf("expected success after backoff recovery, got %v", err)
+	}
+}

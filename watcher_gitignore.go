@@ -1,0 +1,91 @@
+package filewatcher
+
+import (
+	"path/filepath"
+	"strings"
+	"sync"
+
+	gitignore "github.com/sabhiram/go-gitignore"
+)
+
+// gitignoreCache stores compiled .gitignore matchers keyed by the directory
+// that contains the .gitignore file. This allows hierarchical matching:
+// a path is checked against all ancestor .gitignore files.
+type gitignoreCache struct {
+	mu       sync.RWMutex
+	matchers map[string]*gitignore.GitIgnore // key: directory containing .gitignore
+}
+
+func newGitignoreCache() *gitignoreCache {
+	return &gitignoreCache{
+		matchers: make(map[string]*gitignore.GitIgnore),
+	}
+}
+
+// load loads and caches a .gitignore file from the given directory.
+// Returns the compiled matcher, or nil if no .gitignore exists or loading fails.
+func (c *gitignoreCache) load(dir string) *gitignore.GitIgnore {
+	c.mu.RLock()
+	if gi, ok := c.matchers[dir]; ok {
+		c.mu.RUnlock()
+
+		return gi
+	}
+
+	c.mu.RUnlock()
+
+	gitignorePath := filepath.Join(dir, ".gitignore")
+	gi, compileErr := gitignore.CompileIgnoreFile(gitignorePath)
+	if compileErr != nil {
+		return nil
+	}
+
+	c.mu.Lock()
+	c.matchers[dir] = gi
+	c.mu.Unlock()
+
+	return gi
+}
+
+// loadGitignoreForDir loads the .gitignore from the given directory if it exists.
+// Called during walking to discover gitignore rules for each directory visited.
+func (w *Watcher) loadGitignoreForDir(dir string) {
+	if !w.gitignoreEnabled || w.gitignoreCache == nil {
+		return
+	}
+
+	w.gitignoreCache.load(dir)
+}
+
+// shouldSkipByGitignore checks if a path should be skipped based on accumulated
+// gitignore rules. Only checks matchers that are ancestors of the path
+// (i.e., the path must be inside the gitignore directory).
+func (w *Watcher) shouldSkipByGitignore(path string) bool {
+	if !w.gitignoreEnabled || w.gitignoreCache == nil {
+		return false
+	}
+
+	w.gitignoreCache.mu.RLock()
+	defer w.gitignoreCache.mu.RUnlock()
+
+	sep := string(filepath.Separator)
+
+	for gitignoreDir, gi := range w.gitignoreCache.matchers {
+		// Only check matchers from ancestor directories
+		prefix := gitignoreDir + sep
+		if !strings.HasPrefix(path, prefix) && path != gitignoreDir {
+			continue
+		}
+
+		relPath, err := filepath.Rel(gitignoreDir, path)
+		if err != nil {
+			continue
+		}
+
+		if gi.MatchesPath(relPath) {
+			return true
+		}
+	}
+
+	return false
+}

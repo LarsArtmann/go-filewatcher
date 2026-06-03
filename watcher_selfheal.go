@@ -76,6 +76,7 @@ func (w *Watcher) attemptSelfHeal() {
 		if addErr == nil {
 			w.removeFailedPathLocked(path)
 			w.appendWatchListLocked(path)
+
 			healed++
 
 			if w.onAdd != nil {

@@ -3,9 +3,12 @@ package filewatcher
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
+	"runtime"
 	"slices"
+	"strconv"
 	"strings"
 )
 
@@ -25,7 +28,14 @@ func (w *Watcher) addPath(root RootPath) error {
 	if !w.recursive {
 		err := w.fswatcher.Add(root.Get())
 		if err != nil {
-			return fmt.Errorf("adding watch path %q: %w", root, err)
+			w.watchErrors.Add(1)
+			w.handleError(ErrorContext{
+				Operation: "add-path",
+				Path:      root.Get(),
+				Retryable: true,
+			}, fmt.Errorf("adding watch path %q: %w", root, err))
+
+			return nil
 		}
 
 		w.watchList = append(w.watchList, root.Get())
@@ -37,14 +47,83 @@ func (w *Watcher) addPath(root RootPath) error {
 }
 
 // walkAndAddPaths walks a directory tree and adds all directories to the watcher.
-// Caller must hold w.mu lock.
+// Directories are collected during walking and added in batches to yield to
+// event processing between batches. Caller must hold w.mu lock.
 func (w *Watcher) walkAndAddPaths(root RootPath) error {
-	err := filepath.WalkDir(root.Get(), w.walkDirFunc)
+	var batch []string
+
+	err := filepath.WalkDir(root.Get(), func(path string, d os.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			isDir := d != nil && d.IsDir()
+
+			return fmt.Errorf("walking directory entry %q (isDir=%v): %w", path, isDir, walkErr)
+		}
+
+		if !d.IsDir() {
+			return nil
+		}
+
+		// Follow symlinks if enabled
+		if w.followSymlinks && d.Type()&os.ModeSymlink != 0 {
+			resolved, resolveErr := filepath.EvalSymlinks(path)
+			if resolveErr != nil {
+				return fmt.Errorf("resolving symlink %q: %w", path, resolveErr)
+			}
+
+			info, statErr := os.Stat(resolved)
+			if statErr != nil {
+				return fmt.Errorf("stat resolved symlink target %q: %w", resolved, statErr)
+			}
+
+			if !info.IsDir() {
+				return nil
+			}
+
+			// Walk the symlink target directory
+			return w.walkAndAddPaths(NewRootPath(resolved))
+		}
+
+		if w.shouldSkipDir(d.Name()) {
+			return filepath.SkipDir
+		}
+
+		if w.shouldExcludePath(path) {
+			return filepath.SkipDir
+		}
+
+		// Load gitignore for this directory
+		w.loadGitignoreForDir(path)
+
+		// Check gitignore rules
+		if w.shouldSkipByGitignore(path) {
+			return filepath.SkipDir
+		}
+
+		// Collect into batch instead of adding immediately
+		batch = append(batch, path)
+
+		if len(batch) >= watchBatchSize {
+			w.addBatch(batch)
+			batch = batch[:0]
+		}
+
+		return nil
+	})
+
+	// Flush remaining batch
+	if len(batch) > 0 {
+		w.addBatch(batch)
+	}
+
 	if err != nil {
 		return fmt.Errorf("walking directory %q: %w", root, err)
 	}
-	// Track the root path (caller holds lock)
-	w.watchList = append(w.watchList, root.Get())
+
+	// Track the root path only if it wasn't already added via addBatch.
+	// filepath.WalkDir visits the root first, so it's already in watchList.
+	if len(w.watchList) == 0 || w.watchList[len(w.watchList)-1] != root.Get() {
+		w.watchList = append(w.watchList, root.Get())
+	}
 
 	return nil
 }
@@ -87,9 +166,28 @@ func (w *Watcher) walkDirFunc(path string, d os.DirEntry, walkErr error) error {
 		return filepath.SkipDir
 	}
 
+	if w.shouldExcludePath(path) {
+		return filepath.SkipDir
+	}
+
+	// Load gitignore for this directory (discovers new rules)
+	w.loadGitignoreForDir(path)
+
+	// Check if path matches any accumulated gitignore rules
+	if w.shouldSkipByGitignore(path) {
+		return filepath.SkipDir
+	}
+
 	addErr := w.fswatcher.Add(path)
 	if addErr != nil {
-		return fmt.Errorf("watching path %q: %w", path, addErr)
+		w.watchErrors.Add(1)
+		w.handleError(ErrorContext{
+			Operation: "add-path",
+			Path:       path,
+			Retryable:  true,
+		}, fmt.Errorf("watching path %q: %w", path, addErr))
+
+		return nil
 	}
 
 	if w.onAdd != nil {
@@ -110,4 +208,86 @@ func (w *Watcher) shouldSkipDir(name string) bool {
 	}
 
 	return slices.Contains(w.ignoreDirNames, name)
+}
+
+// shouldExcludePath checks if a path should be excluded based on absolute path matching.
+// It matches exact paths and path prefixes (subtree exclusion).
+func (w *Watcher) shouldExcludePath(path string) bool {
+	if len(w.excludePaths) == 0 {
+		return false
+	}
+
+	_, exact := w.excludePaths[path]
+	if exact {
+		return true
+	}
+
+	prefix := path + string(filepath.Separator)
+
+	for excludedPath := range w.excludePaths {
+		if strings.HasPrefix(excludedPath, prefix) {
+			return false // path is a parent of an excluded path, don't skip it
+		}
+
+		if strings.HasPrefix(path, excludedPath+string(filepath.Separator)) {
+			return true // path is under an excluded subtree
+		}
+	}
+
+	return false
+}
+
+const watchBatchSize = 1000
+
+// addBatch adds a batch of paths to the fsnotify watcher.
+// Respects the maxWatches budget — stops adding when budget is exhausted.
+func (w *Watcher) addBatch(paths []string) {
+	for _, p := range paths {
+		if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
+			w.debugLog("watch budget exhausted, skipping path",
+				slog.String("path", p),
+				slog.Int("max_watches", w.maxWatches),
+				slog.Int("current_watches", len(w.watchList)),
+			)
+
+			continue
+		}
+
+		if addErr := w.fswatcher.Add(p); addErr != nil {
+			w.watchErrors.Add(1)
+			w.handleError(ErrorContext{
+				Operation: "add-path",
+				Path:       p,
+				Retryable:  true,
+			}, fmt.Errorf("watching path %q: %w", p, addErr))
+
+			continue
+		}
+
+		w.watchList = append(w.watchList, p)
+
+		if w.onAdd != nil {
+			w.onAdd(p)
+		}
+	}
+
+	runtime.Gosched()
+}
+
+// detectMaxWatches reads the system inotify watch limit from /proc/sys/fs/inotify/max_user_watches.
+// Returns 0 on non-Linux systems or if detection fails (meaning unlimited).
+func detectMaxWatches() int {
+	const procPath = "/proc/sys/fs/inotify/max_user_watches"
+
+	data, err := os.ReadFile(procPath)
+	if err != nil {
+		return 0
+	}
+
+	n, parseErr := strconv.Atoi(strings.TrimSpace(string(data)))
+	if parseErr != nil {
+		return 0
+	}
+
+	return n
 }

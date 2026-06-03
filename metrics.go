@@ -37,7 +37,20 @@ type StatsFunc func() Stats
 // `watcher.Stats` or a closure that calls it).
 func NewPrometheusCollector(stats StatsFunc) *PrometheusCollector {
 	if stats == nil {
-		stats = func() Stats { return Stats{} }
+		stats = func() Stats {
+			return Stats{
+				WatchCount:        0,
+				IsWatching:        false,
+				IsClosed:          false,
+				EventsProcessed:   0,
+				EventsFilteredOut: 0,
+				ErrorsEncountered: 0,
+				WatchErrors:       0,
+				Uptime:            0,
+				WatchLimit:        0,
+				WatchBudgetUsed:   0,
+			}
+		}
 	}
 
 	return &PrometheusCollector{
@@ -69,6 +82,21 @@ type GaugeMetric struct {
 	Value float64
 }
 
+// Metric name constants — used by Counters() and Gauges() to avoid goconst
+// violations when emitting the same metric name across calls.
+const (
+	metricEventsProcessed   = "filewatcher_events_processed_total"
+	metricEventsFilteredOut = "filewatcher_events_filtered_out_total"
+	metricErrorsEncountered = "filewatcher_errors_encountered_total"
+	metricWatchErrors       = "filewatcher_watch_errors_total"
+	metricWatchCount        = "filewatcher_watch_count"
+	metricIsWatching        = "filewatcher_is_watching"
+	metricIsClosed          = "filewatcher_is_closed"
+	metricUptimeSeconds     = "filewatcher_uptime_seconds"
+	metricWatchLimit        = "filewatcher_watch_limit"
+	metricWatchBudgetUsed   = "filewatcher_watch_budget_used_ratio"
+)
+
 // Counters returns the current counter values from the watcher stats.
 // Callers can map these to their metrics library of choice.
 func (c *PrometheusCollector) Counters() []CounterMetric {
@@ -76,22 +104,22 @@ func (c *PrometheusCollector) Counters() []CounterMetric {
 
 	return []CounterMetric{
 		{
-			Name:  "filewatcher_events_processed_total",
+			Name:  metricEventsProcessed,
 			Help:  c.describe[0],
 			Value: stats.EventsProcessed,
 		},
 		{
-			Name:  "filewatcher_events_filtered_out_total",
+			Name:  metricEventsFilteredOut,
 			Help:  c.describe[1],
 			Value: stats.EventsFilteredOut,
 		},
 		{
-			Name:  "filewatcher_errors_encountered_total",
+			Name:  metricErrorsEncountered,
 			Help:  c.describe[2],
 			Value: stats.ErrorsEncountered,
 		},
 		{
-			Name:  "filewatcher_watch_errors_total",
+			Name:  metricWatchErrors,
 			Help:  c.describe[3],
 			Value: stats.WatchErrors,
 		},
@@ -104,32 +132,32 @@ func (c *PrometheusCollector) Gauges() []GaugeMetric {
 
 	return []GaugeMetric{
 		{
-			Name:  "filewatcher_watch_count",
+			Name:  metricWatchCount,
 			Help:  "Number of paths currently being watched",
 			Value: float64(stats.WatchCount),
 		},
 		{
-			Name:  "filewatcher_is_watching",
+			Name:  metricIsWatching,
 			Help:  "1 if the watcher is currently running, 0 otherwise",
 			Value: boolToFloat(stats.IsWatching),
 		},
 		{
-			Name:  "filewatcher_is_closed",
+			Name:  metricIsClosed,
 			Help:  "1 if the watcher has been closed, 0 otherwise",
 			Value: boolToFloat(stats.IsClosed),
 		},
 		{
-			Name:  "filewatcher_uptime_seconds",
+			Name:  metricUptimeSeconds,
 			Help:  "Time in seconds since the watcher was started",
 			Value: stats.Uptime.Seconds(),
 		},
 		{
-			Name:  "filewatcher_watch_limit",
+			Name:  metricWatchLimit,
 			Help:  "System inotify watch limit (0 if unknown)",
 			Value: float64(stats.WatchLimit),
 		},
 		{
-			Name:  "filewatcher_watch_budget_used_ratio",
+			Name:  metricWatchBudgetUsed,
 			Help:  "Percentage of inotify budget used (0.0-1.0)",
 			Value: stats.WatchBudgetUsed,
 		},

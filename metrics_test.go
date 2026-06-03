@@ -40,13 +40,13 @@ func TestPrometheusCollector_CountersAndGauges(t *testing.T) {
 	}
 
 	// Verify a specific counter value
-	for _, c := range counters {
-		if c.Name == "filewatcher_events_processed_total" && c.Value != 100 {
-			t.Errorf("events_processed_total = %d, want 100", c.Value)
+	for _, counter := range counters {
+		if counter.Name == "filewatcher_events_processed_total" && counter.Value != 100 {
+			t.Errorf("events_processed_total = %d, want 100", counter.Value)
 		}
 
-		if c.Name == "filewatcher_errors_encountered_total" && c.Value != 2 {
-			t.Errorf("errors_encountered_total = %d, want 2", c.Value)
+		if counter.Name == "filewatcher_errors_encountered_total" && counter.Value != 2 {
+			t.Errorf("errors_encountered_total = %d, want 2", counter.Value)
 		}
 	}
 

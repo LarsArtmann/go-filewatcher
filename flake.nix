@@ -50,6 +50,8 @@
           ./middleware_test.go
           ./options.go
           ./options_test.go
+          ./otel.go
+          ./otel_test.go
           ./phantom_types.go
           ./phantom_types_test.go
           ./testing_helpers_test.go

@@ -44,6 +44,8 @@
           ./filter_gogen_test.go
           ./filter_test.go
           ./fuzz_test.go
+          ./metrics.go
+          ./metrics_test.go
           ./middleware.go
           ./middleware_test.go
           ./options.go

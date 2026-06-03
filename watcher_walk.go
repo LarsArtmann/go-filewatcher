@@ -50,70 +50,16 @@ func (w *Watcher) addPath(root RootPath) error {
 // Directories are collected during walking and added in batches to yield to
 // event processing between batches. Caller must hold w.mu lock.
 func (w *Watcher) walkAndAddPaths(root RootPath) error {
-	var batch []string
+	w.walkBatch = make([]string, 0, watchBatchSize)
 
-	err := filepath.WalkDir(root.Get(), func(path string, d os.DirEntry, walkErr error) error {
-		if walkErr != nil {
-			isDir := d != nil && d.IsDir()
-
-			return fmt.Errorf("walking directory entry %q (isDir=%v): %w", path, isDir, walkErr)
-		}
-
-		if !d.IsDir() {
-			return nil
-		}
-
-		// Follow symlinks if enabled
-		if w.followSymlinks && d.Type()&os.ModeSymlink != 0 {
-			resolved, resolveErr := filepath.EvalSymlinks(path)
-			if resolveErr != nil {
-				return fmt.Errorf("resolving symlink %q: %w", path, resolveErr)
-			}
-
-			info, statErr := os.Stat(resolved)
-			if statErr != nil {
-				return fmt.Errorf("stat resolved symlink target %q: %w", resolved, statErr)
-			}
-
-			if !info.IsDir() {
-				return nil
-			}
-
-			// Walk the symlink target directory
-			return w.walkAndAddPaths(NewRootPath(resolved))
-		}
-
-		if w.shouldSkipDir(d.Name()) {
-			return filepath.SkipDir
-		}
-
-		if w.shouldExcludePath(path) {
-			return filepath.SkipDir
-		}
-
-		// Load gitignore for this directory
-		w.loadGitignoreForDir(path)
-
-		// Check gitignore rules
-		if w.shouldSkipByGitignore(path) {
-			return filepath.SkipDir
-		}
-
-		// Collect into batch instead of adding immediately
-		batch = append(batch, path)
-
-		if len(batch) >= watchBatchSize {
-			w.addBatch(batch)
-			batch = batch[:0]
-		}
-
-		return nil
-	})
+	err := filepath.WalkDir(root.Get(), w.walkDirFunc)
 
 	// Flush remaining batch
-	if len(batch) > 0 {
-		w.addBatch(batch)
+	if len(w.walkBatch) > 0 {
+		w.addBatch(w.walkBatch)
 	}
+
+	w.walkBatch = nil
 
 	if err != nil {
 		return fmt.Errorf("walking directory %q: %w", root, err)
@@ -129,8 +75,10 @@ func (w *Watcher) walkAndAddPaths(root RootPath) error {
 }
 
 // walkDirFunc is the WalkDirFunc for adding paths during directory traversal.
+// When walkBatch is set, it collects paths into the batch for batched registration.
+// When walkBatch is nil, it adds paths immediately (used by tests).
 //
-
+//nolint:cyclop // walk logic with multiple skip conditions
 func (w *Watcher) walkDirFunc(path string, d os.DirEntry, walkErr error) error {
 	if walkErr != nil {
 		isDir := d != nil && d.IsDir()
@@ -142,7 +90,6 @@ func (w *Watcher) walkDirFunc(path string, d os.DirEntry, walkErr error) error {
 		return nil
 	}
 
-	// Follow symlinks if enabled
 	if w.followSymlinks && d.Type()&os.ModeSymlink != 0 {
 		resolved, err := filepath.EvalSymlinks(path)
 		if err != nil {
@@ -158,7 +105,6 @@ func (w *Watcher) walkDirFunc(path string, d os.DirEntry, walkErr error) error {
 			return nil
 		}
 
-		// Walk the symlink target directory
 		return w.walkAndAddPaths(NewRootPath(resolved))
 	}
 
@@ -170,25 +116,38 @@ func (w *Watcher) walkDirFunc(path string, d os.DirEntry, walkErr error) error {
 		return filepath.SkipDir
 	}
 
-	// Load gitignore for this directory (discovers new rules)
 	w.loadGitignoreForDir(path)
 
-	// Check if path matches any accumulated gitignore rules
 	if w.shouldSkipByGitignore(path) {
 		return filepath.SkipDir
 	}
 
+	// Batched mode: collect path for later batched addition
+	if w.walkBatch != nil {
+		w.walkBatch = append(w.walkBatch, path)
+
+		if len(w.walkBatch) >= watchBatchSize {
+			w.addBatch(w.walkBatch)
+			w.walkBatch = w.walkBatch[:0]
+		}
+
+		return nil
+	}
+
+	// Direct mode: add immediately (used by tests and depth-limited walking)
 	addErr := w.fswatcher.Add(path)
 	if addErr != nil {
 		w.watchErrors.Add(1)
 		w.handleError(ErrorContext{
 			Operation: "add-path",
-			Path:       path,
-			Retryable:  true,
+			Path:      path,
+			Retryable: true,
 		}, fmt.Errorf("watching path %q: %w", path, addErr))
 
 		return nil
 	}
+
+	w.watchList = append(w.watchList, path)
 
 	if w.onAdd != nil {
 		w.onAdd(path)

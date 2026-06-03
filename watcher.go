@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -71,6 +72,7 @@ type Watcher struct {
 	bufferSize      int
 	onAdd           func(path string) // callback when a path is added
 	ignoreDirNames  []string          // user-configured dir names to skip during walk
+	excludePaths    map[string]struct{} // absolute paths to exclude during walk
 	errorHandler    ErrorHandler      // callback for errors during event processing
 	lazyIsDir       bool              // skip os.Stat calls in convertEvent for performance
 	pollInterval    time.Duration     // polling interval for NFS/FUSE filesystems (0 = disabled)
@@ -78,13 +80,16 @@ type Watcher struct {
 	debug           bool              // enable verbose debug logging
 	debugLogger     *slog.Logger      // logger for debug output
 	followSymlinks  bool              // follow symbolic links during directory walking
+	gitignoreEnabled bool             // enable .gitignore-aware walk filtering
+	gitignoreCache  *gitignoreCache   // cache of compiled gitignore matchers
 	done            chan struct{}     // closed by Close() to signal shutdown to in-flight goroutines
 
 	// Internal state
-	mu        sync.RWMutex
-	state     WatcherStateFlags // bit flags: closed, watching
-	watchList []string          // tracked paths currently being watched
-	wg        sync.WaitGroup    // tracks watchLoop goroutine for clean shutdown
+	mu         sync.RWMutex
+	state      WatcherStateFlags // bit flags: closed, watching
+	watchList  []string          // tracked paths currently being watched
+	walkBatch  []string          // batch accumulator for walkDirFunc (nil when not batching)
+	wg         sync.WaitGroup    // tracks watchLoop goroutine for clean shutdown
 
 	// Event channel - stored so Close() can close it after stopping debouncer
 	// This prevents race between debouncer callbacks and channel close
@@ -105,7 +110,9 @@ type Watcher struct {
 	eventsProcessed   atomic.Uint64 // Total events that passed all filters
 	eventsFilteredOut atomic.Uint64 // Events filtered out (dropped by filters)
 	errorsEncountered atomic.Uint64 // Errors encountered during processing
+	watchErrors       atomic.Uint64 // Watch add failures (ENOSPC, permission denied, etc.)
 	startTime         time.Time     // When watcher was created/started
+	maxWatches        int           // Maximum inotify watches allowed (0 = no limit)
 }
 
 // Compile-time interface check: Watcher implements io.Closer.
@@ -210,9 +217,11 @@ func New( //nolint:funlen // constructor with full field initialization
 		bufferSize:        defaultEventBufferSize,
 		onAdd:             nil,
 		ignoreDirNames:    nil,
+		excludePaths:      make(map[string]struct{}),
 		mu:                sync.RWMutex{},
 		state:             0,
 		watchList:         make([]string, 0, len(paths)),
+		walkBatch:         nil,
 		wg:                sync.WaitGroup{},
 		eventCh:           nil,
 		closeEventChOnce:  sync.Once{},
@@ -223,6 +232,7 @@ func New( //nolint:funlen // constructor with full field initialization
 		eventsProcessed:   atomic.Uint64{},
 		eventsFilteredOut: atomic.Uint64{},
 		errorsEncountered: atomic.Uint64{},
+		watchErrors:       atomic.Uint64{},
 		startTime:         time.Time{},
 		lazyIsDir:         false,
 		pollInterval:      0,
@@ -230,6 +240,8 @@ func New( //nolint:funlen // constructor with full field initialization
 		debug:             false,
 		debugLogger:       nil,
 		followSymlinks:    false,
+		gitignoreEnabled:  true,
+		gitignoreCache:    newGitignoreCache(),
 		done:              make(chan struct{}),
 	}
 
@@ -239,6 +251,16 @@ func New( //nolint:funlen // constructor with full field initialization
 
 	// Initialize debouncer based on configuration
 	w.initDebouncer()
+
+	// Disable gitignore cache if not enabled
+	if !w.gitignoreEnabled {
+		w.gitignoreCache = nil
+	}
+
+	// Auto-detect max watches from system if not explicitly set
+	if w.maxWatches == 0 {
+		w.maxWatches = detectMaxWatches()
+	}
 
 	return w, nil
 }
@@ -383,7 +405,14 @@ func (w *Watcher) AddRecursive(path string, maxDepth int) error {
 	if maxDepth == 0 {
 		addErr := w.fswatcher.Add(abs)
 		if addErr != nil {
-			return fmt.Errorf("adding watch path %q: %w", abs, addErr)
+			w.watchErrors.Add(1)
+			w.handleError(ErrorContext{
+				Operation: "add-path",
+				Path:       abs,
+				Retryable:  true,
+			}, fmt.Errorf("adding watch path %q: %w", abs, addErr))
+
+			return nil
 		}
 
 		w.watchList = append(w.watchList, abs)
@@ -415,7 +444,14 @@ func (w *Watcher) addPathWithDepth(root RootPath, maxDepth int, currentDepth *in
 
 	addErr := w.fswatcher.Add(root.Get())
 	if addErr != nil {
-		return fmt.Errorf("watching path %q: %w", root, addErr)
+		w.watchErrors.Add(1)
+		w.handleError(ErrorContext{
+			Operation: "add-path",
+			Path:       root.Get(),
+			Retryable:  true,
+		}, fmt.Errorf("watching path %q: %w", root, addErr))
+
+		return nil
 	}
 
 	w.watchList = append(w.watchList, root.Get())
@@ -464,19 +500,22 @@ func (w *Watcher) Remove(path string) error {
 		return fmt.Errorf("resolving path %q in Remove(): %w", path, resolveErr)
 	}
 
-	removeErr := w.fswatcher.Remove(abs)
-	if removeErr != nil {
-		return fmt.Errorf("removing watch path %q from fsnotify: %w", abs, removeErr)
-	}
+	// Remove the path itself from fsnotify
+	_ = w.fswatcher.Remove(abs)
 
-	// Remove from watchList
-	for i, p := range w.watchList {
-		if p == abs {
-			w.watchList = append(w.watchList[:i], w.watchList[i+1:]...)
+	// Remove all subdirectory watches under this path
+	prefix := abs + string(filepath.Separator)
+	var remaining []string
 
-			break
+	for _, p := range w.watchList {
+		if p == abs || strings.HasPrefix(p, prefix) {
+			_ = w.fswatcher.Remove(p)
+		} else {
+			remaining = append(remaining, p)
 		}
 	}
+
+	w.watchList = remaining
 
 	return nil
 }
@@ -506,7 +545,10 @@ type Stats struct {
 	EventsProcessed   uint64        // Total events that passed all filters
 	EventsFilteredOut uint64        // Events filtered out (dropped by filters)
 	ErrorsEncountered uint64        // Errors encountered during processing
+	WatchErrors       uint64        // Watch add failures (ENOSPC, permission denied, etc.)
 	Uptime            time.Duration // Time since watcher was started
+	WatchLimit        int           // System inotify limit (0 if unknown)
+	WatchBudgetUsed   float64       // Percentage of budget used (0.0-1.0)
 }
 
 // Stats returns current statistics about the watcher.
@@ -520,6 +562,11 @@ func (w *Watcher) Stats() Stats {
 		uptime = time.Since(w.startTime)
 	}
 
+	var budgetUsed float64
+	if w.maxWatches > 0 {
+		budgetUsed = float64(len(w.watchList)) / float64(w.maxWatches)
+	}
+
 	return Stats{
 		WatchCount:        len(w.watchList),
 		IsWatching:        w.state&flagWatching != 0,
@@ -527,7 +574,10 @@ func (w *Watcher) Stats() Stats {
 		EventsProcessed:   w.eventsProcessed.Load(),
 		EventsFilteredOut: w.eventsFilteredOut.Load(),
 		ErrorsEncountered: w.errorsEncountered.Load(),
+		WatchErrors:       w.watchErrors.Load(),
 		Uptime:            uptime,
+		WatchLimit:        w.maxWatches,
+		WatchBudgetUsed:   budgetUsed,
 	}
 }
 
@@ -543,6 +593,60 @@ func (w *Watcher) Errors() <-chan error {
 	})
 
 	return w.errorsCh
+}
+
+// Reset clears the watcher's runtime state while preserving configuration.
+// After calling Reset(), the watcher can be started again with Watch().
+// This is useful for restarting the watcher after Close() without losing
+// filters, middleware, debounce settings, and other options.
+//
+// The watcher must be closed before calling Reset. Returns an error if
+// the watcher is still running.
+func (w *Watcher) Reset() error {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	if w.state&flagWatching != 0 {
+		return fmt.Errorf("%w: cannot reset while watcher is running", ErrWatcherRunning)
+	}
+
+	// Create a new fsnotify watcher
+	fswatcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		return fmt.Errorf("creating fsnotify watcher during reset: %w", err)
+	}
+
+	// Close old fsnotify watcher if it exists
+	if w.fswatcher != nil {
+		_ = w.fswatcher.Close()
+	}
+
+	// Reset runtime state
+	w.fswatcher = fswatcher
+	w.state = 0
+	w.watchList = make([]string, 0, len(w.paths))
+	w.done = make(chan struct{})
+	w.closeEventChOnce = sync.Once{}
+	w.eventCh = nil
+	w.errorsOnce = sync.Once{}
+	w.errorsCh = nil
+
+	// Reset metrics
+	w.eventsProcessed.Store(0)
+	w.eventsFilteredOut.Store(0)
+	w.errorsEncountered.Store(0)
+	w.watchErrors.Store(0)
+	w.startTime = time.Time{}
+
+	// Re-initialize debouncer from configuration
+	w.initDebouncer()
+
+	// Re-initialize gitignore cache
+	if w.gitignoreEnabled {
+		w.gitignoreCache = newGitignoreCache()
+	}
+
+	return nil
 }
 
 // Close stops the watcher and releases all resources.

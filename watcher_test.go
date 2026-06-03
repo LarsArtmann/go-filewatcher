@@ -1280,10 +1280,7 @@ func TestWatcher_Watch_WithPolling_FileModification(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	w, err := New([]string{tmpDir}, WithPolling(true), WithPollInterval(200*time.Millisecond))
-	if err != nil {
-		t.Fatal(err)
-	}
+	w := newTestWatcher(t, tmpDir, WithPolling(true), WithPollInterval(200*time.Millisecond))
 
 	defer func() { _ = w.Close() }()
 
@@ -1326,10 +1323,7 @@ func TestWatcher_Watch_WithPolling_FileRemoval(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	w, err := New([]string{tmpDir}, WithPolling(true), WithPollInterval(200*time.Millisecond))
-	if err != nil {
-		t.Fatal(err)
-	}
+	w := newTestWatcher(t, tmpDir, WithPolling(true), WithPollInterval(200*time.Millisecond))
 
 	defer func() { _ = w.Close() }()
 

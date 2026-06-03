@@ -37,14 +37,15 @@ func TestPrometheusCollector_CountersAndGauges(t *testing.T) {
 	counters := collector.Counters()
 	assertLen(t, "counters", len(counters), 4)
 
-	// Verify a specific counter value
-	for _, counter := range counters {
-		if counter.Name == "filewatcher_events_processed_total" {
-			assertEqual(t, "events_processed_total", counter.Value, uint64(100))
-		}
+	// Verify specific counter values
+	wantCounters := map[string]uint64{
+		"filewatcher_events_processed_total":   100,
+		"filewatcher_errors_encountered_total": 2,
+	}
 
-		if counter.Name == "filewatcher_errors_encountered_total" {
-			assertEqual(t, "errors_encountered_total", counter.Value, uint64(2))
+	for _, counter := range counters {
+		if want, ok := wantCounters[counter.Name]; ok {
+			assertEqual(t, counter.Name, counter.Value, want)
 		}
 	}
 

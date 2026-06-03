@@ -390,6 +390,99 @@ func BenchmarkOpString(b *testing.B) {
 }
 
 // ============================================================================
+// Gitignore Benchmarks
+// ============================================================================
+
+func BenchmarkShouldSkipByGitignore_NoGitignore(b *testing.B) {
+	tmpDir := b.TempDir()
+
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	testPath := filepath.Join(tmpDir, "src", "main.go")
+
+	for b.Loop() {
+		_ = w.shouldSkipByGitignore(testPath)
+	}
+}
+
+func BenchmarkShouldSkipByGitignore_WithGitignore(b *testing.B) {
+	tmpDir := b.TempDir()
+
+	gitignoreContent := "node_modules/\n*.o\nbuild/\ndist/\n*.pyc\n__pycache__/\n.coverage\n"
+	gitignorePath := filepath.Join(tmpDir, ".gitignore")
+
+	writeErr := os.WriteFile(gitignorePath, []byte(gitignoreContent), 0o600)
+	if writeErr != nil {
+		b.Fatal(writeErr)
+	}
+
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	w.loadGitignoreForDir(tmpDir)
+
+	matchedPath := filepath.Join(tmpDir, "node_modules", "pkg", "index.js")
+
+	for b.Loop() {
+		_ = w.shouldSkipByGitignore(matchedPath)
+	}
+}
+
+func BenchmarkShouldSkipByGitignore_NotMatched(b *testing.B) {
+	tmpDir := b.TempDir()
+
+	gitignoreContent := "node_modules/\n*.o\nbuild/\n"
+	gitignorePath := filepath.Join(tmpDir, ".gitignore")
+
+	writeErr := os.WriteFile(gitignorePath, []byte(gitignoreContent), 0o600)
+	if writeErr != nil {
+		b.Fatal(writeErr)
+	}
+
+	w, err := New([]string{tmpDir})
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	defer func() { _ = w.Close() }()
+
+	w.loadGitignoreForDir(tmpDir)
+
+	normalPath := filepath.Join(tmpDir, "src", "main.go")
+
+	for b.Loop() {
+		_ = w.shouldSkipByGitignore(normalPath)
+	}
+}
+
+func BenchmarkGitignoreCache_Load(b *testing.B) {
+	tmpDir := b.TempDir()
+
+	gitignoreContent := "*.go\n*.md\nbuild/\n"
+	gitignorePath := filepath.Join(tmpDir, ".gitignore")
+
+	writeErr := os.WriteFile(gitignorePath, []byte(gitignoreContent), 0o600)
+	if writeErr != nil {
+		b.Fatal(writeErr)
+	}
+
+	cache := newGitignoreCache()
+
+	for b.Loop() {
+		_ = cache.load(tmpDir)
+	}
+}
+
+// ============================================================================
 // Benchmark Regression Baselines
 // ============================================================================
 

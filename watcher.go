@@ -403,21 +403,7 @@ func (w *Watcher) AddRecursive(path string, maxDepth int) error {
 	}
 
 	if maxDepth == 0 {
-		addErr := w.fswatcher.Add(abs)
-		if addErr != nil {
-			w.watchErrors.Add(1)
-			w.handleError(ErrorContext{
-				Operation: "add-path",
-				Path:       abs,
-				Retryable:  true,
-			}, fmt.Errorf("adding watch path %q: %w", abs, addErr))
-
-			return nil
-		}
-
-		w.watchList = append(w.watchList, abs)
-
-		return nil
+		return w.addPath(NewRootPath(abs))
 	}
 
 	if maxDepth < 0 {

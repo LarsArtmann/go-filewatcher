@@ -26,6 +26,11 @@ func (w *Watcher) initDebouncer() {
 // It also appends the root path to the watchList.
 func (w *Watcher) addPath(root RootPath) error {
 	if !w.recursive {
+		// Budget check before adding
+		if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
+			return nil
+		}
+
 		err := w.fswatcher.Add(root.Get())
 		if err != nil {
 			w.watchErrors.Add(1)
@@ -39,6 +44,10 @@ func (w *Watcher) addPath(root RootPath) error {
 		}
 
 		w.watchList = append(w.watchList, root.Get())
+
+		if w.onAdd != nil {
+			w.onAdd(root.Get())
+		}
 
 		return nil
 	}

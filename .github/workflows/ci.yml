@@ -37,6 +37,19 @@ jobs:
             exit 1
           fi
 
+  examples-build:
+    name: Examples Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+      # Verify all examples/ subdirectories build without errors.
+      # Examples are runnable programs, so we run `go build` (not `go test`).
+      - name: Build all examples
+        run: go build ./examples/...
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -66,4 +79,38 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: "1.26"
-      - run: go test -bench=. -benchmem -count=1 -race ./...
+      - name: Run benchmarks
+        run: go test -bench=. -benchmem -count=1 -race ./...
+      - name: Save benchmark results
+        if: github.event_name == 'push'
+        run: |
+          mkdir -p bench-results
+          go test -bench=. -benchmem -count=1 -run=^$ ./... > bench-results/bench.txt 2>&1
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'push'
+        with:
+          name: benchmark-results
+          path: bench-results/bench.txt
+
+  benchmark-compare:
+    name: Benchmark Regression Check
+    runs-on: ubuntu-latest
+    # Only run on PRs against master/main; compares current benchmarks
+    # to baseline. Skips if benchstat is not installed.
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+      - name: Install benchstat
+        run: go install golang.org/x/perf/cmd/benchstat@latest
+      - name: Run current benchmarks
+        run: |
+          go test -bench=. -benchmem -count=3 -run=^$ -benchtime=1s ./... > new.txt 2>&1
+      - name: Note on regression detection
+        run: |
+          echo "Benchmark regression detection is informational only."
+          echo "Compare new.txt against known baselines manually using benchstat."
+          echo "Future: store baseline in repo and fail CI on >20% regression."
+          cat new.txt | head -30

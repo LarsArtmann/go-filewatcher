@@ -67,15 +67,15 @@ func (w *Watcher) attemptSelfHeal() {
 	for _, path := range paths {
 		// Skip if already watched (e.g., added by another path).
 		if w.isPathWatched(path) {
-			w.removeFailedPathLocked(path)
+			w.removeFailedPath(path)
 
 			continue
 		}
 
 		addErr := w.fswatcher.Add(path)
 		if addErr == nil {
-			w.removeFailedPathLocked(path)
-			w.appendWatchListLocked(path)
+			w.removeFailedPath(path)
+			w.appendToWatchList(path)
 
 			healed++
 
@@ -104,16 +104,16 @@ func (w *Watcher) isPathWatched(path string) bool {
 	return slices.Contains(w.watchList, path)
 }
 
-// appendWatchListLocked adds path to the watch list. Caller MUST hold w.mu.
-func (w *Watcher) appendWatchListLocked(path string) {
+// appendToWatchList adds path to the watch list under mutex protection.
+func (w *Watcher) appendToWatchList(path string) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
 	w.watchList = append(w.watchList, path)
 }
 
-// removeFailedPathLocked removes a path from the failed set. Caller MUST hold w.mu.
-func (w *Watcher) removeFailedPathLocked(path string) {
+// removeFailedPath removes a path from the failed set under mutex protection.
+func (w *Watcher) removeFailedPath(path string) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 

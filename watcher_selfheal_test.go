@@ -71,7 +71,7 @@ func TestSelfHeal_TracksFailedPaths(t *testing.T) {
 	}
 
 	// Remove one
-	watcher.removeFailedPathLocked("/nonexistent/path")
+	watcher.removeFailedPath("/nonexistent/path")
 
 	assertEqual(t, "failedPathCount (after remove)", watcher.failedPathCount(), 1)
 }

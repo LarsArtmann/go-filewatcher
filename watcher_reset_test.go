@@ -43,7 +43,8 @@ func TestWatcher_Reset_PreservesConfig(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	watcher, err := New([]string{tmpDir},
+	watcher, err := New(
+		[]string{tmpDir},
 		WithFilter(func(_ Event) bool { return true }),
 		WithRecursive(true),
 		WithIgnoreDirs("ignored"),

@@ -18,27 +18,27 @@ Given a version `MAJOR.MINOR.PATCH`:
 
 These types and functions have strong backward-compatibility guarantees:
 
-| Category    | Symbols                                                                                                                                                                                                                                                                       | Status     |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| Core types  | `Event`, `Op`, `Watcher`, `Filter`                                                                                                                                                                                                                                            | **Stable** |
-| Constructor | `New()`                                                                                                                                                                                                                                                                       | **Stable** |
-| Options     | `WithDebounce`, `WithPerPathDebounce`, `WithFilter`, `WithExtensions`, `WithIgnoreDirs`, `WithIgnoreHidden`, `WithRecursive`, `WithMiddleware`, `WithBuffer`, `WithOnError`, `WithErrorHandler`, `WithSkipDotDirs`, `WithOnAdd`, `WithLazyIsDir`, `WithIgnorePatterns`        | **Stable** |
+| Category    | Symbols                                                                                                                                                                                                                                                                                            | Status     |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| Core types  | `Event`, `Op`, `Watcher`, `Filter`                                                                                                                                                                                                                                                                 | **Stable** |
+| Constructor | `New()`                                                                                                                                                                                                                                                                                            | **Stable** |
+| Options     | `WithDebounce`, `WithPerPathDebounce`, `WithFilter`, `WithExtensions`, `WithIgnoreDirs`, `WithIgnoreHidden`, `WithRecursive`, `WithMiddleware`, `WithBuffer`, `WithOnError`, `WithErrorHandler`, `WithSkipDotDirs`, `WithOnAdd`, `WithLazyIsDir`, `WithIgnorePatterns`                             | **Stable** |
 | Filters     | `FilterExtensions`, `FilterIgnoreDirs`, `FilterIgnoreHidden`, `FilterGlob`, `FilterRegex`, `FilterOperations`, `FilterMinSize`, `FilterMaxSize`, `FilterMinAge`, `FilterMaxAge`, `FilterModifiedSince`, `FilterExcludePaths`, `FilterIgnoreExtensions`, `FilterNotOperations`, `FilterIgnoreGlobs` | **Stable** |
-| Middleware  | `MiddlewareLogging`, `MiddlewareRecovery`, `MiddlewareFilter`, `MiddlewareOnError`, `MiddlewareRateLimit`, `MiddlewareSlidingWindowRateLimit`, `MiddlewareMetrics`, `MiddlewareDeduplicate`, `MiddlewareThrottle`, `MiddlewareWriteFileLog`                                   | **Stable** |
-| Methods     | `Watch()`, `WatchOnce()`, `Add()`, `Remove()`, `Close()`, `WatchList()`, `Stats()`, `IsClosed()`, `IsWatching()`, `Errors()`                                                                                                                                                  | **Stable** |
-| Errors      | `WatcherError`, `ErrorCategory`, all sentinel errors                                                                                                                                                                                                                          | **Stable** |
-| Handlers    | `Handler`, `ErrorHandler`, `ErrorContext`                                                                                                                                                                                                                                     | **Stable** |
+| Middleware  | `MiddlewareLogging`, `MiddlewareRecovery`, `MiddlewareFilter`, `MiddlewareOnError`, `MiddlewareRateLimit`, `MiddlewareSlidingWindowRateLimit`, `MiddlewareMetrics`, `MiddlewareDeduplicate`, `MiddlewareThrottle`, `MiddlewareWriteFileLog`                                                        | **Stable** |
+| Methods     | `Watch()`, `WatchOnce()`, `Add()`, `Remove()`, `Close()`, `WatchList()`, `Stats()`, `IsClosed()`, `IsWatching()`, `Errors()`                                                                                                                                                                       | **Stable** |
+| Errors      | `WatcherError`, `ErrorCategory`, all sentinel errors                                                                                                                                                                                                                                               | **Stable** |
+| Handlers    | `Handler`, `ErrorHandler`, `ErrorContext`                                                                                                                                                                                                                                                          | **Stable** |
 
 ### Evolving APIs (may change between minor versions)
 
 These APIs work as documented but may have behavioral changes:
 
-| Category  | Symbols                                            | Status       |
-| --------- | -------------------------------------------------- | ------------ |
-| Features  | `WithPolling`, `WithPollInterval`, `WithDebug`, `WithFollowSymlinks` | **Evolving** |
-| Debouncer | `GlobalDebouncer`, `Debouncer`, `DebounceKey`      | **Evolving** |
-| Types     | `EventPath`, `OpString`, `DebounceKey`, `RootPath` | **Evolving** |
-| Filters   | `FilterContentHash` | **Evolving** |
+| Category   | Symbols                                                                                                                                                                                      | Status       |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| Features   | `WithPolling`, `WithPollInterval`, `WithDebug`, `WithFollowSymlinks`                                                                                                                         | **Evolving** |
+| Debouncer  | `GlobalDebouncer`, `Debouncer`, `DebounceKey`                                                                                                                                                | **Evolving** |
+| Types      | `EventPath`, `OpString`, `DebounceKey`, `RootPath`                                                                                                                                           | **Evolving** |
+| Filters    | `FilterContentHash`                                                                                                                                                                          | **Evolving** |
 | Middleware | `MiddlewareCircuitBreaker`, `MiddlewareThrottle`, `MiddlewareErrorSanitization`, `MiddlewareErrorRateLimit`, `MiddlewareErrorRecovery`, `MiddlewareErrorCorrelation`, `MiddlewareErrorBatch` | **Evolving** |
 
 Evolving APIs will not be removed without a deprecation period of at least
@@ -52,9 +52,9 @@ None currently.
 
 These APIs continue to work but are scheduled for removal in the next major version:
 
-| Category  | Symbols                    | Status       |
-| --------- | -------------------------- | ------------ |
-| Options   | `WithWatchedIgnoreDirs()`  | **Deprecated** |
+| Category | Symbols                   | Status         |
+| -------- | ------------------------- | -------------- |
+| Options  | `WithWatchedIgnoreDirs()` | **Deprecated** |
 
 ## Breaking Change Policy
 

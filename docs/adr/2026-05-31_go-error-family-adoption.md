@@ -13,17 +13,17 @@
 
 ## Conceptual Overlap
 
-| go-error-family | go-filewatcher | Notes |
-|---|---|---|
-| `Family` (5 families) | `ErrorCategory` (Transient/Permanent/Unknown) | filewatcher's domain is simpler — 3 categories suffice |
-| `Coded` interface → `ErrorCode() string` | `ErrorCode` type + `Code()` method | Same concept, different implementation |
-| `Classified` interface → `ErrorFamily() Family` | `WatcherError.IsTransient()` / `.IsPermanent()` | Same intent, different granularity |
-| `Contextual` interface → `ErrorContext() map[string]string` | `ErrorContext` struct (Operation/Path/Event/Retryable) | Struct is more domain-specific |
-| `errorfamily.New()` constructors | `NewWatcherError()` constructor | filewatcher's is simpler and **unused in production code** |
-| `Classify()` + `RegisterClassification()` | `categorizeError()` (hardcoded switch) | filewatcher's sentinels are fixed; no extensibility needed |
-| `HandleError()` → stderr + exit code | `handleError()` → channel/callback/stderr | filewatcher has no CLI boundary |
-| Diagnostics (`diagnose/`) | None | Filesystem/Network diagnostics don't apply here |
-| Agent analysis (`agent/`) | None | Debug agent is overkill for a watcher library |
+| go-error-family                                             | go-filewatcher                                         | Notes                                                      |
+| ----------------------------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------------- |
+| `Family` (5 families)                                       | `ErrorCategory` (Transient/Permanent/Unknown)          | filewatcher's domain is simpler — 3 categories suffice     |
+| `Coded` interface → `ErrorCode() string`                    | `ErrorCode` type + `Code()` method                     | Same concept, different implementation                     |
+| `Classified` interface → `ErrorFamily() Family`             | `WatcherError.IsTransient()` / `.IsPermanent()`        | Same intent, different granularity                         |
+| `Contextual` interface → `ErrorContext() map[string]string` | `ErrorContext` struct (Operation/Path/Event/Retryable) | Struct is more domain-specific                             |
+| `errorfamily.New()` constructors                            | `NewWatcherError()` constructor                        | filewatcher's is simpler and **unused in production code** |
+| `Classify()` + `RegisterClassification()`                   | `categorizeError()` (hardcoded switch)                 | filewatcher's sentinels are fixed; no extensibility needed |
+| `HandleError()` → stderr + exit code                        | `handleError()` → channel/callback/stderr              | filewatcher has no CLI boundary                            |
+| Diagnostics (`diagnose/`)                                   | None                                                   | Filesystem/Network diagnostics don't apply here            |
+| Agent analysis (`agent/`)                                   | None                                                   | Debug agent is overkill for a watcher library              |
 
 ## Reasoning
 
@@ -34,6 +34,7 @@ go-error-family solves the **CLI/HTTP boundary problem** — where errors leave 
 ### 2. The current system is fit for purpose
 
 The existing `errors.go` provides:
+
 - 11 sentinel errors with clear domain meaning
 - `ErrorCategory` (Transient/Permanent) — sufficient for "should I retry?"
 - `WatcherError` with Op/Path/Err/Category/Stack — exactly the fields that matter for a file watcher
@@ -49,6 +50,7 @@ The production path is `fmt.Errorf("%w: ...", sentinel)` — callers use `errors
 ### 4. Dependency cost exceeds value
 
 Adding `github.com/larsartmann/go-error-family` as a dependency:
+
 - Pulls a new import into every consumer's dependency tree
 - Introduces a shared type system consumers must now understand
 - Creates coupling between two evolving libraries by the same author
@@ -61,6 +63,7 @@ Not yet v1.0. Adopting it means buying into an unstable API for a domain (error 
 ## Potential Internal Cleanup (Separate Concern)
 
 The current `errors.go` could be simplified independently:
+
 - `NewWatcherError()` is unused in production code → candidate for removal or deprecation
 - `ErrorCode` constants duplicate the sentinel identity → could be derived at runtime
 - `ErrorContext` struct overlaps with `WatcherError` fields

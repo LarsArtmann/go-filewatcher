@@ -2,6 +2,7 @@ package filewatcher_test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"log/slog"
@@ -432,4 +433,107 @@ func ExampleMiddlewareLogging_structured() {
 
 	fmt.Println("Watcher with custom structured logger created")
 	// Output: Watcher with custom structured logger created
+}
+
+// ExampleWatcher_Add demonstrates adding a path to an existing watcher.
+func ExampleWatcher_Add() {
+	watcher, err := filewatcher.New([]string{"."}, filewatcher.WithRecursive(false))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	// Add a path to the existing watcher. Errors are returned for
+	// invalid paths, permission issues, or fsnotify resource limits.
+	addErr := watcher.Add("./internal")
+	fmt.Println(addErr == nil)
+
+	// Output: true
+}
+
+// ExampleWatcher_Errors demonstrates receiving errors via a channel.
+func ExampleWatcher_Errors() {
+	watcher, err := filewatcher.New([]string{"."})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	// Get the errors channel - closed when the watcher is closed.
+	errCh := watcher.Errors()
+	_ = errCh
+
+	fmt.Println("errors channel initialized")
+	// Output: errors channel initialized
+}
+
+// ExampleWithErrorHandler demonstrates error handler callback.
+func ExampleWithErrorHandler() {
+	watcher, err := filewatcher.New(
+		[]string{"."},
+		filewatcher.WithErrorHandler(func(_ filewatcher.ErrorContext, err error) {
+			// Handle errors - in production, log to your error tracking system
+			_ = err
+		}),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	fmt.Println("Watcher with error handler created")
+	// Output: Watcher with error handler created
+}
+
+// ExampleWithDebug demonstrates debug logging.
+func ExampleWithDebug() {
+	watcher, err := filewatcher.New(
+		[]string{"."},
+		filewatcher.WithDebug(nil), // nil uses slog.Default()
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	fmt.Println("Watcher with debug logging enabled")
+	// Output: Watcher with debug logging enabled
+}
+
+// ExampleFilterMinSize demonstrates filtering by minimum file size.
+func ExampleFilterMinSize() {
+	// Only process files >= 1KB
+	watcher, err := filewatcher.New(
+		[]string{"."},
+		filewatcher.WithFilter(filewatcher.FilterMinSize(1024)),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	fmt.Println("Watcher with min size filter created")
+	// Output: Watcher with min size filter created
+}
+
+// ExampleOp demonstrates Op string conversion and JSON marshaling.
+func ExampleOp() {
+	op := filewatcher.Write
+	fmt.Println(op.String())
+
+	data, err := json.Marshal(op)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(string(data))
+
+	// Output:
+	// WRITE
+	// "WRITE"
 }

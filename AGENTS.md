@@ -95,18 +95,18 @@ All code in **root package** (`filewatcher`). No `internal/` or `pkg/` subdirect
 
 ### File Organization
 
-| File                  | Responsibility                                                             |
-| --------------------- | -------------------------------------------------------------------------- |
-| `watcher.go`          | Public API: New, Watch, Add, AddRecursive, Remove, Reset, WatchList, Stats        |
-| `watcher_internal.go` | Event processing: watchLoop, middleware, emitEvent, debugLog, handleError  |
+| File                   | Responsibility                                                                              |
+| ---------------------- | ------------------------------------------------------------------------------------------- |
+| `watcher.go`           | Public API: New, Watch, Add, AddRecursive, Remove, Reset, WatchList, Stats                  |
+| `watcher_internal.go`  | Event processing: watchLoop, middleware, emitEvent, debugLog, handleError                   |
 | `watcher_walk.go`      | Directory walking: addPath, walkAndAddPaths, addBatch, symlink resolution, budget detection |
-| `watcher_gitignore.go` | .gitignore loading and matching: gitignoreCache, shouldSkipByGitignore       |
-| `filter.go`           | All Filter functions                                                       |
-| `middleware.go`       | All Middleware functions (circuit breaker, error batch, correlation, etc.) |
-| `debouncer.go`        | Debouncer + GlobalDebouncer                                                |
-| `event.go`            | Op type, Event type, JSON/Text marshaling                                  |
-| `errors.go`           | Sentinel errors, ErrorCode, ErrorCategory, WatcherError                    |
-| `options.go`          | Functional options (WithGitignore, WithExcludePaths, WithMaxWatches, etc.)|
+| `watcher_gitignore.go` | .gitignore loading and matching: gitignoreCache, shouldSkipByGitignore                      |
+| `filter.go`            | All Filter functions                                                                        |
+| `middleware.go`        | All Middleware functions (circuit breaker, error batch, correlation, etc.)                  |
+| `debouncer.go`         | Debouncer + GlobalDebouncer                                                                 |
+| `event.go`             | Op type, Event type, JSON/Text marshaling                                                   |
+| `errors.go`            | Sentinel errors, ErrorCode, ErrorCategory, WatcherError                                     |
+| `options.go`           | Functional options (WithGitignore, WithExcludePaths, WithMaxWatches, etc.)                  |
 
 ---
 
@@ -186,6 +186,7 @@ Don't remove the nolint — this is intentional.
 ### 11. Graceful ENOSPC Handling (v0.4.0)
 
 `fswatcher.Add()` errors (including ENOSPC) no longer abort the entire walk. Instead:
+
 - The error is logged via `handleError()`
 - The `watchErrors` atomic counter is incremented
 - Walking continues to add remaining directories

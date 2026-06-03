@@ -214,7 +214,8 @@ const watchBatchSize = 1000
 func (w *Watcher) addBatch(paths []string) {
 	for _, p := range paths {
 		if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
-			w.debugLog("watch budget exhausted, skipping path",
+			w.debugLog(
+				"watch budget exhausted, skipping path",
 				slog.String("path", p),
 				slog.Int("max_watches", w.maxWatches),
 				slog.Int("current_watches", len(w.watchList)),

@@ -33,17 +33,38 @@
           ./go.sum
           ./doc.go
           ./debouncer.go
+          ./debouncer_test.go
           ./errors.go
+          ./errors_test.go
           ./event.go
+          ./event_test.go
+          ./example_test.go
           ./filter.go
           ./filter_gogen.go
+          ./filter_gogen_test.go
+          ./filter_test.go
+          ./fuzz_test.go
           ./middleware.go
+          ./middleware_test.go
           ./options.go
+          ./options_test.go
           ./phantom_types.go
+          ./phantom_types_test.go
+          ./testing_helpers_test.go
           ./watcher.go
+          ./watcher_coverage_test.go
+          ./watcher_gitignore.go
+          ./watcher_gitignore_test.go
           ./watcher_internal.go
+          ./watcher_internal_test.go
           ./watcher_poll.go
+          ./watcher_reset_test.go
+          ./watcher_selfheal.go
+          ./watcher_selfheal_test.go
+          ./watcher_test.go
           ./watcher_walk.go
+          ./watcher_walk_test.go
+          ./benchmark_test.go
         ];
       };
     in

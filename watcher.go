@@ -88,6 +88,8 @@ type Watcher struct {
 	gitignoreEnabled bool                // enable .gitignore-aware walk filtering
 	gitignoreCache   *gitignoreCache     // cache of compiled gitignore matchers
 	contentHashing   bool                // compute SHA-256 hash of file content on events
+	selfHealInterval time.Duration       // interval for self-healing failed watch registrations (0=disabled)
+	failedPaths      map[string]struct{} // paths that failed to add; retried by selfHealLoop
 	done             chan struct{}       // closed by Close() to signal shutdown to in-flight goroutines
 
 	// Internal state
@@ -250,6 +252,8 @@ func New( //nolint:funlen // constructor with full field initialization
 		gitignoreEnabled:  true,
 		gitignoreCache:    newGitignoreCache(),
 		contentHashing:    false,
+		selfHealInterval:  0,
+		failedPaths:       make(map[string]struct{}),
 		done:              make(chan struct{}),
 	}
 
@@ -321,6 +325,12 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 		w.wg.Add(1)
 
 		go w.pollLoop(ctx, eventCh)
+	}
+
+	if w.selfHealInterval > 0 {
+		w.wg.Add(1)
+
+		go w.selfHealLoop(ctx)
 	}
 
 	w.debugLog(
@@ -446,6 +456,7 @@ func (w *Watcher) addPathWithDepth(root RootPath, maxDepth int, currentDepth *in
 	addErr := w.fswatcher.Add(root.Get())
 	if addErr != nil {
 		w.watchErrors.Add(1)
+		w.failedPaths[root.Get()] = struct{}{}
 		w.handleError(ErrorContext{
 			Operation: opAddPath,
 			Path:      root.Get(),
@@ -456,6 +467,7 @@ func (w *Watcher) addPathWithDepth(root RootPath, maxDepth int, currentDepth *in
 		return nil
 	}
 
+	delete(w.failedPaths, root.Get())
 	w.watchList = append(w.watchList, root.Get())
 
 	if w.onAdd != nil {

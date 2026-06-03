@@ -284,6 +284,96 @@ func FilterNot(f Filter) Filter {
 	}
 }
 
+// MatchResult is the result of a filter evaluation that returns metadata.
+// It allows filters to communicate WHY an event matched or didn't match,
+// which is useful for debugging, logging, and analytics.
+type MatchResult struct {
+	// Matched indicates whether the event passed the filter.
+	Matched bool
+	// Reason is a short, human-readable explanation of why the event
+	// matched or didn't match (e.g., "extension .go", "in ignored dir").
+	// May be empty.
+	Reason string
+	// FilterName is the name of the filter that produced this result.
+	// Useful when composing multiple filters with FilterWithMetaAnd/Or.
+	FilterName string
+}
+
+// FilterWithMeta is a filter that returns match metadata in addition to
+// the boolean match result. This is useful when callers want to log why
+// events were kept or dropped (e.g., for debugging, audit logs, or
+// metrics on filter behavior).
+//
+// Use FilterWithMetaAnd/FilterWithMetaOr to compose multiple metadata
+// filters.
+type FilterWithMeta func(event Event) MatchResult
+
+// FilterFromWithMeta converts a FilterWithMeta to a plain Filter.
+// The boolean result is preserved; metadata is discarded.
+func FilterFromWithMeta(f FilterWithMeta) Filter {
+	return func(event Event) bool {
+		return f(event).Matched
+	}
+}
+
+// FilterWithMetaAnd combines multiple FilterWithMeta with AND logic.
+// All filters must return Matched=true. The first filter that reports
+// Matched=false short-circuits, returning its result.
+func FilterWithMetaAnd(filters ...FilterWithMeta) FilterWithMeta {
+	return func(event Event) MatchResult {
+		for _, f := range filters {
+			result := f(event)
+			if !result.Matched {
+				return result
+			}
+		}
+
+		return MatchResult{Matched: true, Reason: "all filters matched", FilterName: "And"}
+	}
+}
+
+// FilterWithMetaOr combines multiple FilterWithMeta with OR logic.
+// At least one filter must return Matched=true. The first matching filter's
+// result is returned.
+func FilterWithMetaOr(filters ...FilterWithMeta) FilterWithMeta {
+	return func(event Event) MatchResult {
+		for _, f := range filters {
+			result := f(event)
+			if result.Matched {
+				return result
+			}
+		}
+
+		return MatchResult{Matched: false, Reason: "no filter matched", FilterName: "Or"}
+	}
+}
+
+// FilterWithMetaNot inverts a FilterWithMeta.
+func FilterWithMetaNot(f FilterWithMeta, name string) FilterWithMeta {
+	return func(event Event) MatchResult {
+		result := f(event)
+
+		return MatchResult{
+			Matched:    !result.Matched,
+			Reason:     "NOT(" + result.Reason + ")",
+			FilterName: name,
+		}
+	}
+}
+
+// WithMeta wraps a plain Filter with a name and reason, returning a FilterWithMeta.
+// The result is always Matched=true if the inner filter passes, with the
+// given reason and name attached.
+func WithMeta(f Filter, name, reason string) FilterWithMeta {
+	return func(event Event) MatchResult {
+		return MatchResult{
+			Matched:    f(event),
+			Reason:     reason,
+			FilterName: name,
+		}
+	}
+}
+
 // FilterIgnoreGlobs creates a filter that discards events for files matching
 // any of the given glob patterns. This is useful for excluding files by
 // pattern (e.g., "*.log", "*.tmp", ".*") at the filter level.

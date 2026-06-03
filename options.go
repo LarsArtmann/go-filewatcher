@@ -279,3 +279,21 @@ func WithContentHashing() Option {
 		w.contentHashing = true
 	}
 }
+
+// WithSelfHeal enables automatic retry of failed watch registrations.
+// When a path fails to be added to the underlying fsnotify watcher (e.g.,
+// due to inotify resource exhaustion / ENOSPC), the watcher will periodically
+// retry the failed path at the given interval until it succeeds or the
+// watcher is closed. The interval must be > 0; a value of 0 is ignored.
+//
+// This is useful for long-running watchers that may encounter transient
+// resource exhaustion when directories are created faster than watches
+// can be added. Failed paths that succeed on retry are added to the watch
+// list normally and will receive subsequent fsnotify events.
+func WithSelfHeal(interval time.Duration) Option {
+	return func(w *Watcher) {
+		if interval > 0 {
+			w.selfHealInterval = interval
+		}
+	}
+}

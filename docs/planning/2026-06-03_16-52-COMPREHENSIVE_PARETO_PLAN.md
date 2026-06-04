@@ -44,19 +44,19 @@ Core features that customers will notice. Total: ~95min.
 
 Items that enable production deployment and observability. Total: ~110min.
 
-| #     | Task                                                    | Impact | Effort | Customer Value | File(s)                   |
-| ----- | ------------------------------------------------------- | ------ | ------ | -------------- | ------------------------- |
-| T3.1  | Prometheus metrics export (Counter/Gauge for stats)     | HIGH   | 12min  | HIGH (SRE)     | metrics.go, options.go    |
-| T3.2  | Goreleaser configuration verification + .goreleaser.yml | MED    | 10min  | MED            | .goreleaser.yml           |
-| T3.3  | Configure semantic-release (release-please or similar)  | MED    | 10min  | MED            | .github/workflows/        |
-| T3.4  | OpenTelemetry integration (otelhttp-style middleware)   | HIGH   | 12min  | HIGH           | otel.go, middleware.go    |
-| T3.5  | Error sanitization (remove absolute paths in prod mode) | MED    | 8min   | MED (security) | errors.go                 |
-| T3.6  | Localizable error messages (i18n key + default text)    | LOW    | 10min  | LOW            | errors.go                 |
-| T3.7  | Dead letter queue for failed events (callback sink)     | MED    | 10min  | MED            | middleware.go, options.go |
-| T3.8  | Error analytics hooks (counter + sampling)              | LOW    | 8min   | LOW            | errors.go, options.go     |
-| T3.9  | ~~Create standalone CLI tool~~ — CANCELLED: this is a library | ~~MED~~ | ~~12min~~ | ~~HIGH~~ | — |
-| T3.10 | Watcher.AddRecursive(path) for partial recursion        | LOW    | 8min   | MED            | watcher.go                |
-| T3.11 | Update TODO_LIST.md (mark T3 done)                      | LOW    | 5min   | Internal       | TODO_LIST.md              |
+| #     | Task                                                          | Impact  | Effort    | Customer Value | File(s)                   |
+| ----- | ------------------------------------------------------------- | ------- | --------- | -------------- | ------------------------- |
+| T3.1  | Prometheus metrics export (Counter/Gauge for stats)           | HIGH    | 12min     | HIGH (SRE)     | metrics.go, options.go    |
+| T3.2  | Goreleaser configuration verification + .goreleaser.yml       | MED     | 10min     | MED            | .goreleaser.yml           |
+| T3.3  | Configure semantic-release (release-please or similar)        | MED     | 10min     | MED            | .github/workflows/        |
+| T3.4  | OpenTelemetry integration (otelhttp-style middleware)         | HIGH    | 12min     | HIGH           | otel.go, middleware.go    |
+| T3.5  | Error sanitization (remove absolute paths in prod mode)       | MED     | 8min      | MED (security) | errors.go                 |
+| T3.6  | Localizable error messages (i18n key + default text)          | LOW     | 10min     | LOW            | errors.go                 |
+| T3.7  | Dead letter queue for failed events (callback sink)           | MED     | 10min     | MED            | middleware.go, options.go |
+| T3.8  | Error analytics hooks (counter + sampling)                    | LOW     | 8min      | LOW            | errors.go, options.go     |
+| T3.9  | ~~Create standalone CLI tool~~ — CANCELLED: this is a library | ~~MED~~ | ~~12min~~ | ~~HIGH~~       | —                         |
+| T3.10 | Watcher.AddRecursive(path) for partial recursion              | LOW     | 8min      | MED            | watcher.go                |
+| T3.11 | Update TODO_LIST.md (mark T3 done)                            | LOW     | 5min      | Internal       | TODO_LIST.md              |
 
 ## TIER 4 — Long-term / External (deferred to next sprint)
 

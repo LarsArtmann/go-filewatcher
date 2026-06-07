@@ -106,10 +106,13 @@
             projectRootFile = "go.mod";
             programs = {
               gofumpt.enable = true;
+              goimports.enable = true;
               nixfmt.enable = true;
             };
           };
 
+          checks.format = config.treefmt.build.check self;
+          checks.build = config.packages.default;
           packages.default = pkgs.buildGoModule {
             pname = "go-filewatcher";
             inherit src version vendorHash;
@@ -117,8 +120,8 @@
             meta = {
               description = "High-performance, composable file system watcher for Go";
               homepage = "https://github.com/larsartmann/go-filewatcher";
-              license = pkgs.lib.licenses.mit;
-              maintainers = [ ];
+              license = lib.licenses.mit;
+              maintainers = [ lib.maintainers.larsartmann ];;
             };
           };
 
@@ -152,8 +155,7 @@
               ];
 
               GOWORK = "off";
-            };
-          };
+            };          };
 
           apps = {
             test = mkApp "test" ''

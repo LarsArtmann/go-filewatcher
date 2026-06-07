@@ -1,28 +1,28 @@
 {
   description = "go-filewatcher - A Go file watching library with debouncing and middleware support";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+    systems.url = "github:nix-systems/default";
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
 
   outputs =
-    { self, nixpkgs }:
+    inputs@{
+      self,
+      nixpkgs,
+      flake-parts,
+      systems,
+      treefmt-nix,
+    }:
     let
-      supportedSystems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
-
-      forEachSystem =
-        f:
-        nixpkgs.lib.genAttrs supportedSystems (
-          system:
-          f {
-            inherit system;
-            pkgs = nixpkgs.legacyPackages.${system};
-          }
-        );
-
       version = self.rev or self.dirtyRev or "dev";
       vendorHash = "sha256-nwcNVqwU1gWXaKWwzQdz0LutX9eDhSJgCNFdTlhccWs=";
 
@@ -72,76 +72,20 @@
         ];
       };
     in
-    {
-      overlays.default = final: _prev: {
-        go-filewatcher = final.callPackage ./package.nix { };
-      };
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = import systems;
 
-      packages = forEachSystem (
-        { pkgs, ... }:
+      imports = [
+        treefmt-nix.flakeModule
+      ];
+
+      perSystem =
         {
-          default = pkgs.buildGoModule {
-            pname = "go-filewatcher";
-            inherit src version vendorHash;
-            doCheck = false;
-            meta = {
-              description = "High-performance, composable file system watcher for Go";
-              homepage = "https://github.com/larsartmann/go-filewatcher";
-              license = pkgs.lib.licenses.mit;
-              maintainers = [ ];
-            };
-          };
-        }
-      );
-
-      devShells = forEachSystem (
-        { pkgs, ... }:
-        {
-          default = pkgs.mkShell {
-            name = "go-filewatcher";
-
-            packages = [
-              pkgs.go_1_26
-              pkgs.golangci-lint
-              pkgs.gofumpt
-              pkgs.golines
-              pkgs.gopls
-              pkgs.delve
-              pkgs.gotools
-              pkgs.git
-            ];
-
-            shellHook = ''
-              alias check='nix run .#check'
-              alias ci='nix run .#ci'
-              alias lint='nix run .#lint'
-              alias lint-fix='nix run .#lint-fix'
-              alias test='nix run .#test'
-
-              echo "go-filewatcher development shell"
-              echo "Go version: $(go version)"
-              echo "golangci-lint version: $(golangci-lint --version)"
-              echo ""
-              echo "Commands (nix run .#<name> or alias):"
-              echo "  check       - vet + lint + test"
-              echo "  ci          - tidy + fmt + vet + lint + test"
-              echo "  lint-fix    - Auto-fix linter issues"
-              echo "  test        - Run tests with -race"
-              echo "  test-v      - Run tests with -race -v"
-              echo "  lint        - Run linter"
-              echo "  bench       - Run benchmarks"
-              echo "  coverage    - Generate coverage report"
-              echo "  fmt         - Format Go code"
-              echo "  tidy        - Run go mod tidy"
-            '';
-
-            GOWORK = "off";
-          };
-        }
-      );
-
-      apps = forEachSystem (
-        { pkgs, system }:
+          config,
+          pkgs,
+          system,
+          ...
+        }:
         let
           mkApp = name: text: {
             type = "app";
@@ -158,101 +102,147 @@
           };
         in
         {
-          test = mkApp "test" ''
-            cd "${self}"
-            go test -race -count=1 ./...
-          '';
+          treefmt = {
+            projectRootFile = "go.mod";
+            programs = {
+              gofumpt.enable = true;
+              nixfmt.enable = true;
+            };
+          };
 
-          test-v = mkApp "test-v" ''
-            cd "${self}"
-            go test -v -race -count=1 ./...
-          '';
+          packages.default = pkgs.buildGoModule {
+            pname = "go-filewatcher";
+            inherit src version vendorHash;
+            doCheck = false;
+            meta = {
+              description = "High-performance, composable file system watcher for Go";
+              homepage = "https://github.com/larsartmann/go-filewatcher";
+              license = pkgs.lib.licenses.mit;
+              maintainers = [ ];
+            };
+          };
 
-          lint = mkApp "lint" ''
-            cd "${self}"
-            golangci-lint run ./...
-          '';
+          devShells = {
+            default = pkgs.mkShell {
+              name = "go-filewatcher";
 
-          lint-fix = mkApp "lint-fix" ''
-            cd "${self}"
-            golangci-lint run --fix ./...
-          '';
+              packages = [
+                pkgs.go_1_26
+                pkgs.golangci-lint
+                pkgs.gofumpt
+                pkgs.golines
+                pkgs.gopls
+                pkgs.delve
+                pkgs.gotools
+                pkgs.git
+              ];
 
-          vet = mkApp "vet" ''
-            cd "${self}"
-            go vet ./...
-          '';
+              shellHook = ''
+                echo "go-filewatcher development shell"
+                echo "Go version: $(go version)"
+              '';
 
-          fmt = mkApp "fmt" ''
-            cd "${self}"
-            go fmt ./...
-            gofumpt -w .
-          '';
+              GOWORK = "off";
+            };
 
-          bench = mkApp "bench" ''
-            cd "${self}"
-            go test -bench=. -benchmem -race ./...
-          '';
+            ci = pkgs.mkShellNoCC {
+              packages = [
+                pkgs.go_1_26
+                pkgs.golangci-lint
+              ];
 
-          coverage = mkApp "coverage" ''
-            cd "${self}"
-            COVERAGE_OUT="''${TMPDIR:-/tmp}/coverage.out"
-            go test -coverprofile="$COVERAGE_OUT" ./...
-            go tool cover -func="$COVERAGE_OUT"
-          '';
+              GOWORK = "off";
+            };
+          };
 
-          tidy = mkApp "tidy" ''
-            cd "${self}"
-            go mod tidy
-          '';
+          apps = {
+            test = mkApp "test" ''
+              cd "${self}"
+              go test -race -count=1 ./...
+            '';
 
-          check = mkApp "check" ''
-            cd "${self}"
-            echo "Running vet..."
-            go vet ./...
-            echo "Running lint..."
-            golangci-lint run ./...
-            echo "Running tests..."
-            go test -race -count=1 ./...
-            echo "All checks passed."
-          '';
+            test-v = mkApp "test-v" ''
+              cd "${self}"
+              go test -v -race -count=1 ./...
+            '';
 
-          ci = mkApp "ci" ''
-            cd "${self}"
-            echo "Running tidy..."
-            go mod tidy
-            echo "Running fmt..."
-            go fmt ./...
-            echo "Running vet..."
-            go vet ./...
-            echo "Running lint..."
-            golangci-lint run ./...
-            echo "Running tests..."
-            go test -race -count=1 ./...
-            echo "CI complete."
-          '';
+            lint = mkApp "lint" ''
+              cd "${self}"
+              golangci-lint run ./...
+            '';
 
-          default = self.apps.${system}.check;
-        }
-      );
+            lint-fix = mkApp "lint-fix" ''
+              cd "${self}"
+              golangci-lint run --fix ./...
+            '';
 
-      checks = forEachSystem (
-        { pkgs, system }:
-        let
-          goModules = self.packages.${system}.default.goModules;
-        in
-        {
-          build = self.packages.${system}.default;
+            vet = mkApp "vet" ''
+              cd "${self}"
+              go vet ./...
+            '';
 
-          test =
-            pkgs.runCommand "test"
-              {
-                nativeBuildInputs = [
-                  pkgs.go_1_26
-                  pkgs.gcc
-                ];
-              }
-              ''
+            fmt = mkApp "fmt" ''
+              cd "${self}"
+              go fmt ./...
+              gofumpt -w .
+            '';
+
+            bench = mkApp "bench" ''
+              cd "${self}"
+              go test -bench=. -benchmem -race ./...
+            '';
+
+            coverage = mkApp "coverage" ''
+              cd "${self}"
+              COVERAGE_OUT="''${TMPDIR:-/tmp}/coverage.out"
+              go test -coverprofile="$COVERAGE_OUT" ./...
+              go tool cover -func="$COVERAGE_OUT"
+            '';
+
+            tidy = mkApp "tidy" ''
+              cd "${self}"
+              go mod tidy
+            '';
+
+            check = mkApp "check" ''
+              cd "${self}"
+              echo "Running vet..."
+              go vet ./...
+              echo "Running lint..."
+              golangci-lint run ./...
+              echo "Running tests..."
+              go test -race -count=1 ./...
+              echo "All checks passed."
+            '';
+
+            ci = mkApp "ci" ''
+              cd "${self}"
+              echo "Running tidy..."
+              go mod tidy
+              echo "Running fmt..."
+              go fmt ./...
+              echo "Running vet..."
+              go vet ./...
+              echo "Running lint..."
+              golangci-lint run ./...
+              echo "Running tests..."
+              go test -race -count=1 ./...
+              echo "CI complete."
+            '';
+
+            default = self.apps.${system}.check;
+          };
+
+          checks =
+            let
+              goModules = config.packages.default.goModules;
+            in
+            {
+              build = config.packages.default;
+
+              test = pkgs.runCommand "test" {
+                nativeBuildInputs = [ pkgs.go_1_26 pkgs.gcc ];
+              } ''
                 export GOWORK=off
                 export HOME="$TMPDIR"
                 cp -r "${self}" src && chmod -R u+w src && cd src
@@ -261,15 +251,9 @@
                 touch "$out"
               '';
 
-          lint =
-            pkgs.runCommand "lint"
-              {
-                nativeBuildInputs = [
-                  pkgs.go_1_26
-                  pkgs.golangci-lint
-                ];
-              }
-              ''
+              lint = pkgs.runCommand "lint" {
+                nativeBuildInputs = [ pkgs.go_1_26 pkgs.golangci-lint ];
+              } ''
                 export GOWORK=off
                 export HOME="$TMPDIR"
                 cp -r "${self}" src && chmod -R u+w src && cd src
@@ -278,15 +262,9 @@
                 touch "$out"
               '';
 
-          vet =
-            pkgs.runCommand "vet"
-              {
-                nativeBuildInputs = [
-                  pkgs.go_1_26
-                  pkgs.gcc
-                ];
-              }
-              ''
+              vet = pkgs.runCommand "vet" {
+                nativeBuildInputs = [ pkgs.go_1_26 pkgs.gcc ];
+              } ''
                 export GOWORK=off
                 export HOME="$TMPDIR"
                 cp -r "${self}" src && chmod -R u+w src && cd src
@@ -295,15 +273,9 @@
                 touch "$out"
               '';
 
-          go-fmt =
-            pkgs.runCommand "go-fmt"
-              {
-                nativeBuildInputs = [
-                  pkgs.go_1_26
-                  pkgs.gofumpt
-                ];
-              }
-              ''
+              go-fmt = pkgs.runCommand "go-fmt" {
+                nativeBuildInputs = [ pkgs.go_1_26 pkgs.gofumpt ];
+              } ''
                 export GOWORK=off
                 export HOME="$TMPDIR"
                 cp -r "${self}" src && chmod -R u+w src && cd src
@@ -315,9 +287,11 @@
                 fi
                 touch "$out"
               '';
-        }
-      );
+            };
+        };
 
-      formatter = forEachSystem ({ pkgs, ... }: pkgs.nixfmt);
+      flake.overlays.default = final: _prev: {
+        go-filewatcher = final.callPackage ./package.nix { };
+      };
     };
 }

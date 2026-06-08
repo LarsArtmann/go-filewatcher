@@ -121,7 +121,7 @@
               description = "High-performance, composable file system watcher for Go";
               homepage = "https://github.com/larsartmann/go-filewatcher";
               license = lib.licenses.mit;
-                mainProgram = "go-filewatcher";
+              mainProgram = "go-filewatcher";
               maintainers = [ lib.maintainers.larsartmann ];
             };
           };
@@ -156,7 +156,8 @@
               ];
 
               GOWORK = "off";
-            };          };
+            };
+          };
 
           apps = {
             test = mkApp "test" ''
@@ -244,53 +245,77 @@
               format = config.treefmt.build.check self;
               build = config.packages.default;
 
-              test = pkgs.runCommand "test" {
-                nativeBuildInputs = [ pkgs.go_1_26 pkgs.gcc ];
-              } ''
-                export GOWORK=off
-                export HOME="$TMPDIR"
-                cp -r "${self}" src && chmod -R u+w src && cd src
-                ln -s "${goModules}" vendor
-                go test -race -count=1 ./...
-                touch "$out"
-              '';
+              test =
+                pkgs.runCommand "test"
+                  {
+                    nativeBuildInputs = [
+                      pkgs.go_1_26
+                      pkgs.gcc
+                    ];
+                  }
+                  ''
+                    export GOWORK=off
+                    export HOME="$TMPDIR"
+                    cp -r "${self}" src && chmod -R u+w src && cd src
+                    ln -s "${goModules}" vendor
+                    go test -race -count=1 ./...
+                    touch "$out"
+                  '';
 
-              lint = pkgs.runCommand "lint" {
-                nativeBuildInputs = [ pkgs.go_1_26 pkgs.golangci-lint ];
-              } ''
-                export GOWORK=off
-                export HOME="$TMPDIR"
-                cp -r "${self}" src && chmod -R u+w src && cd src
-                ln -s "${goModules}" vendor
-                golangci-lint run ./...
-                touch "$out"
-              '';
+              lint =
+                pkgs.runCommand "lint"
+                  {
+                    nativeBuildInputs = [
+                      pkgs.go_1_26
+                      pkgs.golangci-lint
+                    ];
+                  }
+                  ''
+                    export GOWORK=off
+                    export HOME="$TMPDIR"
+                    cp -r "${self}" src && chmod -R u+w src && cd src
+                    ln -s "${goModules}" vendor
+                    golangci-lint run ./...
+                    touch "$out"
+                  '';
 
-              vet = pkgs.runCommand "vet" {
-                nativeBuildInputs = [ pkgs.go_1_26 pkgs.gcc ];
-              } ''
-                export GOWORK=off
-                export HOME="$TMPDIR"
-                cp -r "${self}" src && chmod -R u+w src && cd src
-                ln -s "${goModules}" vendor
-                go vet ./...
-                touch "$out"
-              '';
+              vet =
+                pkgs.runCommand "vet"
+                  {
+                    nativeBuildInputs = [
+                      pkgs.go_1_26
+                      pkgs.gcc
+                    ];
+                  }
+                  ''
+                    export GOWORK=off
+                    export HOME="$TMPDIR"
+                    cp -r "${self}" src && chmod -R u+w src && cd src
+                    ln -s "${goModules}" vendor
+                    go vet ./...
+                    touch "$out"
+                  '';
 
-              go-fmt = pkgs.runCommand "go-fmt" {
-                nativeBuildInputs = [ pkgs.go_1_26 pkgs.gofumpt ];
-              } ''
-                export GOWORK=off
-                export HOME="$TMPDIR"
-                cp -r "${self}" src && chmod -R u+w src && cd src
-                unformatted=$(gofmt -l .)
-                if [ -n "$unformatted" ]; then
-                  echo "Files need formatting:"
-                  echo "$unformatted"
-                  exit 1
-                fi
-                touch "$out"
-              '';
+              go-fmt =
+                pkgs.runCommand "go-fmt"
+                  {
+                    nativeBuildInputs = [
+                      pkgs.go_1_26
+                      pkgs.gofumpt
+                    ];
+                  }
+                  ''
+                    export GOWORK=off
+                    export HOME="$TMPDIR"
+                    cp -r "${self}" src && chmod -R u+w src && cd src
+                    unformatted=$(gofmt -l .)
+                    if [ -n "$unformatted" ]; then
+                      echo "Files need formatting:"
+                      echo "$unformatted"
+                      exit 1
+                    fi
+                    touch "$out"
+                  '';
             };
         };
 

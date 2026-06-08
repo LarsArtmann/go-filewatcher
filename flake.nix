@@ -25,6 +25,7 @@
     let
       version = self.rev or self.dirtyRev or "dev";
       vendorHash = "sha256-nwcNVqwU1gWXaKWwzQdz0LutX9eDhSJgCNFdTlhccWs=";
+      proxyVendor = true;
 
       src = nixpkgs.lib.fileset.toSource {
         root = ./.;

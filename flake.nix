@@ -83,6 +83,7 @@
         {
           config,
           pkgs,
+          lib,
           system,
           ...
         }:
@@ -111,8 +112,6 @@
             };
           };
 
-          checks.format = config.treefmt.build.check self;
-          checks.build = config.packages.default;
           packages.default = pkgs.buildGoModule {
             pname = "go-filewatcher";
             inherit src version vendorHash;
@@ -240,6 +239,7 @@
               goModules = config.packages.default.goModules;
             in
             {
+              format = config.treefmt.build.check self;
               build = config.packages.default;
 
               test = pkgs.runCommand "test" {

@@ -121,7 +121,7 @@
               description = "High-performance, composable file system watcher for Go";
               homepage = "https://github.com/larsartmann/go-filewatcher";
               license = lib.licenses.mit;
-              maintainers = [ lib.maintainers.larsartmann ];;
+              maintainers = [ lib.maintainers.larsartmann ];
             };
           };
 

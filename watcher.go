@@ -412,12 +412,12 @@ func (w *Watcher) AddRecursive(path string, maxDepth int) error {
 
 	err := w.checkClosedOp("add recursive path")
 	if err != nil {
-		return err
+		return fmt.Errorf("maxDepth=%d: %w", maxDepth, err)
 	}
 
 	abs, resolveErr := filepath.Abs(path)
 	if resolveErr != nil {
-		return fmt.Errorf("resolving path %q in AddRecursive(): %w", path, resolveErr)
+		return fmt.Errorf("resolving path %q in AddRecursive() (maxDepth=%d): %w", path, maxDepth, resolveErr)
 	}
 
 	if maxDepth == 0 {
@@ -427,7 +427,7 @@ func (w *Watcher) AddRecursive(path string, maxDepth int) error {
 	if maxDepth < 0 {
 		addErr := w.walkAndAddPaths(NewRootPath(abs))
 		if addErr != nil {
-			return fmt.Errorf("adding resolved path %q to watcher: %w", abs, addErr)
+			return fmt.Errorf("adding resolved path %q to watcher (maxDepth=%d): %w", abs, maxDepth, addErr)
 		}
 
 		return nil
@@ -443,7 +443,7 @@ func (w *Watcher) AddRecursive(path string, maxDepth int) error {
 func (w *Watcher) addPathWithDepth(root RootPath, maxDepth int, currentDepth *int) error {
 	entries, err := os.ReadDir(root.Get())
 	if err != nil {
-		return fmt.Errorf("reading directory %q: %w", root, err)
+		return fmt.Errorf("reading directory %q (maxDepth=%d): %w", root, maxDepth, err)
 	}
 
 	w.tryAddPath(root.Get())
@@ -477,7 +477,7 @@ func (w *Watcher) addPathWithDepth(root RootPath, maxDepth int, currentDepth *in
 
 		addPathErr := w.addPathWithDepth(NewRootPath(subPath), maxDepth, currentDepth)
 		if addPathErr != nil {
-			return addPathErr
+			return fmt.Errorf("maxDepth=%d: %w", maxDepth, addPathErr)
 		}
 
 		*currentDepth--

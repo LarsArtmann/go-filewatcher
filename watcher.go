@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
+	"slices"
 )
 
 const defaultEventBufferSize = 64 // Default capacity for the event channel buffer
@@ -45,12 +46,7 @@ var DefaultIgnoreDirs = []string{
 
 // DefaultIgnoreDirsCopy returns a defensive copy of DefaultIgnoreDirs
 // so callers cannot mutate the global default.
-func DefaultIgnoreDirsCopy() []string {
-	result := make([]string, len(DefaultIgnoreDirs))
-	copy(result, DefaultIgnoreDirs)
-
-	return result
-}
+func DefaultIgnoreDirsCopy() []string { return slices.Clone(DefaultIgnoreDirs) }
 
 // Watcher watches file system paths for changes and emits filtered,
 // debounced events through a channel.

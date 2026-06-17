@@ -8,13 +8,13 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
-	"slices"
 )
 
 const defaultEventBufferSize = 64 // Default capacity for the event channel buffer

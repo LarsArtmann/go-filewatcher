@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Added
+
+- `FEATURES.md` — honest feature inventory with status indicators (DONE, PARTIALLY DONE, PLANNED, WORTH CONSIDERING)
+- `ROADMAP.md` — long-term direction, raw ideas, and non-goals
+- `AddRecursive` error messages now include the `maxDepth` parameter for easier debugging
+
+### Changed
+
+- `DefaultIgnoreDirsCopy()` now uses `slices.Clone` instead of a manual slice copy
+- Import ordering in `watcher.go` normalized via goimports
+- `AGENTS.md` restructured: removed version-stamped gotchas (changelog-like), added pointers to companion docs (FEATURES/ROADMAP/TODO_LIST), fixed broken code fence in Critical Commands, corrected gogenfilter version reference
+- `README.md` updated: expanded Configuration Options table (24 options), Filters table (17 filters), Middleware table (18 middleware), added Resilience & Observability sections, added `Event.Hash` field
+- `TODO_LIST.md` rebuilt: removed 140+ completed historical items, kept only actionable short/mid-term work with clear priorities
+
+### Dependencies
+
+- `github.com/LarsArtmann/gogenfilter/v3` updated from v3.1.0 to v3.2.0
+
 ## [2.2.0] - 2026-06-03
 
 ### Added

@@ -2,6 +2,11 @@
 
 **Go 1.26.3** | `github.com/larsartmann/go-filewatcher/v2` | **MIT License**
 
+> **Companion docs:** [FEATURES.md](./FEATURES.md) (feature inventory) ·
+> [ROADMAP.md](./ROADMAP.md) (long-term direction) · [TODO_LIST.md](./TODO_LIST.md)
+> (actionable work) · [CHANGELOG.md](./CHANGELOG.md) (release history).
+> This file is for enduring, hard-to-discover-from-code context only.
+
 ---
 
 ## Critical Commands
@@ -35,6 +40,7 @@ ci          # nix run .#ci
 lint        # nix run .#lint
 lint-fix    # nix run .#lint-fix
 test        # nix run .#test
+```
 
 ## Updating vendorHash
 
@@ -187,9 +193,9 @@ Don't remove the nolint — this is intentional.
 
 `MiddlewareCircuitBreaker` uses three states: `CircuitClosed` → `CircuitOpen` → `CircuitHalfOpen`. In half-open, only one event passes through to test recovery.
 
-### 11. Graceful ENOSPC Handling (v2.2.0)
+### 11. Graceful ENOSPC Handling
 
-`fswatcher.Add()` errors (including ENOSPC) no longer abort the entire walk. Instead:
+`fswatcher.Add()` errors (including ENOSPC) do not abort the entire walk. Instead:
 
 - The error is logged via `handleError()`
 - The `watchErrors` atomic counter is incremented
@@ -197,14 +203,14 @@ Don't remove the nolint — this is intentional.
 - `Stats.WatchErrors` tracks how many paths failed to add
 - This allows the watcher to start in degraded mode instead of failing entirely
 
-### 12. Inotify Budget Awareness (v2.2.0)
+### 12. Inotify Budget Awareness
 
 - `maxWatches` is auto-detected from `/proc/sys/fs/inotify/max_user_watches` on Linux
 - Override with `WithMaxWatches(n)`
 - When budget is exhausted, directories are skipped silently
 - `Stats.WatchLimit` and `Stats.WatchBudgetUsed` track budget usage
 
-### 13. .gitignore-Aware Walking (v2.2.0)
+### 13. .gitignore-Aware Walking
 
 - Enabled by default (`WithGitignore(true)`)
 - Loads `.gitignore` files during directory walking
@@ -212,25 +218,28 @@ Don't remove the nolint — this is intentional.
 - Uses `github.com/sabhiram/go-gitignore` (zero transitive deps)
 - gitignore cache is stored per-directory for hierarchical matching
 
-### 14. Batched Watch Registration (v2.2.0)
+### 14. Batched Watch Registration
 
 - Directories are collected during walk and added in batches of 1000
 - `runtime.Gosched()` is called between batches to yield to event processing
 - Reduces startup latency for large directory trees
 
-### 15. Path-Level Exclusions (v2.2.0)
+### 15. Path-Level Exclusions
 
 - `WithExcludePaths(paths...)` excludes absolute paths during walk
 - Prefix matching: excluding `/home/user/forks` skips all subdirectories too
 - Walk-time only: does not affect event filtering
 
-### 16. Remove() Now Cleans Up Subdirectories (v2.2.0)
+### 16. Remove() Cleans Up Subdirectories
 
-`Remove(path)` now removes all subdirectory watches under the given path, not just the top-level directory. This prevents watch leaks.
+`Remove(path)` removes all subdirectory watches under the given path, not just
+the top-level directory. This prevents watch leaks.
 
-### 17. Reset() Method (v2.2.0)
+### 17. Reset() Method
 
-`Reset()` clears runtime state while preserving configuration (filters, middleware, debounce, options). Allows re-calling `Watch()` after `Close()` without rebuilding from scratch.
+`Reset()` clears runtime state while preserving configuration (filters,
+middleware, debounce, options). Allows re-calling `Watch()` after `Close()`
+without rebuilding from scratch.
 
 ---
 
@@ -263,21 +272,22 @@ Run `nix run .#lint-fix` — it auto-fixes many issues.
 ## Dependencies
 
 ```
-github.com/fsnotify/fsnotify         # Core file watching
-github.com/LarsArtmann/gogenfilter  # Generated code detection (v3, local replace)
-github.com/sabhiram/go-gitignore    # .gitignore pattern matching (zero transitive deps)
-golang.org/x/time/rate              # rate.Limiter for rate limiting middleware
+github.com/fsnotify/fsnotify          # Core file watching (v1.10.1)
+github.com/LarsArtmann/gogenfilter/v3 # Generated code detection (v3.2.0, local replace)
+github.com/sabhiram/go-gitignore      # .gitignore pattern matching (zero transitive deps)
+golang.org/x/time/rate                # rate.Limiter for MiddlewareThrottle
 ```
 
 ### gogenfilter v3 API
 
-**Breaking changes from v3:**
+The library depends on `github.com/LarsArtmann/gogenfilter/v3` (currently v3.2.0).
+The v3 API differs from v0/v2 in these ways (relevant when upgrading consumers):
 
 - `NewFilter` returns `(*Filter, error)` — must handle error
 - `WithFilterOptions` returns `(FilterConfig, error)` — must handle error
 - `Enabled()` / `Disabled()` removed — auto-enables when configured
 - `ShouldFilter` renamed to `Filter` — `f.Filter(path)` returns `(bool, error)`
-- New generators: `FilterOapi`, `FilterDeepcopy`, `FilterWire`, `FilterMoq`
+- Generators: `FilterOapi`, `FilterDeepcopy`, `FilterWire`, `FilterMoq`
 
 ## Named Types (phantom types)
 
@@ -302,7 +312,8 @@ Plain `type X string` named types for compile-time type safety on path-like stri
 
 ### Flaky Tests
 
-These tests are timing-sensitive and may fail intermittently:
+These tests are timing-sensitive and may fail intermittently (tracked in
+[TODO_LIST.md](./TODO_LIST.md) under HIGH priority):
 
 | Test                               | Reason                                                                                     |
 | ---------------------------------- | ------------------------------------------------------------------------------------------ |

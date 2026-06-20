@@ -66,8 +66,14 @@ var (
 	mockgenEventCases = twoTestCases(
 		"service_mock.go",
 		"/project/mocks/service_mock.go",
+		"user_mock.go",
+		"/project/mocks/user_mock.go",
+	)
+	mockeryEventCases = twoTestCases(
 		"mock_service.go",
 		"/project/mocks/mock_service.go",
+		"mock_user.go",
+		"/project/mocks/mock_user.go",
 	)
 )
 
@@ -86,6 +92,7 @@ func TestFilterGeneratedCode_SingleFilters(t *testing.T) {
 	runSingleFilterSubtests(t, "GoEnum", gogenfilter.FilterGoEnum, goEnumEventCases)
 	runSingleFilterSubtests(t, "Protobuf", gogenfilter.FilterProtobuf, protobufEventCases)
 	runSingleFilterSubtests(t, "Mockgen", gogenfilter.FilterMockgen, mockgenEventCases)
+	runSingleFilterSubtests(t, "Mockery", gogenfilter.FilterMockery, mockeryEventCases)
 
 	t.Run("RegularFile", func(t *testing.T) {
 		filter := FilterGeneratedCode(gogenfilter.FilterSQLC)

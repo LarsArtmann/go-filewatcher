@@ -86,7 +86,7 @@ jobs:
         run: |
           mkdir -p bench-results
           go test -bench=. -benchmem -count=1 -run=^$ ./... > bench-results/bench.txt 2>&1
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: github.event_name == 'push'
         with:
           name: benchmark-results

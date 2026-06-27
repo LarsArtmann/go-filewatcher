@@ -210,12 +210,7 @@ func TestWatcher_Watch_ContextCancellation(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	ctx, cancel := context.WithCancel(context.Background())
 
@@ -237,12 +232,7 @@ func TestWatcher_Watch_Deletes(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	ctx := setupTestContext(t, 10*time.Second)
 
@@ -648,12 +638,7 @@ func TestWatcher_Stats(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	stats := w.Stats()
 	if stats.IsClosed {
@@ -670,7 +655,7 @@ func TestWatcher_Stats(t *testing.T) {
 
 	ctx := setupTestContext(t, 5*time.Second)
 
-	_, err = w.Watch(ctx)
+	_, err := w.Watch(ctx)
 	if err != nil {
 		t.Fatalf("Watch failed: %v", err)
 	}
@@ -1037,12 +1022,7 @@ func TestWatcher_Errors(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	// Get errors channel
 	errorsCh := w.Errors()
@@ -1122,8 +1102,6 @@ func TestWatcher_ContextCancellation_Integration(t *testing.T) {
 
 	w := newTestWatcher(t, tmpDir, WithDebounce(50*time.Millisecond))
 
-	defer func() { _ = w.Close() }()
-
 	ctx, cancel := context.WithCancel(context.Background())
 
 	events, err := w.Watch(ctx)
@@ -1175,8 +1153,6 @@ func TestWatcher_ContextCancellation_WithPerPathDebounce(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	w := newTestWatcher(t, tmpDir, WithPerPathDebounce(50*time.Millisecond))
-
-	defer func() { _ = w.Close() }()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -1282,8 +1258,6 @@ func TestWatcher_Watch_WithPolling_FileModification(t *testing.T) {
 
 	w := newTestWatcher(t, tmpDir, WithPolling(true), WithPollInterval(200*time.Millisecond))
 
-	defer func() { _ = w.Close() }()
-
 	ctx := setupTestContext(t, 5*time.Second)
 
 	events, err := w.Watch(ctx)
@@ -1324,8 +1298,6 @@ func TestWatcher_Watch_WithPolling_FileRemoval(t *testing.T) {
 	}
 
 	w := newTestWatcher(t, tmpDir, WithPolling(true), WithPollInterval(200*time.Millisecond))
-
-	defer func() { _ = w.Close() }()
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -1371,8 +1343,6 @@ func TestWatcher_AddRecursive_DepthLimit(t *testing.T) {
 
 	w := newTestWatcher(t, tmpDir, WithRecursive(false))
 
-	defer func() { _ = w.Close() }()
-
 	err = w.AddRecursive(tmpDir, 1)
 	if err != nil {
 		t.Fatalf("AddRecursive failed: %v", err)
@@ -1411,8 +1381,6 @@ func TestWatcher_AddRecursive_FullRecursion(t *testing.T) {
 
 	w := newTestWatcher(t, tmpDir, WithRecursive(false))
 
-	defer func() { _ = w.Close() }()
-
 	err = w.AddRecursive(tmpDir, -1)
 	if err != nil {
 		t.Fatalf("AddRecursive failed: %v", err)
@@ -1442,8 +1410,6 @@ func TestWatcher_WithFollowSymlinks(t *testing.T) {
 	}
 
 	w := newTestWatcher(t, tmpDir, WithFollowSymlinks(true))
-
-	defer func() { _ = w.Close() }()
 
 	ctx := setupTestContext(t, 5*time.Second)
 

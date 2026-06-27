@@ -53,6 +53,20 @@ func (b *baseDebouncer) wait() {
 	b.wg.Wait()
 }
 
+// runIfActive locks the base mutex and invokes fn while holding the lock
+// only if the debouncer is not stopped. If the debouncer is already stopped,
+// fn is not invoked and the lock is released.
+func (b *baseDebouncer) runIfActive(fn func()) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	if b.isStopped() {
+		return
+	}
+
+	fn()
+}
+
 // add increments the WaitGroup for a pending callback.
 func (b *baseDebouncer) add() {
 	b.wg.Add(1)
@@ -101,38 +115,33 @@ func NewDebouncer(delay time.Duration) *Debouncer {
 // execution for the same key. This ensures callback runs only once for a burst
 // of events sharing the same key.
 func (d *Debouncer) Debounce(key DebounceKey, callback func()) {
-	d.base.mu.Lock()
-	defer d.base.mu.Unlock()
-
-	if d.base.isStopped() {
-		return
-	}
-
-	if entry, exists := d.entries[key]; exists {
-		d.base.stopTimer(entry.timer)
-	}
-
-	d.base.add()
-
-	entry := &debounceEntry{
-		fn:    callback,
-		timer: nil,
-	}
-	entry.timer = time.AfterFunc(d.base.delay, func() {
-		defer d.base.done()
-
-		d.base.mu.Lock()
-		delete(d.entries, key)
-		stopped := d.base.isStopped()
-		d.base.mu.Unlock()
-
-		if stopped {
-			return
+	d.base.runIfActive(func() {
+		if entry, exists := d.entries[key]; exists {
+			d.base.stopTimer(entry.timer)
 		}
 
-		callback()
+		d.base.add()
+
+		entry := &debounceEntry{
+			fn:    callback,
+			timer: nil,
+		}
+		entry.timer = time.AfterFunc(d.base.delay, func() {
+			defer d.base.done()
+
+			d.base.mu.Lock()
+			delete(d.entries, key)
+			stopped := d.base.isStopped()
+			d.base.mu.Unlock()
+
+			if stopped {
+				return
+			}
+
+			callback()
+		})
+		d.entries[key] = entry
 	})
-	d.entries[key] = entry
 }
 
 // Flush executes all pending functions immediately and clears all timers.
@@ -206,34 +215,29 @@ func NewGlobalDebouncer(delay time.Duration) *GlobalDebouncer {
 // callbacks, earlier ones are discarded. This is by design: GlobalDebouncer
 // coalesces all events into a single action.
 func (g *GlobalDebouncer) Debounce(_ DebounceKey, callback func()) {
-	g.base.mu.Lock()
-	defer g.base.mu.Unlock()
-
-	if g.base.isStopped() {
-		return
-	}
-
-	if g.timer != nil {
-		g.base.stopTimer(g.timer)
-	}
-
-	g.base.add()
-
-	g.fn = callback
-	g.timer = time.AfterFunc(g.base.delay, func() {
-		defer g.base.done()
-
-		g.base.mu.Lock()
-		g.timer = nil
-		g.fn = nil
-		stopped := g.base.isStopped()
-		g.base.mu.Unlock()
-
-		if stopped {
-			return
+	g.base.runIfActive(func() {
+		if g.timer != nil {
+			g.base.stopTimer(g.timer)
 		}
 
-		callback()
+		g.base.add()
+
+		g.fn = callback
+		g.timer = time.AfterFunc(g.base.delay, func() {
+			defer g.base.done()
+
+			g.base.mu.Lock()
+			g.timer = nil
+			g.fn = nil
+			stopped := g.base.isStopped()
+			g.base.mu.Unlock()
+
+			if stopped {
+				return
+			}
+
+			callback()
+		})
 	})
 }
 

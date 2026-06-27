@@ -110,12 +110,7 @@ func TestWalkDirFunc_NonDirEntry(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	filePath := filepath.Join(tmpDir, "test.txt")
 
@@ -283,12 +278,7 @@ func TestShouldExcludePath_EmptyExcludePaths(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	if w.shouldExcludePath(tmpDir) {
 		t.Errorf("shouldExcludePath(%q) = true, want false when no exclude paths configured", tmpDir)

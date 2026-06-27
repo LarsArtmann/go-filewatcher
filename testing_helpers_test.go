@@ -406,17 +406,20 @@ func waitForClose[T any](t *testing.T, channel <-chan T, timeout time.Duration) 
 	return closed
 }
 
-// newTestWatcher creates a new watcher with the given options.
-// Fatal if creation fails.
+// newTestWatcher creates a new watcher with the given options and registers
+// cleanup so the watcher is closed when the test ends. Fatal if creation fails.
+// Centralizes the "New + defer Close" boilerplate used across tests.
 func newTestWatcher(t *testing.T, tmpDir string, opts ...Option) *Watcher {
 	t.Helper()
 
-	w, err := New([]string{tmpDir}, opts...)
+	watcher, err := New([]string{tmpDir}, opts...)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	return w
+	t.Cleanup(func() { _ = watcher.Close() })
+
+	return watcher
 }
 
 // newErrorHandlerCallback creates an error handler that captures the context and error.

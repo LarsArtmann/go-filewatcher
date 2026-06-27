@@ -89,20 +89,13 @@ func collectEvents(ctx context.Context, events <-chan filewatcher.Event) []strin
 	return receivedEvents
 }
 
-// demonstrateSpecificFilters shows filtering specific generator types.
-func demonstrateSpecificFilters(watchDir string) {
-	log.Println("=== Example 1: Filter Specific Generator Types ===")
-	log.Println("Filtering: sqlc and protobuf files only")
-	log.Println()
-
-	// Create watcher that filters sqlc and protobuf files
+// startFilteredWatch creates a watcher over watchDir, starts a timeout-bounded
+// Watch, and registers cleanup for both. Centralizes the setup boilerplate so
+// each demonstration can focus on its specific configuration.
+func startFilteredWatch(watchDir string, opts ...filewatcher.Option) (context.Context, <-chan filewatcher.Event) {
 	watcher, err := filewatcher.New(
 		[]string{watchDir},
-		filewatcher.WithFilter(filewatcher.FilterGeneratedCode(
-			gogenfilter.FilterSQLC,
-			gogenfilter.FilterProtobuf,
-		)),
-		filewatcher.WithDebounce(debounceDelay),
+		opts...,
 	)
 	if err != nil {
 		log.Fatalf("Failed to create watcher: %v", err)
@@ -110,7 +103,6 @@ func demonstrateSpecificFilters(watchDir string) {
 
 	defer func() { _ = watcher.Close() }()
 
-	// Start watching with a timeout
 	ctx, cancel := context.WithTimeout(context.Background(), watchTimeout)
 	defer cancel()
 
@@ -120,6 +112,37 @@ func demonstrateSpecificFilters(watchDir string) {
 		log.Fatalf("Failed to watch: %v", err)
 	}
 
+	return ctx, events
+}
+
+// printTriggeredEvents logs each event name under a "Files that triggered events:" header.
+// Centralizes the post-collection reporting used by every demonstration.
+func printTriggeredEvents(receivedEvents []string) {
+	log.Println("Files that triggered events:")
+
+	for _, name := range receivedEvents {
+		log.Printf("  - %s\n", name)
+	}
+
+	log.Println()
+}
+
+// demonstrateSpecificFilters shows filtering specific generator types.
+func demonstrateSpecificFilters(watchDir string) {
+	log.Println("=== Example 1: Filter Specific Generator Types ===")
+	log.Println("Filtering: sqlc and protobuf files only")
+	log.Println()
+
+	// Create watcher that filters sqlc and protobuf files
+	ctx, events := startFilteredWatch(
+		watchDir,
+		filewatcher.WithFilter(filewatcher.FilterGeneratedCode(
+			gogenfilter.FilterSQLC,
+			gogenfilter.FilterProtobuf,
+		)),
+		filewatcher.WithDebounce(debounceDelay),
+	)
+
 	// Create test files
 	createTestFile(watchDir, "main.go", "package main")
 	createTestFile(watchDir, "db/models.go", "package db")             // sqlc - filtered
@@ -128,14 +151,8 @@ func demonstrateSpecificFilters(watchDir string) {
 	createTestFile(watchDir, "mocks/service_mock.go", "package mocks") // mockgen - NOT filtered
 
 	receivedEvents := collectEvents(ctx, events)
+	printTriggeredEvents(receivedEvents)
 
-	log.Println("Files that triggered events:")
-
-	for _, name := range receivedEvents {
-		log.Printf("  - %s\n", name)
-	}
-
-	log.Println()
 	log.Println("Filtered (no events):")
 	log.Println("  - models.go (sqlc)")
 	log.Println("  - user.pb.go (protobuf)")
@@ -148,40 +165,19 @@ func demonstrateAllFilters(watchDir string) {
 	log.Println()
 
 	// Create watcher that filters ALL generated code types
-	watcher, err := filewatcher.New(
-		[]string{watchDir},
+	ctx, events := startFilteredWatch(
+		watchDir,
 		filewatcher.WithFilter(filewatcher.FilterGeneratedCode()), // Defaults to FilterAll
 		filewatcher.WithDebounce(debounceDelay),
 	)
-	if err != nil {
-		log.Fatalf("Failed to create watcher: %v", err)
-	}
-
-	defer func() { _ = watcher.Close() }()
-
-	// Start watching with a timeout
-	ctx, cancel := context.WithTimeout(context.Background(), watchTimeout)
-	defer cancel()
-
-	events, err := watcher.Watch(ctx)
-	if err != nil {
-		//nolint:gocritic // log.Fatalf exits, cancel() runs via defer on success path
-		log.Fatalf("Failed to watch: %v", err)
-	}
 
 	// Create more test files
 	createTestFile(watchDir, "regular.go", "package main")
 	createTestFile(watchDir, "handlers.go", "package main")
 
 	receivedEvents := collectEvents(ctx, events)
+	printTriggeredEvents(receivedEvents)
 
-	log.Println("Files that triggered events:")
-
-	for _, name := range receivedEvents {
-		log.Printf("  - %s\n", name)
-	}
-
-	log.Println()
 	log.Println("All generated files are filtered!")
 	log.Println()
 }

@@ -1,7 +1,7 @@
 version: "2"
 run:
   timeout: 5m
-  go: 1.26.3
+  go: 1.26.4
   build-tags:
     - goexperiment.arenas
     - goexperiment.goroutineleakprofile
@@ -149,6 +149,9 @@ linters:
       forbid:
         - msg: use slog or log.Logger instead of fmt.Print*
           pattern: ^(fmt\.Print(|f|ln)|print|println)$
+    ginkgolinter:
+      forbid-focus-container: true
+      forbid-spec-pollution: true
     gocritic:
       disabled-checks:
         - ifElseChain
@@ -163,12 +166,18 @@ linters:
         - anon
         - stdlib
         - generic
+    makezero:
+      always: true
     revive:
       rules:
         - disabled: true
           name: exported
         - disabled: true
           name: package-comments
+    testifylint:
+      disable:
+        - go-require
+      enable-all: true
     varnamelen:
       ignore-map-index-ok: true
       ignore-names:

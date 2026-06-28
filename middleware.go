@@ -215,6 +215,21 @@ const defaultBatchWindow = 100 * time.Millisecond
 // defaultBatchSize is the default maximum number of events in a batch.
 const defaultBatchSize = 100
 
+// resolveBatchDefaults returns the provided window/maxSize, substituting the
+// package defaults when either is non-positive. Centralizes the defaulting
+// logic shared by MiddlewareBatch and MiddlewareErrorBatch.
+func resolveBatchDefaults(window time.Duration, maxSize int) (time.Duration, int) {
+	if window <= 0 {
+		window = defaultBatchWindow
+	}
+
+	if maxSize <= 0 {
+		maxSize = defaultBatchSize
+	}
+
+	return window, maxSize
+}
+
 // stopAndClearTimer stops the timer if it exists and resets it to nil.
 // Centralizes the timer cleanup pattern used by batching middlewares.
 func stopAndClearTimer(t **time.Timer) {
@@ -234,13 +249,7 @@ func stopAndClearTimer(t **time.Timer) {
 //
 //nolint:funlen // Complex middleware requiring inline logic
 func MiddlewareBatch(window time.Duration, maxSize int, flush func([]Event) error) Middleware {
-	if window <= 0 {
-		window = defaultBatchWindow
-	}
-
-	if maxSize <= 0 {
-		maxSize = defaultBatchSize
-	}
+	window, maxSize = resolveBatchDefaults(window, maxSize)
 
 	type batchState struct {
 		mu     sync.Mutex
@@ -615,16 +624,8 @@ type BatchError struct {
 // in batches. The flush function receives all collected errors when the window
 // expires or the batch reaches maxSize. Events are always forwarded regardless
 // of errors.
-//
-//nolint:funlen // Complex batching logic requiring inline state management
 func MiddlewareErrorBatch(window time.Duration, maxSize int, flush func([]BatchError)) Middleware {
-	if window <= 0 {
-		window = defaultBatchWindow
-	}
-
-	if maxSize <= 0 {
-		maxSize = defaultBatchSize
-	}
+	window, maxSize = resolveBatchDefaults(window, maxSize)
 
 	type errorBatchState struct {
 		mu     sync.Mutex

@@ -24,7 +24,7 @@
     }:
     let
       version = self.rev or self.dirtyRev or "dev";
-      vendorHash = "sha256-nwcNVqwU1gWXaKWwzQdz0LutX9eDhSJgCNFdTlhccWs=";
+      vendorHash = "sha256-shUMRuUAT1qIPvQN/055kF8G/9ulo8CTimCgfmWdEuY=";
       proxyVendor = true;
 
       src = nixpkgs.lib.fileset.toSource {

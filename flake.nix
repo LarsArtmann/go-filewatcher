@@ -122,7 +122,12 @@
               homepage = "https://github.com/larsartmann/go-filewatcher";
               license = lib.licenses.mit;
               mainProgram = "go-filewatcher";
-              maintainers = [ lib.maintainers.larsartmann ];
+              maintainers = [
+                {
+                  name = "Lars Artmann";
+                  github = "LarsArtmann";
+                }
+              ];
             };
           };
 

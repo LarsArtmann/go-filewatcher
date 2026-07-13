@@ -1,6 +1,6 @@
 # TODO List
 
-**Last Updated:** 2026-06-18
+**Last Updated:** 2026-07-13
 
 Short- and mid-term actionable work. Each item is scoped and owned by no one in
 particular — pick one, do it, tick the box.
@@ -17,9 +17,6 @@ Completed history lives in [CHANGELOG.md](./CHANGELOG.md) and
       `TestWatcher_Watch_WithMiddleware` intermittently fail due to fsnotify write
       coalescing. Either make assertions event-count-agnostic or `t.Skip` with a
       tracked issue and a re-enable plan.
-- [ ] **Wire goreleaser publish pipeline** — `.goreleaser.yml` exists but no
-      GitHub Actions workflow runs it on tag. Add a `release.yml` job that builds
-      cross-platform artifacts on `v*` tags.
 - [ ] **Deprecation audit for v3** — `WithWatchedIgnoreDirs` is the only
       declared deprecation. Inventory other candidates (e.g., two-arg
       `ErrorHandler` signature) and list them in API_STABILITY.md so v3 scope is
@@ -89,6 +86,6 @@ Completed history lives in [CHANGELOG.md](./CHANGELOG.md) and
 | Build           | Clean | ✅     |
 | Tests           | 100%  | ✅     |
 | Flaky tests     | 2     | 🟡     |
-| HIGH priority   | 3     | 🔴     |
-| MEDIUM priority | 11    | 🟡     |
+| HIGH priority   | 2     | 🔴     |
+| MEDIUM priority | 12    | 🟡     |
 | LOW priority    | 6     | 🟢     |

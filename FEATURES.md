@@ -1,6 +1,6 @@
 # Feature Inventory
 
-**Last Updated:** 2026-06-18 · **Version:** v2.2.0
+**Last Updated:** 2026-07-13 · **Version:** v2.2.0
 
 Honest status of every capability in go-filewatcher. Statuses:
 
@@ -68,11 +68,11 @@ Honest status of every capability in go-filewatcher. Statuses:
 
 ## Debouncing
 
-| Feature                | Status | Notes                                                               |
-| ---------------------- | ------ | ------------------------------------------------------------------- |
-| Global debounce        | ✅     | `WithDebounce(d)` — all events coalesced                            |
-| Per-path debounce      | ✅     | `WithPerPathDebounce(d)` — independent per file                     |
-| Programmatic debouncer | ✅     | `Debouncer` and `GlobalDebouncer` types with `Flush`/`Stop`/`Close` |
+| Feature                | Status | Notes                                                                 |
+| ---------------------- | ------ | --------------------------------------------------------------------- |
+| Global debounce        | ✅     | `WithDebounce(d)` — all events coalesced                              |
+| Per-path debounce      | ✅     | `WithPerPathDebounce(d)` — independent per file                       |
+| Programmatic debouncer | ✅     | `Debouncer` and `GlobalDebouncer` types with `Flush`/`Stop`/`Pending` |
 
 ## Observability
 
@@ -131,27 +131,28 @@ Honest status of every capability in go-filewatcher. Statuses:
 
 ## Developer Experience
 
-| Feature                          | Status | Notes                                                        |
-| -------------------------------- | ------ | ------------------------------------------------------------ |
-| Nix flake dev shell              | ✅     | `nix develop`, `direnv allow`                                |
-| Nix apps for all common commands | ✅     | `nix run .#{check,ci,test,lint,lint-fix,bench,coverage,...}` |
-| GitHub Actions CI                | ✅     | Test with race + 90% threshold, lint, examples-build, bench  |
-| Godoc examples                   | ✅     | 7 examples in `example_test.go`                              |
-| Runnable example programs        | ✅     | `examples/{basic,middleware,per-path-debounce}`              |
-| Cross-platform releases          | ✅     | `.goreleaser.yml` configuration                              |
-| Issue templates                  | ✅     | Bug report + feature request                                 |
+| Feature                          | Status | Notes                                                                 |
+| -------------------------------- | ------ | --------------------------------------------------------------------- |
+| Nix flake dev shell              | ✅     | `nix develop`, `direnv allow`                                         |
+| Nix apps for all common commands | ✅     | `nix run .#{check,ci,test,lint,lint-fix,bench,coverage,...}`          |
+| GitHub Actions CI                | ✅     | Test with race + 90% threshold, lint, examples-build, bench           |
+| Documentation website            | ✅     | Astro + Starlight site at `filewatcher.lars.software`                 |
+| Godoc examples                   | ✅     | 26 examples in `example_test.go`                                      |
+| Runnable example programs        | ✅     | `examples/{basic,middleware,per-path-debounce,demo,filter-generated}` |
+| Cross-platform releases          | ✅     | `.goreleaser.yml` + `release.yml` workflow on `v*` tags               |
+| Issue templates                  | ✅     | Bug report + feature request                                          |
 
 ## Planned / Worth Considering
 
 See [ROADMAP.md](./ROADMAP.md) for long-term direction and [TODO_LIST.md](./TODO_LIST.md) for committed short/mid-term work. Highlights:
 
-| Feature                                         | Status | Notes                                        |
-| ----------------------------------------------- | ------ | -------------------------------------------- |
-| Windows-specific edge case tests                | 🔵     | Currently CI runs Linux only                 |
-| Fuzz testing expansion                          | 🔵     | Existing fuzz tests; expand to more surfaces |
-| Error simulation testing framework              | 🔵     | For testing error middleware paths           |
-| Goreleaser release pipeline                     | 🔵     | Config exists; publish workflow not wired    |
-| Semantic-release automation                     | ⚪     | Currently manual version bumps               |
-| Localizable error messages                      | ⚪     | Sentinel errors are English-only today       |
-| fsnotify v2 tracking                            | ⚪     | Monitor upstream for breaking changes        |
-| `WatchChanges(ctx, targetState)` idempotent API | ⚪     | For sync-style workflows                     |
+| Feature                                         | Status | Notes                                                                  |
+| ----------------------------------------------- | ------ | ---------------------------------------------------------------------- |
+| Windows-specific edge case tests                | 🔵     | Currently CI runs Linux only                                           |
+| Fuzz testing expansion                          | 🔵     | Existing fuzz tests; expand to more surfaces                           |
+| Error simulation testing framework              | 🔵     | For testing error middleware paths                                     |
+| Goreleaser release pipeline                     | ✅     | `release.yml` triggers on `v*` tags with tests + lint + GitHub Release |
+| Semantic-release automation                     | ⚪     | Currently manual version bumps                                         |
+| Localizable error messages                      | ⚪     | Sentinel errors are English-only today                                 |
+| fsnotify v2 tracking                            | ⚪     | Monitor upstream for breaking changes                                  |
+| `WatchChanges(ctx, targetState)` idempotent API | ⚪     | For sync-style workflows                                               |

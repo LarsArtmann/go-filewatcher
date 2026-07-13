@@ -1,6 +1,6 @@
 # Roadmap
 
-**Last Updated:** 2026-06-18
+**Last Updated:** 2026-07-13
 
 Long-term direction and raw ideas for go-filewatcher. Items here are **not yet
 committed** — they graduate to [TODO_LIST.md](./TODO_LIST.md) when scoped and
@@ -73,8 +73,9 @@ For the current feature snapshot, see [FEATURES.md](./FEATURES.md).
 
 ### Operational
 
-- **Automated release pipeline** — `.goreleaser.yml` exists but no publish
-  workflow. Wire a tag-triggered release through GitHub Actions.
+- **Automated release pipeline** — tag-triggered release via `release.yml` is
+  wired (tests + lint + GitHub Release). Consider adding cross-compilation
+  artifacts via goreleaser to the workflow.
 - **Semantic-release / conventional commits** — evaluate whether commit-message-
   driven versioning reduces manual CHANGELOG drift.
 - **Dependency freshness SLO** — current policy is "update within 24h"; codify

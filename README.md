@@ -56,7 +56,7 @@ go-filewatcher handles all of this. Built for production, tested with `-race`, a
 go get github.com/larsartmann/go-filewatcher/v2
 ```
 
-Requires Go 1.26.3 or later.
+Requires Go 1.26.4 or later.
 
 ## Usage
 

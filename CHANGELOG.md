@@ -158,6 +158,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - 306 lines of test-only code from production binary
 
+## [0.3.0] - 2026-05-05
+
+Version bump — same commit as v0.2.2. No additional code changes.
+
+## [0.2.2] - 2026-05-05
+
+### Fixed
+
+- Migrated gogenfilter import to `/v3` module path
+
+## [0.2.1] - 2026-05-04
+
+### Added
+
+- `WatchOnce(ctx)` — one-shot mode that returns the first event and closes
+- `MiddlewareThrottle(maxEvents, burst)` — token-bucket rate limiting via `golang.org/x/time/rate`
+- `FilterIgnoreGlobs(patterns...)` and `WithIgnorePatterns(pats...)` option
+- MIT license (relicensed from Proprietary)
+- Benchmark CI job and Dependabot configuration
+- 15 new tests covering WatchOnce, MiddlewareThrottle, FilterIgnoreGlobs, WithIgnorePatterns
+
+### Changed
+
+- Migrated gogenfilter from v0.2.0 to v3.x
+- Simplified phantom types from go-branded-id to plain named types
+- Replaced custom rate-limit implementations with `golang.org/x/time/rate`
+- Pinned nixpkgs to nixos-unstable instead of channel default
+
+### Fixed
+
+- `WatchOnce` nil-error wrapping in cancellation path
+- Double-append bug, error swallowing, toolchain, and test pollution issues
+
 ## [0.2.0] - 2026-04-23
 
 ### Added

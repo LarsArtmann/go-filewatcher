@@ -1,6 +1,6 @@
 # Agent Guide: go-filewatcher
 
-**Go 1.26.3** | `github.com/larsartmann/go-filewatcher/v2` | **MIT License**
+**Go 1.26.4** | `github.com/larsartmann/go-filewatcher/v2` | **MIT License**
 
 > **Companion docs:** [FEATURES.md](./FEATURES.md) (feature inventory) ·
 > [ROADMAP.md](./ROADMAP.md) (long-term direction) · [TODO_LIST.md](./TODO_LIST.md)
@@ -110,6 +110,7 @@ All code in **root package** (`filewatcher`). No `internal/` or `pkg/` subdirect
 | `watcher_selfheal.go`  | Self-healing: selfHealLoop, attemptSelfHeal, failed path tracking                           |
 | `watcher_poll.go`      | Polling mode: pollLoop for NFS/FUSE environments                                            |
 | `filter.go`            | All Filter functions + FilterWithMeta and combinators                                       |
+| `filter_gogen.go`      | Generated-code detection filter (gogenfilter v3 integration)                                |
 | `middleware.go`        | All Middleware functions (circuit breaker, error batch, correlation, exponential backoff)   |
 | `metrics.go`           | PrometheusCollector, StatsFunc, CounterMetric, GaugeMetric                                  |
 | `otel.go`              | OTelMiddleware, OTelSpan interface                                                          |
@@ -117,6 +118,13 @@ All code in **root package** (`filewatcher`). No `internal/` or `pkg/` subdirect
 | `event.go`             | Op type, Event type, JSON/Text marshaling                                                   |
 | `errors.go`            | Sentinel errors, ErrorCode, ErrorCategory, WatcherError                                     |
 | `options.go`           | Functional options (WithGitignore, WithExcludePaths, WithMaxWatches, etc.)                  |
+| `phantom_types.go`     | Compile-time phantom types (EventPath, RootPath, DebounceKey, OpString, etc.)               |
+
+### Website (`website/`)
+
+Separate Astro + Starlight documentation site with its own `flake.nix`, deployed to
+Firebase Hosting at `filewatcher.lars.software`. Not part of the Go module — has its
+own `package.json` and Node toolchain. Build with `cd website && nix run .#build`.
 
 ---
 

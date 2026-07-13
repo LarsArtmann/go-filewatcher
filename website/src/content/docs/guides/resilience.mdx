@@ -1,0 +1,109 @@
+---
+title: Resilience
+description: Self-healing watches, inotify budget awareness, and NFS/FUSE support.
+---
+
+## Graceful ENOSPC Handling
+
+When the inotify watch limit is reached (ENOSPC), go-filewatcher does not crash. Instead:
+
+- The error is logged via the error handler
+- The `WatchErrors` counter is incremented
+- Walking continues to add remaining directories
+- The watcher starts in degraded mode
+
+```go
+watcher, _ := filewatcher.New(paths)
+
+stats := watcher.Stats()
+fmt.Printf("Watch errors: %d\n", stats.WatchErrors)
+```
+
+## Inotify Budget Awareness
+
+go-filewatcher auto-detects the inotify watch budget from `/proc/sys/fs/inotify/max_user_watches` on Linux. Override with `WithMaxWatches`:
+
+```go
+watcher, _ := filewatcher.New(
+	[]string{"./large-monorepo"},
+	filewatcher.WithMaxWatches(524288), // Override budget
+)
+
+stats := watcher.Stats()
+fmt.Printf("watching %d/%d paths (%.1f%% budget)\n",
+	stats.WatchCount, stats.WatchLimit,
+	stats.WatchBudgetUsed*100)
+```
+
+When the budget is exhausted, directories are skipped silently and counted in `Stats.WatchErrors`.
+
+## Self-Healing
+
+`WithSelfHeal` automatically retries failed watch registrations at the given interval:
+
+```go
+watcher, _ := filewatcher.New(
+	[]string{"./src"},
+	filewatcher.WithSelfHeal(30 * time.Second), // Retry every 30s
+)
+```
+
+This handles transient failures like temporary ENOSPC or mount points that become available later.
+
+## NFS/FUSE Polling Mode
+
+For environments where OS-native inotify events don't work (NFS, FUSE, Docker volumes), enable polling mode:
+
+```go
+watcher, _ := filewatcher.New(
+	[]string{"/mnt/nfs/share"},
+	filewatcher.WithPolling(true),
+	filewatcher.WithPollInterval(2 * time.Second),
+)
+```
+
+Polling supplements fsnotify events. The poll loop maintains a filesystem snapshot and detects new, modified, and removed files at each interval.
+
+## .gitignore-Aware Walking
+
+Enabled by default (`WithGitignore(true)`). Directories matching `.gitignore` patterns are skipped during the walk — they're never added to inotify:
+
+```go
+// Default: enabled
+watcher, _ := filewatcher.New(paths)
+
+// Explicitly disable
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithGitignore(false),
+)
+```
+
+## Path Exclusions
+
+Exclude entire subtrees by absolute path during the walk:
+
+```go
+watcher, _ := filewatcher.New(
+	[]string{"/home/me/projects"},
+	filewatcher.WithExcludePaths(
+		"/home/me/projects/forks",     // Skip forks entirely
+		"/home/me/projects/archived",   // Skip archived projects
+	),
+)
+```
+
+Uses prefix matching: excluding `/home/me/forks` skips all subdirectories too.
+
+## Symlink Following
+
+Follow symbolic links during directory walking:
+
+```go
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithFollowSymlinks(true), // Default: false
+)
+```
+
+## Batched Registration
+
+Directories are collected during the walk and added in batches of 1000, with `runtime.Gosched()` between batches. This reduces startup latency for large directory trees and yields to event processing.

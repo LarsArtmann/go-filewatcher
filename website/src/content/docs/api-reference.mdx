@@ -1,0 +1,137 @@
+---
+title: API Reference
+description: Public API for go-filewatcher.
+---
+
+## Core Types
+
+### Watcher
+
+The main type. Created with `New()`, implements `io.Closer`.
+
+```go
+type Watcher struct { /* fields */ }
+```
+
+#### Methods
+
+```go
+func New(paths []string, opts ...Option) (*Watcher, error)
+func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error)
+func (w *Watcher) WatchOnce(ctx context.Context) (Event, error)
+func (w *Watcher) Add(path string) error
+func (w *Watcher) AddRecursive(path string, maxDepth int) error
+func (w *Watcher) Remove(path string) error
+func (w *Watcher) WatchList() []string
+func (w *Watcher) Stats() Stats
+func (w *Watcher) Errors() <-chan error
+func (w *Watcher) IsClosed() bool
+func (w *Watcher) IsWatching() bool
+func (w *Watcher) Reset() error
+func (w *Watcher) Close() error
+```
+
+### Event
+
+```go
+type Event struct {
+	Path      string    // Absolute path
+	Op        Op        // Create, Write, Remove, or Rename
+	Timestamp time.Time // When detected
+	IsDir     bool      // True if directory
+	Size      int64     // File size in bytes
+	ModTime   time.Time // File modification time
+	Hash      string    // SHA-256 hex (with WithContentHashing)
+}
+```
+
+### Op
+
+```go
+type Op int
+
+const (
+	Create  Op = 1
+	Write   Op = 2
+	Remove  Op = 3
+	Rename  Op = 4
+)
+```
+
+Event priority when multiple ops coalesce: `Create > Write > Remove > Rename`.
+
+### Stats
+
+```go
+type Stats struct {
+	WatchCount        int
+	IsWatching        bool
+	IsClosed          bool
+	EventsProcessed   uint64
+	EventsFilteredOut uint64
+	ErrorsEncountered uint64
+	WatchErrors       uint64
+	Uptime            time.Duration
+	WatchLimit        int
+	WatchBudgetUsed   float64
+}
+```
+
+## Filters
+
+```go
+type Filter func(event Event) bool
+```
+
+### Built-in Filters
+
+`FilterExtensions`, `FilterIgnoreExtensions`, `FilterIgnoreDirs`, `FilterExcludePaths`, `FilterIgnoreHidden`, `FilterIgnoreGlobs`, `FilterOperations`, `FilterNotOperations`, `FilterGlob`, `FilterRegex`, `FilterMinSize`, `FilterMaxSize`, `FilterMinAge`, `FilterModifiedSince`, `FilterContentHash`, `FilterGitignore`, `FilterGeneratedCode`, `FilterGeneratedCodeFull`, `FilterGeneratedCodeWithFilter`
+
+### Combinators
+
+`FilterAnd`, `FilterOr`, `FilterNot`
+
+### Metadata Filters
+
+`FilterWithMeta`, `FilterFromWithMeta`, `FilterWithMetaAnd`, `FilterWithMetaOr`, `FilterWithMetaNot`, `WithMeta`
+
+## Middleware
+
+```go
+type Middleware func(Handler) Handler
+type Handler func(ctx context.Context, event Event) error
+```
+
+### Built-in Middleware
+
+`MiddlewareLogging`, `MiddlewareRecovery`, `MiddlewareFilter`, `MiddlewareOnError`, `MiddlewareRateLimit`, `MiddlewareSlidingWindowRateLimit`, `MiddlewareThrottle`, `MiddlewareMetrics`, `MiddlewareDeduplicate`, `MiddlewareBatch`, `MiddlewareWriteFileLog`, `MiddlewareCircuitBreaker`, `MiddlewareExponentialBackoff`, `MiddlewareErrorRateLimit`, `MiddlewareErrorRecovery`, `MiddlewareErrorCorrelation`, `MiddlewareErrorSanitization`, `MiddlewareErrorBatch`
+
+## Options
+
+24 functional options:
+
+`WithDebounce`, `WithPerPathDebounce`, `WithFilter`, `WithExtensions`, `WithIgnoreDirs`, `WithIgnoreHidden`, `WithIgnorePatterns`, `WithRecursive`, `WithMiddleware`, `WithErrorHandler`, `WithOnError`, `WithSkipDotDirs`, `WithBuffer`, `WithOnAdd`, `WithLazyIsDir`, `WithPolling`, `WithPollInterval`, `WithDebug`, `WithFollowSymlinks`, `WithGitignore`, `WithExcludePaths`, `WithMaxWatches`, `WithContentHashing`, `WithSelfHeal`
+
+## Error Handling
+
+### Sentinel Errors
+
+`ErrWatcherClosed`, `ErrNoPaths`, `ErrPathNotFound`, `ErrPathNotDir`, `ErrWatcherRunning`, `ErrUnknownOp`, `ErrFsnotifyFailed`, `ErrWalkFailed`, `ErrPathResolveFailed`, `ErrEventProcessingFailed`, `ErrMiddlewareFailed`
+
+### WatcherError
+
+```go
+type WatcherError struct {
+	Op       OpString
+	Path     string
+	Err      error
+	Category ErrorCategory
+	Stack    []byte
+}
+```
+
+Methods: `Error()`, `Unwrap()`, `IsTransient()`, `IsPermanent()`, `Code()`
+
+## Full API on pkg.go.dev
+
+For the complete, always-up-to-date API documentation, see [pkg.go.dev](https://pkg.go.dev/github.com/larsartmann/go-filewatcher/v2).

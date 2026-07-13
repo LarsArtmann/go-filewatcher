@@ -1,0 +1,139 @@
+---
+title: Middleware
+description: Cross-cutting concerns with 18 built-in middleware and custom chains.
+---
+
+## How Middleware Works
+
+Middleware wraps event handlers for cross-cutting concerns like logging, rate limiting, metrics, and error handling. Middleware is applied in **reverse order** — the last middleware added runs first (outermost).
+
+```go
+type Middleware func(Handler) Handler
+type Handler func(ctx context.Context, event Event) error
+```
+
+## Built-in Middleware
+
+| Middleware                                      | Description                                             |
+| ----------------------------------------------- | ------------------------------------------------------- |
+| `MiddlewareLogging(logger)`                     | Log all events with structured logging (slog)           |
+| `MiddlewareRecovery()`                          | Recover from panics, log stack trace                    |
+| `MiddlewareFilter(filter)`                      | Filter events (same as WithFilter)                      |
+| `MiddlewareOnError(handler)`                    | Handle errors from downstream handlers                  |
+| `MiddlewareRateLimit(maxEvents)`                | Limit to maxEvents events per second (fixed window)     |
+| `MiddlewareSlidingWindowRateLimit(n, win)`      | Sliding-window rate limiting                            |
+| `MiddlewareThrottle(maxEvents, burst)`          | Token-bucket rate limiting via `golang.org/x/time/rate` |
+| `MiddlewareMetrics(counter)`                    | Count processed events by operation                     |
+| `MiddlewareDeduplicate(window)`                 | Drop duplicate events within a time window              |
+| `MiddlewareBatch(window, maxSize, flush)`       | Batch events over a window or size threshold            |
+| `MiddlewareWriteFileLog(path)`                  | Write events to file for audit trail                    |
+| `MiddlewareCircuitBreaker(maxFail, reset)`      | Fault tolerance with closed/open/half-open states       |
+| `MiddlewareExponentialBackoff(maxF, init, max)` | Configurable backoff for event processing               |
+| `MiddlewareErrorRateLimit(maxErrs, window)`     | Per-error-type rate limiting                            |
+| `MiddlewareErrorRecovery(strategy)`             | Recoverable error handling with custom strategies       |
+| `MiddlewareErrorCorrelation(idGen)`             | Attach correlation IDs for request tracing              |
+| `MiddlewareErrorSanitization(sanitize)`         | Safe error message scrubbing preserving error chains    |
+| `MiddlewareErrorBatch(window, maxSize, flush)`  | Batch errors for analytics                              |
+
+## Middleware Order
+
+Middleware is applied in **reverse order**. The last middleware added is the outermost (runs first):
+
+```go
+filewatcher.WithMiddleware(
+	filewatcher.MiddlewareRecovery(),   // Runs LAST (innermost)
+	filewatcher.MiddlewareLogging(nil), // Runs FIRST (outermost)
+)
+```
+
+This means logging wraps recovery, which wraps the core handler.
+
+## Examples
+
+### Logging + Recovery
+
+```go
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithMiddleware(
+		filewatcher.MiddlewareRecovery(),
+		filewatcher.MiddlewareLogging(nil), // nil = slog.Default()
+	),
+)
+```
+
+### Metrics
+
+```go
+var createCount, writeCount atomic.Int64
+
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithMiddleware(
+		filewatcher.MiddlewareMetrics(func(op filewatcher.Op) {
+			switch op {
+			case filewatcher.Create:
+				createCount.Add(1)
+			case filewatcher.Write:
+				writeCount.Add(1)
+			}
+		}),
+	),
+)
+```
+
+### Rate Limiting
+
+```go
+// Max 100 events per second
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithMiddleware(
+		filewatcher.MiddlewareRateLimit(100),
+	),
+)
+
+// Token-bucket: 10 events/sec with burst of 20
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithMiddleware(
+		filewatcher.MiddlewareThrottle(10, 20),
+	),
+)
+```
+
+### Audit Logging
+
+```go
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithMiddleware(
+		filewatcher.MiddlewareWriteFileLog("/var/log/filewatcher.log"),
+	),
+)
+```
+
+### Circuit Breaker
+
+```go
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithMiddleware(
+		// Open after 5 failures, try again after 30s
+		filewatcher.MiddlewareCircuitBreaker(5, 30*time.Second),
+	),
+)
+```
+
+## Custom Middleware
+
+Write your own middleware by wrapping the handler:
+
+```go
+func TimingMiddleware(next filewatcher.Handler) filewatcher.Handler {
+	return func(ctx context.Context, event filewatcher.Event) error {
+		start := time.Now()
+		err := next(ctx, event)
+		fmt.Printf("Processed %s in %v\n", event.Path, time.Since(start))
+		return err
+	}
+}
+
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithMiddleware(TimingMiddleware),
+)
+```

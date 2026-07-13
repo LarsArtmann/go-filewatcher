@@ -1,0 +1,109 @@
+---
+title: Observability
+description: Stats, Prometheus, OpenTelemetry, and structured debug logging.
+---
+
+## Stats
+
+The `Stats()` method returns a snapshot of the watcher's runtime state:
+
+```go
+stats := watcher.Stats()
+
+fmt.Printf("Watching %d paths\n", stats.WatchCount)
+fmt.Printf("Events processed: %d\n", stats.EventsProcessed)
+fmt.Printf("Events filtered: %d\n", stats.EventsFilteredOut)
+fmt.Printf("Errors: %d\n", stats.ErrorsEncountered)
+fmt.Printf("Watch errors: %d\n", stats.WatchErrors)
+fmt.Printf("Uptime: %v\n", stats.Uptime)
+fmt.Printf("Budget: %.1f%% used (%d/%d)\n",
+	stats.WatchBudgetUsed*100,
+	stats.WatchCount,
+	stats.WatchLimit)
+```
+
+### Stats Fields
+
+| Field               | Type            | Description                      |
+| ------------------- | --------------- | -------------------------------- |
+| `WatchCount`        | `int`           | Number of paths being watched    |
+| `IsWatching`        | `bool`          | Whether Watch() is active        |
+| `IsClosed`          | `bool`          | Whether Close() was called       |
+| `EventsProcessed`   | `uint64`        | Total events emitted to callback |
+| `EventsFilteredOut` | `uint64`        | Events discarded by filters      |
+| `ErrorsEncountered` | `uint64`        | Total errors encountered         |
+| `WatchErrors`       | `uint64`        | Failed watch registrations       |
+| `Uptime`            | `time.Duration` | Time since Watch() started       |
+| `WatchLimit`        | `int`           | Inotify watch budget             |
+| `WatchBudgetUsed`   | `float64`       | Budget usage 0.0-1.0             |
+
+## Debug Logging
+
+`WithDebug` enables verbose structured logging throughout the pipeline:
+
+```go
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithDebug(slog.Default()), // nil falls back to slog.Default()
+)
+```
+
+Debug log calls are in the watch loop, event processing, event emission, error handling, new directory detection, and poll loop.
+
+## Prometheus Collector
+
+Zero-dependency Prometheus collector (no prometheus import required):
+
+```go
+coll := filewatcher.NewPrometheusCollector(watcher.Stats)
+
+// coll.Counters() returns: events_processed, events_filtered_out,
+//   errors_encountered, watch_errors
+// coll.Gauges() returns: watch_count, is_watching, is_closed,
+//   uptime_seconds, watch_limit, watch_budget_used
+
+// Register with your prometheus.Registry
+```
+
+`PrometheusCollector` implements the Prometheus Collector interface using the `CounterMetric` and `GaugeMetric` structs, which carry the metric name, value, and help text.
+
+## OpenTelemetry Tracing
+
+`OTelMiddleware` is zero-dependency. You provide an `OTelSpan` implementation that bridges to your tracer:
+
+```go
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithMiddleware(
+		filewatcher.OTelMiddleware(func(path, op string) filewatcher.OTelSpan {
+			ctx, span := tracer.Start(context.Background(), "filewatcher.event")
+			_ = ctx
+			return otelSpanAdapter{span: span}
+		}),
+	),
+)
+```
+
+The `OTelSpan` interface has three methods:
+
+```go
+type OTelSpan interface {
+	End()
+	SetStatus(code string, desc string)
+	SetAttributes(attrs ...Attribute)
+}
+```
+
+## Error Channel
+
+Access runtime errors via a channel:
+
+```go
+watcher, _ := filewatcher.New(paths)
+
+go func() {
+	for err := range watcher.Errors() {
+		slog.Error("watcher error", "error", err)
+	}
+}()
+```
+
+The error channel is lazily initialized — it's only created when `Errors()` is first called.

@@ -1,0 +1,16 @@
+{
+  "name": "go-filewatcher",
+  "short_name": "go-filewatcher",
+  "description": "A high-performance, composable file system watcher for Go",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0a09",
+  "theme_color": "#8b5cf6",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

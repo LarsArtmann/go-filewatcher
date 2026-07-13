@@ -1,0 +1,65 @@
+---
+title: Installation
+description: Install go-filewatcher in your Go project.
+---
+
+## Requirements
+
+- Go 1.26 or later
+- An active Go module (`go.mod`)
+
+## Install
+
+Run this in your project directory:
+
+```bash
+go get github.com/larsartmann/go-filewatcher/v2@latest
+```
+
+## Quick Usage
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"time"
+
+	filewatcher "github.com/larsartmann/go-filewatcher/v2"
+)
+
+func main() {
+	watcher, err := filewatcher.New(
+		[]string{"./src"},
+		filewatcher.WithExtensions(".go"),
+		filewatcher.WithDebounce(500*time.Millisecond),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer watcher.Close()
+
+	events, err := watcher.Watch(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for event := range events {
+		fmt.Printf("%s: %s\n", event.Op, event.Path)
+	}
+}
+```
+
+## Verify Installation
+
+```bash
+go list -m github.com/larsartmann/go-filewatcher/v2
+```
+
+## Next Steps
+
+- Follow the [Quick Start](/getting-started/quick-start/) for complete examples
+- Learn about [Filtering](/guides/filtering/) to control which events you receive
+- Explore [Middleware](/guides/middleware/) for cross-cutting concerns

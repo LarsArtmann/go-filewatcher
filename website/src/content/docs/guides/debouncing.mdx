@@ -1,0 +1,66 @@
+---
+title: Debouncing
+description: Handle rapid file changes with global or per-path debouncing.
+---
+
+## Why Debounce?
+
+File editors and build tools often trigger many events in rapid succession (save -> write -> write). Debouncing coalesces these bursts into a single event.
+
+## Global Debounce
+
+`WithDebounce` coalesces **all** events into a single emission after the delay since the last event.
+
+**Use case:** Build systems, test runners — you want to trigger once after a burst of changes.
+
+```go
+// Wait 500ms after the last event, then emit once
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithDebounce(500*time.Millisecond),
+)
+```
+
+## Per-Path Debounce
+
+`WithPerPathDebounce` debounces each file path independently. Each file gets its own timer.
+
+**Use case:** Hot reloading where each file triggers its own reload independently.
+
+```go
+// Each file emits independently after 500ms of quiet
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithPerPathDebounce(500*time.Millisecond),
+)
+```
+
+## Comparison
+
+| Mode                  | Behavior                       | Best For                        |
+| --------------------- | ------------------------------ | ------------------------------- |
+| No debounce           | Events emitted immediately     | Low-frequency monitoring        |
+| `WithDebounce(d)`     | All events coalesced into one  | Build triggers, test runners    |
+| `WithPerPathDebounce` | Each file debounced separately | Hot reload, per-file processing |
+
+## Programmatic Debouncer
+
+For advanced use cases, use the `Debouncer` and `GlobalDebouncer` types directly:
+
+```go
+// Per-key debouncer
+debouncer := filewatcher.NewDebouncer(500 * time.Millisecond)
+debouncer.Debounce(filewatcher.NewDebounceKey("handler.go"), func() {
+	fmt.Println("handler.go changed")
+})
+
+// Flush all pending immediately
+debouncer.Flush()
+
+// Stop and clean up
+debouncer.Stop()
+
+// Global debouncer (ignores key, single timer)
+global := filewatcher.NewGlobalDebouncer(500 * time.Millisecond)
+global.Debounce(filewatcher.NewDebounceKey("any"), func() {
+	fmt.Println("something changed")
+})
+```

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://filewatcher.lars.software/sitemap-index.xml

@@ -1,0 +1,124 @@
+---
+title: Filtering
+description: Control which file events reach your callback with 17+ composable filters.
+---
+
+## How Filters Work
+
+Filters are functions that take an `Event` and return `bool`. Return `true` to keep the event, `false` to discard it. Filters are applied before middleware in the processing pipeline.
+
+```go
+type Filter func(event Event) bool
+```
+
+## Built-in Filters
+
+| Filter                            | Description                                              |
+| --------------------------------- | -------------------------------------------------------- |
+| `FilterExtensions(exts...)`       | Only files with given extensions                         |
+| `FilterIgnoreExtensions(exts...)` | Exclude files with given extensions                      |
+| `FilterIgnoreDirs(dirs...)`       | Exclude files within given directory names               |
+| `FilterExcludePaths(paths...)`    | Exclude files within given absolute paths (prefix match) |
+| `FilterIgnoreHidden()`            | Exclude hidden files/directories                         |
+| `FilterIgnoreGlobs(patterns...)`  | Exclude files matching glob patterns (filename only)     |
+| `FilterOperations(ops...)`        | Only given operation types                               |
+| `FilterNotOperations(ops...)`     | Exclude given operation types                            |
+| `FilterGlob(pattern)`             | Match file name against glob pattern                     |
+| `FilterRegex(pattern)`            | Match path against regex pattern                         |
+| `FilterMinSize(bytes)`            | Only files at least the given size                       |
+| `FilterMaxSize(bytes)`            | Only files at most the given size                        |
+| `FilterMinAge(age)`               | Only files older than given duration                     |
+| `FilterModifiedSince(t)`          | Only files modified after given time                     |
+| `FilterContentHash(expectedHex)`  | Only files matching expected SHA-256                     |
+| `FilterGitignore(repoRoot)`       | Exclude files ignored by `.gitignore` in `repoRoot`      |
+| `FilterGeneratedCode(gens...)`    | Exclude auto-generated Go files (sqlc, protobuf, ...)    |
+
+## Composition
+
+Combine filters with AND, OR, and NOT:
+
+```go
+// All filters must pass
+filter := filewatcher.FilterAnd(
+	filewatcher.FilterExtensions(".go"),
+	filewatcher.FilterNot(filewatcher.FilterIgnoreDirs("vendor")),
+)
+
+// At least one filter must pass
+goOrMd := filewatcher.FilterOr(
+	filewatcher.FilterExtensions(".go"),
+	filewatcher.FilterExtensions(".md"),
+)
+
+// Invert a filter
+notHidden := filewatcher.FilterNot(filewatcher.FilterIgnoreHidden())
+```
+
+## Complex Example
+
+```go
+complexFilter := filewatcher.FilterAnd(
+	filewatcher.FilterExtensions(".go"),
+	filewatcher.FilterNot(filewatcher.FilterIgnoreDirs("vendor", "node_modules")),
+	filewatcher.FilterNot(filewatcher.FilterIgnoreHidden()),
+	filewatcher.FilterOperations(filewatcher.Write, filewatcher.Create),
+	filewatcher.FilterGeneratedCode(), // Exclude sqlc, protobuf, etc.
+)
+```
+
+## Using Filters
+
+Pass filters via options or middleware:
+
+```go
+// Via WithFilter option
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithFilter(myFilter),
+)
+
+// Via WithExtensions shortcut
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithExtensions(".go", ".md"),
+)
+
+// Via middleware (runs in the middleware chain)
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithMiddleware(
+		filewatcher.MiddlewareFilter(myFilter),
+	),
+)
+```
+
+## Generated Code Detection
+
+Exclude auto-generated Go files using [gogenfilter](https://github.com/LarsArtmann/gogenfilter) integration:
+
+```go
+// Filter all generated code types
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithFilter(filewatcher.FilterGeneratedCode()),
+)
+
+// Filter specific generators only
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithFilter(filewatcher.FilterGeneratedCode(
+		gogenfilter.FilterSQLC,
+		gogenfilter.FilterProtobuf,
+	)),
+)
+```
+
+## Metadata Filters
+
+For debugging and analytics, use `FilterWithMeta` which returns match reasons:
+
+```go
+metaFilter := filewatcher.FilterWithMetaAnd(
+	filewatcher.WithMeta("extensions", filewatcher.FilterExtensions(".go")),
+	filewatcher.WithMeta("not-vendor", filewatcher.FilterNot(filewatcher.FilterIgnoreDirs("vendor"))),
+)
+
+// Each result tells you which filter matched or didn't
+result := metaFilter(event)
+fmt.Printf("matched=%v reason=%s filter=%s\n", result.Matched, result.Reason, result.FilterName)
+```

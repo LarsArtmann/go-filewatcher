@@ -1,0 +1,40 @@
+---
+title: Related Tools
+description: Tools that complement go-filewatcher in your Go toolchain.
+---
+
+## fsnotify
+
+[fsnotify](https://github.com/fsnotify/fsnotify) is the cross-platform file notification library that go-filewatcher is built on. go-filewatcher wraps fsnotify with sensible defaults, automatic recursion, filtering, middleware, and resilience features.
+
+Use go-filewatcher when you need more than raw events. Use fsnotify directly only when you need maximum low-level control.
+
+## gogenfilter
+
+[gogenfilter](https://github.com/larsartmann/gogenfilter) detects and filters auto-generated Go code files. go-filewatcher integrates with gogenfilter via `FilterGeneratedCode` to automatically exclude files from sqlc, protobuf, templ, mockgen, and other generators.
+
+### Why They Work Together
+
+| Tool               | What It Does                              | Scope          |
+| ------------------ | ----------------------------------------- | -------------- |
+| **go-filewatcher** | Composable file system watching           | Event delivery |
+| **gogenfilter**    | Detect and filter auto-generated Go files | Code quality   |
+
+## go-atomic-write
+
+[go-atomic-write](https://github.com/larsartmann/go-atomic-write) provides crash-safe, race-free file writes for Go. Together with go-filewatcher, you can build systems that safely react to file changes and write results atomically.
+
+### Why They Work Together
+
+| Tool                | What It Does           | Use Case                           |
+| ------------------- | ---------------------- | ---------------------------------- |
+| **go-filewatcher**  | Watch for file changes | Detect when files change           |
+| **go-atomic-write** | Write files safely     | Persist results without corruption |
+
+## golang.org/x/time/rate
+
+[golang.org/x/time/rate](https://pkg.go.dev/golang.org/x/time/rate) provides token-bucket rate limiting. go-filewatcher uses it internally for `MiddlewareThrottle`. You can use it directly for finer-grained rate control.
+
+## sabhiram/go-gitignore
+
+[sabhiram/go-gitignore](https://github.com/sabhiram/go-gitignore) provides `.gitignore` pattern matching with zero transitive dependencies. go-filewatcher uses it for `.gitignore`-aware directory walking and filtering.

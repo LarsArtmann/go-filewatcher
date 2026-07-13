@@ -1,0 +1,81 @@
+---
+title: Changelog
+description: All notable changes to go-filewatcher.
+---
+
+## [2.2.0] - 2026-06-03
+
+### Added
+
+- **.gitignore-aware walking** — directories matching `.gitignore` patterns are skipped during walk, never added to inotify
+- **Path-level exclusions** — `WithExcludePaths` excludes absolute paths (and subtrees) during walk
+- **Inotify budget awareness** — auto-detected from `/proc/sys/fs/inotify/max_user_watches`, override with `WithMaxWatches`
+- **Content hashing** — `WithContentHashing` populates `Event.Hash` with SHA-256 (capped at 10 MiB)
+- **Self-healing** — `WithSelfHeal(interval)` auto-retries failed watch registrations
+- **FilterGitignore** — filter events using `.gitignore` patterns from a repo root
+- **Metadata filters** — `FilterWithMeta` variants return match reasons for debugging
+- **Exponential backoff middleware** — growing drop windows after failures
+- **Prometheus collector** — zero-dependency metrics collector
+- **OpenTelemetry middleware** — zero-dependency tracing via `OTelSpan` interface
+- **Reset()** — clears runtime state while preserving configuration
+- **ENOSPC handling** — graceful degradation instead of crashing
+- **Batched registration** — directories added in batches of 1000 for large trees
+- **7 godoc examples** — runnable examples in `examples/`
+
+### Changed
+
+- Rate limit delegate now uses throttle internally
+- Unified `addPath` function for all path additions
+- Generic `makeSetFilter` for extension/dir filters
+
+### Fixed
+
+- `.gitignore` ancestor matching
+- Watch budget check on all `addPath` calls
+- Duplicate root paths in `WatchList()`
+
+## [2.1.0] - 2026-06-01
+
+### Added
+
+- **Polling mode** — `WithPolling(true)` supplements fsnotify for NFS/FUSE/Docker
+- **Debug logging** — `WithDebug(logger)` for verbose structured logging
+- **Circuit breaker middleware** — closed/open/half-open fault tolerance
+- **Throttle middleware** — token-bucket rate limiting via `golang.org/x/time/rate`
+- **File audit log middleware** — write events to file for audit trail
+- **Error middleware suite** — rate limit, recovery, correlation, sanitization, batching
+- **Symlink following** — `WithFollowSymlinks(true)` during directory walking
+- **Fuzz tests** — expanded test coverage
+- **goreleaser config** — release automation
+- **API stability policy** and troubleshooting guide
+- **Code of conduct**
+
+### Changed
+
+- Go version bumped to 1.26.3
+
+## [2.0.0] - 2026-05-23
+
+### Breaking
+
+- **MIT license** — changed from proprietary
+- **v2 module path** — `github.com/larsartmann/go-filewatcher/v2`
+
+### Added
+
+- **Phantom types** — `EventPath`, `RootPath`, `DebounceKey`, etc. for compile-time safety
+- **slog.LogValuer** — `Event` implements `slog.LogValuer`
+- **JSON marshaling** — full JSON support for `Event` and `Op`
+- **Deduplicate middleware** — drop duplicate events within a window
+- **Batch middleware** — batch events over a window or size threshold
+- **Sliding-window rate limit** — smooth rate limiting
+
+## [0.2.0] - 2026-04-23
+
+- gogenfilter integration for generated-code filtering
+- Phantom types for type-safe path handling
+- Benchmarks
+
+## [0.1.0] - 2026-04-04
+
+- Initial release

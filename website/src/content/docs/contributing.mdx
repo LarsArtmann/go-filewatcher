@@ -1,0 +1,91 @@
+---
+title: Contributing
+description: How to contribute to go-filewatcher.
+---
+
+## Development Setup
+
+**Requirements:** Go 1.26+, [Nix Flakes](https://nixos.wiki/wiki/Flakes) (recommended)
+
+```bash
+git clone https://github.com/larsartmann/go-filewatcher.git
+cd go-filewatcher
+
+# Using Nix (recommended)
+nix develop          # Enter dev shell with all tools
+direnv allow         # Or auto-load on cd
+
+# Without Nix
+go mod download
+```
+
+## Building
+
+```bash
+go build ./...
+# or via Nix:
+nix build .
+```
+
+## Testing
+
+```bash
+# Run all tests with race detection
+nix run .#test
+# or: go test -race ./...
+
+# Verbose
+nix run .#test-v
+```
+
+## Linting
+
+Uses golangci-lint with 50+ linters at their strictest defaults. Configuration lives in `.golangci.yml`.
+
+```bash
+# Run all linters — MUST exit with 0 issues before merging
+nix run .#lint
+# or: golangci-lint run ./...
+
+# Auto-fix formatting/imports
+nix run .#lint-fix
+# or: golangci-lint run ./... --fix
+```
+
+## Full CI Pipeline
+
+```bash
+nix run .#ci    # tidy + fmt + vet + lint + test
+nix run .#check # vet + lint + test
+```
+
+## Code Style
+
+- Single root package (`filewatcher`) — no `internal/` or `pkg/` subdirectories
+- Standard `testing` package — no testify
+- `t.Parallel()` on all tests (enforced by `paralleltest` linter)
+- `t.TempDir()` for filesystem isolation
+- All struct fields must be initialized (enforced by `exhaustruct` linter)
+- All errors must be wrapped (enforced by `wrapcheck` linter)
+- Early returns over nested conditionals
+- Strong types over runtime checks
+- Functional options pattern for configuration
+
+## Website
+
+The documentation website lives in `website/`:
+
+```bash
+cd website
+npm install
+npm run dev      # Start dev server
+npm run build    # Build for production
+```
+
+## Pull Requests
+
+- Ensure all tests pass: `nix run .#check`
+- Ensure linting passes: `nix run .#lint`
+- Add tests for new functionality
+- Keep changes focused and atomic
+- Follow existing patterns and conventions

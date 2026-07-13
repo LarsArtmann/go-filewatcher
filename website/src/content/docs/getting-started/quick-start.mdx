@@ -1,0 +1,128 @@
+---
+title: Quick Start
+description: Get started with go-filewatcher in under a minute.
+---
+
+## Basic Usage
+
+Create a watcher, start watching, range over the event channel.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"time"
+
+	filewatcher "github.com/larsartmann/go-filewatcher/v2"
+)
+
+func main() {
+	watcher, err := filewatcher.New(
+		[]string{"./src"},
+		filewatcher.WithExtensions(".go"),
+		filewatcher.WithDebounce(500*time.Millisecond),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer watcher.Close()
+
+	ctx := context.Background()
+	events, err := watcher.Watch(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for event := range events {
+		fmt.Printf("%s: %s\n", event.Op, event.Path)
+	}
+}
+```
+
+## With Middleware
+
+Chain middleware for logging, recovery, rate limiting, and more:
+
+```go
+watcher, err := filewatcher.New(
+	[]string{"./src"},
+	filewatcher.WithExtensions(".go"),
+	filewatcher.WithMiddleware(
+		filewatcher.MiddlewareRecovery(),   // Recover from panics
+		filewatcher.MiddlewareLogging(nil), // Structured logging
+	),
+)
+```
+
+## With Custom Filters
+
+Compose filters with AND, OR, and NOT:
+
+```go
+filter := filewatcher.FilterAnd(
+	filewatcher.FilterExtensions(".go"),
+	filewatcher.FilterNot(filewatcher.FilterIgnoreDirs("vendor")),
+	filewatcher.FilterOperations(filewatcher.Write, filewatcher.Create),
+)
+
+watcher, err := filewatcher.New(
+	[]string{"./src"},
+	filewatcher.WithFilter(filter),
+)
+```
+
+## Context Cancellation
+
+Use `context.Context` for graceful shutdown:
+
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+defer cancel()
+
+events, _ := watcher.Watch(ctx)
+
+for event := range events {
+	// Handle events
+}
+// Channel closes when context is cancelled
+```
+
+## Dynamic Path Management
+
+Add and remove paths at runtime:
+
+```go
+watcher, _ := filewatcher.New([]string{"./src"})
+
+// Add paths
+watcher.Add("./extra")
+
+// Remove paths (cleans up subdirectories too)
+watcher.Remove("./src/old")
+
+// Check watched paths
+paths := watcher.WatchList()
+
+// Get statistics
+stats := watcher.Stats()
+fmt.Printf("Watching %d paths\n", stats.WatchCount)
+```
+
+## Event Structure
+
+Each event carries rich metadata:
+
+```go
+type Event struct {
+	Path      string    // Absolute path of changed file/directory
+	Op        Op        // Create, Write, Remove, or Rename
+	Timestamp time.Time // When the event was detected
+	IsDir     bool      // True if directory, false if file
+	Size      int64     // File size in bytes
+	ModTime   time.Time // File modification time
+	Hash      string    // SHA-256 hex (with WithContentHashing)
+}
+```

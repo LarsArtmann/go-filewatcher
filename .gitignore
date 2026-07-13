@@ -75,4 +75,19 @@ go.work.sum
 ## Nix
 result-*
 .envrc
+
+## Javascript and typescript
+dist/
+build/
+*.tsbuildinfo
+.next/
+.nuxt/
+.docusaurus/
+.eslintcache
+.cache/
+.parcel-cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 # <<< buildflow-managed (.gitignore) <<<

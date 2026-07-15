@@ -47,9 +47,9 @@ func makeSetFilter[T comparable](items []T, extract func(Event) T, include bool)
 }
 
 func makeExtFilter(exts []string, include bool) Filter {
-	normalized := make([]string, len(exts))
-	for i, ext := range exts {
-		normalized[i] = strings.ToLower(ext)
+	normalized := make([]string, 0, len(exts))
+	for _, ext := range exts {
+		normalized = append(normalized, strings.ToLower(ext))
 	}
 
 	return makeSetFilter(normalized, func(event Event) string {

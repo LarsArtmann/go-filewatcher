@@ -528,8 +528,7 @@ func (w *Watcher) copyWatchList() []string {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
-	result := make([]string, len(w.watchList))
-	copy(result, w.watchList)
+	result := slices.Clone(w.watchList)
 
 	return result
 }

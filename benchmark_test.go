@@ -264,10 +264,10 @@ func BenchmarkStats_Empty(b *testing.B) {
 }
 
 func BenchmarkStats_WithPaths(b *testing.B) {
-	paths := make([]string, 100)
+	paths := make([]string, 0, 100)
 
 	for idx := range 100 {
-		paths[idx] = fmt.Sprintf("/path/to/dir%d", idx)
+		paths = append(paths, fmt.Sprintf("/path/to/dir%d", idx))
 	}
 
 	w := &Watcher{
@@ -282,10 +282,10 @@ func BenchmarkStats_WithPaths(b *testing.B) {
 }
 
 func BenchmarkWatchList_Copy(b *testing.B) {
-	paths := make([]string, 100)
+	paths := make([]string, 0, 100)
 
 	for idx := range 100 {
-		paths[idx] = fmt.Sprintf("/path/to/dir%d", idx)
+		paths = append(paths, fmt.Sprintf("/path/to/dir%d", idx))
 	}
 
 	w := &Watcher{

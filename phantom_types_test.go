@@ -45,14 +45,14 @@ func newPathTestCases(pairs ...string) []pathTestCase {
 		panic("newPathTestCases requires even number of arguments")
 	}
 
-	cases := make([]pathTestCase, len(pairs)/2)
+	cases := make([]pathTestCase, 0, len(pairs)/2)
 	for i := 0; i < len(pairs); i += 2 {
 		input := pairs[i]
 		wantIdx := i + 1
-		cases[i/2] = pathTestCase{
+		cases = append(cases, pathTestCase{
 			NewEventPath(input),
 			pairs[wantIdx], //nolint:gosec // safe: len(pairs)%2==0 ensures i+1 is in bounds
-		}
+		})
 	}
 
 	return cases

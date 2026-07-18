@@ -5,7 +5,7 @@
 <p align="center">
 <a href="https://pkg.go.dev/github.com/larsartmann/go-filewatcher/v2"><img src="https://pkg.go.dev/badge/github.com/larsartmann/go-filewatcher/v2.svg" alt="Go Reference"></a>
 <a href="https://github.com/larsartmann/go-filewatcher/actions/workflows/ci.yml"><img src="https://github.com/larsartmann/go-filewatcher/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-<a href="https://goreportcard.com/report/github.com/larsartmann/go-filewatcher/v2"><img src="https://goreportcard.com/badge/github.com/larsartmann/go-filewatcher/v2" alt="Go Report Card"></a>
+
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
 </p>
 

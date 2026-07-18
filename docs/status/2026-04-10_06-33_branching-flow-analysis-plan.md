@@ -172,18 +172,20 @@ type GlobalDebouncer struct {
 #### TASK-7: Medium/Low Phantom Types (8 min)
 
 **Medium Priority**:
-| Field | Current | New Type |
-|-------|---------|----------|
-| bufferSize | int | `type BufferSize int` |
-| WatchCount | int | `type WatchCount int` |
+
+| Field      | Current | New Type              |
+| ---------- | ------- | --------------------- |
+| bufferSize | int     | `type BufferSize int` |
+| WatchCount | int     | `type WatchCount int` |
 
 **Low Priority (uint conversions)**:
-| Parameter | Current | New Type |
-|-----------|---------|----------|
-| FilterMinSize minSize | int | uint |
-| WithBufferSize size | int | uint |
-| FilterMaxSize maxSize | int | uint |
-| etc. | ... | uint |
+
+| Parameter             | Current | New Type |
+| --------------------- | ------- | -------- |
+| FilterMinSize minSize | int     | uint     |
+| WithBufferSize size   | int     | uint     |
+| FilterMaxSize maxSize | int     | uint     |
+| etc.                  | ...     | uint     |
 
 ---
 

@@ -161,6 +161,29 @@ func (w *Watcher) checkClosedOp(operation string) error {
 	return nil
 }
 
+// withResolvedPath acquires the watcher mutex, verifies the watcher isn't closed,
+// resolves path to an absolute path, then invokes fn with the resolved path.
+// The mutex is held for the duration of fn. opName describes the operation for
+// the closed-check error; caller identifies the public method for the resolution
+// error. This is the canonical entry point for mutating watcher operations
+// (Add, Remove, AddRecursive) — keeping their pre-op validation in one place.
+func (w *Watcher) withResolvedPath(path, opName, caller string, fn func(abs string) error) error {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	err := w.checkClosedOp(opName)
+	if err != nil {
+		return err
+	}
+
+	abs, resolveErr := filepath.Abs(path)
+	if resolveErr != nil {
+		return fmt.Errorf("resolving path %q in %s: %w", path, caller, resolveErr)
+	}
+
+	return fn(abs)
+}
+
 // DebouncerInterface is the interface for debouncer implementations.
 type DebouncerInterface interface {
 	Debounce(key DebounceKey, fn func())
@@ -376,25 +399,14 @@ func (w *Watcher) WatchOnce(ctx context.Context) (Event, error) {
 // Add adds a new path to the watcher. The path must be an existing directory.
 // This method is safe for concurrent use with other methods.
 func (w *Watcher) Add(path string) error {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	return w.withResolvedPath(path, "add path", "Add()", func(abs string) error {
+		pathErr := w.addPath(NewRootPath(abs))
+		if pathErr != nil {
+			return fmt.Errorf("adding resolved path %q to watcher: %w", abs, pathErr)
+		}
 
-	err := w.checkClosedOp("add path")
-	if err != nil {
-		return err
-	}
-
-	abs, resolveErr := filepath.Abs(path)
-	if resolveErr != nil {
-		return fmt.Errorf("resolving path %q in Add(): %w", path, resolveErr)
-	}
-
-	pathErr := w.addPath(NewRootPath(abs))
-	if pathErr != nil {
-		return fmt.Errorf("adding resolved path %q to watcher: %w", abs, pathErr)
-	}
-
-	return nil
+		return nil
+	})
 }
 
 // AddRecursive adds a path with selective recursive depth.
@@ -403,36 +415,29 @@ func (w *Watcher) Add(path string) error {
 // If maxDepth is N > 0, directories up to N levels deep are watched.
 // This method is safe for concurrent use with other methods.
 func (w *Watcher) AddRecursive(path string, maxDepth int) error {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	err := w.withResolvedPath(path, "add recursive path", "AddRecursive()", func(abs string) error {
+		if maxDepth == 0 {
+			return w.addPath(NewRootPath(abs))
+		}
 
-	err := w.checkClosedOp("add recursive path")
+		if maxDepth < 0 {
+			addErr := w.walkAndAddPaths(NewRootPath(abs))
+			if addErr != nil {
+				return fmt.Errorf("adding resolved path %q to watcher: %w", abs, addErr)
+			}
+
+			return nil
+		}
+
+		currentDepth := 0
+
+		return w.addPathWithDepth(NewRootPath(abs), maxDepth, &currentDepth)
+	})
 	if err != nil {
 		return fmt.Errorf("maxDepth=%d: %w", maxDepth, err)
 	}
 
-	abs, resolveErr := filepath.Abs(path)
-	if resolveErr != nil {
-		return fmt.Errorf("resolving path %q in AddRecursive() (maxDepth=%d): %w", path, maxDepth, resolveErr)
-	}
-
-	if maxDepth == 0 {
-		return w.addPath(NewRootPath(abs))
-	}
-
-	if maxDepth < 0 {
-		addErr := w.walkAndAddPaths(NewRootPath(abs))
-		if addErr != nil {
-			return fmt.Errorf("adding resolved path %q to watcher (maxDepth=%d): %w", abs, maxDepth, addErr)
-		}
-
-		return nil
-	}
-
-	// Depth-limited recursive add
-	currentDepth := 0
-
-	return w.addPathWithDepth(NewRootPath(abs), maxDepth, &currentDepth)
+	return nil
 }
 
 // addPathWithDepth adds directories up to the specified depth.
@@ -489,38 +494,27 @@ const opAddPath = "add-path"
 // this path and all its subdirectories (if recursive).
 // This method is safe for concurrent use with other methods.
 func (w *Watcher) Remove(path string) error {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	return w.withResolvedPath(path, "remove path", "Remove()", func(abs string) error {
+		// Remove the path itself from fsnotify
+		_ = w.fswatcher.Remove(abs)
 
-	err := w.checkClosedOp("remove path")
-	if err != nil {
-		return err
-	}
+		// Remove all subdirectory watches under this path
+		prefix := abs + string(filepath.Separator)
 
-	abs, resolveErr := filepath.Abs(path)
-	if resolveErr != nil {
-		return fmt.Errorf("resolving path %q in Remove(): %w", path, resolveErr)
-	}
+		var remaining []string
 
-	// Remove the path itself from fsnotify
-	_ = w.fswatcher.Remove(abs)
-
-	// Remove all subdirectory watches under this path
-	prefix := abs + string(filepath.Separator)
-
-	var remaining []string
-
-	for _, p := range w.watchList {
-		if p == abs || strings.HasPrefix(p, prefix) {
-			_ = w.fswatcher.Remove(p)
-		} else {
-			remaining = append(remaining, p)
+		for _, p := range w.watchList {
+			if p == abs || strings.HasPrefix(p, prefix) {
+				_ = w.fswatcher.Remove(p)
+			} else {
+				remaining = append(remaining, p)
+			}
 		}
-	}
 
-	w.watchList = remaining
+		w.watchList = remaining
 
-	return nil
+		return nil
+	})
 }
 
 // copyWatchList returns a defensive copy of the watch list under RLock.

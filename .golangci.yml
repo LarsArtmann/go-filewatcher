@@ -199,6 +199,7 @@ linters:
       - path: ^examples/
         linters:
           - forbidigo
+          - mnd
       - path: _test\.go
         linters:
           - exhaustruct

@@ -127,6 +127,18 @@ func printTriggeredEvents(receivedEvents []string) {
 	log.Println()
 }
 
+// collectAndReport waits for file events to settle, prints which files triggered
+// events, then logs each summary line. Centralizes the collect-then-report flow
+// shared by the demonstration functions.
+func collectAndReport(ctx context.Context, events <-chan filewatcher.Event, summary ...string) {
+	receivedEvents := collectEvents(ctx, events)
+	printTriggeredEvents(receivedEvents)
+
+	for _, line := range summary {
+		log.Println(line)
+	}
+}
+
 // demonstrateSpecificFilters shows filtering specific generator types.
 func demonstrateSpecificFilters(watchDir string) {
 	log.Println("=== Example 1: Filter Specific Generator Types ===")
@@ -150,13 +162,12 @@ func demonstrateSpecificFilters(watchDir string) {
 	createTestFile(watchDir, "web/page_templ.go", "package web")       // templ - NOT filtered
 	createTestFile(watchDir, "mocks/service_mock.go", "package mocks") // mockgen - NOT filtered
 
-	receivedEvents := collectEvents(ctx, events)
-	printTriggeredEvents(receivedEvents)
-
-	log.Println("Filtered (no events):")
-	log.Println("  - models.go (sqlc)")
-	log.Println("  - user.pb.go (protobuf)")
-	log.Println()
+	collectAndReport(ctx, events,
+		"Filtered (no events):",
+		"  - models.go (sqlc)",
+		"  - user.pb.go (protobuf)",
+		"",
+	)
 }
 
 // demonstrateAllFilters shows filtering all generator types.
@@ -175,11 +186,7 @@ func demonstrateAllFilters(watchDir string) {
 	createTestFile(watchDir, "regular.go", "package main")
 	createTestFile(watchDir, "handlers.go", "package main")
 
-	receivedEvents := collectEvents(ctx, events)
-	printTriggeredEvents(receivedEvents)
-
-	log.Println("All generated files are filtered!")
-	log.Println()
+	collectAndReport(ctx, events, "All generated files are filtered!", "")
 }
 
 // demonstrateDetector shows using the detector directly.

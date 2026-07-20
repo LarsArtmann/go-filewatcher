@@ -3,6 +3,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"time"
 
@@ -10,34 +11,30 @@ import (
 	demo "github.com/larsartmann/go-filewatcher/v2/examples/demo"
 )
 
-const debounceDelay = 300 * time.Millisecond // Delay for coalescing rapid file events
-
 func main() {
-	ctx, cancel := demo.WithDefaultTimeout()
-	defer cancel()
+	demo.Run(func(ctx context.Context) {
+		watcher, err := filewatcher.New(
+			[]string{"."},
+			filewatcher.WithExtensions(".go", ".md"),
+			filewatcher.WithDebounce(300*time.Millisecond),
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	watcher, err := filewatcher.New(
-		[]string{"."},
-		filewatcher.WithExtensions(".go", ".md"),
-		filewatcher.WithDebounce(debounceDelay),
-	)
-	if err != nil {
-		//nolint:gocritic // log.Fatal exits immediately, defer won't run (intentional)
-		log.Fatal(err)
-	}
+		defer func() { _ = watcher.Close() }()
 
-	defer func() { _ = watcher.Close() }()
+		events, err := watcher.Watch(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	events, err := watcher.Watch(ctx)
-	if err != nil {
-		log.Fatal(err)
-	}
+		log.Println("Watching for .go and .md file changes (10s timeout)...")
 
-	log.Println("Watching for .go and .md file changes (10s timeout)...")
+		for event := range events {
+			demo.PrintEvent(event)
+		}
 
-	for event := range events {
-		demo.PrintEvent(event)
-	}
-
-	log.Println("Done.")
+		log.Println("Done.")
+	})
 }

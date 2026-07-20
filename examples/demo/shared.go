@@ -28,3 +28,13 @@ func DefaultTimeout() time.Duration {
 func WithDefaultTimeout() (context.Context, context.CancelFunc) {
 	return context.WithTimeout(context.Background(), defaultTimeout)
 }
+
+// Run creates a context with the default demo timeout, invokes fn with it,
+// then cancels the context. Wraps the standard context-setup boilerplate so
+// each example program's main body stays focused on filewatcher usage.
+func Run(fn func(ctx context.Context)) {
+	ctx, cancel := WithDefaultTimeout()
+	defer cancel()
+
+	fn(ctx)
+}

@@ -162,7 +162,8 @@ func demonstrateSpecificFilters(watchDir string) {
 	createTestFile(watchDir, "web/page_templ.go", "package web")       // templ - NOT filtered
 	createTestFile(watchDir, "mocks/service_mock.go", "package mocks") // mockgen - NOT filtered
 
-	collectAndReport(ctx, events,
+	collectAndReport(
+		ctx, events,
 		"Filtered (no events):",
 		"  - models.go (sqlc)",
 		"  - user.pb.go (protobuf)",

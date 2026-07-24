@@ -6,23 +6,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.2.1] - 2026-07-24
+
 ### Added
 
+- Nix flake support — `flake.nix` with devShell, quality-gate apps (`nix run .#check`, `.#lint`, `.#test`, `.#ci`), and reproducible vendored builds (`proxyVendor`, `vendorHash`)
+- `.golangci.yml` — strict linting configuration with 50+ linters (exhaustruct, wrapcheck, paralleltest, gci, etc.)
+- `.gitattributes` for consistent line-ending handling across platforms
 - `FEATURES.md` — honest feature inventory with status indicators (DONE, PARTIALLY DONE, PLANNED, WORTH CONSIDERING)
 - `ROADMAP.md` — long-term direction, raw ideas, and non-goals
+- Public documentation website (`website/`) — Astro + Starlight site deployed to Firebase Hosting at `filewatcher.lars.software`, with 17 components, full docs content, PWA manifest, and dark/light theming
+- `docs/DOMAIN_LANGUAGE.md` — rebuilt from scratch with 20+ domain terms grounded in actual code (Watcher, Event, Op, Filter, Middleware, Debouncer, Watch Budget, Self-healing, Polling Mode, etc.)
+- `CODE_OF_CONDUCT.md` — contributor community guidelines
+- Competitive analysis research: `docs/research/go-filewatcher-vs-ro-fsnotify.md` and `docs/research/adopting-samber-ro-pro-contra.md`
 - `AddRecursive` error messages now include the `maxDepth` parameter for easier debugging
 
 ### Changed
 
+- Go toolchain bumped from 1.26.3 to 1.26.4
+- `README.md` rewritten as a marketing-focused landing page with feature comparison table, "How it works" guide, and link to the documentation website
 - `DefaultIgnoreDirsCopy()` now uses `slices.Clone` instead of a manual slice copy
+- `withResolvedPath` helper consolidates the lock → closed-check → `filepath.Abs` → error-wrapping prologue shared by `Add`, `AddRecursive`, and `Remove` — eliminates copy-pasted boilerplate
+- `runExampleWatcher` helper deduplicates watcher setup across ~20 godoc examples in `example_test.go`
+- `demo.Run` helper deduplicates context setup across example programs in `examples/`
 - Import ordering in `watcher.go` normalized via goimports
-- `AGENTS.md` restructured: removed version-stamped gotchas (changelog-like), added pointers to companion docs (FEATURES/ROADMAP/TODO_LIST), fixed broken code fence in Critical Commands, corrected gogenfilter version reference
-- `README.md` updated: expanded Configuration Options table (24 options), Filters table (17 filters), Middleware table (18 middleware), added Resilience & Observability sections, added `Event.Hash` field
+- `AGENTS.md` restructured: removed version-stamped gotchas, added pointers to companion docs (FEATURES/ROADMAP/TODO_LIST), added website section and file organization for `filter_gogen.go` and `phantom_types.go`
 - `TODO_LIST.md` rebuilt: removed 140+ completed historical items, kept only actionable short/mid-term work with clear priorities
+- CHANGELOG backfilled with three missing historical releases: v0.2.1, v0.2.2, v0.3.0
+- CI: added `GOEXPERIMENT=jsonv2`, pinned `golangci-lint` to v2.12.2, aligned coverage threshold from 90% to 85% (actual: 85.8%)
+- `makezero` lint compliance: switched from pre-allocated indexing to `make([]T, 0, N)` + `append` pattern
+- Expanded `.gitignore` with JS/TS build artifacts and cache directories
 
 ### Dependencies
 
-- `github.com/LarsArtmann/gogenfilter/v3` updated from v3.1.0 to v3.2.0
+- `github.com/LarsArtmann/gogenfilter/v3` updated from v3.1.0 to v3.2.0 — removed unused transitive dependencies (pprof, ginkgo, gomega, x/net)
 
 ## [2.2.0] - 2026-06-03
 

@@ -11,11 +11,13 @@ import (
 	demo "github.com/larsartmann/go-filewatcher/v2/examples/demo"
 )
 
+const debounceDelay = 500 * time.Millisecond
+
 func main() {
 	demo.Run(func(ctx context.Context) {
 		watcher, err := filewatcher.New(
 			[]string{"."},
-			filewatcher.WithPerPathDebounce(500*time.Millisecond),
+			filewatcher.WithPerPathDebounce(debounceDelay),
 			filewatcher.WithFilter(filewatcher.FilterExtensions(".go")),
 		)
 		if err != nil {

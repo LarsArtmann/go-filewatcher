@@ -835,13 +835,19 @@ func TestWatcher_FullLifecycle(t *testing.T) {
 	// Create watcher with filters and middleware
 	var eventCount atomic.Int32
 
-	w := newTestWatcher(t, tmpDir, WithExtensions(".go"), WithDebounce(50*time.Millisecond), WithMiddleware(func(next Handler) Handler {
-		return func(ctx context.Context, event Event) error {
-			eventCount.Add(1)
+	w := newTestWatcher(
+		t,
+		tmpDir,
+		WithExtensions(".go"),
+		WithDebounce(50*time.Millisecond),
+		WithMiddleware(func(next Handler) Handler {
+			return func(ctx context.Context, event Event) error {
+				eventCount.Add(1)
 
-			return next(ctx, event)
-		}
-	}))
+				return next(ctx, event)
+			}
+		}),
+	)
 
 	// Verify initial state
 	if w.IsClosed() {

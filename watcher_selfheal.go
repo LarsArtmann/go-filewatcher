@@ -82,6 +82,14 @@ func (w *Watcher) attemptSelfHeal() {
 			if w.onAdd != nil {
 				w.onAdd(path)
 			}
+		} else {
+			watcherErr := NewWatcherError("selfHeal", path, addErr)
+			if watcherErr.IsPermanent() {
+				w.removeFailedPath(path)
+				w.debugLog("self-heal: permanently failed, abandoning path",
+					slog.String("path", path),
+					slog.String("error", addErr.Error()))
+			}
 		}
 	}
 

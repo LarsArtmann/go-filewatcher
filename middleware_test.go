@@ -41,6 +41,58 @@ func assertBatchLen(t *testing.T, batched []Event, want int, msg string) {
 	}
 }
 
+func TestResolveRateLimitDefaults(t *testing.T) {
+	t.Parallel()
+
+	const defaultMax = 50
+
+	tests := []struct {
+		name       string
+		maxValue   int
+		window     time.Duration
+		wantMax    int
+		wantWindow time.Duration
+	}{
+		{"both positive pass through", 100, 5 * time.Second, 100, 5 * time.Second},
+		{"zero max uses provided default", 0, 5 * time.Second, defaultMax, 5 * time.Second},
+		{"negative max uses provided default", -1, 5 * time.Second, defaultMax, 5 * time.Second},
+		{"zero window uses package default", 100, 0, 100, defaultRateLimitWindow},
+		{"negative window uses package default", 100, -1, 100, defaultRateLimitWindow},
+		{"both non-positive use both defaults", 0, 0, defaultMax, defaultRateLimitWindow},
+	}
+
+	for _, tc := range tests {
+		gotMax, gotWindow := resolveRateLimitDefaults(tc.maxValue, defaultMax, tc.window)
+		if gotMax != tc.wantMax {
+			t.Errorf("%s: max = %d, want %d", tc.name, gotMax, tc.wantMax)
+		}
+
+		if gotWindow != tc.wantWindow {
+			t.Errorf("%s: window = %v, want %v", tc.name, gotWindow, tc.wantWindow)
+		}
+	}
+}
+
+func TestResolveMaxFailures(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name        string
+		maxFailures int
+		want        int
+	}{
+		{"positive passes through", 7, 7},
+		{"zero uses package default", 0, defaultMaxFailures},
+		{"negative uses package default", -3, defaultMaxFailures},
+	}
+
+	for _, tc := range tests {
+		if got := resolveMaxFailures(tc.maxFailures); got != tc.want {
+			t.Errorf("%s: got %d, want %d", tc.name, got, tc.want)
+		}
+	}
+}
+
 func TestMiddlewareLogging(t *testing.T) {
 	t.Parallel()
 

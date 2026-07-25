@@ -2,9 +2,56 @@ package filewatcher
 
 import (
 	"errors"
+	"strings"
 	"testing"
 	"time"
 )
+
+func TestRequireNonNegativeDuration(t *testing.T) {
+	t.Parallel()
+
+	t.Run("negative duration panics with option name", func(t *testing.T) {
+		t.Parallel()
+
+		const optionName = "WithDebounce"
+
+		var (
+			recovered any
+			didPanic  bool
+		)
+
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					didPanic = true
+					recovered = r
+				}
+			}()
+
+			requireNonNegativeDuration(optionName, -1*time.Millisecond)
+		}()
+
+		if !didPanic {
+			t.Fatal("expected panic for negative duration, got none")
+		}
+
+		msg, ok := recovered.(string)
+		if !ok {
+			t.Fatalf("expected panic value of type string, got %T", recovered)
+		}
+
+		if !strings.Contains(msg, optionName) {
+			t.Errorf("expected panic message to contain %q, got %q", optionName, msg)
+		}
+	})
+
+	t.Run("zero and positive durations do not panic", func(t *testing.T) {
+		t.Parallel()
+
+		requireNonNegativeDuration("WithDebounce", 0)
+		requireNonNegativeDuration("WithPerPathDebounce", 5*time.Second)
+	})
+}
 
 func TestWithIgnoreHidden(t *testing.T) {
 	t.Parallel()

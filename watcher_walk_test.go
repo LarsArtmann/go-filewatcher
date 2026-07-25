@@ -28,12 +28,7 @@ func TestAddPath_NonRecursive(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithRecursive(false))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithRecursive(false))
 
 	w.mu.Lock()
 
@@ -63,12 +58,7 @@ func TestAddPath_Recursive(t *testing.T) {
 		t.Fatal(mkdirErr)
 	}
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	w.mu.Lock()
 
@@ -88,12 +78,7 @@ func TestWalkDirFunc_WalkError(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	w.mu.Lock()
 
@@ -153,12 +138,7 @@ func TestWalkDirFunc_SkipsIgnoredDirs(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithIgnoreDirs("node_modules"))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithIgnoreDirs("node_modules"))
 
 	nmDir := filepath.Join(tmpDir, "node_modules")
 
@@ -189,12 +169,7 @@ func TestWalkAndAddPaths_WalkError(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	w.mu.Lock()
 
@@ -218,12 +193,7 @@ func TestShouldExcludePath_ExactMatch(t *testing.T) {
 		t.Fatal(mkdirErr)
 	}
 
-	w, err := New([]string{tmpDir}, WithExcludePaths(excludedDir))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithExcludePaths(excludedDir))
 
 	if !w.shouldExcludePath(excludedDir) {
 		t.Errorf("shouldExcludePath(%q) = false, want true for exact match", excludedDir)
@@ -244,12 +214,7 @@ func TestShouldExcludePath_Subtree(t *testing.T) {
 
 	childPath := filepath.Join(excludedDir, "some-repo")
 
-	w, err := New([]string{tmpDir}, WithExcludePaths(excludedDir))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithExcludePaths(excludedDir))
 
 	if !w.shouldExcludePath(childPath) {
 		t.Errorf("shouldExcludePath(%q) = false, want true for child of excluded path", childPath)
@@ -261,12 +226,7 @@ func TestShouldExcludePath_NoMatch(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithExcludePaths("/some/other/path"))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithExcludePaths("/some/other/path"))
 
 	if w.shouldExcludePath(tmpDir) {
 		t.Errorf("shouldExcludePath(%q) = true, want false for non-matching path", tmpDir)
@@ -297,12 +257,7 @@ func TestWalkDirFunc_SkipsExcludedPaths(t *testing.T) {
 		t.Fatal(mkdirErr)
 	}
 
-	w, err := New([]string{tmpDir}, WithExcludePaths(excludedDir))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithExcludePaths(excludedDir))
 
 	entries, readErr := os.ReadDir(tmpDir)
 	if readErr != nil {
@@ -326,12 +281,7 @@ func TestShouldSkipDir_DotDirs(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithSkipDotDirs(true))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithSkipDotDirs(true))
 
 	tests := []struct {
 		name  string

@@ -118,6 +118,14 @@ func MiddlewareRateLimit(maxEvents int) Middleware {
 // defaultRateLimitWindow is the default window for rate-limiting middlewares.
 const defaultRateLimitWindow = time.Second
 
+// defaultSlidingWindowEvents is the default max events per window for
+// MiddlewareSlidingWindowRateLimit.
+const defaultSlidingWindowEvents = 100
+
+// defaultErrorRateLimit is the default max errors per window for
+// MiddlewareErrorRateLimit.
+const defaultErrorRateLimit = 10
+
 // resolveRateLimitDefaults returns the provided max value and window,
 // substituting package defaults when either is non-positive. defaultMax is
 // used when maxValue is non-positive (callers differ in their default count).
@@ -139,7 +147,7 @@ func resolveRateLimitDefaults(maxValue, defaultMax int, window time.Duration) (i
 // to maxEvents per window duration using a token bucket. This provides
 // smooth rate limiting without the boundary-burst problem of fixed windows.
 func MiddlewareSlidingWindowRateLimit(maxEvents int, window time.Duration) Middleware {
-	maxEvents, window = resolveRateLimitDefaults(maxEvents, 100, window)
+	maxEvents, window = resolveRateLimitDefaults(maxEvents, defaultSlidingWindowEvents, window)
 	// Convert maxEvents/window to events per second
 	eventsPerSec := float64(maxEvents) / window.Seconds()
 	limiter := rate.NewLimiter(rate.Limit(eventsPerSec), maxEvents)
@@ -512,7 +520,8 @@ func MiddlewareCircuitBreaker(maxFailures int, resetTimeout time.Duration) Middl
 // and applies backoff when errors exceed maxErrors within the window duration.
 // During backoff, events are still forwarded but errors are suppressed.
 func MiddlewareErrorRateLimit(maxErrors int, window time.Duration) Middleware {
-	maxErrors, window = resolveRateLimitDefaults(maxErrors, 10, window)
+	maxErrors, window = resolveRateLimitDefaults(maxErrors, defaultErrorRateLimit, window)
+
 	type errorRateState struct {
 		mu      sync.Mutex
 		errors  int

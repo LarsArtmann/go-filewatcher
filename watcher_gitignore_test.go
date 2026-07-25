@@ -31,10 +31,7 @@ func setupGitignoreTest(
 		}
 	}
 
-	watcher, err := New([]string{tmpDir}, WithGitignore(gitignoreEnabled))
-	if err != nil {
-		t.Fatal(err)
-	}
+	watcher := newTestWatcher(t, tmpDir, WithGitignore(gitignoreEnabled))
 
 	return watcher, subDir
 }
@@ -43,8 +40,6 @@ func TestGitignore_SkipsIgnoredDir(t *testing.T) {
 	t.Parallel()
 
 	watcher, buildDir := setupGitignoreTest(t, "build", "build/\n", true)
-
-	defer func() { _ = watcher.Close() }()
 
 	watcher.mu.Lock()
 
@@ -61,8 +56,6 @@ func TestGitignore_DoesNotSkipNonIgnored(t *testing.T) {
 
 	watcher, srcDir := setupGitignoreTest(t, "src", "build/\n", true)
 
-	defer func() { _ = watcher.Close() }()
-
 	watcher.mu.Lock()
 
 	walkErr := watcher.walkDirFunc(srcDir, &dirEntry{name: "src", isDir: true}, nil)
@@ -77,8 +70,6 @@ func TestGitignore_Disabled(t *testing.T) {
 	t.Parallel()
 
 	watcher, buildDir := setupGitignoreTest(t, "my-output", "my-output/\n", false)
-
-	defer func() { _ = watcher.Close() }()
 
 	watcher.mu.Lock()
 
@@ -95,12 +86,7 @@ func TestGitignore_NoGitignoreFile(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	watcher, err := New([]string{tmpDir}, WithGitignore(true))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = watcher.Close() }()
+	watcher := newTestWatcher(t, tmpDir, WithGitignore(true))
 
 	if watcher.shouldSkipByGitignore(filepath.Join(tmpDir, "anything")) {
 		t.Error("should not skip when no .gitignore file exists")

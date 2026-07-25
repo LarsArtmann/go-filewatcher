@@ -8,26 +8,19 @@ import (
 func TestSelfHeal_DisabledByDefault(t *testing.T) {
 	t.Parallel()
 
-	watcher, err := New([]string{t.TempDir()})
-	if err != nil {
-		t.Fatal(err)
-	}
+	tmpDir := t.TempDir()
+
+	watcher := newTestWatcher(t, tmpDir)
 
 	assertEqual(t, "selfHealInterval", watcher.selfHealInterval, time.Duration(0))
-
-	_ = watcher.Close()
 }
 
 func TestSelfHeal_EnabledViaOption(t *testing.T) {
 	t.Parallel()
 
-	watcher, err := New(
-		[]string{t.TempDir()},
-		WithSelfHeal(100*time.Millisecond),
-	)
-	if err != nil {
-		t.Fatal(err)
-	}
+	tmpDir := t.TempDir()
+
+	watcher := newTestWatcher(t, tmpDir, WithSelfHeal(100*time.Millisecond))
 
 	if watcher.selfHealInterval != 100*time.Millisecond {
 		t.Errorf("selfHealInterval = %v, want 100ms", watcher.selfHealInterval)
@@ -39,28 +32,19 @@ func TestSelfHeal_EnabledViaOption(t *testing.T) {
 func TestSelfHeal_ZeroIntervalIgnored(t *testing.T) {
 	t.Parallel()
 
-	watcher, err := New(
-		[]string{t.TempDir()},
-		WithSelfHeal(0), // explicitly disabled
-	)
-	if err != nil {
-		t.Fatal(err)
-	}
+	tmpDir := t.TempDir()
+
+	watcher := newTestWatcher(t, tmpDir, WithSelfHeal(0)) // explicitly disabled
 
 	assertEqual(t, "selfHealInterval (zero ignored)", watcher.selfHealInterval, time.Duration(0))
-
-	_ = watcher.Close()
 }
 
 func TestSelfHeal_TracksFailedPaths(t *testing.T) {
 	t.Parallel()
 
-	watcher, err := New([]string{t.TempDir()})
-	if err != nil {
-		t.Fatal(err)
-	}
+	tmpDir := t.TempDir()
 
-	defer func() { _ = watcher.Close() }()
+	watcher := newTestWatcher(t, tmpDir)
 
 	// Manually add non-existent paths
 	watcher.failedPaths["/nonexistent/path"] = struct{}{}
@@ -79,12 +63,9 @@ func TestSelfHeal_TracksFailedPaths(t *testing.T) {
 func TestSelfHeal_NoOpWhenEmpty(t *testing.T) {
 	t.Parallel()
 
-	watcher, err := New([]string{t.TempDir()})
-	if err != nil {
-		t.Fatal(err)
-	}
+	tmpDir := t.TempDir()
 
-	defer func() { _ = watcher.Close() }()
+	watcher := newTestWatcher(t, tmpDir)
 
 	// attemptSelfHeal should be a no-op when no paths have failed
 	watcher.attemptSelfHeal()

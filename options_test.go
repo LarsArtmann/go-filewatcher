@@ -11,12 +11,7 @@ func TestWithIgnoreHidden(t *testing.T) {
 
 	dir := t.TempDir()
 
-	watcher, err := New([]string{dir}, WithIgnoreHidden())
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	defer func() { _ = watcher.Close() }()
+	watcher := newTestWatcher(t, dir, WithIgnoreHidden())
 
 	if len(watcher.filters) != 1 {
 		t.Fatalf("expected 1 filter, got %d", len(watcher.filters))
@@ -40,14 +35,9 @@ func TestWithOnAdd(t *testing.T) {
 
 	var addedPaths []string
 
-	watcher, err := New([]string{dir}, WithOnAdd(func(path string) {
+	watcher := newTestWatcher(t, dir, WithOnAdd(func(path string) {
 		addedPaths = append(addedPaths, path)
 	}))
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	defer func() { _ = watcher.Close() }()
 
 	if watcher.onAdd == nil {
 		t.Fatal("expected onAdd callback to be set")
@@ -67,14 +57,9 @@ func TestWithOnError(t *testing.T) {
 
 	var receivedErr error
 
-	watcher, err := New([]string{dir}, WithOnError(func(err error) {
+	watcher := newTestWatcher(t, dir, WithOnError(func(err error) {
 		receivedErr = err
 	}))
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	defer func() { _ = watcher.Close() }()
 
 	if watcher.errorHandler == nil {
 		t.Fatal("expected errorHandler to be set")
@@ -99,12 +84,7 @@ func TestWithLazyIsDir(t *testing.T) {
 
 	dir := t.TempDir()
 
-	watcher, err := New([]string{dir}, WithLazyIsDir())
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	defer func() { _ = watcher.Close() }()
+	watcher := newTestWatcher(t, dir, WithLazyIsDir())
 
 	if !watcher.lazyIsDir {
 		t.Error("expected lazyIsDir to be true")
@@ -116,12 +96,7 @@ func TestWithPollInterval(t *testing.T) {
 
 	dir := t.TempDir()
 
-	watcher, err := New([]string{dir}, WithPollInterval(5*time.Second))
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	defer func() { _ = watcher.Close() }()
+	watcher := newTestWatcher(t, dir, WithPollInterval(5*time.Second))
 
 	assertEqual(t, "pollInterval", watcher.pollInterval, 5*time.Second)
 }
@@ -131,12 +106,7 @@ func TestWithPolling(t *testing.T) {
 
 	dir := t.TempDir()
 
-	watcher, err := New([]string{dir}, WithPolling(true))
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	defer func() { _ = watcher.Close() }()
+	watcher := newTestWatcher(t, dir, WithPolling(true))
 
 	if !watcher.polling {
 		t.Error("expected polling to be true")
@@ -150,12 +120,7 @@ func TestWithPolling_False(t *testing.T) {
 
 	dir := t.TempDir()
 
-	watcher, err := New([]string{dir}, WithPolling(false))
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	defer func() { _ = watcher.Close() }()
+	watcher := newTestWatcher(t, dir, WithPolling(false))
 
 	if watcher.polling {
 		t.Error("expected polling to be false")
@@ -167,12 +132,7 @@ func TestWithDebug(t *testing.T) {
 
 	dir := t.TempDir()
 
-	watcher, err := New([]string{dir}, WithDebug(nil))
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	defer func() { _ = watcher.Close() }()
+	watcher := newTestWatcher(t, dir, WithDebug(nil))
 
 	if !watcher.debug {
 		t.Error("expected debug to be true")
@@ -184,12 +144,7 @@ func TestWithWatchedIgnoreDirs(t *testing.T) {
 
 	dir := t.TempDir()
 
-	watcher, err := New([]string{dir}, WithWatchedIgnoreDirs("node_modules", ".cache"))
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	defer func() { _ = watcher.Close() }()
+	watcher := newTestWatcher(t, dir, WithWatchedIgnoreDirs("node_modules", ".cache"))
 
 	filterCount := len(watcher.filters)
 	if filterCount == 0 {

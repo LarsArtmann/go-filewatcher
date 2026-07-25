@@ -95,6 +95,18 @@ func (b *baseDebouncer) executeCallbacks(callbacks []func()) {
 	}
 }
 
+// stop marks the debouncer stopped, runs cleanup under the mutex, then waits
+// for all in-flight callbacks to drain. Centralizes the lock/markStopped/unlock/wait
+// discipline shared by Debouncer.Stop and GlobalDebouncer.Stop.
+func (b *baseDebouncer) stop(cleanup func()) {
+	b.mu.Lock()
+	b.markStopped()
+	cleanup()
+	b.mu.Unlock()
+
+	b.wait()
+}
+
 // Debouncer prevents rapid successive function executions by coalescing
 // calls within a delay window. It supports per-key debouncing so that
 // different keys (e.g., file paths) are debounced independently.
@@ -165,20 +177,15 @@ func (d *Debouncer) Flush() {
 // Stop cancels all pending executions without running them.
 // Waits for any in-flight callbacks to complete before returning.
 func (d *Debouncer) Stop() {
-	d.base.mu.Lock()
-	d.base.markStopped()
-
-	for key, entry := range d.entries {
-		entry.timer.Stop()
-		delete(d.entries, key)
-		// Each cancelled timer means we called wg.Add(1) but callback won't run
-		// so we need to decrement
-		d.base.done()
-	}
-	d.base.mu.Unlock()
-
-	// Wait for any in-flight callbacks to complete
-	d.base.wait()
+	d.base.stop(func() {
+		for key, entry := range d.entries {
+			entry.timer.Stop()
+			delete(d.entries, key)
+			// Each cancelled timer means we called wg.Add(1) but callback won't run
+			// so we need to decrement
+			d.base.done()
+		}
+	})
 }
 
 // Pending returns the number of keys with pending executions.
@@ -267,19 +274,13 @@ func (g *GlobalDebouncer) Flush() {
 // Stop cancels the pending execution.
 // Waits for any in-flight callback to complete before returning.
 func (g *GlobalDebouncer) Stop() {
-	g.base.mu.Lock()
-	g.base.markStopped()
-
-	if g.timer != nil {
-		g.base.stopTimer(g.timer)
-		g.timer = nil
-		g.fn = nil
-	}
-
-	g.base.mu.Unlock()
-
-	// Wait for any in-flight callback to complete
-	g.base.wait()
+	g.base.stop(func() {
+		if g.timer != nil {
+			g.base.stopTimer(g.timer)
+			g.timer = nil
+			g.fn = nil
+		}
+	})
 }
 
 // Pending returns whether there is a pending execution.

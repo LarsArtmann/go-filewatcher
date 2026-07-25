@@ -115,18 +115,31 @@ func MiddlewareRateLimit(maxEvents int) Middleware {
 	return MiddlewareThrottle(maxEvents, maxEvents)
 }
 
+// defaultRateLimitWindow is the default window for rate-limiting middlewares.
+const defaultRateLimitWindow = time.Second
+
+// resolveRateLimitDefaults returns the provided max value and window,
+// substituting package defaults when either is non-positive. defaultMax is
+// used when maxValue is non-positive (callers differ in their default count).
+// Centralizes the defaulting logic shared by MiddlewareSlidingWindowRateLimit
+// and MiddlewareErrorRateLimit.
+func resolveRateLimitDefaults(maxValue, defaultMax int, window time.Duration) (int, time.Duration) {
+	if maxValue <= 0 {
+		maxValue = defaultMax
+	}
+
+	if window <= 0 {
+		window = defaultRateLimitWindow
+	}
+
+	return maxValue, window
+}
+
 // MiddlewareSlidingWindowRateLimit returns a middleware that limits events
 // to maxEvents per window duration using a token bucket. This provides
 // smooth rate limiting without the boundary-burst problem of fixed windows.
 func MiddlewareSlidingWindowRateLimit(maxEvents int, window time.Duration) Middleware {
-	if maxEvents <= 0 {
-		maxEvents = 100
-	}
-
-	if window <= 0 {
-		window = time.Second
-	}
-
+	maxEvents, window = resolveRateLimitDefaults(maxEvents, 100, window)
 	// Convert maxEvents/window to events per second
 	eventsPerSec := float64(maxEvents) / window.Seconds()
 	limiter := rate.NewLimiter(rate.Limit(eventsPerSec), maxEvents)
@@ -499,14 +512,7 @@ func MiddlewareCircuitBreaker(maxFailures int, resetTimeout time.Duration) Middl
 // and applies backoff when errors exceed maxErrors within the window duration.
 // During backoff, events are still forwarded but errors are suppressed.
 func MiddlewareErrorRateLimit(maxErrors int, window time.Duration) Middleware {
-	if maxErrors <= 0 {
-		maxErrors = 10
-	}
-
-	if window <= 0 {
-		window = time.Second
-	}
-
+	maxErrors, window = resolveRateLimitDefaults(maxErrors, 10, window)
 	type errorRateState struct {
 		mu      sync.Mutex
 		errors  int

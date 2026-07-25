@@ -84,12 +84,7 @@ func TestWatcher_Reset_WhileRunning(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	watcher, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = watcher.Close() }()
+	watcher := newTestWatcher(t, tmpDir)
 
 	ctx := setupTestContext(t, 5*time.Second)
 

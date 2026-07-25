@@ -253,11 +253,14 @@ without rebuilding from scratch.
 
 ## Key Patterns
 
-| Pattern            | Where                                          |
-| ------------------ | ---------------------------------------------- |
-| Functional Options | `options.go` — `type Option func(*Watcher)`    |
-| Middleware Chain   | `middleware.go` — applied in **reverse** order |
-| Filter Composition | `filter.go` — `FilterAnd()`, `FilterOr()`      |
+| Pattern                | Where                                                                    |
+| ---------------------- | ------------------------------------------------------------------------ |
+| Functional Options     | `options.go` — `type Option func(*Watcher)`                              |
+| Middleware Chain       | `middleware.go` — applied in **reverse** order                           |
+| Filter Composition     | `filter.go` — `FilterAnd()`, `FilterOr()`                                |
+| `resolve*Defaults`     | `middleware.go` — extract when 2+ fns share defaulting; single-fn inline |
+| `baseDebouncer.stop`   | `debouncer.go` — lock/markStopped/cleanup/unlock/wait in one place       |
+| `newTestWatcher`       | `testing_helpers_test.go:412` — standard `New + cleanup` for all tests   |
 
 ---
 

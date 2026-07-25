@@ -80,12 +80,7 @@ func TestNew_ValidPath(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	if w == nil {
 		t.Fatal("expected non-nil watcher")
@@ -137,12 +132,7 @@ func TestWatcher_Watch_DetectsWrite(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithExtensions(".go"))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithExtensions(".go"))
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -166,12 +156,7 @@ func TestWatcher_Watch_FiltersExtensions(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithExtensions(".go"))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithExtensions(".go"))
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -270,21 +255,13 @@ func TestWatcher_Watch_WithMiddleware(t *testing.T) {
 
 	var processed atomic.Int32
 
-	w, err := New(
-		[]string{tmpDir},
-		WithMiddleware(func(next Handler) Handler {
-			return func(ctx context.Context, event Event) error {
-				processed.Add(1)
+	w := newTestWatcher(t, tmpDir, WithMiddleware(func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			processed.Add(1)
 
-				return next(ctx, event)
-			}
-		}),
-	)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+			return next(ctx, event)
+		}
+	}))
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -410,12 +387,7 @@ func TestWatcher_Watch_NewDirectory(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithRecursive(true))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithRecursive(true))
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -463,19 +435,11 @@ func TestWatcher_Watch_ErrorHandler(t *testing.T) {
 
 	var errorReceived atomic.Pointer[error]
 
-	w, err := New(
-		[]string{tmpDir},
-		WithErrorHandler(func(ctx ErrorContext, err error) {
-			_ = ctx
+	w := newTestWatcher(t, tmpDir, WithErrorHandler(func(ctx ErrorContext, err error) {
+		_ = ctx
 
-			errorReceived.Store(&err)
-		}),
-	)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+		errorReceived.Store(&err)
+	}))
 
 	if errorReceived.Load() != nil {
 		t.Error("expected no error yet")
@@ -487,12 +451,7 @@ func TestWatcher_Add(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -526,12 +485,7 @@ func TestWatcher_Remove(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -577,16 +531,11 @@ func TestWatcher_WatchList(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	ctx := setupTestContext(t, 5*time.Second)
 
-	_, err = w.Watch(ctx)
+	_, err := w.Watch(ctx)
 	if err != nil {
 		t.Fatalf("Watch failed: %v", err)
 	}
@@ -607,16 +556,11 @@ func TestWatcher_WatchList_IsCopy(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	ctx := setupTestContext(t, 5*time.Second)
 
-	_, err = w.Watch(ctx)
+	_, err := w.Watch(ctx)
 	if err != nil {
 		t.Fatalf("Watch failed: %v", err)
 	}
@@ -679,15 +623,7 @@ func TestWatcher_Stats_Metrics(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New(
-		[]string{tmpDir},
-		WithExtensions(".go"),
-	)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithExtensions(".go"))
 
 	// Verify initial metrics are zero
 	stats := w.Stats()
@@ -770,15 +706,7 @@ func TestWatcher_IgnoreDirs(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New(
-		[]string{tmpDir},
-		WithIgnoreDirs("vendor"),
-	)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithIgnoreDirs("vendor"))
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -827,12 +755,7 @@ func TestWatcher_IgnoreDirs(t *testing.T) {
 func TestWatcher_handleError_Default(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	old := os.Stderr
 	r, w2, _ := os.Pipe()
@@ -858,12 +781,7 @@ func TestWatcher_Watch_DoubleWatch(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
@@ -917,21 +835,13 @@ func TestWatcher_FullLifecycle(t *testing.T) {
 	// Create watcher with filters and middleware
 	var eventCount atomic.Int32
 
-	w, err := New(
-		[]string{tmpDir},
-		WithExtensions(".go"),
-		WithDebounce(50*time.Millisecond),
-		WithMiddleware(func(next Handler) Handler {
-			return func(ctx context.Context, event Event) error {
-				eventCount.Add(1)
+	w := newTestWatcher(t, tmpDir, WithExtensions(".go"), WithDebounce(50*time.Millisecond), WithMiddleware(func(next Handler) Handler {
+		return func(ctx context.Context, event Event) error {
+			eventCount.Add(1)
 
-				return next(ctx, event)
-			}
-		}),
-	)
-	if err != nil {
-		t.Fatalf("New() failed: %v", err)
-	}
+			return next(ctx, event)
+		}
+	}))
 
 	// Verify initial state
 	if w.IsClosed() {
@@ -1043,10 +953,7 @@ func TestWatcher_Errors(t *testing.T) {
 func TestWatcher_Errors_ReceivesErrors(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
+	w := newTestWatcher(t, tmpDir)
 
 	// Get errors channel BEFORE starting watch
 	errorsCh := w.Errors()
@@ -1054,7 +961,7 @@ func TestWatcher_Errors_ReceivesErrors(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	_, err = w.Watch(ctx)
+	_, err := w.Watch(ctx)
 	if err != nil {
 		t.Fatalf("Watch failed: %v", err)
 	}
@@ -1186,12 +1093,7 @@ func TestWatcher_Watch_WithDebug(t *testing.T) {
 
 	logger := slog.New(slog.NewTextHandler(&logBuf, &slog.HandlerOptions{Level: slog.LevelDebug}))
 
-	w, err := New([]string{tmpDir}, WithDebug(logger), WithExtensions(".go"))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithDebug(logger), WithExtensions(".go"))
 
 	ctx := setupTestContext(t, 5*time.Second)
 

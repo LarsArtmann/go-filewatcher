@@ -10,13 +10,20 @@ import (
 // Option configures a Watcher during creation.
 type Option func(*Watcher)
 
+// requireNonNegativeDuration panics if delay is negative. Centralizes the
+// input validation shared by WithDebounce and WithPerPathDebounce. optionName
+// is included in the panic message to identify the caller.
+func requireNonNegativeDuration(optionName string, delay time.Duration) {
+	if delay < 0 {
+		panic(fmt.Sprintf("filewatcher: %s: negative duration %v", optionName, delay))
+	}
+}
+
 // WithDebounce sets a global debounce delay. All events are coalesced
 // into a single emission after the delay since the last event.
 // Default is no debouncing. Panics if delay is negative.
 func WithDebounce(delay time.Duration) Option {
-	if delay < 0 {
-		panic(fmt.Sprintf("filewatcher: WithDebounce: negative duration %v", delay))
-	}
+	requireNonNegativeDuration("WithDebounce", delay)
 
 	return func(w *Watcher) {
 		w.globalDebounce = delay
@@ -28,9 +35,7 @@ func WithDebounce(delay time.Duration) Option {
 // many files and changes to different files should trigger separate actions.
 // Panics if delay is negative.
 func WithPerPathDebounce(delay time.Duration) Option {
-	if delay < 0 {
-		panic(fmt.Sprintf("filewatcher: WithPerPathDebounce: negative duration %v", delay))
-	}
+	requireNonNegativeDuration("WithPerPathDebounce", delay)
 
 	return func(w *Watcher) {
 		w.perPathDebounce = delay

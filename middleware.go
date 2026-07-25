@@ -432,6 +432,21 @@ func (s CircuitState) String() string {
 
 const circuitBreakerDefaultTimeout = 30 * time.Second
 
+// defaultMaxFailures is the default failure threshold for breaker-style
+// middlewares. Used when the caller passes a non-positive maxFailures.
+const defaultMaxFailures = 5
+
+// resolveMaxFailures returns maxFailures or the package default when non-positive.
+// Centralizes the defaulting logic shared by MiddlewareCircuitBreaker
+// and MiddlewareExponentialBackoff.
+func resolveMaxFailures(maxFailures int) int {
+	if maxFailures <= 0 {
+		return defaultMaxFailures
+	}
+
+	return maxFailures
+}
+
 // MiddlewareCircuitBreaker returns a middleware that implements the circuit breaker pattern.
 // After maxFailures consecutive failures from the downstream handler, the circuit opens
 // and drops all events for the resetTimeout duration. After the timeout, the circuit
@@ -440,9 +455,7 @@ const circuitBreakerDefaultTimeout = 30 * time.Second
 //
 //nolint:funlen // Complex state machine requiring inline logic
 func MiddlewareCircuitBreaker(maxFailures int, resetTimeout time.Duration) Middleware {
-	if maxFailures <= 0 {
-		maxFailures = 5
-	}
+	maxFailures = resolveMaxFailures(maxFailures)
 
 	if resetTimeout <= 0 {
 		resetTimeout = circuitBreakerDefaultTimeout
@@ -724,9 +737,7 @@ const defaultExponentialBackoffMax = 30 * time.Second
 //
 //nolint:funlen // Exponential backoff state machine with inline mutex locking
 func MiddlewareExponentialBackoff(maxFailures int, initialBackoff, maxBackoff time.Duration) Middleware {
-	if maxFailures <= 0 {
-		maxFailures = 5
-	}
+	maxFailures = resolveMaxFailures(maxFailures)
 
 	if initialBackoff <= 0 {
 		initialBackoff = defaultExponentialBackoffInitial

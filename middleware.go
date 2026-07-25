@@ -386,13 +386,16 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 	}
 }
 
+// defaultThrottleEvents is the default maximum events per second for throttling.
+const defaultThrottleEvents = 100
+
 // MiddlewareThrottle returns a middleware that limits event processing to
 // maxEvents per second with burst support. Up to burst events can be
 // processed immediately; after that, only maxEvents per second are allowed.
 // Excess events are dropped. Uses golang.org/x/time/rate for correctness.
 func MiddlewareThrottle(maxEvents, burst int) Middleware {
 	if maxEvents <= 0 {
-		maxEvents = 100
+		maxEvents = defaultThrottleEvents
 	}
 
 	if burst <= 0 {

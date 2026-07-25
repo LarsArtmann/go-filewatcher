@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Self-heal respects permanent failures** (`watcher_selfheal.go`) — `attemptSelfHeal` now checks `IsPermanent()` and abandons paths that can never recover (deleted directory, wrong entry type) instead of retrying them forever. Retry budget is now spent only on genuinely transient failures.
+
 ## [2.2.1] - 2026-07-24
 
 ### Added

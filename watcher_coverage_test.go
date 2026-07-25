@@ -17,12 +17,7 @@ func TestWatcher_Watch_RenameEvent(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -105,12 +100,7 @@ func TestWatcher_Watch_NonRecursive_IgnoresSubdirs(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithRecursive(false))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithRecursive(false))
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -165,12 +155,7 @@ func TestWatcher_ConcurrentAddRemove(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -213,12 +198,7 @@ func TestWatcher_BufferZero(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithBuffer(0))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithBuffer(0))
 
 	if w.bufferSize != 0 {
 		t.Errorf("expected bufferSize 0, got %d", w.bufferSize)
@@ -230,12 +210,7 @@ func TestWatcher_Add_NonExistentPath(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -255,10 +230,7 @@ func TestWatcher_ErrorsChannel_ClosesOnClose(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
+	w := newTestWatcher(t, tmpDir)
 
 	errorsCh := w.Errors()
 
@@ -282,12 +254,7 @@ func TestWatcher_WithBufferNegative(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithBuffer(-1))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithBuffer(-1))
 
 	if w.bufferSize != defaultEventBufferSize {
 		t.Errorf(
@@ -360,12 +327,7 @@ func TestWatcher_StateTransition_AfterFailedWatch(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
@@ -396,12 +358,7 @@ func TestWatcher_ErrorHandler_WithContext(t *testing.T) {
 
 	handler, receivedCtx, receivedErr := newErrorHandlerCallback()
 
-	w, err := New([]string{tmpDir}, WithErrorHandler(handler))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithErrorHandler(handler))
 
 	const testPath = "/test/path"
 
@@ -434,12 +391,7 @@ func TestWatcher_WatchList_NoDuplicates(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir)
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -466,10 +418,7 @@ func TestWatcher_WatchOnce(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
+	w := newTestWatcher(t, tmpDir)
 
 	ctx := setupTestContext(t, 5*time.Second)
 
@@ -503,10 +452,7 @@ func TestWatcher_WatchOnce_CancelledContext(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir})
-	if err != nil {
-		t.Fatal(err)
-	}
+	w := newTestWatcher(t, tmpDir)
 
 	ctx, cancel := context.WithCancel(t.Context())
 	cancel()
@@ -581,12 +527,7 @@ func TestWithIgnorePatterns(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithIgnorePatterns("*.log", "*.tmp"))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithIgnorePatterns("*.log", "*.tmp"))
 
 	if len(w.filters) != 1 {
 		t.Fatalf("expected 1 filter, got %d", len(w.filters))
@@ -632,16 +573,7 @@ func TestWatcher_ExecuteHandler_ErrorPath(t *testing.T) {
 
 	ctx := setupTestContext(t, 5*time.Second)
 
-	w, err := New(
-		[]string{tmpDir.Get()},
-		WithMiddleware(errorMiddleware),
-		WithErrorHandler(handler),
-	)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir.Get(), WithMiddleware(errorMiddleware), WithErrorHandler(handler))
 
 	events, watchErr := w.Watch(ctx)
 	if watchErr != nil {

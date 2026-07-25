@@ -435,7 +435,7 @@ func TestWatcher_Watch_ErrorHandler(t *testing.T) {
 
 	var errorReceived atomic.Pointer[error]
 
-	w := newTestWatcher(t, tmpDir, WithErrorHandler(func(ctx ErrorContext, err error) {
+	newTestWatcher(t, tmpDir, WithErrorHandler(func(ctx ErrorContext, err error) {
 		_ = ctx
 
 		errorReceived.Store(&err)
@@ -786,7 +786,7 @@ func TestWatcher_Watch_DoubleWatch(t *testing.T) {
 	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 
-	_, err = w.Watch(ctx)
+	_, err := w.Watch(ctx)
 	if err != nil {
 		t.Fatalf("first Watch failed: %v", err)
 	}

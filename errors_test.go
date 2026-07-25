@@ -286,12 +286,7 @@ func TestErrorHandler_WithContext(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithErrorHandler(handler))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithErrorHandler(handler))
 
 	testErr := errors.New("test error") //nolint:err113
 
@@ -417,12 +412,7 @@ func TestErrorHandler_Async(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	w, err := New([]string{tmpDir}, WithErrorHandler(handler))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() { _ = w.Close() }()
+	w := newTestWatcher(t, tmpDir, WithErrorHandler(handler))
 
 	// Simulate multiple concurrent errors
 	for range 10 {

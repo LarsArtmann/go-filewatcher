@@ -10,7 +10,7 @@ import (
 	"go/token"
 	"log/slog"
 	"os"
-	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -968,137 +968,80 @@ var expectedMiddlewareDefaultConsts = []string{
 func TestMiddlewareDefaultConsts_AllUsed(t *testing.T) {
 	t.Parallel()
 
-	thisDir := filepath.Dir(middlewareSourceFile(t))
-	referenceCounts, declaredInMiddleware := scanPackageConsts(t, thisDir)
+	summary := scanMiddlewarePackage(t)
 
-	// Drift check: every expected default const must be declared in middleware.go.
-	for _, name := range expectedMiddlewareDefaultConsts {
-		if !declaredInMiddleware[name] {
-			t.Errorf("expected default const %q is not declared in middleware.go — "+
-				"update expectedMiddlewareDefaultConsts", name)
-		}
+	assertExpectedDeclared(t, summary)
+	assertNoUndocumentedDefaults(t, summary)
+	assertAllExpectedUsed(t, summary)
+}
+
+// constScanSummary collects everything the guard needs in a single parse pass.
+type constScanSummary struct {
+	// referenceCounts maps every identifier name to its total occurrence count
+	// across the package (declaration sites included).
+	referenceCounts map[string]int
+	// declaredInMiddleware is the set of const names declared in middleware.go.
+	declaredInMiddleware map[string]bool
+	// allDefaultConsts is the set of const names (declared anywhere in the
+	// package) matching the default-family naming convention.
+	allDefaultConsts map[string]bool
+}
+
+// scanMiddlewarePackage parses every Go file in the test's working directory
+// (the package source dir) once and aggregates const declarations and
+// identifier reference counts.
+func scanMiddlewarePackage(t *testing.T) constScanSummary {
+	t.Helper()
+
+	summary := constScanSummary{
+		referenceCounts:      make(map[string]int),
+		declaredInMiddleware: make(map[string]bool),
+		allDefaultConsts:     make(map[string]bool),
 	}
 
-	// Reverse drift check: any const declared in middleware.go whose name starts
-	// with "default" or matches the *DefaultTimeout convention must appear in the
-	// expected list. This catches new defaults added without updating the test.
-	discoveredDefaults := discoverDefaultConsts(t, thisDir)
-	for name := range discoveredDefaults {
-		if !declaredInMiddleware[name] {
+	entries, err := os.ReadDir(".")
+	if err != nil {
+		t.Fatalf("reading package dir: %v", err)
+	}
+
+	fset := token.NewFileSet()
+
+	for _, entry := range entries {
+		if !strings.HasSuffix(entry.Name(), ".go") {
 			continue
 		}
 
-		if !containsString(expectedMiddlewareDefaultConsts, name) {
-			t.Errorf("default-family const %q is declared in middleware.go but missing "+
-				"from expectedMiddlewareDefaultConsts — add it to keep the guard complete", name)
-		}
+		file := parseGoFile(t, fset, entry.Name())
+		collectConstDecls(file, entry.Name() == "middleware.go", &summary)
+		collectIdentRefs(file, summary.referenceCounts)
 	}
 
-	// Core assertion: every expected default const is referenced beyond its
-	// declaration (count >= 2: one declaration + at least one usage).
-	for _, name := range expectedMiddlewareDefaultConsts {
-		count := referenceCounts[name]
-		if count < 2 {
-			t.Errorf("default const %q is referenced %d time(s) in the package; "+
-				"expected at least 2 (declaration + usage). If the defaulting logic "+
-				"was removed, delete the const; otherwise rewire it.", name, count)
-		}
-	}
+	return summary
 }
 
-// discoverDefaultConsts returns the set of const names declared anywhere in the
-// package whose name starts with "default" or contains "DefaultTimeout". These
-// are the names we treat as "middleware default const" candidates for the drift
-// check.
-func discoverDefaultConsts(t *testing.T, dir string) map[string]bool {
+func parseGoFile(t *testing.T, fset *token.FileSet, filename string) *ast.File {
 	t.Helper()
 
-	fset := token.NewFileSet()
-
-	pkgs, err := parser.ParseDir(fset, dir, nil, parser.ParseComments)
+	file, err := parser.ParseFile(fset, filename, nil, parser.ParseComments)
 	if err != nil {
-		t.Fatalf("parsing package dir %q: %v", dir, err)
+		t.Fatalf("parsing %q: %v", filename, err)
 	}
 
-	defaults := make(map[string]bool)
-
-	for _, pkg := range pkgs {
-		for _, file := range pkg.Files {
-			for _, decl := range file.Decls {
-				genDecl, ok := decl.(*ast.GenDecl)
-				if !ok || genDecl.Tok != token.CONST {
-					continue
-				}
-
-				for _, spec := range genDecl.Specs {
-					valueSpec, ok := spec.(*ast.ValueSpec)
-					if !ok {
-						continue
-					}
-
-					for _, nameIdent := range valueSpec.Names {
-						nm := nameIdent.Name
-						if strings.HasPrefix(nm, "default") || strings.Contains(nm, "DefaultTimeout") {
-							defaults[nm] = true
-						}
-					}
-				}
-			}
-		}
-	}
-
-	return defaults
+	return file
 }
 
-// scanPackageConsts parses every Go file in dir and returns:
-//   - referenceCounts: how many times each identifier name appears as an
-//     *ast.Ident across the whole package (declaration sites count too).
-//   - declaredInMiddleware: the set of const names declared in middleware.go.
-func scanPackageConsts(t *testing.T, dir string) (map[string]int, map[string]bool) {
-	t.Helper()
-
-	fset := token.NewFileSet()
-
-	pkgs, err := parser.ParseDir(fset, dir, nil, parser.ParseComments)
-	if err != nil {
-		t.Fatalf("parsing package dir %q: %v", dir, err)
-	}
-
-	referenceCounts := make(map[string]int)
-	declaredInMiddleware := make(map[string]bool)
-
-	for _, pkg := range pkgs {
-		for filename, file := range pkg.Files {
-			isMiddleware := strings.HasSuffix(filename, "middleware.go")
-
-			for _, decl := range file.Decls {
-				if isMiddleware {
-					recordConstNames(decl, declaredInMiddleware)
-				}
-			}
-
-			ast.Inspect(file, func(n ast.Node) bool {
-				ident, ok := n.(*ast.Ident)
-				if !ok {
-					return true
-				}
-
-				referenceCounts[ident.Name]++
-
-				return true
-			})
+func collectConstDecls(file *ast.File, isMiddleware bool, summary *constScanSummary) {
+	for _, decl := range file.Decls {
+		genDecl, ok := decl.(*ast.GenDecl)
+		if !ok || genDecl.Tok != token.CONST {
+			continue
 		}
-	}
 
-	return referenceCounts, declaredInMiddleware
+		recordConstNames(genDecl, isMiddleware, summary)
+	}
 }
 
-func recordConstNames(decl ast.Decl, into map[string]bool) {
-	genDecl, ok := decl.(*ast.GenDecl)
-	if !ok || genDecl.Tok != token.CONST {
-		return
-	}
-
+func recordConstNames(genDecl *ast.GenDecl, isMiddleware bool, summary *constScanSummary) {
 	for _, spec := range genDecl.Specs {
 		valueSpec, ok := spec.(*ast.ValueSpec)
 		if !ok {
@@ -1106,36 +1049,72 @@ func recordConstNames(decl ast.Decl, into map[string]bool) {
 		}
 
 		for _, nameIdent := range valueSpec.Names {
-			into[nameIdent.Name] = true
+			nm := nameIdent.Name
+			if isMiddleware {
+				summary.declaredInMiddleware[nm] = true
+			}
+
+			if isDefaultFamilyConst(nm) {
+				summary.allDefaultConsts[nm] = true
+			}
 		}
 	}
 }
 
-func containsString(slice []string, target string) bool {
-	for _, s := range slice {
-		if s == target {
+func isDefaultFamilyConst(name string) bool {
+	return strings.HasPrefix(name, "default") || strings.Contains(name, "DefaultTimeout")
+}
+
+func collectIdentRefs(file *ast.File, counts map[string]int) {
+	ast.Inspect(file, func(n ast.Node) bool {
+		ident, ok := n.(*ast.Ident)
+		if !ok {
 			return true
 		}
-	}
 
-	return false
+		counts[ident.Name]++
+
+		return true
+	})
 }
 
-// middlewareSourceFile returns the path to middleware.go relative to the test
-// binary's working directory. The test CWD is the package source directory.
-func middlewareSourceFile(t *testing.T) string {
+// assertExpectedDeclared fails when an expected default const is missing from
+// middleware.go (the list drifted from the source).
+func assertExpectedDeclared(t *testing.T, s constScanSummary) {
 	t.Helper()
 
-	const filename = "middleware.go"
-
-	info, err := os.Stat(filename)
-	if err != nil {
-		t.Fatalf("cannot stat %q from test CWD: %v", filename, err)
+	for _, name := range expectedMiddlewareDefaultConsts {
+		if !s.declaredInMiddleware[name] {
+			t.Errorf("expected default const %q is not declared in middleware.go — "+
+				"update expectedMiddlewareDefaultConsts", name)
+		}
 	}
+}
 
-	if info.IsDir() {
-		t.Fatalf("%q is a directory, expected the middleware.go source file", filename)
+// assertNoUndocumentedDefaults fails when a default-family const exists in
+// middleware.go but is not listed in expectedMiddlewareDefaultConsts (a new
+// default was added without updating the guard).
+func assertNoUndocumentedDefaults(t *testing.T, s constScanSummary) {
+	t.Helper()
+
+	for name := range s.allDefaultConsts {
+		if s.declaredInMiddleware[name] && !slices.Contains(expectedMiddlewareDefaultConsts, name) {
+			t.Errorf("default-family const %q is declared in middleware.go but missing "+
+				"from expectedMiddlewareDefaultConsts — add it to keep the guard complete", name)
+		}
 	}
+}
 
-	return filename
+// assertAllExpectedUsed fails when an expected default const is referenced fewer
+// than twice (i.e. only its declaration remains, no call site).
+func assertAllExpectedUsed(t *testing.T, s constScanSummary) {
+	t.Helper()
+
+	for _, name := range expectedMiddlewareDefaultConsts {
+		if count := s.referenceCounts[name]; count < 2 {
+			t.Errorf("default const %q is referenced %d time(s) in the package; "+
+				"expected at least 2 (declaration + usage). If the defaulting logic "+
+				"was removed, delete the const; otherwise rewire it.", name, count)
+		}
+	}
 }

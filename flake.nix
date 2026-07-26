@@ -69,6 +69,9 @@
           ./watcher_walk.go
           ./watcher_walk_test.go
           ./benchmark_test.go
+          ./backend.go
+          ./error_simulation_test.go
+          ./fake_backend_test.go
         ];
       };
     in

@@ -25,6 +25,7 @@ import (
 
 	"github.com/LarsArtmann/gogenfilter/v3"
 	filewatcher "github.com/larsartmann/go-filewatcher/v2"
+	demo "github.com/larsartmann/go-filewatcher/v2/examples/demo"
 )
 
 const (
@@ -90,29 +91,14 @@ func collectEvents(ctx context.Context, events <-chan filewatcher.Event) []strin
 }
 
 // startFilteredWatch creates a watcher over watchDir, starts a timeout-bounded
-// Watch, and registers cleanup for both. Centralizes the setup boilerplate so
+// Watch, and returns a cleanup function. Centralizes the setup boilerplate so
 // each demonstration can focus on its specific configuration.
-func startFilteredWatch(watchDir string, opts ...filewatcher.Option) (context.Context, <-chan filewatcher.Event) {
-	watcher, err := filewatcher.New(
-		[]string{watchDir},
-		opts...,
-	)
-	if err != nil {
-		log.Fatalf("Failed to create watcher: %v", err)
-	}
-
-	defer func() { _ = watcher.Close() }()
-
+// The caller MUST defer the returned cleanup function to release resources.
+func startFilteredWatch(watchDir string, opts ...filewatcher.Option) (context.Context, <-chan filewatcher.Event, func()) {
 	ctx, cancel := context.WithTimeout(context.Background(), watchTimeout)
-	defer cancel()
+	events, cleanup := demo.MustWatch(ctx, []string{watchDir}, opts...)
 
-	events, err := watcher.Watch(ctx)
-	if err != nil {
-		cancel()
-		log.Fatalf("Failed to watch: %v", err) //nolint:gocritic // example: os.Exit is intentional
-	}
-
-	return ctx, events
+	return ctx, events, func() { cancel(); cleanup() }
 }
 
 // printTriggeredEvents logs each event name under a "Files that triggered events:" header.
@@ -146,7 +132,7 @@ func demonstrateSpecificFilters(watchDir string) {
 	log.Println()
 
 	// Create watcher that filters sqlc and protobuf files
-	ctx, events := startFilteredWatch(
+	ctx, events, cleanup := startFilteredWatch(
 		watchDir,
 		filewatcher.WithFilter(filewatcher.FilterGeneratedCode(
 			gogenfilter.FilterSQLC,
@@ -154,6 +140,7 @@ func demonstrateSpecificFilters(watchDir string) {
 		)),
 		filewatcher.WithDebounce(debounceDelay),
 	)
+	defer cleanup()
 
 	// Create test files
 	createTestFile(watchDir, "main.go", "package main")
@@ -177,11 +164,12 @@ func demonstrateAllFilters(watchDir string) {
 	log.Println()
 
 	// Create watcher that filters ALL generated code types
-	ctx, events := startFilteredWatch(
+	ctx, events, cleanup := startFilteredWatch(
 		watchDir,
 		filewatcher.WithFilter(filewatcher.FilterGeneratedCode()), // Defaults to FilterAll
 		filewatcher.WithDebounce(debounceDelay),
 	)
+	defer cleanup()
 
 	// Create more test files
 	createTestFile(watchDir, "regular.go", "package main")

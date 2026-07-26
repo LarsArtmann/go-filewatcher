@@ -49,7 +49,7 @@ func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
 
 			return
 
-		case fsEvent, ok := <-w.fswatcher.Events:
+		case fsEvent, ok := <-w.fswatcher.Events():
 			if !ok {
 				w.debugLog("watch loop exiting: fsnotify events channel closed")
 
@@ -58,7 +58,7 @@ func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
 
 			w.processEvent(ctx, fsEvent, eventCh)
 
-		case err, ok := <-w.fswatcher.Errors:
+		case err, ok := <-w.fswatcher.Errors():
 			if !ok {
 				w.debugLog("watch loop exiting: fsnotify errors channel closed")
 

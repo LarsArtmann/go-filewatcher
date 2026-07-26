@@ -60,7 +60,7 @@ func DefaultIgnoreDirsCopy() []string { return slices.Clone(DefaultIgnoreDirs) }
 //   - The error channel returned by Errors() is closed when the watcher stops
 //   - All callbacks (errorHandler, onAdd) may be called concurrently
 type Watcher struct {
-	fswatcher *fsnotify.Watcher
+	fswatcher watchBackend
 
 	// Configuration
 	paths            []string
@@ -226,13 +226,8 @@ func New( //nolint:funlen // constructor with full field initialization
 		}
 	}
 
-	fswatcher, fsErr := fsnotify.NewWatcher()
-	if fsErr != nil {
-		return nil, fmt.Errorf("creating fsnotify watcher: %w", fsErr)
-	}
-
 	w := &Watcher{
-		fswatcher:         fswatcher,
+		fswatcher:         nil,
 		paths:             paths,
 		recursive:         true,
 		filters:           nil,
@@ -278,6 +273,15 @@ func New( //nolint:funlen // constructor with full field initialization
 
 	for _, opt := range opts {
 		opt(w)
+	}
+
+	// Create real backend if not injected by withBackend option (tests)
+	if w.fswatcher == nil {
+		fw, fsErr := fsnotify.NewWatcher()
+		if fsErr != nil {
+			return nil, fmt.Errorf("creating fsnotify watcher: %w", fsErr)
+		}
+		w.fswatcher = fsnotifyBackend{fw}
 	}
 
 	// Initialize debouncer based on configuration
@@ -607,7 +611,7 @@ func (w *Watcher) Reset() error {
 	}
 
 	// Create a new fsnotify watcher
-	fswatcher, err := fsnotify.NewWatcher()
+	fw, err := fsnotify.NewWatcher()
 	if err != nil {
 		return fmt.Errorf("creating fsnotify watcher during reset: %w", err)
 	}
@@ -618,7 +622,7 @@ func (w *Watcher) Reset() error {
 	}
 
 	// Reset runtime state
-	w.fswatcher = fswatcher
+	w.fswatcher = fsnotifyBackend{fw}
 	w.state = 0
 	w.watchList = make([]string, 0, len(w.paths))
 	w.done = make(chan struct{})

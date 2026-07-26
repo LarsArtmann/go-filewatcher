@@ -69,7 +69,6 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 
 ### Ecosystem Integration (dogfooding)
 
-- [ ] Integrate into `file-and-image-renamer`.
 - [ ] Integrate into `dynamic-markdown-site`.
 - [ ] Integrate into `auto-deduplicate`.
 - [ ] Integrate into Cyberdom.
@@ -111,5 +110,5 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 | Flaky tests     | 2     | 🟡     |
 | Broken benches  | 4     | 🔴     |
 | HIGH priority   | 3     | 🔴     |
-| MEDIUM priority | 13    | 🟡     |
+| MEDIUM priority | 12    | 🟡     |
 | LOW priority    | 8     | 🟢     |

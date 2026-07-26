@@ -56,26 +56,30 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 
 ## 🟢 LOW Priority
 
-- [ ] **Capture a benchmark baseline** — `nix run .#bench > bench-baseline.txt`
-      (gitignored) so future refactors have a one-command `benchstat` diff
-      reference. Pairs with the ROADMAP "benchmark freshness CI" idea.
-- [ ] **Set `GOTMPDIR` to a disk-backed path** in the `flake.nix` devShell to
-      prevent tmpfs exhaustion during long sessions (15+ nix invocations filled a
-      24G `/tmp` during the 2026-07-26 session).
-- [ ] **Add a package-level `//nolint:gocritic` exception for `examples/`**
-      (`exitAfterDefer`) — `log.Fatal` in example `main()` functions is
-      intentional; per-line directives are the wrong fight.
-- [ ] **Test asserting every middleware default const is used** — guards against
-      dead constants if a middleware's defaulting is refactored away.
-- [ ] **Document the shared-vs-unique default-guard decision** with a worked
-      example in `AGENTS.md` (the current Key Patterns table row is too terse;
-      see `resolve*Defaults` convention).
-- [ ] **Lazy `FilterAnd` short-circuit** — currently evaluates all sub-filters;
-      return on first `false` for measurably cheaper composition.
-- [ ] **`WatchChanges(ctx, targetState)`** — idempotent sync API for sync/backup
-      workflows. Sketch the contract before implementing.
-- [ ] **Semantic-release / conventional commits** — evaluate whether
-      commit-message-driven versioning reduces manual CHANGELOG drift.
+- [x] **Capture a benchmark baseline** — `bench-baseline.txt` (gitignored) is
+      now captured via `nix run .#bench-baseline`; `nix run .#bench-diff` runs
+      fresh benches through `benchstat` against it. Pairs with the ROADMAP
+      "benchmark freshness CI" idea.
+- [x] **Set `GOTMPDIR` to a disk-backed path** in the `flake.nix` devShell
+      (`shellHook` exports `${XDG_CACHE_HOME:-$HOME/.cache}/go-filewatcher/gotmp`)
+      to prevent tmpfs exhaustion during long sessions.
+- [x] **gocritic `exitAfterDefer` exception for `examples/`** — added a
+      path+text exclusion in `.golangci.yml` (`log.Fatal` in example `main()` is
+      intentional); per-line directives are the wrong fight.
+- [x] **Test asserting every middleware default const is used** —
+      `TestMiddlewareDefaultConsts_AllUsed` (AST-based) guards against dead
+      constants if a middleware's defaulting is refactored away.
+- [x] **Document the shared-vs-unique default-guard decision** — added a
+      worked-example "Default-guard convention" subsection in `AGENTS.md`.
+- [x] **Lazy `FilterAnd` short-circuit** — verified `FilterAnd` already
+      short-circuits; added `TestFilterAndShortCircuitsOnFirstFalse` as a
+      regression guard.
+- [x] **`WatchChanges(ctx, targetState)` contract** — sketched in
+      `docs/research/watchchanges-contract.md` (idempotent sync/reconcile API for
+      sync/backup workflows). Implementation deferred to a scoped task.
+- [x] **Semantic-release / conventional commits** — evaluated in
+      `docs/research/semantic-release-evaluation.md`; recommends `release-please`
+      + a commit-subject lint gate over `semantic-release` for a Go module.
 
 ---
 
@@ -89,4 +93,4 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 | Flaky tests     | 0     | ✅     |
 | Broken benches  | 0     | ✅     |
 | MEDIUM priority | 6     | 🟡     |
-| LOW priority    | 8     | 🟢     |
+| LOW priority    | 0     | ✅     |

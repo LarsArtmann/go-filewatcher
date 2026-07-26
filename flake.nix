@@ -212,15 +212,16 @@
             # Capture a clean benchmark baseline to bench-baseline.txt for later
             # benchstat comparison. Omits -race (it adds overhead and noise) and
             # runs -count=6 so benchstat has enough samples for stable deltas.
+            # Runs in the CALLER's working directory (not the nix store copy) so
+            # the gitignored baseline lands in the repo root — invoke from the
+            # project root.
             bench-baseline = mkApp "bench-baseline" ''
-              cd "${self}"
               go test -bench=. -benchmem -count=6 ./... | tee bench-baseline.txt
             '';
 
             # Run fresh benchmarks and diff against bench-baseline.txt with
             # benchstat. Requires a captured baseline (run bench-baseline first).
             bench-diff = mkApp "bench-diff" ''
-              cd "${self}"
               if [ ! -f bench-baseline.txt ]; then
                 echo "bench-baseline.txt not found. Run 'nix run .#bench-baseline' first."
                 exit 1

@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **Benchmark baseline workflow** (`flake.nix`) — `nix run .#bench-baseline` captures a clean (no `-race`, `-count=6`) baseline to the gitignored `bench-baseline.txt`; `nix run .#bench-diff` runs fresh benchmarks through `benchstat` against it for one-command regression checks. Pairs with the ROADMAP "benchmark freshness CI" idea.
+- **`GOTMPDIR` in devShell** (`flake.nix`) — the default devShell redirects Go's temp dir to a disk-backed `${XDG_CACHE_HOME:-$HOME/.cache}/go-filewatcher/gotmp`, preventing tmpfs `/tmp` exhaustion during long sessions.
+- **gocritic `exitAfterDefer` exclusion for `examples/`** (`.golangci.yml`) — defensive path+text exclusion so `log.Fatal` in example `main()` functions doesn't trigger per-line nolint fights.
+- **Middleware default-const usage guard** (`middleware_test.go`) — `TestMiddlewareDefaultConsts_AllUsed` is an AST-based test asserting every middleware default const is both declared in `middleware.go` and referenced, catching dead constants if defaulting is refactored away (and drift if the expected list falls out of sync).
+- **`FilterAnd` short-circuit regression test** (`filter_test.go`) — `TestFilterAndShortCircuitsOnFirstFalse` locks in the lazy evaluation contract.
+- **Default-guard convention docs** (`AGENTS.md`) — a worked-example "Default-guard convention" subsection documenting the shared-vs-unique `resolve*Defaults` decision.
+- **`WatchChanges` contract sketch** (`docs/research/watchchanges-contract.md`) — design for an idempotent reconcile-to-target-state sync API for sync/backup workflows.
+- **Semantic-release / conventional-commits evaluation** (`docs/research/semantic-release-evaluation.md`) — recommends `release-please` + a commit-subject lint gate over `semantic-release` for a Go module.
+
 ### Changed
 
 - **Self-heal respects permanent failures** (`watcher_selfheal.go`) — `attemptSelfHeal` now checks `IsPermanent()` and abandons paths that can never recover (deleted directory, wrong entry type) instead of retrying them forever. Retry budget is now spent only on genuinely transient failures.

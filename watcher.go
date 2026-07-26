@@ -281,6 +281,7 @@ func New( //nolint:funlen // constructor with full field initialization
 		if fsErr != nil {
 			return nil, fmt.Errorf("creating fsnotify watcher: %w", fsErr)
 		}
+
 		w.fswatcher = fsnotifyBackend{fw}
 	}
 

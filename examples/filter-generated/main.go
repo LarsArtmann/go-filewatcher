@@ -94,7 +94,10 @@ func collectEvents(ctx context.Context, events <-chan filewatcher.Event) []strin
 // Watch, and returns a cleanup function. Centralizes the setup boilerplate so
 // each demonstration can focus on its specific configuration.
 // The caller MUST defer the returned cleanup function to release resources.
-func startFilteredWatch(watchDir string, opts ...filewatcher.Option) (context.Context, <-chan filewatcher.Event, func()) {
+func startFilteredWatch(
+	watchDir string,
+	opts ...filewatcher.Option,
+) (context.Context, <-chan filewatcher.Event, func()) {
 	ctx, cancel := context.WithTimeout(context.Background(), watchTimeout)
 	events, cleanup := demo.MustWatch(ctx, []string{watchDir}, opts...)
 

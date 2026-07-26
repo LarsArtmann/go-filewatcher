@@ -57,6 +57,7 @@ func MustWatch(
 	events, err := watcher.Watch(ctx)
 	if err != nil {
 		_ = watcher.Close()
+
 		log.Fatal(err)
 	}
 

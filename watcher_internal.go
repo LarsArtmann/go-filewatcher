@@ -156,6 +156,22 @@ func (w *Watcher) buildMiddlewareHandler(emit func(Event)) Handler {
 }
 
 // wrapHandlerWithNilReturn wraps a handler to return nil error.
+//
+// This is applied to every inner handler in the middleware chain so that
+// middleware calling next() never receives a downstream error. This is
+// intentional: it prevents one middleware's error from cascading through
+// the entire chain and aborting event delivery.
+//
+// Architectural implication: error-aware middleware (circuit breaker,
+// error recovery, error rate limiting) can only observe their OWN errors —
+// not failures from middleware they wrap. For such middleware to see handler
+// errors, they must be placed as the INNERMOST layer (closest to the base
+// handler). Middleware added AFTER an error-aware layer will not propagate
+// errors back to it.
+//
+// If middleware itself returns an error, wrapWithMiddleware catches it and
+// routes it to handleError — the error is never lost, just not visible to
+// outer middleware.
 func wrapHandlerWithNilReturn(handler func(context.Context, Event)) Handler {
 	return func(ctx context.Context, e Event) error {
 		handler(ctx, e)

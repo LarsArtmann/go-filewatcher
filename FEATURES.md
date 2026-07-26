@@ -30,18 +30,18 @@ Honest status of every capability in go-filewatcher. Statuses:
 | Feature                         | Status | Notes                                                             |
 | ------------------------------- | ------ | ----------------------------------------------------------------- |
 | Extensions / IgnoreExtensions   | ✅     | Dot-prefixed                                                      |
-| IgnoreDirs / ExcludePaths       | ✅     | Name-based vs absolute-path prefix matching                       |
+| IgnoreDirs / ExcludePaths       | ✅     | Name-based (`WithIgnoreDirs`, `DefaultIgnoreDirs` / `DefaultIgnoreDirsCopy`) vs absolute-path prefix matching (`WithExcludePaths`) |
 | IgnoreHidden                    | ✅     | Dot-prefixed files/dirs                                           |
 | Operations / NotOperations      | ✅     | By `Op` enum                                                      |
 | Glob / Regex                    | ✅     | Filename glob, full-path regex                                    |
 | MinSize / MaxSize               | ✅     | Bytes                                                             |
 | MinAge / ModifiedSince          | ✅     | Time-based                                                        |
 | IgnoreGlobs (patterns)          | ✅     | `WithIgnorePatterns` option                                       |
-| ContentHash                     | ✅     | Filter by expected SHA-256                                        |
+| ContentHash                     | ✅     | `FilterContentHash` + `ContentCheckMode`; `WithContentHashing()` — SHA-256 |
 | Gitignore repository matcher    | ✅     | `FilterGitignore(repoRoot)` — event-time check against .gitignore |
-| Generated-code detection        | ✅     | sqlc, protobuf, templ, mockgen, stringer via gogenfilter v3.2.0   |
+| Generated-code detection        | ✅     | sqlc, protobuf, templ, mockgen, stringer via `NewGeneratedCodeDetector` + gogenfilter v3.2.0   |
 | Filter combinators (AND/OR/NOT) | ✅     | `FilterAnd`, `FilterOr`, `FilterNot`                              |
-| Metadata-returning filters      | ✅     | `FilterWithMeta`, `MatchResult`, `FilterWithMetaAnd/Or/Not`       |
+| Metadata-returning filters      | ✅     | `FilterWithMeta`, `MatchResult`, `FilterWithMetaAnd`/`FilterWithMetaOr`/`FilterWithMetaNot`, `FilterFromWithMeta` |
 
 ## Middleware
 
@@ -57,8 +57,8 @@ Honest status of every capability in go-filewatcher. Statuses:
 | Metrics counter         | ✅     | `MiddlewareMetrics(func(Op))`                                  |
 | Deduplicate             | ✅     | `MiddlewareDeduplicate(window)`                                |
 | Batch                   | ✅     | `MiddlewareBatch(window, maxSize, flush)`                      |
-| Audit to file           | ✅     | `MiddlewareWriteFileLog(path)`                                 |
-| Circuit breaker         | ✅     | `MiddlewareCircuitBreaker(maxFailures, resetTimeout)`          |
+| Audit to file           | ✅     | `MiddlewareWriteFileLog(path)` or `NewFileLogMiddleware` (returns closer for fd cleanup via `WithCleanup`) |
+| Circuit breaker         | ✅     | `MiddlewareCircuitBreaker(maxFailures, resetTimeout)`; `CircuitState` enum: `CircuitClosed`→`CircuitOpen`→`CircuitHalfOpen` |
 | Exponential backoff     | ✅     | `MiddlewareExponentialBackoff(maxFailures, initial, max)`      |
 | Error rate limit        | ✅     | `MiddlewareErrorRateLimit(maxErrors, window)`                  |
 | Error recovery strategy | ✅     | `MiddlewareErrorRecovery(strategy)`                            |
@@ -72,7 +72,7 @@ Honest status of every capability in go-filewatcher. Statuses:
 | ---------------------- | ------ | --------------------------------------------------------------------- |
 | Global debounce        | ✅     | `WithDebounce(d)` — all events coalesced                              |
 | Per-path debounce      | ✅     | `WithPerPathDebounce(d)` — independent per file                       |
-| Programmatic debouncer | ✅     | `Debouncer` and `GlobalDebouncer` types with `Flush`/`Stop`/`Pending` |
+| Programmatic debouncer | ✅     | `NewDebouncer` / `NewGlobalDebouncer`; `DebouncerInterface` for custom implementations |
 
 ## Observability
 
@@ -80,7 +80,7 @@ Honest status of every capability in go-filewatcher. Statuses:
 | -------------------------------- | ------ | ---------------------------------------------------------------- |
 | `Stats()` struct                 | ✅     | Events, filters, errors, uptime, watch budget                    |
 | Structured debug logging         | ✅     | `WithDebug(*slog.Logger)`                                        |
-| Prometheus collector             | ✅     | `PrometheusCollector` with `StatsFunc`, `CounterMetric`, `Gauge` |
+| Prometheus collector             | ✅     | `PrometheusCollector` with `StatsFunc`, `CounterMetric`, `GaugeMetric` interfaces |
 | OpenTelemetry tracing middleware | ✅     | `OTelMiddleware` with `OTelSpan` interface (zero-dep)            |
 | Stack traces on errors           | ✅     | `WatcherError.Stack` via `debug.Stack()`                         |
 
@@ -125,9 +125,12 @@ Honest status of every capability in go-filewatcher. Statuses:
 | ----------------------------- | ------ | -------------------------------------------------------- |
 | Sentinel errors               | ✅     | `ErrWatcherClosed`, `ErrNoPaths`, `ErrPathNotFound`, ... |
 | Typed error codes             | ✅     | `ErrorCode` constants for programmatic matching          |
-| Structured `WatcherError`     | ✅     | Category (transient/permanent), op, stack trace          |
+| Error category classification | ✅     | `ErrorCategory`: `CategoryTransient` (retryable) vs `CategoryPermanent` (abandon); `IsPermanentError` / `IsTransientError` helpers |
+| Structured `WatcherError`     | ✅     | Category (transient/permanent), op, stack trace; `NewWatcherError` constructor |
 | Channel-based error stream    | ✅     | `Errors() <-chan error`                                  |
-| Custom error handler callback | ✅     | `WithErrorHandler` / `WithOnError`                       |
+| `ErrorHandler` type           | ✅     | `func(ctx, Event, ErrorContext)` — full error context via `WithErrorHandler` |
+| Batch error aggregation       | ✅     | `BatchError` type from `MiddlewareErrorBatch`            |
+| Custom error handler callback | ✅     | `WithErrorHandler` / `WithOnError` (deprecated)          |
 
 ## Developer Experience
 

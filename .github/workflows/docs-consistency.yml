@@ -86,17 +86,21 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Symbols exempt from the docs check. Two categories:
+          # Symbols exempt from the docs check.
           #
-          # 1. Compile-time type helpers (phantom types) — not user-facing.
-          # 2. Existing gaps (pre-date this check). Remove from this list as
-          #    they get documented in FEATURES.md/README.md.
-          EXEMPT_SYMBOLS="LogSubstring NewLogSubstring TempDir NewTempDir OpString NewOpString DebounceKey NewDebounceKey WatcherStateFlags \
-            BatchError CircuitState ContentCheckMode DebouncerInterface DefaultIgnoreDirs DefaultIgnoreDirsCopy \
-            ErrorCategory ErrorContext ErrorHandler FilterFromWithMeta FilterGeneratedCodeFull FilterGeneratedCodeWithFilter \
-            FilterWithMetaNot FilterWithMetaOr GaugeMetric GeneratedCodeDetector IsPermanentError IsTransientError \
-            NewDebouncer NewEventPath NewFileLogMiddleware NewGeneratedCodeDetector NewGlobalDebouncer NewRootPath \
-            NewWatcherError WithCleanup WithWatchedIgnoreDirs"
+          # 1. Compile-time phantom-type helpers (not user-facing):
+          #    LogSubstring, NewLogSubstring, TempDir, NewTempDir,
+          #    OpString, NewOpString, DebounceKey, NewDebounceKey,
+          #    NewEventPath, NewRootPath, NewWatcherError
+          #
+          # 2. Deprecated (mentioned via migration path, not in feature table):
+          #    WithWatchedIgnoreDirs
+          #
+          # 3. Remaining undocumented gaps — remove as they get documented:
+          #    FilterGeneratedCodeFull, FilterGeneratedCodeWithFilter
+          EXEMPT_SYMBOLS="LogSubstring NewLogSubstring TempDir NewTempDir OpString NewOpString DebounceKey NewDebounceKey \
+            FilterGeneratedCodeFull FilterGeneratedCodeWithFilter \
+            WithWatchedIgnoreDirs NewEventPath NewRootPath NewWatcherError"
 
           # Extract top-level exported symbols (skip methods and unexported).
           SYMBOLS=$(go doc -all . 2>/dev/null \

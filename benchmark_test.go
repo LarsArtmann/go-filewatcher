@@ -76,6 +76,27 @@ func benchmarkShouldSkipDir(
 	}
 }
 
+// benchmarkEmitEvent measures the cost of emitting a single event through the
+// watcher pipeline. The drain is non-blocking so the benchmark works for both
+// direct-emit paths (event written to the channel) and debounced paths (event
+// deferred, channel never written) without deadlocking on a full buffer.
+func benchmarkEmitEvent(b *testing.B, w *Watcher) {
+	b.Helper()
+
+	event := Event{Op: Write, Path: benchmarkTestPathTestGo}
+	ctx := context.Background()
+	eventCh := make(chan Event, 1)
+
+	for b.Loop() {
+		w.emitEvent(ctx, event, eventCh)
+
+		select {
+		case <-eventCh:
+		default:
+		}
+	}
+}
+
 // ============================================================================
 // Watcher Creation Benchmarks
 // ============================================================================
@@ -303,64 +324,34 @@ func BenchmarkWatchList_Copy(b *testing.B) {
 // ============================================================================
 
 func BenchmarkEmitEvent_NoDebounce(b *testing.B) {
-	w := &Watcher{}
-
-	event := Event{Op: Write, Path: benchmarkTestPathTestGo}
-	ctx := context.Background()
-	eventCh := make(chan Event, 1)
-
-	for b.Loop() {
-		w.emitEvent(ctx, event, eventCh)
-	}
+	benchmarkEmitEvent(b, &Watcher{})
 }
 
 func BenchmarkEmitEvent_WithMiddleware(b *testing.B) {
-	w := &Watcher{
+	benchmarkEmitEvent(b, &Watcher{
 		middleware: []Middleware{
 			MiddlewareRecovery(),
 			MiddlewareMetrics(func(_ Op) {}),
 		},
-	}
-
-	event := Event{Op: Write, Path: benchmarkTestPathTestGo}
-	ctx := context.Background()
-	eventCh := make(chan Event, 1)
-
-	for b.Loop() {
-		w.emitEvent(ctx, event, eventCh)
-	}
+	})
 }
 
 func BenchmarkEmitEvent_WithGlobalDebounce(b *testing.B) {
 	w := &Watcher{
 		debounceInterface: NewGlobalDebouncer(time.Hour), // Never fires during benchmark
 	}
-
 	defer w.debounceInterface.Stop()
 
-	event := Event{Op: Write, Path: benchmarkTestPathTestGo}
-	ctx := context.Background()
-	eventCh := make(chan Event, 1)
-
-	for b.Loop() {
-		w.emitEvent(ctx, event, eventCh)
-	}
+	benchmarkEmitEvent(b, w)
 }
 
 func BenchmarkEmitEvent_WithPerPathDebounce(b *testing.B) {
 	w := &Watcher{
 		debounceInterface: NewDebouncer(time.Hour), // Never fires during benchmark
 	}
-
 	defer w.debounceInterface.Stop()
 
-	event := Event{Op: Write, Path: benchmarkTestPathTestGo}
-	ctx := context.Background()
-	eventCh := make(chan Event, 1)
-
-	for b.Loop() {
-		w.emitEvent(ctx, event, eventCh)
-	}
+	benchmarkEmitEvent(b, w)
 }
 
 // ============================================================================

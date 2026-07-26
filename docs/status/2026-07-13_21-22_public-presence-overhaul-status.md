@@ -222,15 +222,15 @@ The reference repos likely commit it (it's the npm standard). But the root go-fi
 it resolves to `filewatcher.web.app`. The deploy and DNS work happened in the
 follow-up session (`2026-07-13_21-58_firebase-dns-deploy-status.md`).
 
-| Claim in report | Resolution |
-| --------------- | ---------- |
-| §a README rewrite, website, GitHub metadata | DONE: shipped this session |
-| §c DNS / Domain Configuration ("will 404") | DONE: live, HTTP 200 |
-| §f #1–4 Deploy & DNS | DONE: deployed + DNS + TLS verified |
-| §f #5–6 sitemap / robots | UNVERIFIED — check on next site audit |
-| §c / §f #7+ Website CI/CD, OG image, content depth | OPEN: not started |
-| §g Q1 (correct domain?) | RESOLVED: `filewatcher.lars.software` is correct |
-| §g Q2 (commit package-lock.json?) | Resolved per follow-up (committed) |
+| Claim in report                                    | Resolution                                       |
+| -------------------------------------------------- | ------------------------------------------------ |
+| §a README rewrite, website, GitHub metadata        | DONE: shipped this session                       |
+| §c DNS / Domain Configuration ("will 404")         | DONE: live, HTTP 200                             |
+| §f #1–4 Deploy & DNS                               | DONE: deployed + DNS + TLS verified              |
+| §f #5–6 sitemap / robots                           | UNVERIFIED — check on next site audit            |
+| §c / §f #7+ Website CI/CD, OG image, content depth | OPEN: not started                                |
+| §g Q1 (correct domain?)                            | RESOLVED: `filewatcher.lars.software` is correct |
+| §g Q2 (commit package-lock.json?)                  | Resolved per follow-up (committed)               |
 
 The remaining open items are website content depth, CI/CD, and asset work —
 none block the live public site.

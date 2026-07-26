@@ -416,15 +416,15 @@ This affects whether I load the HTML design-system assets on future status reque
 This was the most recent session; most of its work is current. One item closed
 since, the rest routed to the backlog:
 
-| Item | Resolution |
-| ---- | ---------- |
-| §c2 / §f#2 / Q1 — push commits | DONE: pushed (0 ahead/0 behind `origin/master`) |
-| §c1 / §f#1 / Q2 — `BenchmarkEmitEvent_*` deadlock | OPEN: TODO_LIST HIGH |
-| §f#3 — `mustWatch` helper for examples | OPEN: TODO_LIST MEDIUM |
-| §f#4 — benchmark baseline capture | OPEN: TODO_LIST LOW |
-| §f#5 — `GOTMPDIR` disk-backed in devShell | OPEN: TODO_LIST LOW |
-| §f#6 — examples package-level `//nolint:gocritic` | OPEN: TODO_LIST LOW |
-| §Q3 — status-report format (HTML vs `.md`) | OPEN: process decision for the user |
+| Item                                              | Resolution                                      |
+| ------------------------------------------------- | ----------------------------------------------- |
+| §c2 / §f#2 / Q1 — push commits                    | DONE: pushed (0 ahead/0 behind `origin/master`) |
+| §c1 / §f#1 / Q2 — `BenchmarkEmitEvent_*` deadlock | OPEN: TODO_LIST HIGH                            |
+| §f#3 — `mustWatch` helper for examples            | OPEN: TODO_LIST MEDIUM                          |
+| §f#4 — benchmark baseline capture                 | OPEN: TODO_LIST LOW                             |
+| §f#5 — `GOTMPDIR` disk-backed in devShell         | OPEN: TODO_LIST LOW                             |
+| §f#6 — examples package-level `//nolint:gocritic` | OPEN: TODO_LIST LOW                             |
+| §Q3 — status-report format (HTML vs `.md`)        | OPEN: process decision for the user             |
 
 The docs-health / update-old-docs pass that produced this annotation also rebuilt
 TODO_LIST.md, ROADMAP.md, FEATURES.md, and CHANGELOG.md from the verified current

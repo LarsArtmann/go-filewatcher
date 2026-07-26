@@ -277,15 +277,15 @@ I cannot tell which without asking. My edit assumed "workflow exists = done" whi
 This report's own self-critique (§b, §d) was accurate. A subsequent docs-health run
 (2026-07-26) acted on it:
 
-| Claim / mistake in report | Resolution |
-| ------------------------- | ---------- |
-| §b Goreleaser marked ✅ (should be 🟡) | DONE: FEATURES.md "Cross-platform releases" + "Goreleaser release pipeline" now 🟡 with accurate note that `.goreleaser.yml` is configured but NOT invoked by `release.yml` |
-| §b CHANGELOG `[Unreleased]` stale | DONE: `[Unreleased]` rebuilt with the self-heal, Go 1.26.5 bump, and dedup/internal work |
-| §b Status vocabulary (emoji vs skill vocab) | KEPT: project uses an emoji legend mapping to the 4 statuses (deliberate convention); honesty enforced instead |
-| §c Test suite not run | OPEN: run `nix run .#check` as the quality gate |
-| §c Benchmark freshness | OPEN: benchmark baseline capture is now a TODO_LIST item; 4 `BenchmarkEmitEvent_*` are confirmed broken (TODO_LIST HIGH) |
-| §e #1–7 (fix mistakes from this session) | DONE: goreleaser reverted to 🟡, TODO_LIST rebuilt, CHANGELOG cleaned |
-| §f #8–12 Domain language terms | PARTIAL: not re-verified this pass |
+| Claim / mistake in report                   | Resolution                                                                                                                                                                  |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| §b Goreleaser marked ✅ (should be 🟡)      | DONE: FEATURES.md "Cross-platform releases" + "Goreleaser release pipeline" now 🟡 with accurate note that `.goreleaser.yml` is configured but NOT invoked by `release.yml` |
+| §b CHANGELOG `[Unreleased]` stale           | DONE: `[Unreleased]` rebuilt with the self-heal, Go 1.26.5 bump, and dedup/internal work                                                                                    |
+| §b Status vocabulary (emoji vs skill vocab) | KEPT: project uses an emoji legend mapping to the 4 statuses (deliberate convention); honesty enforced instead                                                              |
+| §c Test suite not run                       | OPEN: run `nix run .#check` as the quality gate                                                                                                                             |
+| §c Benchmark freshness                      | OPEN: benchmark baseline capture is now a TODO_LIST item; 4 `BenchmarkEmitEvent_*` are confirmed broken (TODO_LIST HIGH)                                                    |
+| §e #1–7 (fix mistakes from this session)    | DONE: goreleaser reverted to 🟡, TODO_LIST rebuilt, CHANGELOG cleaned                                                                                                       |
+| §f #8–12 Domain language terms              | PARTIAL: not re-verified this pass                                                                                                                                          |
 
 The verified fact behind the goreleaser correction: `release.yml` uses
 `softprops/action-gh-release@v2` with `generate_release_notes: true` and has no

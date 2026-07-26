@@ -88,13 +88,13 @@ status, item-by-item resolution tables), placed as inline strikes + end-of-file
 `## Resolution (2026-07-26)` appendices — **no top-of-file banners**, no generic
 stamps.
 
-| Report | Decision | Headline annotation |
-| ------ | -------- | ------------------- |
-| `2026-07-13_21-22_public-presence-overhaul` | ANNOTATE | "domain will 404" → DONE: HTTP 200 verified |
-| `2026-07-13_21-58_firebase-dns-deploy` | ANNOTATE | All DNS/SSL blockers → DONE: live, TLS valid |
-| `2026-07-13_22-12_docs-health-audit-self-review` | ANNOTATE | goreleaser mistake → DONE: corrected this session |
-| `2026-07-25_17-31_dedup-session-report` | ANNOTATE | §f #1–6, #8–13 → DONE; 3 questions resolved |
-| `2026-07-26_10-34_dedup-followup-session` | ANNOTATE | "push 6 commits" → DONE; benches routed to TODO HIGH |
+| Report                                           | Decision | Headline annotation                                  |
+| ------------------------------------------------ | -------- | ---------------------------------------------------- |
+| `2026-07-13_21-22_public-presence-overhaul`      | ANNOTATE | "domain will 404" → DONE: HTTP 200 verified          |
+| `2026-07-13_21-58_firebase-dns-deploy`           | ANNOTATE | All DNS/SSL blockers → DONE: live, TLS valid         |
+| `2026-07-13_22-12_docs-health-audit-self-review` | ANNOTATE | goreleaser mistake → DONE: corrected this session    |
+| `2026-07-25_17-31_dedup-session-report`          | ANNOTATE | §f #1–6, #8–13 → DONE; 3 questions resolved          |
+| `2026-07-26_10-34_dedup-followup-session`        | ANNOTATE | "push 6 commits" → DONE; benches routed to TODO HIGH |
 
 ### a7. Quality gate green
 
@@ -198,8 +198,8 @@ is what let the score-math violation (d1) slip through.
 
 I closed the session with "**Accuracy: 9.0/10 → 10/10** · **Fitness: 6.5/10 →
 9.5/10**" — **with no computation shown.** The docs-health skill is explicit
-and repeats it twice: *"Show the math for both scores, every time. Print the
-computation alongside each score. Never invent either score."* I invented the
+and repeats it twice: _"Show the math for both scores, every time. Print the
+computation alongside each score. Never invent either score."_ I invented the
 post-fix numbers without deriving them from the finding counts, and I invented
 a "9.0/10 →" baseline that has no prior-audit citation. **An invented baseline
 is a lie**, per the skill's own anti-pattern list.
@@ -220,7 +220,7 @@ the code:
 3. **"`art-dupl -t 5` = 0 clone groups"** — never re-run this session.
 
 The skills repeat "Code wins. Verify each claim. Grep before trusting a doc
-claim." I verified the *existence* of symbols but trusted the *behavioral*
+claim." I verified the _existence_ of symbols but trusted the _behavioral_
 claims (broken, counts, clone-group counts) from reports. That is the precise
 failure mode the 2026-07-13 self-review flagged about the goreleaser mistake —
 and I repeated it on a smaller scale.
@@ -245,8 +245,8 @@ reverse. I should have moved it to CHANGELOG with a note, or left a one-line
 
 ### d5. Did not enumerate which cross-file checks I ran vs. skipped
 
-The skill: *"state which you ran and which you skipped — never declare 'clean'
-without enumerating what was checked."* My closing message implied a clean
+The skill: _"state which you ran and which you skipped — never declare 'clean'
+without enumerating what was checked."_ My closing message implied a clean
 consistency state without listing the checks. I ran: internal-markdown-link
 (partially), TODO↔ROADMAP overlap, goreleaser consistency. I skipped: count
 consistency across README/FEATURES/website, CHANGELOG compare-link pattern,
@@ -404,7 +404,7 @@ push without explicit instruction.
 
 ---
 
-*Generated at 2026-07-26 18:39 CEST. Point-in-time snapshot; will go stale.
+_Generated at 2026-07-26 18:39 CEST. Point-in-time snapshot; will go stale.
 The auto-git daemon committed the living-docs rebuilds and 3 of the 5 report
 annotations mid-session; the remaining 2 report annotations are in the working
-tree (see `git status`).*
+tree (see `git status`)._

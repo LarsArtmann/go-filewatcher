@@ -274,12 +274,12 @@ func TestWatcher_Watch_WithMiddleware(t *testing.T) {
 
 	receiveEventOrTimeout(t, events, 3*time.Second)
 
-	// Allow time for middleware to finish processing before checking counter
-	time.Sleep(50 * time.Millisecond)
-
-	if got := processed.Load(); got < 1 {
-		t.Errorf("expected middleware to be called at least once, got %d", got)
-	}
+	// The middleware increments processed before forwarding the event, so a
+	// successful receive guarantees processed >= 1. Poll instead of a fixed
+	// sleep to bridge the send/increment ordering deterministically.
+	waitForCondition(t, 2*time.Second, "expected middleware to be called at least once", func() bool {
+		return processed.Load() >= 1
+	})
 }
 
 func TestWatcher_Watch_WithDebounce(t *testing.T) {
@@ -655,8 +655,12 @@ func TestWatcher_Stats_Metrics(t *testing.T) {
 	event := waitForEventOrFail(t, events, 2*time.Second)
 	assertEventPath(t, event, testFile)
 
-	// Allow time for event processing to update atomic counters
-	time.Sleep(50 * time.Millisecond)
+	// Poll until the .go event has been processed (the processed counter is
+	// incremented after the event is emitted, so a short race exists between
+	// receiving the event and the counter update).
+	waitForCondition(t, 2*time.Second, "expected at least 1 event processed after .go file", func() bool {
+		return w.Stats().EventsProcessed >= 1
+	})
 
 	// Create a .txt file (should be filtered)
 	txtFile := filepath.Join(tmpDir, "test.txt")
@@ -666,25 +670,15 @@ func TestWatcher_Stats_Metrics(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Wait a bit for potential events
-	time.Sleep(100 * time.Millisecond)
+	// Poll until the .txt event has been delivered and filtered out by the
+	// extension filter. A fixed sleep here was the source of flakiness.
+	waitForCondition(t, 2*time.Second, "expected some events to be filtered out", func() bool {
+		return w.Stats().EventsFilteredOut > 0
+	})
 
 	// Check stats
 	stats = w.Stats()
 
-	if stats.EventsProcessed < 1 {
-		t.Errorf(
-			"expected at least 1 event processed after .go file, got %d",
-			stats.EventsProcessed,
-		)
-	}
-
-	// Should have filtered the .txt file
-	if stats.EventsFilteredOut == 0 {
-		t.Error("expected some events to be filtered out")
-	}
-
-	// Should have uptime
 	if stats.Uptime == 0 {
 		t.Error("expected non-zero uptime after Watch()")
 	}

@@ -248,15 +248,15 @@ over a valid TLS certificate (verified 2026-07-26); it resolves to
 was built around — the missing Namecheap API key, the IP whitelist, the
 `CERT_PENDING`/`DNS_MISSING` state — are all resolved.
 
-| Claim in report | Resolution |
-| --------------- | ---------- |
-| §b Custom domain NOT APPLIED | DONE: live, HTTP 200 |
-| §c Terraform Apply / DNS / SSL | DONE: DNS applied, SSL provisioned |
-| §f #1–8 (DNS & Domain) | DONE: all 8 resolved |
-| §c Website CI/CD Pipeline | OPEN: no GitHub Actions for website deploy yet |
-| §c Custom OG Image | OPEN: no OG image created |
-| §c Website typecheck / html-validate | OPEN: not run |
-| §f #9–12 (Website CI/CD), #13–22 (content) | OPEN: website content depth + CI not started |
+| Claim in report                            | Resolution                                     |
+| ------------------------------------------ | ---------------------------------------------- |
+| §b Custom domain NOT APPLIED               | DONE: live, HTTP 200                           |
+| §c Terraform Apply / DNS / SSL             | DONE: DNS applied, SSL provisioned             |
+| §f #1–8 (DNS & Domain)                     | DONE: all 8 resolved                           |
+| §c Website CI/CD Pipeline                  | OPEN: no GitHub Actions for website deploy yet |
+| §c Custom OG Image                         | OPEN: no OG image created                      |
+| §c Website typecheck / html-validate       | OPEN: not run                                  |
+| §f #9–12 (Website CI/CD), #13–22 (content) | OPEN: website content depth + CI not started   |
 
 The remaining open items are website-content and CI work, tracked conceptually
 under the documentation website; none block the public domain, which is fully

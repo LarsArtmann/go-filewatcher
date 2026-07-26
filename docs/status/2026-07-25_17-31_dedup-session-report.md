@@ -330,17 +330,17 @@ The bulk of this report's §f backlog shipped in the follow-up session
 (`docs/status/2026-07-26_10-34_dedup-followup-session.md`, commits
 `de459a1..0263279`):
 
-| Item group | Resolution |
-| ---------- | ---------- |
-| §f #1–3,5,6 `newTestWatcher` adoption + default-guard standardization | DONE: 43 sites migrated; policy documented |
-| §f #4 `examples/` mnd warnings | DONE: `debounceDelay` consts; `.#check` green |
-| §f #8–9 AGENTS.md convention docs | DONE: 3 Key Patterns rows added |
-| §f #10–12 unit tests for shared helpers | DONE: 3 tests, 11 table cases |
-| §f #13 CHANGELOG note | DONE: `[Unreleased]` rebuilt |
-| §f #7 benchmark regression check | PARTIAL: pure-compute clean; `EmitEvent` benches broken (TODO_LIST HIGH) |
-| §g Q1 push policy | RESOLVED: pushed (0 ahead/0 behind) |
-| §g Q2 examples mnd | RESOLVED: fixed |
-| §g Q3 full adoption | RESOLVED: done (76 call sites) |
+| Item group                                                            | Resolution                                                               |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| §f #1–3,5,6 `newTestWatcher` adoption + default-guard standardization | DONE: 43 sites migrated; policy documented                               |
+| §f #4 `examples/` mnd warnings                                        | DONE: `debounceDelay` consts; `.#check` green                            |
+| §f #8–9 AGENTS.md convention docs                                     | DONE: 3 Key Patterns rows added                                          |
+| §f #10–12 unit tests for shared helpers                               | DONE: 3 tests, 11 table cases                                            |
+| §f #13 CHANGELOG note                                                 | DONE: `[Unreleased]` rebuilt                                             |
+| §f #7 benchmark regression check                                      | PARTIAL: pure-compute clean; `EmitEvent` benches broken (TODO_LIST HIGH) |
+| §g Q1 push policy                                                     | RESOLVED: pushed (0 ahead/0 behind)                                      |
+| §g Q2 examples mnd                                                    | RESOLVED: fixed                                                          |
+| §g Q3 full adoption                                                   | RESOLVED: done (76 call sites)                                           |
 
 Still open from §f: the broken `BenchmarkEmitEvent_*` family (now TODO_LIST
 HIGH), the `mustWatch` examples helper (TODO_LIST MEDIUM), and a benchmark

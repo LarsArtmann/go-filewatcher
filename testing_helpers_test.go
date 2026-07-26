@@ -389,6 +389,26 @@ func waitForChannel[T any](t *testing.T, ch <-chan T, timeout time.Duration, msg
 	return zero
 }
 
+// waitForCondition polls cond every 10ms until it returns true or timeout
+// elapses, fataling with msg on timeout. Replaces brittle fixed sleeps with
+// deterministic polling for assertions that depend on asynchronous event
+// delivery or counter propagation.
+func waitForCondition(t *testing.T, timeout time.Duration, msg string, cond func() bool) {
+	t.Helper()
+
+	deadline := time.Now().Add(timeout)
+
+	for time.Now().Before(deadline) {
+		if cond() {
+			return
+		}
+
+		time.Sleep(10 * time.Millisecond)
+	}
+
+	t.Fatal(msg)
+}
+
 // waitForClose waits for a channel to be closed within the timeout.
 // Returns true if closed, false if timeout occurred.
 func waitForClose[T any](t *testing.T, channel <-chan T, timeout time.Duration) bool {

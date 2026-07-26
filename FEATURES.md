@@ -131,28 +131,28 @@ Honest status of every capability in go-filewatcher. Statuses:
 
 ## Developer Experience
 
-| Feature                          | Status | Notes                                                                 |
-| -------------------------------- | ------ | --------------------------------------------------------------------- |
-| Nix flake dev shell              | ✅     | `nix develop`, `direnv allow`                                         |
-| Nix apps for all common commands | ✅     | `nix run .#{check,ci,test,lint,lint-fix,bench,coverage,...}`          |
-| GitHub Actions CI                | ✅     | Test with race + 90% threshold, lint, examples-build, bench           |
-| Documentation website            | ✅     | Astro + Starlight site at `filewatcher.lars.software`                 |
-| Godoc examples                   | ✅     | 26 examples in `example_test.go`                                      |
-| Runnable example programs        | ✅     | `examples/{basic,middleware,per-path-debounce,demo,filter-generated}` |
+| Feature                          | Status | Notes                                                                                                                                                                                 |
+| -------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nix flake dev shell              | ✅     | `nix develop`, `direnv allow`                                                                                                                                                         |
+| Nix apps for all common commands | ✅     | `nix run .#{check,ci,test,lint,lint-fix,bench,coverage,...}`                                                                                                                          |
+| GitHub Actions CI                | ✅     | Test with race + 90% threshold, lint, examples-build, bench                                                                                                                           |
+| Documentation website            | ✅     | Astro + Starlight site at `filewatcher.lars.software`                                                                                                                                 |
+| Godoc examples                   | ✅     | 26 examples in `example_test.go`                                                                                                                                                      |
+| Runnable example programs        | ✅     | `examples/{basic,middleware,per-path-debounce,demo,filter-generated}`                                                                                                                 |
 | Cross-platform releases          | 🟡     | `release.yml` triggers on `v*` tags (tests + lint + GitHub Release with auto-generated notes), but `.goreleaser.yml` is configured and NOT invoked — no compiled binaries shipped yet |
-| Issue templates                  | ✅     | Bug report + feature request                                          |
+| Issue templates                  | ✅     | Bug report + feature request                                                                                                                                                          |
 
 ## Planned / Worth Considering
 
 See [ROADMAP.md](./ROADMAP.md) for long-term direction and [TODO_LIST.md](./TODO_LIST.md) for committed short/mid-term work. Highlights:
 
-| Feature                                         | Status | Notes                                                                  |
-| ----------------------------------------------- | ------ | ---------------------------------------------------------------------- |
-| Windows-specific edge case tests                | 🔵     | Currently CI runs Linux only                                           |
-| Fuzz testing expansion                          | 🔵     | Existing fuzz tests; expand to more surfaces                           |
-| Error simulation testing framework              | 🔵     | For testing error middleware paths                                     |
+| Feature                                         | Status | Notes                                                                                                                               |
+| ----------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Windows-specific edge case tests                | 🔵     | Currently CI runs Linux only                                                                                                        |
+| Fuzz testing expansion                          | 🔵     | Existing fuzz tests; expand to more surfaces                                                                                        |
+| Error simulation testing framework              | 🔵     | For testing error middleware paths                                                                                                  |
 | Goreleaser release pipeline                     | 🟡     | `.goreleaser.yml` configured but NOT invoked by `release.yml`; release workflow ships GitHub Releases, not cross-platform artifacts |
-| Semantic-release automation                     | ⚪     | Currently manual version bumps                                         |
-| Localizable error messages                      | ⚪     | Sentinel errors are English-only today                                 |
-| fsnotify v2 tracking                            | ⚪     | Monitor upstream for breaking changes                                  |
-| `WatchChanges(ctx, targetState)` idempotent API | ⚪     | For sync-style workflows                                               |
+| Semantic-release automation                     | ⚪     | Currently manual version bumps                                                                                                      |
+| Localizable error messages                      | ⚪     | Sentinel errors are English-only today                                                                                              |
+| fsnotify v2 tracking                            | ⚪     | Monitor upstream for breaking changes                                                                                               |
+| `WatchChanges(ctx, targetState)` idempotent API | ⚪     | For sync-style workflows                                                                                                            |

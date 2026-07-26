@@ -108,8 +108,8 @@ func startFilteredWatch(watchDir string, opts ...filewatcher.Option) (context.Co
 
 	events, err := watcher.Watch(ctx)
 	if err != nil {
-		//nolint:gocritic // log.Fatalf exits, cancel() runs via defer on success path
-		log.Fatalf("Failed to watch: %v", err)
+		cancel()
+		log.Fatalf("Failed to watch: %v", err) //nolint:gocritic // example: os.Exit is intentional
 	}
 
 	return ctx, events

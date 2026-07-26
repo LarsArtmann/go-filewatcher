@@ -43,13 +43,14 @@ func main() {
 		),
 	)
 	if err != nil {
-		//nolint:gocritic // log.Fatal exits immediately, defer won't run (intentional)
-		log.Fatal(err)
+		cancel()
+		log.Fatal(err) //nolint:gocritic // example: os.Exit is intentional
 	}
 
 	events, err := watcher.Watch(ctx)
 	if err != nil {
-		log.Fatal(err)
+		cancel()
+		log.Fatal(err) //nolint:gocritic // example: os.Exit is intentional
 	}
 
 	log.Println("Watching with middleware: logging + metrics")

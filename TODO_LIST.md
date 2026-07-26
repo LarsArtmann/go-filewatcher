@@ -45,4 +45,3 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 | Flaky tests     | 0     | ✅     |
 | Broken benches  | 0     | ✅     |
 | MEDIUM priority | 6     | 🟡     |
-| LOW priority    | 0     | ✅     |

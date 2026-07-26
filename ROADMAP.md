@@ -55,34 +55,41 @@ certain directions worth exploring.
 
 - **Zero-allocation event path** — current `ConvertEvent`/`Create` is 3 allocs;
   investigate pooling or stack-allocated `Event` for hot paths.
-- **Benchmark freshness CI** — current benchmarks are saved as artifacts; add
-  automated regression comparison against `main` with a tolerance. (Capturing a
-  local baseline is a TODO_LIST quick win.)
+- **Benchmark freshness CI** — local baseline capture (`nix run .#bench-baseline`)
+  and diff (`nix run .#bench-diff`) tooling exist, but the baseline is gitignored.
+  The open question is whether to commit a sanitized baseline and add a CI
+  regression gate with tolerance (see TODO_LIST open questions).
 
 ### Reliability
 
-- **Race-detector-on-CI flake quarantine** — two flaky tests are documented in
-  AGENTS.md. The hardening work is tracked in TODO_LIST; the open question here
-  is whether `t.Skip` with a tracked issue is preferable to making the
-  assertions event-count-agnostic.
+- **Race-detector-on-CI flake quarantine** — two formerly-flaky tests
+  (`TestWatcher_Stats_Metrics`, `TestWatcher_Watch_WithMiddleware`) are now
+  hardened via the `waitForCondition` polling helper. The open question is
+  whether to also add a `-count=50 -race` statistical gate in CI for
+  timing-sensitive tests (self-heal, debouncer intervals).
 
 ### Operational
 
 - **Cross-platform release artifacts via goreleaser** — `.goreleaser.yml` is
   configured but **not invoked** by `release.yml` (which uses
-  `softprops/action-gh-release` with auto-generated notes). Wiring goreleaser in
-  would ship compiled cross-platform binaries on tag. See FEATURES.md
-  "Cross-platform releases" (currently PARTIALLY DONE).
+  `softprops/action-gh-release` with auto-generated notes). Now that
+  release-please handles versioning + CHANGELOG, goreleaser may be dead config
+  to delete (see TODO_LIST open questions). Wiring it in would ship compiled
+  cross-platform binaries on tag. See FEATURES.md "Cross-platform releases"
+  (currently PARTIALLY DONE).
 - **Dependency freshness SLO** — current policy is "update within 24h"; codify
   with Dependabot status checks.
-- **Docs freshness gate** — a CI check that FEATURES.md/README.md hashes match
-  the source API surface (e.g. generated from `go doc`). The concrete task is in
-  TODO_LIST; the exploratory angle is auto-generating doc tables from source.
+- **Docs freshness gate** — the `check-exported-symbol-docs` CI workflow exists
+  and ratchets against a 36-symbol exemption list (29% of the API). The
+  exploratory angle is auto-generating doc tables from `go doc -all` source
+  parsing to eliminate manual sync entirely.
   See [docs/research/INDEX.md](./docs/research/INDEX.md) for related research.
-- **Automated release tooling** — evaluate semantic-release or release-please
-  for fully automated changelog and version bumping. See
-  [docs/research/semantic-release-evaluation.md](./docs/research/semantic-release-evaluation.md)
-  for the tradeoff analysis.
+- **Automated release tooling** — release-please is wired in
+  (`.github/workflows/release-please.yml`), auto-generating release PRs from
+  conventional commits. The commitlint gate
+  (`.github/workflows/commitlint.yml`) enforces the commit format that feeds it.
+  See [docs/research/semantic-release-evaluation.md](./docs/research/semantic-release-evaluation.md)
+  for the tradeoff analysis that informed this choice.
 
 ---
 
@@ -109,5 +116,9 @@ These are explicitly **out of scope** to keep the library focused:
 | Major (X.0.0) | When breaking changes pile up | Removed deprecations, signature changes     |
 
 See [API_STABILITY.md](./API_STABILITY.md) for the full stability policy. There
-are 21 commits ahead of the latest tag (`v2.2.1`); a `v2.2.2` or `v2.3.0` would
-capture the dedup, lint-clean, and example-hygiene work landed since.
+are 68 commits ahead of the latest tag (`v2.2.1`). The `[Unreleased]` CHANGELOG
+section covers deprecations (`WithOnError`, `MiddlewareRateLimit`), the backend
+test-seam abstraction, error simulation, CI automation (commitlint,
+release-please, docs-consistency), and extensive lint/dedup hardening — a
+`v2.3.0` would capture all of it. Release-please is wired in and will
+auto-generate the release PR from conventional commits.

@@ -1,6 +1,6 @@
 # Feature Inventory
 
-**Last Updated:** 2026-07-26 · **Version:** v2.2.1
+**Last Updated:** 2026-07-26 · **Version:** v2.2.1 (v2.3.0 unreleased — see [CHANGELOG](./CHANGELOG.md))
 
 Honest status of every capability in go-filewatcher. Statuses:
 
@@ -140,7 +140,7 @@ Honest status of every capability in go-filewatcher. Statuses:
 | Godoc examples                     | ✅     | 26 examples in `example_test.go`                                                                                                                                                      |
 | Error simulation testing framework | ✅     | `error_simulation_test.go` + `fake_backend_test.go` — scripted Add failures, error injection, full pipeline tests                                                                     |
 | Runnable example programs          | ✅     | `examples/{basic,middleware,per-path-debounce,demo,filter-generated}`                                                                                                                 |
-| Cross-platform releases            | 🟡     | `release.yml` triggers on `v*` tags (tests + lint + GitHub Release with auto-generated notes), but `.goreleaser.yml` is configured and NOT invoked — no compiled binaries shipped yet |
+| Cross-platform releases            | 🟡     | `release.yml` triggers on `v*` tags (tests + lint + GitHub Release with auto-generated notes); release-please automates versioning from conventional commits. `.goreleaser.yml` exists but is NOT invoked — no compiled binaries shipped (see TODO_LIST open questions) |
 | Issue templates                    | ✅     | Bug report + feature request                                                                                                                                                          |
 
 ## Planned / Worth Considering
@@ -151,8 +151,7 @@ See [ROADMAP.md](./ROADMAP.md) for long-term direction and [TODO_LIST.md](./TODO
 | ----------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------- |
 | Windows-specific edge case tests                | 🔵     | Currently CI runs Linux only                                                                                                        |
 | Fuzz testing expansion                          | 🔵     | Existing fuzz tests; expand to more surfaces                                                                                        |
-| Goreleaser release pipeline                     | 🔵     | `.goreleaser.yml` configured but NOT invoked by `release.yml`; release workflow ships GitHub Releases, not cross-platform artifacts |
-| Semantic-release automation                     | ⚪     | Currently manual version bumps                                                                                                      |
+| Semantic-release automation                     | ✅     | release-please wired in (`.github/workflows/release-please.yml`) + commitlint gate; see [evaluation](./docs/research/semantic-release-evaluation.md) |
 | Localizable error messages                      | ⚪     | Sentinel errors are English-only today                                                                                              |
 | fsnotify v2 tracking                            | ⚪     | Monitor upstream for breaking changes                                                                                               |
-| `WatchChanges(ctx, targetState)` idempotent API | ⚪     | For sync-style workflows                                                                                                            |
+| `WatchChanges(ctx, targetState)` idempotent API | ⚪     | For sync-style workflows; see [contract sketch](./docs/research/watchchanges-contract.md)                                           |

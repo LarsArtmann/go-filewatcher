@@ -9,75 +9,54 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 
 ---
 
-## ✅ Completed — v2.3.0 release prep (2026-07-26)
-
-All HIGH and MEDIUM correctness/tooling items from the 2026-07-26 harvest are
-done. See CHANGELOG for details.
-
-- [x] Mark `WithOnError` + `MiddlewareRateLimit` deprecated in README.md
-- [x] Add v2.3→v3 deprecation section to MIGRATION.md
-- [x] Mark deprecated symbols in api-reference.mdx with deprecation badges
-- [x] Fix `nix run .#ci` tidy permission failure (run from caller CWD)
-- [x] Update FEATURES.md "Error simulation testing" PLANNED → DONE
-- [x] Fix `MiddlewareWriteFileLog` fd leak (`NewFileLogMiddleware` + `WithCleanup`)
-- [x] Wire up `addAttemptCount` in self-heal and fake-backend tests
-- [x] Fix `MiddlewareDeduplicate` cleanup-on-%100 quirk (event counter)
-- [x] Add `nix run .#lint-tests` app (explicit `--tests` flag)
-- [x] Add `examples/` to nix `fileset` + `examples-build` check
-- [x] Vendor `benchstat` hermetically via `buildGoModule`
-- [x] Re-capture clean `bench-baseline.txt` (`-run=^$`)
-- [x] Add commitlint CI gate (`.github/workflows/commitlint.yml`)
-- [x] Wire `release-please` (`.github/workflows/release-please.yml`)
-- [x] Add README vs API_STABILITY docs-consistency CI gate
-
----
-
-### Testing
+## Testing & Platform
 
 - [ ] **Windows CI matrix** — add a `windows-latest` job to `ci.yml` that runs
       `go test ./...`. Windows has different event semantics (no inotify);
       document any platform-specific skips.
-- [ ] **Expand fuzz tests** — currently covers `ParseFamily`, `Classify`, error
-      formatting. Add fuzzers for `FilterAnd/Or/Not` composition, `Event` JSON
-      round-trip, and the gitignore matcher.
+- [ ] **Expand fuzz tests** — current corpus covers `FilterRegex`,
+      `FilterExtensions`, `FilterIgnoreGlobs`, `OpUnmarshalText`, `FilterMinSize`.
+      Add fuzzers for `FilterAnd`/`FilterOr`/`FilterNot` composition, `Event`
+      JSON round-trip, and the gitignore matcher.
 - [ ] **Large-tree stress harness** — synthetic 100k-directory fixture that
-      validates batched registration, budget enforcement, and self-heal under load.
-- [ ] **Compile-time interface checks for the backend seam** — add
-      `var _ watchBackend = (*fsnotifyBackend)(nil)` and
-      `var _ watchBackend = (*fakeBackend)(nil)` so interface drift fails at build.
-      (`backend.go`, `fake_backend_test.go`; `src: 2026-07-26_20-00`)
-- [ ] **Fake-backend coverage gaps** — test `Reset()`, `Add()`, `Remove()`, and
-      pipeline-level circuit-breaker behavior through `fakeBackend`; add a
-      concurrent-event-burst test for goroutine leaks under load.
-      (`src: 2026-07-26_20-00`)
-- [ ] **Benchmark `FilterAnd` with many sub-filters** — current benchmark uses 2;
-      prove the short-circuit payoff at scale (e.g. 10 filters, first rejects).
-      (`benchmark_test.go:644`; `src: 2026-07-26_21-00`)
+      validates batched registration, budget enforcement, and self-heal under
+      load.
 
-### Documentation
+## Documentation Accuracy
 
-- [ ] **OpenTelemetry end-to-end example** — `OTelMiddleware` exists but the
-      README has no tracing setup walkthrough. Add a runnable example showing
-      spans propagating to a real exporter.
-- [ ] **Prometheus collector quickstart** — add a `MustRegister(coll, opts...)`
-      helper or a documented snippet showing standard namespace/subsystem wiring.
-- [ ] **Docs freshness CI gate** — add a check that FEATURES.md/README.md
-      mention every exported symbol (could be generated from `go doc -all`).
-- [ ] **Link research docs from `ROADMAP.md`** — `watchchanges-contract.md` and
-      `semantic-release-evaluation.md` are orphaned (referenced only from this
-      file). Cross-link under "API evolution" and "Operational".
-      (`src: 2026-07-26_21-00`)
-- [ ] **Document `MustWatch` helper in `examples/README.md`** and add an
-      `examples/` build note to AGENTS.md "File Organization".
-      (`src: 2026-07-26_20-00`)
-- [ ] **CONTRIBUTING.md: document the bench baseline workflow** + the
-      `bench-baseline.txt` format (count=6, no `-race`) so captures stay comparable.
-      (`src: 2026-07-26_21-00`)
-- [ ] **Audit `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md`** — likely stale post-migration;
-      delete or mark historical.
-      (`src: 2026-07-26_21-00`)
-- [ ] **Add `docs/research/INDEX.md`** so research docs are discoverable.
-      (`src: 2026-07-26_21-00`)
+- [ ] **Fix README Prometheus snippet** — the polling-loop example uses
+      `prometheus.ExemplarAdder` (not a real type) and would panic at runtime.
+      Replace with a proper `prometheus.Collector` (Describe + Collect) wrapper,
+      or reduce to API-surface pseudo-code. The library is zero-dep by design, so
+      any snippet referencing `prometheus/client_golang` cannot be
+      compile-verified without a test-only dependency — decide the approach.
+      (`README.md:309`; `src: 2026-07-26_22-23 §d1`)
+- [ ] **Fix README OTel snippet** — references `stdouttracer.New()` (correct
+      package is `stdouttrace`) and `trace.Attribute` (likely renamed to
+      `attribute.KeyValue` in current OTel SDK). Verify against the actual SDK
+      API or mark as version-specific pseudo-code.
+      (`README.md:354,380`; `src: 2026-07-26_22-23 §d2`)
+- [ ] **`docs/DOMAIN_LANGUAGE.md` freshness pass** — the glossary is missing
+      key terms that shipped in v2.2+: `ContentHash`, `MatchResult`,
+      `FilterWithMeta`, `ErrorCategory`, `CircuitBreaker` states
+      (`CircuitClosed`/`CircuitOpen`/`CircuitHalfOpen`). Verify each term
+      against code and add entries.
+      (`src: 2026-07-26_18-39 §c1`)
+- [ ] **Shrink docs-consistency exemption list** — the
+      `check-exported-symbol-docs` CI gate exempts 36 of 124 exported symbols
+      (29%). Notable gaps: `BatchError`, `CircuitState`, `ErrorCategory`,
+      `ErrorHandler`, `IsPermanentError`, `IsTransientError`. Document a few
+      each pass until the list is empty.
+      (`src: 2026-07-26_22-23 §b2`)
+
+## Architecture
+
+- [ ] **Document `wrapHandlerWithNilReturn` limitation** — the pipeline's error
+      absorption means error-aware middleware (circuit breaker, error recovery)
+      only observe failures when they are the innermost layer. This is by design
+      (prevents middleware error cascades) but is an undocumented constraint.
+      Write an ADR or a doc comment explaining the tradeoff.
+      (`src: 2026-07-26_20-00 §B1, 2026-07-26_22-23 §e5`)
 
 ---
 
@@ -90,17 +69,37 @@ done. See CHANGELOG for details.
 | Tests           | 100%  | ✅     |
 | Flaky tests     | 0     | ✅     |
 | Broken benches  | 0     | ✅     |
-| HIGH priority   | 0     | ✅     |
-| MEDIUM priority | 7     | 🟡     |
+| Open items      | 8     | 🟡     |
 
 ---
 
 ## Open questions (blockers, not tasks — need user decision)
 
 These are **not** actionable until answered. Routed here from the 2026-07-26
-self-review so they are not lost; they do not belong in the checklist above.
+self-reviews so they are not lost; they do not belong in the checklist above.
 
-The `WatchChanges(ctx, targetState)` open design questions (reporting
-granularity, closed-watcher semantics, depth reconciliation) live in
-`docs/research/watchchanges-contract.md`; the implementation becomes a TODO
-once those are answered.
+1. **Is `.goreleaser.yml` dead config to delete, or an unfinished wiring task?**
+   `release.yml` uses `softprops/action-gh-release` with auto-generated notes and
+   has no goreleaser step. Now that release-please is wired in, goreleaser may be
+   fully obsolete. Deleting it simplifies FEATURES (Cross-platform releases →
+   not-planned); keeping it means it should be wired in eventually.
+   (`src: 2026-07-26_18-39 §g Q2`)
+
+2. **Should the benchmark baseline be committed (CI-enforceable) or stay
+   gitignored (local-only)?** The baseline is currently gitignored per the
+   original TODO, but the ROADMAP says "benchmark freshness CI." A gitignored
+   file can never drive a CI regression gate. Machine-specific noise makes
+   committed baselines imperfect, but they are the only way CI can catch
+   regressions.
+   (`src: 2026-07-26_21-00 §g Q1`)
+
+3. **The `WatchChanges(ctx, targetState)` open design questions** (reporting
+   granularity, closed-watcher semantics, depth reconciliation) live in
+   `docs/research/watchchanges-contract.md`; the implementation becomes a TODO
+   once those are answered.
+
+4. **Should the `watchBackend` interface be exported?** Currently unexported
+   (test-internal only). Consumers might want their own fake backends for
+   integration testing. Tradeoff: more public API surface vs. more consumer
+   value. This is a v3 decision — exporting it is a breaking commitment.
+   (`src: 2026-07-26_20-00 §G Q1`)

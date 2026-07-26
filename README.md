@@ -281,45 +281,44 @@ adapter using the standard `prometheus/client_golang` package:
 ```go
 import "github.com/prometheus/client_golang/prometheus"
 
-coll := filewatcher.NewPrometheusCollector(watcher.Stats)
-
-// Build Prometheus counter and gauge vectors from the collector.
-counters := make(map[string]prometheus.Counter)
-for _, c := range coll.Counters() {
-    counters[c.Name] = prometheus.NewCounter(prometheus.CounterOpts{
-        Name: c.Name,
-        Help: c.Help,
-    })
-    prometheus.MustRegister(counters[c.Name])
+// filewatcherCollector implements prometheus.Collector by delegating
+// to filewatcher.PrometheusCollector. Prometheus calls Collect on each
+// scrape — no polling loop needed.
+type filewatcherCollector struct {
+    coll  *filewatcher.PrometheusCollector
+    descs map[string]*prometheus.Desc
 }
 
-gauges := make(map[string]prometheus.Gauge)
-for _, g := range coll.Gauges() {
-    gauges[g.Name] = prometheus.NewGauge(prometheus.GaugeOpts{
-        Name: g.Name,
-        Help: g.Help,
-    })
-    prometheus.MustRegister(gauges[g.Name])
-}
-
-// On each scrape, pull fresh values from the collector.
-go func() {
-    for range time.Tick(5 * time.Second) {
-        for _, c := range coll.Counters() {
-            counters[c.Name].(prometheus.ExemplarAdder).Add(float64(c.Value)) // simplified
-        }
-        for _, g := range coll.Gauges() {
-            gauges[g.Name].Set(g.Value)
-        }
+func newFilewatcherCollector(coll *filewatcher.PrometheusCollector) *filewatcherCollector {
+    descs := make(map[string]*prometheus.Desc)
+    for _, c := range coll.Counters() {
+        descs[c.Name] = prometheus.NewDesc(c.Name, c.Help, nil, nil)
     }
-}()
-```
+    for _, g := range coll.Gauges() {
+        descs[g.Name] = prometheus.NewDesc(g.Name, g.Help, nil, nil)
+    }
+    return &filewatcherCollector{coll: coll, descs: descs}
+}
 
-> **Tip:** The simplest production pattern is to implement
-> `prometheus.Collector` (Describe + Collect) on a wrapper type that delegates
-> to `NewPrometheusCollector`. Call `prometheus.MustRegister(yourWrapper)` once
-> at startup and let Prometheus scrape on its own schedule — no polling loop
-> needed.
+func (f *filewatcherCollector) Describe(ch chan<- *prometheus.Desc) {
+    for _, desc := range f.descs {
+        ch <- desc
+    }
+}
+
+func (f *filewatcherCollector) Collect(ch chan<- prometheus.Metric) {
+    for _, c := range f.coll.Counters() {
+        ch <- prometheus.MustNewConstMetric(f.descs[c.Name], prometheus.CounterValue, float64(c.Value))
+    }
+    for _, g := range f.coll.Gauges() {
+        ch <- prometheus.MustNewConstMetric(f.descs[g.Name], prometheus.GaugeValue, g.Value)
+    }
+}
+
+// Register once at startup — Prometheus scrapes on its own schedule:
+coll := filewatcher.NewPrometheusCollector(watcher.Stats)
+prometheus.MustRegister(newFilewatcherCollector(coll))
+```
 
 ### OpenTelemetry
 
@@ -331,7 +330,10 @@ attributes attached. Status is set to `ok` or `error` automatically.
 ```go
 import (
     "context"
+
     "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/attribute"
+    "go.opentelemetry.io/otel/codes"
     "go.opentelemetry.io/otel/trace"
 )
 
@@ -340,20 +342,20 @@ type otelSpanAdapter struct {
     span trace.Span
 }
 
-func (a otelSpanAdapter) End() { a.span.End() }
+func (a *otelSpanAdapter) End() { a.span.End() }
 
-func (a otelSpanAdapter) SetStatus(code, desc string) {
+func (a *otelSpanAdapter) SetStatus(code, desc string) {
     if code == "error" {
-        a.span.SetStatus(trace.StatusError, desc)
+        a.span.SetStatus(codes.Error, desc)
     } else {
-        a.span.SetStatus(trace.StatusOk, desc)
+        a.span.SetStatus(codes.Ok, desc)
     }
 }
 
-func (a otelSpanAdapter) SetAttributes(attrs ...filewatcher.Attribute) {
-    converted := make([]trace.Attribute, len(attrs))
+func (a *otelSpanAdapter) SetAttributes(attrs ...filewatcher.Attribute) {
+    converted := make([]attribute.KeyValue, len(attrs))
     for i, attr := range attrs {
-        converted[i] = trace.StringAttribute(attr.Key, attr.Value)
+        converted[i] = attribute.String(attr.Key, attr.Value)
     }
     a.span.SetAttributes(converted...)
 }
@@ -365,7 +367,7 @@ watcher, err := filewatcher.New(paths,
             _, span := otel.Tracer("filewatcher").Start(
                 context.Background(), "filewatcher.event",
             )
-            return otelSpanAdapter{span: span}
+            return &otelSpanAdapter{span: span}
         }),
     ),
 )
@@ -376,8 +378,15 @@ Jaeger exporter at program startup. Each file event will produce a span that
 propagates to the configured exporter:
 
 ```go
-// Example: stdout exporter for development
-tp, _ := stdouttracer.New()
+import (
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+    sdktrace "go.opentelemetry.io/otel/sdk/trace"
+)
+
+// stdout exporter for development — pretty-prints spans as JSON:
+exp, _ := stdouttrace.New(stdouttrace.WithPrettyPrint())
+tp := sdktrace.NewTracerProvider(sdktrace.WithBatcher(exp))
 otel.SetTracerProvider(tp)
 
 // Each filewatcher event now produces a span you can see in the trace output.

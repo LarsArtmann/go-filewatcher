@@ -20,6 +20,8 @@ If a word means something different to a developer than to a customer, define it
 | Self-healing         | Auto-retry of failed watch registrations at a configurable interval            | Resilience context                |
 | Polling Mode         | Fallback event detection via periodic filesystem snapshots (NFS/FUSE)          | Resilience context                |
 | Gitignore-aware Walk | Directory walking that skips paths matching `.gitignore` patterns              | Walk-time optimization            |
+| Circuit Breaker      | Fault-tolerance middleware: closes (drops events) after N failures, opens after timeout, half-opens to test recovery | Resilience / Middleware           |
+| Error Category       | Classification of errors as transient (retryable, e.g. ENOSPC) or permanent (e.g. ErrPathNotDir) | Error handling                    |
 
 ## Entities
 
@@ -38,10 +40,16 @@ Immutable objects defined by attributes.
 | Event        | Filesystem change notification (path, op, timestamp, size, modtime)     | Emitted on the event channel |
 | Op           | Operation enum: `Create`, `Write`, `Remove`, `Rename`                   | Part of every Event          |
 | Filter       | Predicate `(Event) bool` — composable via AND/OR/NOT                    | Filtering pipeline           |
+| FilterWithMeta | Filter returning `MatchResult` (matched + reason + filter name)       | Rich filtering with metadata |
+| MatchResult  | Structured outcome: `Matched bool`, `Reason string`, `FilterName string` | Returned by FilterWithMeta   |
+| ContentHash  | Hex-encoded SHA-256 of file content (opt-in via `WithContentHashing`)   | Event.Hash field             |
 | Stats        | Runtime counters: events processed, filtered, errors, watch budget      | Observability                |
 | WatcherError | Structured error with category (transient/permanent), code, stack       | Error handling               |
+| ErrorCategory | Classifies errors as transient (retryable) or permanent                | `errors.go`                  |
 | EventPath    | Phantom-typed path string with `.Base()`, `.Dir()`, `.Ext()`, `.Join()` | Type safety on event paths   |
 | ErrorCode    | Typed string constant for programmatic error matching                   | Error handling               |
+| CircuitState | Circuit breaker state: `CircuitClosed` (healthy), `CircuitOpen` (tripped, events dropped), `CircuitHalfOpen` (testing recovery, 1 event passes) | `middleware.go` |
+| Handler      | `func(ctx, Event) error` — the function signature middleware wrap       | Middleware pipeline          |
 
 ## Events
 

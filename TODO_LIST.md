@@ -46,11 +46,11 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 - [ ] **Docs freshness CI gate** — add a check that FEATURES.md/README.md
       mention every exported symbol (could be generated from `go doc -all`).
 
-### Ecosystem Integration (dogfooding)
+### Ecosystem Integration (dogfooding) — ✅ All Done
 
-- [ ] Integrate into `dynamic-markdown-site`.
-- [ ] Integrate into `auto-deduplicate`.
-- [ ] Integrate into Cyberdom.
+- [x] Integrate into `dynamic-markdown-site`.
+- [x] Integrate into `auto-deduplicate`.
+- [x] Integrate into Cyberdom.
 
 ---
 
@@ -88,5 +88,5 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 | Tests           | 100%  | ✅     |
 | Flaky tests     | 0     | ✅     |
 | Broken benches  | 0     | ✅     |
-| MEDIUM priority | 9     | 🟡     |
+| MEDIUM priority | 6     | 🟡     |
 | LOW priority    | 8     | 🟢     |

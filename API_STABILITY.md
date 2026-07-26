@@ -1,6 +1,6 @@
 # API Stability Policy
 
-**Last Updated:** 2026-06-03
+**Last Updated:** 2026-07-26
 
 ## Versioning
 
@@ -51,11 +51,28 @@ None currently.
 
 ### Deprecated APIs (will be removed in v3.0.0)
 
-These APIs continue to work but are scheduled for removal in the next major version:
+These APIs continue to work but are scheduled for removal in the next major
+version. Each is a strict superset duplicate of a more capable alternative.
 
-| Category | Symbols                   | Status         |
-| -------- | ------------------------- | -------------- |
-| Options  | `WithWatchedIgnoreDirs()` | **Deprecated** |
+| Category   | Symbols                 | Status         | Superseded by                           | Migration                                                                                                            |
+| ---------- | ----------------------- | -------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Options    | `WithWatchedIgnoreDirs` | **Deprecated** | `WithFilter(FilterIgnoreDirs(dirs...))` | Replace the option call with `WithFilter(FilterIgnoreDirs(...))`.                                                    |
+| Options    | `WithOnError`           | **Deprecated** | `WithErrorHandler`                      | Wrap the callback: `WithErrorHandler(func(_ ErrorContext, err error) { fn(err) })`. Gains full `ErrorContext`.       |
+| Middleware | `MiddlewareRateLimit`   | **Deprecated** | `MiddlewareThrottle`                    | `MiddlewareRateLimit(n)` is exactly `MiddlewareThrottle(n, n)`. Use `MiddlewareThrottle(maxEvents, burst)` directly. |
+
+### v3 Removal Candidates (under consideration, not yet deprecated)
+
+The following are **not** deprecated yet but are being evaluated for change or
+removal in v3. They are listed here so the v3 scope is visible before cutting.
+None of these will be removed without first receiving a `// Deprecated:` comment
+for at least one minor version.
+
+| Category   | Symbol                                                                       | Concern                                                                                                               | Tentative v3 resolution                                                                                         |
+| ---------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Middleware | `MiddlewareOnError`                                                          | Overlaps conceptually with `WithErrorHandler`, but operates at a different layer (handler errors vs. watcher errors). | Keep — the layer distinction is meaningful. Document the boundary clearly rather than merge.                    |
+| Middleware | `MiddlewareSlidingWindowRateLimit`                                           | Third rate limiter alongside `MiddlewareThrottle`.                                                                    | Keep — per-arbitrary-window semantics differ from per-second token bucket. Consider better doc differentiation. |
+| Options    | `WithExtensions`, `WithIgnoreDirs`, `WithIgnoreHidden`, `WithIgnorePatterns` | Thin convenience wrappers over `WithFilter(FilterX(...))`.                                                            | Keep — intentional boilerplate reducers; widely used. Not deprecation candidates.                               |
+| Types      | `ErrorHandler` (two-arg signature)                                           | `func(ctx ErrorContext, err error)` — richer than the simple `func(error)`.                                           | Keep — the context is valuable; `WithOnError` (the simple form) is deprecated instead.                          |
 
 ## Breaking Change Policy
 

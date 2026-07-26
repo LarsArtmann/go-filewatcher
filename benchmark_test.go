@@ -243,7 +243,7 @@ func BenchmarkBuildMiddlewareHandler_ThreeMiddleware(b *testing.B) {
 		middleware: []Middleware{
 			MiddlewareRecovery(),
 			MiddlewareMetrics(func(_ Op) {}),
-			MiddlewareRateLimit(100),
+			MiddlewareThrottle(100, 100),
 		},
 	})
 }

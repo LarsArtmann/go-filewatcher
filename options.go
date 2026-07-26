@@ -135,6 +135,12 @@ func WithOnAdd(fn func(path string)) Option {
 
 // WithOnError sets a simple callback for errors that occur during watching.
 // This is a convenience wrapper around WithErrorHandler for simple use cases.
+//
+// Deprecated: Use WithErrorHandler instead. It provides the full ErrorContext
+// (operation, path, retryability) and is the canonical error-handling option.
+// To preserve the simple behavior, wrap the callback:
+//
+//	WithErrorHandler(func(_ ErrorContext, err error) { fn(err) })
 func WithOnError(fn func(error)) Option {
 	return func(w *Watcher) {
 		w.errorHandler = func(_ ErrorContext, err error) {

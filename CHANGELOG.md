@@ -14,6 +14,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Debouncer `Stop` lifecycle consolidated** (`debouncer.go`) — `baseDebouncer.stop(cleanup)` centralizes the lock → markStopped → cleanup → unlock → wait envelope shared by `Debouncer.Stop()` and `GlobalDebouncer.Stop()`.
 - **Negative-duration panics unified** (`options.go`) — `requireNonNegativeDuration(optionName, delay)` is now used by both `WithDebounce` and `WithPerPathDebounce`.
 
+### Fixed
+
+- **4 broken `BenchmarkEmitEvent_*` benchmarks** (`benchmark_test.go`) — deadlocked because the size-1 event channel was never drained; the second emit blocked forever on a zero-value `Watcher` (nil `done` channel, uncancellable context). Extracted a shared `benchmarkEmitEvent` helper that uses a non-blocking drain, valid for both direct-emit and debounced paths.
+- **2 flaky tests hardened** (`watcher_test.go`, `testing_helpers_test.go`) — `TestWatcher_Stats_Metrics` and `TestWatcher_Watch_WithMiddleware` relied on fixed `time.Sleep` to wait for async fsnotify delivery and counter propagation. Replaced with a new `waitForCondition` polling helper that waits deterministically until the assertion holds (or times out), eliminating the race that caused intermittent failures.
+
+### Deprecated
+
+- **`WithOnError`** (`options.go`) — redundant convenience wrapper around `WithErrorHandler` that discards the `ErrorContext`. Deprecated in favor of `WithErrorHandler`; see `API_STABILITY.md`.
+- **`MiddlewareRateLimit`** (`middleware.go`) — strict special case of `MiddlewareThrottle` (`MiddlewareRateLimit(n)` == `MiddlewareThrottle(n, n)`). Deprecated in favor of `MiddlewareThrottle`; see `API_STABILITY.md`.
+
 ### Internal
 
 - **Test-helper adoption** — `newTestWatcher` (the pre-existing but underused `New + err-check + defer Close` helper) now has 76 call sites across 9 test files; inline `New(` calls in tests reduced from ~63 to 20 (all deliberately retained: benchmarks, `Example*` functions, error-path and lifecycle tests).

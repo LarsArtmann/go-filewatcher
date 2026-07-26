@@ -111,6 +111,10 @@ func rateLimiterMiddleware(limiter *rate.Limiter) Middleware {
 // MiddlewareRateLimit returns a middleware that limits the rate of events
 // using a token bucket algorithm. It allows maxEvents events per second
 // with burst=maxEvents. Events exceeding the limit are dropped.
+//
+// Deprecated: Use MiddlewareThrottle instead, which exposes the burst
+// parameter directly. MiddlewareRateLimit(maxEvents) is exactly equivalent
+// to MiddlewareThrottle(maxEvents, maxEvents).
 func MiddlewareRateLimit(maxEvents int) Middleware {
 	return MiddlewareThrottle(maxEvents, maxEvents)
 }

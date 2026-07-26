@@ -504,7 +504,8 @@ func TestWithCleanup_RunsForFileLogMiddleware(t *testing.T) {
 
 	mw, closer := NewFileLogMiddleware(logFile)
 
-	watcher := newTestWatcher(t, dir,
+	watcher := newTestWatcher(
+		t, dir,
 		WithMiddleware(mw),
 		WithCleanup(closer),
 	)

@@ -8,7 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- **Benchmark baseline workflow** (`flake.nix`) — `nix run .#bench-baseline` captures a clean (no `-race`, `-count=6`) baseline to the gitignored `bench-baseline.txt`; `nix run .#bench-diff` runs fresh benchmarks through `benchstat` against it for one-command regression checks. Pairs with the ROADMAP "benchmark freshness CI" idea.
+- **`WithCleanup` option** (`options.go`) — registers cleanup functions called on `Close()` after goroutines/channels are torn down. Cleared on `Reset()`. Enables lifecycle-managed resource cleanup for middleware that hold file handles.
+- **`NewFileLogMiddleware`** (`middleware.go`) — returns `(Middleware, func() error)` for file-logging middleware with proper fd cleanup. Pair with `WithCleanup` to avoid descriptor leaks in long-lived watchers. `MiddlewareWriteFileLog` delegates to this but discards the closer (backward compat).
+- **Hermetic `benchstat`** (`flake.nix`) — `bench-diff` now uses a `buildGoModule`-built `benchstat` instead of `go run golang.org/x/perf/cmd/benchstat@latest` (network, non-reproducible).
+- **`nix run .#lint-tests`** (`flake.nix`) — dedicated app for explicit test-file linting (`--tests` flag).
+- **`examples-build` nix check** (`flake.nix`) — `examples/` added to the source `fileset.unions` and a new check that compiles `go build ./examples/...`.
+- **Commitlint CI gate** (`.github/workflows/commitlint.yml`) — validates PR commit subjects follow `type(scope?): subject` conventional-commit format with 72-char limit.
+- **Release-please workflow** (`.github/workflows/release-please.yml`) — opens release PRs from conventional commits, automating CHANGELOG + version bumps. Go-aware with `v` tag prefix.
+- **Docs-consistency CI gate** (`.github/workflows/docs-consistency.yml`) — checks that deprecation claims don't drift between `README.md` and `API_STABILITY.md`.
+- **Benchmark baseline workflow** (`flake.nix`) — `nix run .#bench-baseline` captures a clean (no `-race`, `-count=6`, `-run=^$`) baseline to the gitignored `bench-baseline.txt`; `nix run .#bench-diff` runs fresh benchmarks through `benchstat` against it for one-command regression checks. Pairs with the ROADMAP "benchmark freshness CI" idea.
 - **`GOTMPDIR` in devShell** (`flake.nix`) — the default devShell redirects Go's temp dir to a disk-backed `${XDG_CACHE_HOME:-$HOME/.cache}/go-filewatcher/gotmp`, preventing tmpfs `/tmp` exhaustion during long sessions.
 - **gocritic `exitAfterDefer` exclusion for `examples/`** (`.golangci.yml`) — defensive path+text exclusion so `log.Fatal` in example `main()` functions doesn't trigger per-line nolint fights.
 - **Middleware default-const usage guard** (`middleware_test.go`) — `TestMiddlewareDefaultConsts_AllUsed` is an AST-based test asserting every middleware default const is both declared in `middleware.go` and referenced, catching dead constants if defaulting is refactored away (and drift if the expected list falls out of sync).
@@ -19,6 +27,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **`nix run .#ci`/`.#fmt`/`.#tidy` run from caller CWD** (`flake.nix`) — these write-modifying apps no longer `cd "${self}"` into the read-only nix store; they operate on the working directory directly. Documented as "invoke from repo root."
+- **`MiddlewareDeduplicate` cleanup trigger** (`middleware.go`) — replaced `len(seen)%100 == 0` with an event counter (`eventCount%dedupeCleanupInterval`), eliminating the quirk where a map hovering at a multiple of 100 triggered cleanup every event.
 - **Self-heal respects permanent failures** (`watcher_selfheal.go`) — `attemptSelfHeal` now checks `IsPermanent()` and abandons paths that can never recover (deleted directory, wrong entry type) instead of retrying them forever. Retry budget is now spent only on genuinely transient failures.
 - Go toolchain bumped from 1.26.4 to 1.26.5
 - **Middleware default-guard consistency** (`middleware.go`) — every middleware default is now a named const (`defaultThrottleEvents` extracted; zero magic literals remain in default-guard code). Shared defaulting (2+ functions) goes through a `resolve*Defaults` helper; single-function defaulting uses an inline guard with a named const.
@@ -27,6 +37,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **`MiddlewareWriteFileLog` fd leak** (`middleware.go`) — file handle was opened lazily but never closed. Added `NewFileLogMiddleware` returning a closer, plus `WithCleanup` option to register it with the watcher lifecycle. `MiddlewareWriteFileLog` delegates to `NewFileLogMiddleware` (backward compat).
+- **`bench-baseline.txt` slog pollution** (`flake.nix`) — benchmarks now use `-run=^$` to skip test functions (whose watcher error output polluted the baseline file). The reference file is now clean for `benchstat`.
 - **4 broken `BenchmarkEmitEvent_*` benchmarks** (`benchmark_test.go`) — deadlocked because the size-1 event channel was never drained; the second emit blocked forever on a zero-value `Watcher` (nil `done` channel, uncancellable context). Extracted a shared `benchmarkEmitEvent` helper that uses a non-blocking drain, valid for both direct-emit and debounced paths.
 - **2 flaky tests hardened** (`watcher_test.go`, `testing_helpers_test.go`) — `TestWatcher_Stats_Metrics` and `TestWatcher_Watch_WithMiddleware` relied on fixed `time.Sleep` to wait for async fsnotify delivery and counter propagation. Replaced with a new `waitForCondition` polling helper that waits deterministically until the assertion holds (or times out), eliminating the race that caused intermittent failures.
 
@@ -37,6 +49,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Internal
 
+- **`addAttemptCount` wired up** (`error_simulation_test.go`, `fake_backend_test.go`) — the previously-dead `fakeBackend.addAttemptCount` method is now used in self-heal and specific-path-failure tests to verify retry counts and per-path attempt tracking.
+- **Deprecation docs published** (`README.md`, `MIGRATION.md`, `api-reference.mdx`) — `WithOnError` and `MiddlewareRateLimit` now have visual deprecation callouts in README tables, a v2.3→v3 migration section in MIGRATION.md, and Starlight deprecation badges in the website API reference.
+- **`WithCleanup` + `NewFileLogMiddleware` in API_STABILITY.md** — registered as Evolving APIs.
 - **Backend abstraction for testability** (`backend.go`) — introduced `watchBackend` interface abstracting `*fsnotify.Watcher`, with `fsnotifyBackend` adapter for production and unexported `withBackend()` option for test injection. `Watcher.fswatcher` field type changed from `*fsnotify.Watcher` to `watchBackend`. Enables deterministic error simulation without a real filesystem.
 - **Error simulation test suite** (`error_simulation_test.go`, `fake_backend_test.go`) — 11 tests covering self-heal retry/abandon, error channel propagation, full pipeline event flow, closed-backend graceful shutdown, circuit breaker state machine, and error recovery strategy. Uses a fake backend that scripts Add failures (ENOSPC, permission denied, permanent), event injection, and error injection.
 - **`MustWatch` helper** (`examples/demo/shared.go`) — eliminates the last `art-dupl -t 1` clone group in examples. All 4 example `main()` functions migrated; `filter-generated` also fixed a pre-existing resource leak (deferred Close ran before events were consumed).

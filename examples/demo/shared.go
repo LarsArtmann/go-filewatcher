@@ -38,3 +38,27 @@ func Run(fn func(ctx context.Context)) {
 
 	fn(ctx)
 }
+
+// MustWatch creates a watcher over paths with the given options, starts
+// watching on ctx, and returns the events channel plus a cleanup function.
+// It calls log.Fatal on construction or watch errors, making it suitable for
+// example programs where startup failure is unrecoverable.
+// The caller MUST defer the returned cleanup function to release resources.
+func MustWatch(
+	ctx context.Context,
+	paths []string,
+	opts ...filewatcher.Option,
+) (<-chan filewatcher.Event, func()) {
+	watcher, err := filewatcher.New(paths, opts...)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	events, err := watcher.Watch(ctx)
+	if err != nil {
+		_ = watcher.Close()
+		log.Fatal(err)
+	}
+
+	return events, func() { _ = watcher.Close() }
+}

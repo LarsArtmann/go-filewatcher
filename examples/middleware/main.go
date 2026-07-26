@@ -9,6 +9,7 @@ import (
 	"time"
 
 	filewatcher "github.com/larsartmann/go-filewatcher/v2"
+	demo "github.com/larsartmann/go-filewatcher/v2/examples/demo"
 )
 
 const (
@@ -22,8 +23,7 @@ func main() {
 
 	var createCount, writeCount, removeCount atomic.Int64
 
-	watcher, err := filewatcher.New(
-		[]string{"."},
+	events, cleanup := demo.MustWatch(ctx, []string{"."},
 		filewatcher.WithExtensions(".go"),
 		filewatcher.WithMiddleware(
 			filewatcher.MiddlewareRecovery(),
@@ -42,16 +42,7 @@ func main() {
 			}),
 		),
 	)
-	if err != nil {
-		cancel()
-		log.Fatal(err) //nolint:gocritic // example: os.Exit is intentional
-	}
-
-	events, err := watcher.Watch(ctx)
-	if err != nil {
-		cancel()
-		log.Fatal(err)
-	}
+	defer cleanup()
 
 	log.Println("Watching with middleware: logging + metrics")
 	log.Println("Press Ctrl+C or wait 10s to exit")
@@ -66,6 +57,4 @@ func main() {
 
 	log.Printf("\nFinal counts - Create: %d, Write: %d, Remove: %d\n",
 		createCount.Load(), writeCount.Load(), removeCount.Load())
-
-	_ = watcher.Close()
 }

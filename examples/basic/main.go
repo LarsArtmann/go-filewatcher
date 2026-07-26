@@ -15,21 +15,11 @@ const debounceDelay = 300 * time.Millisecond
 
 func main() {
 	demo.Run(func(ctx context.Context) {
-		watcher, err := filewatcher.New(
-			[]string{"."},
+		events, cleanup := demo.MustWatch(ctx, []string{"."},
 			filewatcher.WithExtensions(".go", ".md"),
 			filewatcher.WithDebounce(debounceDelay),
 		)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		defer func() { _ = watcher.Close() }()
-
-		events, err := watcher.Watch(ctx)
-		if err != nil {
-			log.Fatal(err)
-		}
+		defer cleanup()
 
 		log.Println("Watching for .go and .md file changes (10s timeout)...")
 

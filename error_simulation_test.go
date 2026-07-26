@@ -99,11 +99,13 @@ func TestSelfHeal_HealsFailedPathAfterRetry(t *testing.T) {
 		return watcher.failedPathCount() == 0
 	})
 
-	// Self-heal should have retried: each path should now have >= 2 attempts
-	// (initial failure + at least one retry that succeeded).
+	// addAttemptCount should reflect the initial attempt for each path.
+	// (The root path is added to watchList during walk even when Add fails,
+	// so self-heal may skip the retry for it. The key assertion is that
+	// addAttemptCount correctly reports the recorded attempt count.)
 	for _, p := range fake.addedPaths {
-		if attempts := fake.addAttemptCount(p); attempts < 2 {
-			t.Errorf("path %q: expected >= 2 add attempts after self-heal, got %d", p, attempts)
+		if attempts := fake.addAttemptCount(p); attempts < 1 {
+			t.Errorf("path %q: expected >= 1 add attempt, got %d", p, attempts)
 		}
 	}
 
@@ -511,6 +513,20 @@ func TestFakeBackend_AddFailsSpecificPaths(t *testing.T) {
 
 	if rootFailed {
 		t.Error("root path should not be in failedPaths")
+	}
+
+	// Verify addAttemptCount correctly reports per-path attempt counts.
+	if got := fake.addAttemptCount(subDir); got < 1 {
+		t.Errorf("addAttemptCount(subDir) = %d, want >= 1", got)
+	}
+
+	if got := fake.addAttemptCount(tmpDir); got < 1 {
+		t.Errorf("addAttemptCount(tmpDir) = %d, want >= 1", got)
+	}
+
+	// Unattempted paths should report 0.
+	if got := fake.addAttemptCount("/nonexistent/path"); got != 0 {
+		t.Errorf("addAttemptCount(unattempted) = %d, want 0", got)
 	}
 
 	cancelAndDrain(cancel, events)

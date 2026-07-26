@@ -21,6 +21,16 @@ const defaultDedupeWindow = 100 * time.Millisecond
 // dedupeCleanupMultiplier is the multiplier for cleanup ticker interval.
 const dedupeCleanupMultiplier = 2
 
+// dedupeCleanupInterval is the number of events between lazy cleanup passes
+// in MiddlewareDeduplicate. Uses an event counter rather than map size to
+// avoid triggering cleanup every event when the map size hovers at a multiple
+// of the interval.
+const dedupeCleanupInterval = 100
+
+// dedupeCleanupMaxSize is the hard cap on the dedup map before a forced
+// cleanup pass, regardless of the event counter.
+const dedupeCleanupMaxSize = 10000
+
 // Middleware wraps an event handler for cross-cutting concerns.
 // Middleware is applied in reverse order (last added runs first),
 // matching the go-cqrs-lite convention.
@@ -197,8 +207,9 @@ func MiddlewareDeduplicate(window time.Duration) Middleware {
 	}
 
 	var (
-		mu   sync.Mutex //nolint:varnamelen // conventional mutex name
-		seen = make(map[dedupeKey]seenEntry)
+		mu          sync.Mutex //nolint:varnamelen // conventional mutex name
+		seen        = make(map[dedupeKey]seenEntry)
+		eventCount  int
 	)
 
 	return func(next Handler) Handler {
@@ -208,9 +219,11 @@ func MiddlewareDeduplicate(window time.Duration) Middleware {
 			mu.Lock()
 			now := time.Now()
 
-			// Lazy cleanup: remove old entries periodically
-			// (every 100 events or when map grows large)
-			if len(seen)%100 == 0 || len(seen) > 10000 {
+			// Lazy cleanup: remove expired entries periodically.
+			// Uses an event counter (not map size) to avoid the quirk where
+			// len(seen) hovering at a multiple of 100 triggers cleanup every event.
+			eventCount++
+			if eventCount%dedupeCleanupInterval == 0 || len(seen) > dedupeCleanupMaxSize {
 				cutoff := now.Add(-window * dedupeCleanupMultiplier)
 				for k, entry := range seen {
 					if entry.timestamp.Before(cutoff) {

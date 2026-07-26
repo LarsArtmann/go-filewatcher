@@ -87,6 +87,7 @@ type Watcher struct {
 	selfHealInterval time.Duration       // interval for self-healing failed watch registrations (0=disabled)
 	failedPaths      map[string]struct{} // paths that failed to add; retried by selfHealLoop
 	done             chan struct{}       // closed by Close() to signal shutdown to in-flight goroutines
+	cleanups         []func() error      // lifecycle cleanup funcs registered via WithCleanup
 
 	// Internal state
 	mu        sync.RWMutex
@@ -269,6 +270,7 @@ func New( //nolint:funlen // constructor with full field initialization
 		selfHealInterval:  0,
 		failedPaths:       make(map[string]struct{}),
 		done:              make(chan struct{}),
+		cleanups:          nil,
 	}
 
 	for _, opt := range opts {
@@ -631,6 +633,7 @@ func (w *Watcher) Reset() error {
 	w.eventCh = nil
 	w.errorsOnce = sync.Once{}
 	w.errorsCh = nil
+	w.cleanups = nil
 
 	// Reset metrics
 	w.eventsProcessed.Store(0)
@@ -705,6 +708,15 @@ func (w *Watcher) Close() error {
 		close(w.errorsCh)
 	}
 	w.errorsMu.Unlock()
+
+	// Run registered cleanup functions (e.g., close file handles from
+	// NewFileLogMiddleware + WithCleanup). Called after all goroutines and
+	// channels are torn down so cleanup funcs can safely release resources.
+	for _, cleanup := range w.cleanups {
+		if cleanup != nil {
+			_ = cleanup()
+		}
+	}
 
 	return nil
 }

@@ -342,7 +342,35 @@ func MiddlewareBatch(window time.Duration, maxSize int, flush func([]Event) erro
 // MiddlewareWriteFileLog returns a middleware that appends event logs
 // to a file at the given path. This is useful for audit trails.
 // The file handle is cached for the lifetime of the middleware.
+//
+// Note: the file handle is opened lazily on the first event and is NOT
+// closed automatically. For long-lived watchers or watchers that use Reset()
+// cycles, prefer NewFileLogMiddleware + WithCleanup to avoid fd leaks:
+//
+//	mw, closeLog := filewatcher.NewFileLogMiddleware("audit.log")
+//	watcher, _ := filewatcher.New(paths,
+//	    filewatcher.WithMiddleware(mw),
+//	    filewatcher.WithCleanup(closeLog),
+//	)
 func MiddlewareWriteFileLog(filePath string) Middleware {
+	mw, _ := NewFileLogMiddleware(filePath)
+
+	return mw
+}
+
+// NewFileLogMiddleware returns a file-logging middleware and a cleanup function
+// that closes the underlying file handle. The cleanup function is safe to call
+// multiple times.
+//
+// Pair with WithCleanup to ensure the file handle is released when the watcher
+// closes:
+//
+//	mw, closeLog := filewatcher.NewFileLogMiddleware("audit.log")
+//	watcher, _ := filewatcher.New(paths,
+//	    filewatcher.WithMiddleware(mw),
+//	    filewatcher.WithCleanup(closeLog),
+//	)
+func NewFileLogMiddleware(filePath string) (Middleware, func() error) {
 	type cachedFile struct {
 		mu sync.Mutex
 		f  *os.File
@@ -351,7 +379,24 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 	//nolint:exhaustruct // f is lazily initialized on first write
 	cached := &cachedFile{}
 
-	return func(next Handler) Handler {
+	closeOnce := &sync.Once{}
+
+	closer := func() error {
+		var closeErr error
+
+		closeOnce.Do(func() {
+			cached.mu.Lock()
+			if cached.f != nil {
+				closeErr = cached.f.Close()
+				cached.f = nil
+			}
+			cached.mu.Unlock()
+		})
+
+		return closeErr
+	}
+
+	mw := func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
 			cached.mu.Lock()
 
@@ -388,6 +433,8 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 			return nil
 		}
 	}
+
+	return mw, closer
 }
 
 // defaultThrottleEvents is the default maximum events per second for throttling.

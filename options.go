@@ -308,3 +308,14 @@ func WithSelfHeal(interval time.Duration) Option {
 		}
 	}
 }
+
+// WithCleanup registers a cleanup function that is called when the watcher's
+// Close() method is invoked, after all goroutines and channels are torn down.
+// Use this to release resources held by middleware (e.g., file handles from
+// NewFileLogMiddleware). Cleanup functions are called in registration order
+// and are cleared on Reset().
+func WithCleanup(fn func() error) Option {
+	return func(w *Watcher) {
+		w.cleanups = append(w.cleanups, fn)
+	}
+}

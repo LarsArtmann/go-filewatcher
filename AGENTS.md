@@ -124,6 +124,13 @@ All code in **root package** (`filewatcher`). No `internal/` or `pkg/` subdirect
 | `options.go`           | Functional options (WithGitignore, WithExcludePaths, WithMaxWatches, etc.)                  |
 | `phantom_types.go`     | Compile-time phantom types (EventPath, RootPath, DebounceKey, OpString, etc.)               |
 
+### Examples (`examples/`)
+
+Separate Go programs demonstrating usage. Each subdirectory is a standalone
+`main` package that imports the library. Shared helpers (including
+`demo.MustWatch`) live in `examples/demo/`. Build with `go run ./examples/<name>`
+or `go build ./examples/...`. Part of the same Go module (no separate go.mod).
+
 ### Website (`website/`)
 
 Separate Astro + Starlight documentation site with its own `flake.nix`, deployed to

@@ -73,3 +73,67 @@ jobs:
           fi
 
           echo "README.md and API_STABILITY.md deprecation claims are consistent."
+
+  check-exported-symbol-docs:
+    name: Exported Symbols in Docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Verify every exported symbol is mentioned in FEATURES.md or README.md
+        run: |
+          set -euo pipefail
+
+          # Symbols exempt from the docs check. Two categories:
+          #
+          # 1. Compile-time type helpers (phantom types) — not user-facing.
+          # 2. Existing gaps (pre-date this check). Remove from this list as
+          #    they get documented in FEATURES.md/README.md.
+          EXEMPT_SYMBOLS="LogSubstring NewLogSubstring TempDir NewTempDir OpString NewOpString DebounceKey NewDebounceKey WatcherStateFlags \
+            BatchError CircuitState ContentCheckMode DebouncerInterface DefaultIgnoreDirs DefaultIgnoreDirsCopy \
+            ErrorCategory ErrorContext ErrorHandler FilterFromWithMeta FilterGeneratedCodeFull FilterGeneratedCodeWithFilter \
+            FilterWithMetaNot FilterWithMetaOr GaugeMetric GeneratedCodeDetector IsPermanentError IsTransientError \
+            NewDebouncer NewEventPath NewFileLogMiddleware NewGeneratedCodeDetector NewGlobalDebouncer NewRootPath \
+            NewWatcherError WithCleanup WithWatchedIgnoreDirs"
+
+          # Extract top-level exported symbols (skip methods and unexported).
+          SYMBOLS=$(go doc -all . 2>/dev/null \
+            | grep -E '^(func|type|var|const) [A-Z]' \
+            | grep -vE '^func \(' \
+            | sed -E 's/^func ([A-Za-z]+).*/\1/' \
+            | sed -E 's/^type ([A-Za-z]+).*/\1/' \
+            | sed -E 's/^var ([A-Za-z]+).*/\1/' \
+            | sed -E 's/^const ([A-Za-z]+).*/\1/' \
+            | sort -u)
+
+          if [ -z "$SYMBOLS" ]; then
+            echo "::error::No exported symbols found. Is go doc working?"
+            exit 1
+          fi
+
+          FAIL=0
+
+          for symbol in $SYMBOLS; do
+            # Skip exempt symbols.
+            if echo "$EXEMPT_SYMBOLS" | grep -qw "$symbol"; then
+              continue
+            fi
+
+            # Check if the symbol appears in FEATURES.md or README.md.
+            if ! grep -q "$symbol" FEATURES.md README.md; then
+              echo "::warning file=FEATURES.md::Exported symbol '$symbol' is not mentioned in FEATURES.md or README.md"
+              FAIL=1
+            fi
+          done
+
+          if [ $FAIL -ne 0 ]; then
+            echo ""
+            echo "::error::Some exported symbols are missing from FEATURES.md and README.md."
+            echo "::error::If the symbol is an internal helper, add it to EXEMPT_SYMBOLS in this workflow."
+            echo "::error::Otherwise, document it in FEATURES.md (feature table) or README.md (usage)."
+            exit 1
+          fi
+
+          echo "All non-exempt exported symbols are documented in FEATURES.md or README.md."

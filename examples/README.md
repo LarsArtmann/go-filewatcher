@@ -2,6 +2,17 @@
 
 Runnable examples demonstrating go-filewatcher usage.
 
+## Shared Helpers
+
+All examples use the `examples/demo` package which provides:
+
+- **`demo.MustWatch(ctx, paths, opts...)`** — creates a watcher, starts
+  watching, and returns an events channel plus a cleanup function. Calls
+  `log.Fatal` on startup failure (suitable for example programs where errors
+  are unrecoverable). **Always defer the cleanup function.**
+- **`demo.Run(fn)`** — wraps the context-setup boilerplate with a 10s timeout.
+- **`demo.PrintEvent(event)`** — logs an event with timestamp and operation.
+
 ## Running Examples
 
 ```bash

@@ -40,6 +40,8 @@ certain directions worth exploring.
   awkward signatures (the two-arg `ErrorHandler`) suggest a v3 cleanup pass.
   The concrete deprecation inventory is a TODO_LIST task; this is the strategic
   framing: gather breaking changes over the next 6–12 months before cutting.
+  See [docs/research/watchchanges-contract.md](./docs/research/watchchanges-contract.md)
+  for the event-contract analysis that informs v3 API decisions.
 - **Streaming filter protocol** — current `Filter` is a sync bool. Consider
   returning `(keep bool, err error)` or a channel-based variant for filters
   that need async I/O (e.g. remote manifest lookup).
@@ -76,6 +78,11 @@ certain directions worth exploring.
 - **Docs freshness gate** — a CI check that FEATURES.md/README.md hashes match
   the source API surface (e.g. generated from `go doc`). The concrete task is in
   TODO_LIST; the exploratory angle is auto-generating doc tables from source.
+  See [docs/research/INDEX.md](./docs/research/INDEX.md) for related research.
+- **Automated release tooling** — evaluate semantic-release or release-please
+  for fully automated changelog and version bumping. See
+  [docs/research/semantic-release-evaluation.md](./docs/research/semantic-release-evaluation.md)
+  for the tradeoff analysis.
 
 ---
 

@@ -261,7 +261,7 @@ without rebuilding from scratch.
 | Filter Composition   | `filter.go` — `FilterAnd()`, `FilterOr()`                                |
 | `resolve*Defaults`   | `middleware.go` — extract when 2+ fns share defaulting; single-fn inline |
 | `baseDebouncer.stop` | `debouncer.go` — lock/markStopped/cleanup/unlock/wait in one place       |
-| Backend Abstraction  | `backend.go` — `watchBackend` interface; `withBackend()` injects fakes    |
+| Backend Abstraction  | `backend.go` — `watchBackend` interface; `withBackend()` injects fakes   |
 | `newTestWatcher`     | `testing_helpers_test.go:432` — standard `New + cleanup` for all tests   |
 
 ---

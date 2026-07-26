@@ -4,6 +4,8 @@
 **Session Scope:** Read `2026-07-13_21-22` and `2026-07-13_21-58` status reports, then executed the docs-health skill (full AUDIT mode) across all 7 core documentation files
 **Status:** 14 issues found and fixed, but several mistakes made during the audit itself. Not a clean run.
 
+> **Update 2026-07-26:** the mistakes flagged in §b/§d were corrected in a fresh docs-health run — FEATURES.md goreleaser status is now 🟡 PARTIALLY_FUNCTIONAL (`.goreleaser.yml` is NOT invoked by `release.yml`, verified), CHANGELOG `[Unreleased]` was rebuilt, and TODO_LIST/ROADMAP were de-duplicated. Two follow-up dedup sessions (2026-07-25, 2026-07-26) executed much of the §f backlog. Full status in [Resolution](#resolution-2026-07-26) below.
+
 ---
 
 ## a) FULLY DONE
@@ -267,3 +269,24 @@ The docs-health skill defines statuses as `FULLY_FUNCTIONAL`, `PARTIALLY_FUNCTIO
 - **Incomplete**: goreleaser was always meant to be wired in, and this is a genuine TODO
 
 I cannot tell which without asking. My edit assumed "workflow exists = done" which was wrong. The goreleaser config could even be dead code that should be deleted.
+
+---
+
+## Resolution (2026-07-26)
+
+This report's own self-critique (§b, §d) was accurate. A subsequent docs-health run
+(2026-07-26) acted on it:
+
+| Claim / mistake in report | Resolution |
+| ------------------------- | ---------- |
+| §b Goreleaser marked ✅ (should be 🟡) | DONE: FEATURES.md "Cross-platform releases" + "Goreleaser release pipeline" now 🟡 with accurate note that `.goreleaser.yml` is configured but NOT invoked by `release.yml` |
+| §b CHANGELOG `[Unreleased]` stale | DONE: `[Unreleased]` rebuilt with the self-heal, Go 1.26.5 bump, and dedup/internal work |
+| §b Status vocabulary (emoji vs skill vocab) | KEPT: project uses an emoji legend mapping to the 4 statuses (deliberate convention); honesty enforced instead |
+| §c Test suite not run | OPEN: run `nix run .#check` as the quality gate |
+| §c Benchmark freshness | OPEN: benchmark baseline capture is now a TODO_LIST item; 4 `BenchmarkEmitEvent_*` are confirmed broken (TODO_LIST HIGH) |
+| §e #1–7 (fix mistakes from this session) | DONE: goreleaser reverted to 🟡, TODO_LIST rebuilt, CHANGELOG cleaned |
+| §f #8–12 Domain language terms | PARTIAL: not re-verified this pass |
+
+The verified fact behind the goreleaser correction: `release.yml` uses
+`softprops/action-gh-release@v2` with `generate_release_notes: true` and has no
+goreleaser step — so no compiled cross-platform binaries ship on tag.

@@ -198,30 +198,30 @@ honesty:
 
 ### High impact
 
-1. **Adopt `newTestWatcher` in remaining `watcher_test.go` sites** — manual
-   sweep for `New([]string{...})` + `t.Fatal(err)` + `defer Close` triples.
-2. **Adopt `newTestWatcher` in remaining `watcher_coverage_test.go` sites.**
-3. **Adopt `newTestWatcher` in remaining `watcher_walk_test.go` sites.**
-4. **Fix 2 pre-existing `mnd` warnings in `examples/basic/main.go` &
-   `examples/per-path-debounce/main.go`** — extract `const` durations.
-5. **Standardize middleware default-guard style** — decide inline-vs-helper
-   rule, apply consistently, document in `AGENTS.md`.
-6. **Add a `resolveThrottleDefaults` / inline-cleanup** to
-   `MiddlewareThrottle` for consistency with the new `resolve*` family.
-7. **Run `nix run .#bench` and compare** pre/post this session's refactor.
+1. ~~**Adopt `newTestWatcher` in remaining `watcher_test.go` sites** — manual
+   sweep for `New([]string{...})` + `t.Fatal(err)` + `defer Close` triples.~~ DONE: 17 sites migrated in follow-up;
+2. ~~**Adopt `newTestWatcher` in remaining `watcher_coverage_test.go` sites.**~~ DONE: 14 sites migrated in follow-up;
+3. ~~**Adopt `newTestWatcher` in remaining `watcher_walk_test.go` sites.**~~ DONE: 10 sites migrated in follow-up;
+4. ~~**Fix 2 pre-existing `mnd` warnings in `examples/basic/main.go` &
+   `examples/per-path-debounce/main.go`** — extract `const` durations.~~ DONE: `debounceDelay` consts extracted;
+5. ~~**Standardize middleware default-guard style** — decide inline-vs-helper
+   rule, apply consistently, document in `AGENTS.md`.~~ DONE: policy set (shared→`resolve*` helper, unique→inline guard + named const), documented in AGENTS.md Key Patterns;
+6. ~~**Add a `resolveThrottleDefaults` / inline-cleanup** to
+   `MiddlewareThrottle` for consistency with the new `resolve*` family.~~ DONE: `defaultThrottleEvents` const added (unique defaulting → inline guard);
+7. **Run `nix run .#bench` and compare** pre/post this session's refactor. — PARTIAL: pure-compute benches ran clean (no regression); `BenchmarkEmitEvent_*` could not run (pre-existing deadlock, now TODO_LIST HIGH).
 
 ### Consistency & docs
 
-8. **Document the `resolve*Defaults` convention** in `AGENTS.md` "Key Patterns"
-   table so future middleware authors follow it.
-9. **Document `baseDebouncer.stop(cleanup)` pattern** in `AGENTS.md`.
-10. **Add a unit test for `resolveRateLimitDefaults`** — it now holds shared
-    logic for 2 public middlewares; it deserves direct coverage.
-11. **Add a unit test for `resolveMaxFailures`.**
-12. **Add a unit test for `requireNonNegativeDuration`** (panic on negative,
-    no-op on zero/positive).
-13. **Check `CHANGELOG.md`** — these helpers are user-invisible refactorings
-    but the "Unreleased" section should note the internal cleanup.
+8. ~~**Document the `resolve*Defaults` convention** in `AGENTS.md` "Key Patterns"
+   table so future middleware authors follow it.~~ DONE: row added to AGENTS.md Key Patterns;
+9. ~~**Document `baseDebouncer.stop(cleanup)` pattern** in `AGENTS.md`.~~ DONE: row added to AGENTS.md Key Patterns;
+10. ~~**Add a unit test for `resolveRateLimitDefaults`** — it now holds shared
+    logic for 2 public middlewares; it deserves direct coverage.~~ DONE: `TestResolveRateLimitDefaults` (6 table cases);
+11. ~~**Add a unit test for `resolveMaxFailures`.**~~ DONE: `TestResolveMaxFailures` (3 table cases);
+12. ~~**Add a unit test for `requireNonNegativeDuration`** (panic on negative,
+    no-op on zero/positive).~~ DONE: `TestRequireNonNegativeDuration` (2 subtests);
+13. ~~**Check `CHANGELOG.md`** — these helpers are user-invisible refactorings
+    but the "Unreleased" section should note the internal cleanup.~~ DONE: CHANGELOG `[Unreleased]` now documents the dedup/internal work;
 
 ### Lint & quality
 
@@ -298,12 +298,16 @@ honesty:
    work). Should I push now, or is there a release-cadence reason to hold? I
    genuinely cannot infer the release workflow from the repo alone.
 
+   ~~**Resolved 2026-07-26:** pushed — `master` is now 0 ahead / 0 behind `origin/master` (working tree clean).~~
+
 2. **`examples/` mnd scope:** The 2 pre-existing `mnd` warnings in
    `examples/basic/main.go` and `examples/per-path-debounce/main.go` predate
    this session. The project rule says "don't fix unrelated bugs" — but they
    now make `nix run .#check` non-green, which blocks using `.#check` as a
    clean gate. Do you want me to fix them in a follow-up, or leave them to the
    next focused lint sweep?
+
+   ~~**Resolved 2026-07-26:** fixed in the follow-up session (`debounceDelay` consts extracted); `nix run .#check` is now green.~~
 
 3. **`newTestWatcher` full-adoption sweep:** Tasks #1–3 above propose migrating
    the _remaining_ `New + defer Close` sites that `art-dupl` did NOT flag
@@ -312,6 +316,32 @@ honesty:
    forcing function. Worth doing for consistency, or is that over-engineering
    beyond what the dedup session warranted?
 
+   ~~**Resolved 2026-07-26:** done — 43 sites migrated in the follow-up session; `newTestWatcher` now has 76 call sites, with the 20 remaining inline `New(` calls deliberately retained (benchmarks, `Example*`, error-path, lifecycle tests).~~
+
 ---
 
 _Generated at 2026-07-25 17:31 CEST. Point-in-time snapshot; will go stale._
+
+---
+
+## Resolution (2026-07-26)
+
+The bulk of this report's §f backlog shipped in the follow-up session
+(`docs/status/2026-07-26_10-34_dedup-followup-session.md`, commits
+`de459a1..0263279`):
+
+| Item group | Resolution |
+| ---------- | ---------- |
+| §f #1–3,5,6 `newTestWatcher` adoption + default-guard standardization | DONE: 43 sites migrated; policy documented |
+| §f #4 `examples/` mnd warnings | DONE: `debounceDelay` consts; `.#check` green |
+| §f #8–9 AGENTS.md convention docs | DONE: 3 Key Patterns rows added |
+| §f #10–12 unit tests for shared helpers | DONE: 3 tests, 11 table cases |
+| §f #13 CHANGELOG note | DONE: `[Unreleased]` rebuilt |
+| §f #7 benchmark regression check | PARTIAL: pure-compute clean; `EmitEvent` benches broken (TODO_LIST HIGH) |
+| §g Q1 push policy | RESOLVED: pushed (0 ahead/0 behind) |
+| §g Q2 examples mnd | RESOLVED: fixed |
+| §g Q3 full adoption | RESOLVED: done (76 call sites) |
+
+Still open from §f: the broken `BenchmarkEmitEvent_*` family (now TODO_LIST
+HIGH), the `mustWatch` examples helper (TODO_LIST MEDIUM), and a benchmark
+baseline capture (TODO_LIST LOW).

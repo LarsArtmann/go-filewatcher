@@ -128,7 +128,7 @@ now; could be richer.
 
 ### c2. Push the 6 unpushed commits on `master` ahead of `origin/master`
 
-(Release-cadence question for the user — not started, awaiting Question 1.)
+~~(Release-cadence question for the user — not started, awaiting Question 1.)~~ DONE: pushed — `master` is now 0 ahead / 0 behind `origin/master` (2026-07-26).
 
 ### c3. Status-report skill HTML format
 
@@ -237,8 +237,8 @@ exitAfterDefer` fires once per function; `nolintlint` flags unused nolints.
 
 1. **Fix or delete the 4 broken `BenchmarkEmitEvent_*` benchmarks.** They block
    `nix run .#bench` from completing cleanly. (See Question 2.)
-2. **Push the 6 unpushed commits** on `master` ahead of `origin/master` — or
-   formally decide on a release cadence. (See Question 1.)
+2. ~~**Push the 6 unpushed commits** on `master` ahead of `origin/master` — or
+   formally decide on a release cadence. (See Question 1.)~~ DONE: pushed (0 ahead/0 behind origin);
 3. **Add a `mustWatch` helper to `examples/demo`** and migrate the 5 example
    `main()` functions to it. Eliminates the last t=1 clone group AND the recurring
    `gocritic`/`mnd` linter fights in examples in one stroke.
@@ -351,6 +351,8 @@ the repo history (some releases are tagged, some aren't; commits sometimes pile 
 sometimes get pushed immediately). **Do you want these pushed now, or held for a
 tagged release (`v2.2.2` / `v2.3.0`)?** I will not push without explicit instruction.
 
+~~**Resolved 2026-07-26:** pushed — `master` is 0 ahead / 0 behind `origin/master` (working tree clean). The tagged-release decision (`v2.2.2`/`v2.3.0`) remains open; there are 21 commits ahead of the latest tag `v2.2.1` (noted in ROADMAP.md).~~
+
 ### Q2. The pre-existing `BenchmarkEmitEvent_*` deadlock — fix now or ticket it?
 
 I **proved** (via `git switch --detach de459a1`) that 4 benchmarks
@@ -361,6 +363,8 @@ can never complete cleanly. **Should I fix these benchmarks now (likely a small
 change to set up the event channel / use `newTestWatcher`-style construction), or
 leave them as documented pre-existing tech debt?** Fixing would unblock benchmark
 regression detection for all future refactors.
+
+~~**Routed 2026-07-26:** tracked as TODO_LIST HIGH ("Fix or delete the 4 broken `BenchmarkEmitEvent_*` benchmarks"). Still open.~~
 
 ### Q3. Status-report format: skill says HTML, you say `.md` — which wins long-term?
 
@@ -404,3 +408,24 @@ This affects whether I load the HTML design-system assets on future status reque
 - `AGENTS.md` — 3 Key Patterns rows added
 
 **Uncommitted at report time:** `examples/middleware/main.go` (1 file, pending auto-git cycle)
+
+---
+
+## Resolution (2026-07-26)
+
+This was the most recent session; most of its work is current. One item closed
+since, the rest routed to the backlog:
+
+| Item | Resolution |
+| ---- | ---------- |
+| §c2 / §f#2 / Q1 — push commits | DONE: pushed (0 ahead/0 behind `origin/master`) |
+| §c1 / §f#1 / Q2 — `BenchmarkEmitEvent_*` deadlock | OPEN: TODO_LIST HIGH |
+| §f#3 — `mustWatch` helper for examples | OPEN: TODO_LIST MEDIUM |
+| §f#4 — benchmark baseline capture | OPEN: TODO_LIST LOW |
+| §f#5 — `GOTMPDIR` disk-backed in devShell | OPEN: TODO_LIST LOW |
+| §f#6 — examples package-level `//nolint:gocritic` | OPEN: TODO_LIST LOW |
+| §Q3 — status-report format (HTML vs `.md`) | OPEN: process decision for the user |
+
+The docs-health / update-old-docs pass that produced this annotation also rebuilt
+TODO_LIST.md, ROADMAP.md, FEATURES.md, and CHANGELOG.md from the verified current
+state of the repo.

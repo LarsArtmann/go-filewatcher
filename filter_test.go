@@ -284,6 +284,48 @@ func TestFilterAnd(t *testing.T) {
 	}
 }
 
+func TestFilterAndShortCircuitsOnFirstFalse(t *testing.T) {
+	t.Parallel()
+
+	// Regression guard: FilterAnd must stop evaluating sub-filters as soon as
+	// one returns false. If a future refactor makes it eager, this test fails.
+	var first, second, third bool
+
+	composed := FilterAnd(
+		func(Event) bool {
+			first = true
+
+			return true
+		},
+		func(Event) bool {
+			second = true
+
+			return false
+		},
+		func(Event) bool {
+			third = true
+
+			return true
+		},
+	)
+
+	if composed(testWriteEvent("/tmp/main.go")) {
+		t.Fatal("expected FilterAnd to return false when a sub-filter rejects")
+	}
+
+	if !first {
+		t.Error("first filter was not called")
+	}
+
+	if !second {
+		t.Error("second filter was not called")
+	}
+
+	if third {
+		t.Error("third filter must not be called after second returned false (short-circuit)")
+	}
+}
+
 func TestFilterOr(t *testing.T) {
 	t.Parallel()
 

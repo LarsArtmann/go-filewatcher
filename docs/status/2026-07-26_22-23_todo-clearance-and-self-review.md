@@ -119,20 +119,28 @@ reference packages (`go.opentelemetry.io/otel/trace`,
 
 ## c) NOT STARTED
 
+> **Update 2026-07-26 (docs-health pass):** items 1 and 2 are now DONE; item 3
+> (the Prometheus/OTel accuracy issues) remains OPEN and is tracked in TODO_LIST.
+
 Nothing from the session's 11-item scope was skipped. However, the self-review
 surfaced adjacent work that was not in scope:
 
-1. **Update TODO_LIST.md** — All 11 items are still marked `[ ]` unchecked in
-   `TODO_LIST.md`. I forgot to check them off. (Doc-health violation per my
-   own AGENTS.md rules.)
-2. **Update FEATURES.md** — The README got richer OTel/Prometheus examples but
-   FEATURES.md was not touched. Some expanded content should have a
-   corresponding entry.
-3. **Verify OTel/Prometheus snippets compile** — See b4 above.
+1. ~~**Update TODO_LIST.md** — All 11 items are still marked `[ ]` unchecked in
+   `TODO_LIST.md`. I forgot to check them off.~~ DONE: TODO_LIST rebuilt — all 11
+   completed items removed (they live in CHANGELOG `[Unreleased]`); only genuinely
+   open work remains;
+2. ~~**Update FEATURES.md** — The README got richer OTel/Prometheus examples but
+   FEATURES.md was not touched.~~ DONE: FEATURES.md updated (version header,
+   goreleaser status, semantic-release ✅);
+3. **Verify OTel/Prometheus snippets compile** — OPEN: see §d1/d2 below; tracked
+   in TODO_LIST "Documentation Accuracy".
 
 ---
 
-## d) TOTALLY FUCKED UP
+## d) TOTALLY FUCKED UP — STILL OPEN
+
+> **Both items below remain unfixed as of the latest docs-health pass.** They are
+> tracked in TODO_LIST "Documentation Accuracy."
 
 ### d1. `ExemplarAdder` in Prometheus snippet — incorrect and misleading
 
@@ -358,3 +366,18 @@ cannot observe failures when integrated into the real `emitEvent` pipeline.
 This is an **architectural decision** that limits observability middleware.
 **Is this intentional (prevent middleware error cascades) or a bug that
 should be fixed?** If intentional, should I document it as an ADR?
+
+---
+
+## Resolution (2026-07-26, docs-health pass)
+
+| Report item                                         | Resolution                                                                                    |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| §c#1 — TODO_LIST items not checked off              | DONE: TODO_LIST fully rebuilt — all completed items removed (in CHANGELOG), 8 open items remain |
+| §c#2 — FEATURES.md not updated                      | DONE: version header, goreleaser status, semantic-release ⚪→✅ updated                        |
+| §d1 — Prometheus `ExemplarAdder` incorrect          | **OPEN**: tracked in TODO_LIST "Fix README Prometheus snippet"                                |
+| §d2 — OTel `stdouttracer` wrong package name        | **OPEN**: tracked in TODO_LIST "Fix README OTel snippet"                                      |
+| §b2 — 36-symbol docs exemption list                 | OPEN: tracked in TODO_LIST "Shrink docs-consistency exemption list"                           |
+| §Q1 — Prometheus snippet approach (a/b/c)           | OPEN: design decision needed (zero-dep library vs compile-verified example)                   |
+| §Q2 — TODO_LIST update ownership                    | RESOLVED: TODO_LIST is the source of truth for open work; completed items go to CHANGELOG      |
+| §Q3 — Circuit breaker pipeline limitation           | OPEN: tracked in TODO_LIST "Document wrapHandlerWithNilReturn limitation"                     |

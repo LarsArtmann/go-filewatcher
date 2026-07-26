@@ -366,6 +366,10 @@ regression detection for all future refactors.
 
 ~~**Routed 2026-07-26:** tracked as TODO_LIST HIGH ("Fix or delete the 4 broken `BenchmarkEmitEvent_*` benchmarks"). Still open.~~
 
+**Update 2026-07-26 (later session): FIXED.** All 4 benchmarks now run cleanly
+via a shared `benchmarkEmitEvent` helper that uses a non-blocking channel drain.
+See CHANGELOG `[Unreleased]` Fixed section.
+
 ### Q3. Status-report format: skill says HTML, you say `.md` — which wins long-term?
 
 The `status-report` skill explicitly specifies a "self-contained styled HTML

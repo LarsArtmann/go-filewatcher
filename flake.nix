@@ -72,6 +72,7 @@
           ./backend.go
           ./error_simulation_test.go
           ./fake_backend_test.go
+          ./examples
         ];
       };
     in
@@ -186,6 +187,13 @@
             lint = mkApp "lint" ''
               cd "${self}"
               golangci-lint run ./...
+            '';
+
+            # Explicit test-file linting (--tests is default true, but this app
+            # makes the intent clear for CI and local iteration).
+            lint-tests = mkApp "lint-tests" ''
+              cd "${self}"
+              golangci-lint run --tests ./...
             '';
 
             lint-fix = mkApp "lint-fix" ''

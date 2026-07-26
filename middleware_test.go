@@ -1085,6 +1085,8 @@ func TestMiddlewareExponentialBackoff_RecoversAfterBackoff(t *testing.T) {
 var expectedMiddlewareDefaultConsts = []string{
 	"defaultDedupeWindow",
 	"dedupeCleanupMultiplier",
+	"dedupeCleanupInterval",
+	"dedupeCleanupMaxSize",
 	"defaultRateLimitWindow",
 	"defaultSlidingWindowEvents",
 	"defaultErrorRateLimit",

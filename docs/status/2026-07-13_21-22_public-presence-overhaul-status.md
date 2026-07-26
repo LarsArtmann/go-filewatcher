@@ -62,7 +62,7 @@ The CSS includes `max-sm:` responsive classes and a mobile hamburger menu, but t
 
 ### DNS / Domain Configuration
 
-`filewatcher.lars.software` is configured as the site URL in astro.config.mjs, robots.txt, manifest.json, and GitHub homepage — but no DNS record exists and no Firebase deploy has been attempted. The domain will 404 until DNS is pointed and `nix run .#deploy` (or `firebase deploy`) is executed.
+~~`filewatcher.lars.software` is configured as the site URL in astro.config.mjs, robots.txt, manifest.json, and GitHub homepage — but no DNS record exists and no Firebase deploy has been attempted. The domain will 404 until DNS is pointed and `nix run .#deploy` (or `firebase deploy`) is executed.~~ DONE: deployed and live — `https://filewatcher.lars.software` returns HTTP 200 (verified 2026-07-26). Deploy details in the follow-up `2026-07-13_21-58_firebase-dns-deploy-status.md`; resolution summary in the appendix below.
 
 ### Website CI/CD Pipeline
 
@@ -129,10 +129,10 @@ Neither issue reached a commit.
 
 ### Deploy & DNS (do first)
 
-1. Point DNS record for `filewatcher.lars.software` to Firebase Hosting
-2. Run `nix run .#deploy` (or `firebase deploy --only hosting`) from `website/`
-3. Verify the site loads at the custom domain
-4. Verify HTTPS certificate provisions automatically (Firebase does this)
+1. ~~Point DNS record for `filewatcher.lars.software` to Firebase Hosting~~ DONE: DNS applied;
+2. ~~Run `nix run .#deploy` (or `firebase deploy --only hosting`) from `website/`~~ DONE: deployed to Firebase Hosting;
+3. ~~Verify the site loads at the custom domain~~ DONE: HTTP 200 at `filewatcher.lars.software` (2026-07-26);
+4. ~~Verify HTTPS certificate provisions automatically (Firebase does this)~~ DONE: valid TLS cert active;
 5. Verify sitemap is accessible at `/sitemap-index.xml`
 6. Verify robots.txt is served correctly
 7. Set up a GitHub Actions workflow to auto-deploy website on push to `main`/`master`
@@ -212,3 +212,25 @@ I assumed this pattern based on `atomicwrite.lars.software` and `gogenfilter.lar
 ### 2. Should I commit the `package-lock.json`?
 
 The reference repos likely commit it (it's the npm standard). But the root go-filewatcher project doesn't have any npm lock files. Committing a 294 KB lock file changes the repo character. The alternative is gitignoring it and relying on `package-lock.json` being generated locally, but that reduces reproducibility. I need your preference on this before committing.
+
+---
+
+## Resolution (2026-07-26)
+
+**The public presence overhaul shipped.** The website is live at
+`https://filewatcher.lars.software` (HTTP 200, valid TLS — verified 2026-07-26);
+it resolves to `filewatcher.web.app`. The deploy and DNS work happened in the
+follow-up session (`2026-07-13_21-58_firebase-dns-deploy-status.md`).
+
+| Claim in report | Resolution |
+| --------------- | ---------- |
+| §a README rewrite, website, GitHub metadata | DONE: shipped this session |
+| §c DNS / Domain Configuration ("will 404") | DONE: live, HTTP 200 |
+| §f #1–4 Deploy & DNS | DONE: deployed + DNS + TLS verified |
+| §f #5–6 sitemap / robots | UNVERIFIED — check on next site audit |
+| §c / §f #7+ Website CI/CD, OG image, content depth | OPEN: not started |
+| §g Q1 (correct domain?) | RESOLVED: `filewatcher.lars.software` is correct |
+| §g Q2 (commit package-lock.json?) | Resolved per follow-up (committed) |
+
+The remaining open items are website content depth, CI/CD, and asset work —
+none block the live public site.

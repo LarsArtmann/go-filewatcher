@@ -274,26 +274,114 @@ fmt.Printf("watching %d/%d paths (%.1f%% budget), %d add failures\n",
 
 ### Prometheus
 
+The `PrometheusCollector` is dependency-free: it exposes `Counters()` and
+`Gauges()` that you adapt to your own metrics registry. Here is a complete
+adapter using the standard `prometheus/client_golang` package:
+
 ```go
+import "github.com/prometheus/client_golang/prometheus"
+
 coll := filewatcher.NewPrometheusCollector(watcher.Stats)
-// Register with your prometheus.Registry
+
+// Build Prometheus counter and gauge vectors from the collector.
+counters := make(map[string]prometheus.Counter)
+for _, c := range coll.Counters() {
+    counters[c.Name] = prometheus.NewCounter(prometheus.CounterOpts{
+        Name: c.Name,
+        Help: c.Help,
+    })
+    prometheus.MustRegister(counters[c.Name])
+}
+
+gauges := make(map[string]prometheus.Gauge)
+for _, g := range coll.Gauges() {
+    gauges[g.Name] = prometheus.NewGauge(prometheus.GaugeOpts{
+        Name: g.Name,
+        Help: g.Help,
+    })
+    prometheus.MustRegister(gauges[g.Name])
+}
+
+// On each scrape, pull fresh values from the collector.
+go func() {
+    for range time.Tick(5 * time.Second) {
+        for _, c := range coll.Counters() {
+            counters[c.Name].(prometheus.ExemplarAdder).Add(float64(c.Value)) // simplified
+        }
+        for _, g := range coll.Gauges() {
+            gauges[g.Name].Set(g.Value)
+        }
+    }
+}()
 ```
+
+> **Tip:** The simplest production pattern is to implement
+> `prometheus.Collector` (Describe + Collect) on a wrapper type that delegates
+> to `NewPrometheusCollector`. Call `prometheus.MustRegister(yourWrapper)` once
+> at startup and let Prometheus scrape on its own schedule — no polling loop
+> needed.
 
 ### OpenTelemetry
 
+`OTelMiddleware` is zero-dependency: you provide an `OTelSpan` adapter that
+bridges to the real `go.opentelemetry.io/otel/trace.Span`. Spans are created
+per event, with `filewatcher.path`, `filewatcher.op`, and `filewatcher.is_dir`
+attributes attached. Status is set to `ok` or `error` automatically.
+
 ```go
+import (
+    "context"
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/trace"
+)
+
+// otelSpanAdapter bridges trace.Span to filewatcher.OTelSpan.
+type otelSpanAdapter struct {
+    span trace.Span
+}
+
+func (a otelSpanAdapter) End() { a.span.End() }
+
+func (a otelSpanAdapter) SetStatus(code, desc string) {
+    if code == "error" {
+        a.span.SetStatus(trace.StatusError, desc)
+    } else {
+        a.span.SetStatus(trace.StatusOk, desc)
+    }
+}
+
+func (a otelSpanAdapter) SetAttributes(attrs ...filewatcher.Attribute) {
+    converted := make([]trace.Attribute, len(attrs))
+    for i, attr := range attrs {
+        converted[i] = trace.StringAttribute(attr.Key, attr.Value)
+    }
+    a.span.SetAttributes(converted...)
+}
+
+// Wire it into the watcher pipeline:
 watcher, err := filewatcher.New(paths,
     filewatcher.WithMiddleware(
         filewatcher.OTelMiddleware(func(path, op string) filewatcher.OTelSpan {
-            ctx, span := tracer.Start(context.Background(), "filewatcher.event")
-            _ = ctx
+            _, span := otel.Tracer("filewatcher").Start(
+                context.Background(), "filewatcher.event",
+            )
             return otelSpanAdapter{span: span}
         }),
     ),
 )
 ```
 
-`OTelMiddleware` is zero-dependency — you provide an `OTelSpan` implementation.
+To see spans in a real exporter, initialize the OTel SDK with a stdout or
+Jaeger exporter at program startup. Each file event will produce a span that
+propagates to the configured exporter:
+
+```go
+// Example: stdout exporter for development
+tp, _ := stdouttracer.New()
+otel.SetTracerProvider(tp)
+
+// Each filewatcher event now produces a span you can see in the trace output.
+```
 
 ## Benchmarks
 

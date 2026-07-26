@@ -240,7 +240,6 @@ func BenchmarkPassesFilters_FilterAndManyFilters(b *testing.B) {
 	}
 
 	b.Run("AllPass", func(b *testing.B) {
-		b.Parallel()
 		event := Event{Op: Write, Path: benchmarkTestPathMainGo}
 
 		for b.Loop() {
@@ -249,7 +248,6 @@ func BenchmarkPassesFilters_FilterAndManyFilters(b *testing.B) {
 	})
 
 	b.Run("FirstRejects", func(b *testing.B) {
-		b.Parallel()
 		// .txt extension is rejected by FilterExtensions(".go") immediately.
 		event := Event{Op: Write, Path: "/tmp/notes.txt"}
 

@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-07-27
+
 ### Added
 
 - **`WithCleanup` option** (`options.go`) — registers cleanup functions called on `Close()` after goroutines/channels are torn down. Cleared on `Reset()`. Enables lifecycle-managed resource cleanup for middleware that hold file handles.

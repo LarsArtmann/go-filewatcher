@@ -1,6 +1,6 @@
 # Feature Inventory
 
-**Last Updated:** 2026-07-26 · **Version:** v2.2.1 (v2.3.0 unreleased — see [CHANGELOG](./CHANGELOG.md))
+**Last Updated:** 2026-07-27 · **Version:** v2.3.0
 
 Honest status of every capability in go-filewatcher. Statuses:
 

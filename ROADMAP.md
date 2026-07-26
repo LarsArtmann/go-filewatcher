@@ -115,10 +115,8 @@ These are explicitly **out of scope** to keep the library focused:
 | Minor (x.Y.0) | Monthly–quarterly             | New options, filters, middleware (additive) |
 | Major (X.0.0) | When breaking changes pile up | Removed deprecations, signature changes     |
 
-See [API_STABILITY.md](./API_STABILITY.md) for the full stability policy. There
-are 68 commits ahead of the latest tag (`v2.2.1`). The `[Unreleased]` CHANGELOG
-section covers deprecations (`WithOnError`, `MiddlewareRateLimit`), the backend
-test-seam abstraction, error simulation, CI automation (commitlint,
-release-please, docs-consistency), and extensive lint/dedup hardening — a
-`v2.3.0` would capture all of it. Release-please is wired in and will
-auto-generate the release PR from conventional commits.
+See [API_STABILITY.md](./API_STABILITY.md) for the full stability policy.
+v2.3.0 (2026-07-27) shipped deprecations (`WithOnError`, `MiddlewareRateLimit`),
+the backend test-seam abstraction, error simulation, CI automation (commitlint,
+release-please, docs-consistency), and extensive lint/dedup hardening. The next
+minor will accumulate toward v3.0, where deprecated symbols will be removed.

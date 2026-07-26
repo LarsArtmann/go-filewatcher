@@ -488,6 +488,7 @@ func TestWithCleanup_CalledOnClose(t *testing.T) {
 
 	// Cleanup should NOT be called again on second Close (cleanups cleared).
 	cleanupCalled.Store(false)
+
 	_ = watcher.Close()
 
 	if cleanupCalled.Load() {

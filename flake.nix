@@ -256,7 +256,7 @@
             # store copy) so the gitignored baseline lands in the repo root.
             # Invoke from the project root: nix run .#bench-baseline
             bench-baseline = mkBenchApp "bench-baseline" ''
-              go test -bench=. -benchmem -count=6 ./... 2>/dev/null | tee bench-baseline.txt
+              go test -bench=. -benchmem -count=6 -run=^$ ./... | tee bench-baseline.txt
             '';
 
             # Run fresh benchmarks and diff against bench-baseline.txt with
@@ -270,7 +270,7 @@
                 echo "bench-baseline.txt not found. Run 'nix run .#bench-baseline' first."
                 exit 1
               fi
-              go test -bench=. -benchmem -count=6 ./... 2>/dev/null > "''${TMPDIR:-/tmp}/bench-new.txt"
+              go test -bench=. -benchmem -count=6 -run=^$ ./... > "''${TMPDIR:-/tmp}/bench-new.txt"
               benchstat bench-baseline.txt "''${TMPDIR:-/tmp}/bench-new.txt"
             '';
 

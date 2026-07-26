@@ -207,9 +207,9 @@ func MiddlewareDeduplicate(window time.Duration) Middleware {
 	}
 
 	var (
-		mu          sync.Mutex //nolint:varnamelen // conventional mutex name
-		seen        = make(map[dedupeKey]seenEntry)
-		eventCount  int
+		mu         sync.Mutex //nolint:varnamelen // conventional mutex name
+		seen       = make(map[dedupeKey]seenEntry)
+		eventCount int
 	)
 
 	return func(next Handler) Handler {
@@ -352,6 +352,66 @@ func MiddlewareBatch(window time.Duration, maxSize int, flush func([]Event) erro
 	}
 }
 
+// fileLogCache holds a lazily-opened file handle for file-logging middleware.
+type fileLogCache struct {
+	mu sync.Mutex
+	f  *os.File
+}
+
+// close safely closes the cached file handle. Safe to call multiple times.
+func (c *fileLogCache) close() error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	if c.f == nil {
+		return nil
+	}
+
+	err := c.f.Close()
+	c.f = nil
+
+	if err != nil {
+		return fmt.Errorf("closing log file: %w", err)
+	}
+
+	return nil
+}
+
+// write appends a formatted event line to the cached file, opening it lazily
+// on first write. Returns an error if the file cannot be opened or written.
+func (c *fileLogCache) write(filePath string, event Event) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	var writeErr error
+
+	if c.f == nil {
+		c.f, writeErr = os.OpenFile( //nolint:gosec // file path from user config is intentional
+			filePath,
+			os.O_CREATE|os.O_WRONLY|os.O_APPEND,
+			logFilePermission,
+		)
+	}
+
+	if writeErr != nil {
+		return fmt.Errorf("opening log file: %w", writeErr)
+	}
+
+	if c.f != nil {
+		_, writeErr = fmt.Fprintf(
+			c.f, "[%s] %s: %s\n",
+			event.Timestamp.Format(time.RFC3339),
+			event.Op,
+			event.Path,
+		)
+		if writeErr != nil {
+			return fmt.Errorf("writing event to log: %w", writeErr)
+		}
+	}
+
+	return nil
+}
+
 // MiddlewareWriteFileLog returns a middleware that appends event logs
 // to a file at the given path. This is useful for audit trails.
 // The file handle is cached for the lifetime of the middleware.
@@ -366,9 +426,9 @@ func MiddlewareBatch(window time.Duration, maxSize int, flush func([]Event) erro
 //	    filewatcher.WithCleanup(closeLog),
 //	)
 func MiddlewareWriteFileLog(filePath string) Middleware {
-	mw, _ := NewFileLogMiddleware(filePath)
+	middleware, _ := NewFileLogMiddleware(filePath)
 
-	return mw
+	return middleware
 }
 
 // NewFileLogMiddleware returns a file-logging middleware and a cleanup function
@@ -384,13 +444,8 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 //	    filewatcher.WithCleanup(closeLog),
 //	)
 func NewFileLogMiddleware(filePath string) (Middleware, func() error) {
-	type cachedFile struct {
-		mu sync.Mutex
-		f  *os.File
-	}
-
 	//nolint:exhaustruct // f is lazily initialized on first write
-	cached := &cachedFile{}
+	cached := &fileLogCache{}
 
 	closeOnce := &sync.Once{}
 
@@ -398,41 +453,15 @@ func NewFileLogMiddleware(filePath string) (Middleware, func() error) {
 		var closeErr error
 
 		closeOnce.Do(func() {
-			cached.mu.Lock()
-			if cached.f != nil {
-				closeErr = cached.f.Close()
-				cached.f = nil
-			}
-			cached.mu.Unlock()
+			closeErr = cached.close()
 		})
 
 		return closeErr
 	}
 
-	mw := func(next Handler) Handler {
+	middleware := func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			cached.mu.Lock()
-
-			var writeErr error
-
-			if cached.f == nil {
-				cached.f, writeErr = os.OpenFile( //nolint:gosec // file path from user config is intentional
-					filePath,
-					os.O_CREATE|os.O_WRONLY|os.O_APPEND,
-					logFilePermission,
-				)
-			}
-
-			if writeErr == nil && cached.f != nil {
-				_, writeErr = fmt.Fprintf(
-					cached.f, "[%s] %s: %s\n",
-					event.Timestamp.Format(time.RFC3339),
-					event.Op,
-					event.Path,
-				)
-			}
-
-			cached.mu.Unlock()
+			writeErr := cached.write(filePath, event)
 
 			err := next(ctx, event)
 			if err != nil {
@@ -447,7 +476,7 @@ func NewFileLogMiddleware(filePath string) (Middleware, func() error) {
 		}
 	}
 
-	return mw, closer
+	return middleware, closer
 }
 
 // defaultThrottleEvents is the default maximum events per second for throttling.

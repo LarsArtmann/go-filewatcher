@@ -259,10 +259,61 @@ without rebuilding from scratch.
 | Functional Options   | `options.go` — `type Option func(*Watcher)`                              |
 | Middleware Chain     | `middleware.go` — applied in **reverse** order                           |
 | Filter Composition   | `filter.go` — `FilterAnd()`, `FilterOr()`                                |
-| `resolve*Defaults`   | `middleware.go` — extract when 2+ fns share defaulting; single-fn inline |
+| `resolve*Defaults`   | `middleware.go` — see [Default-guard convention](#default-guard-convention) below |
 | `baseDebouncer.stop` | `debouncer.go` — lock/markStopped/cleanup/unlock/wait in one place       |
 | Backend Abstraction  | `backend.go` — `watchBackend` interface; `withBackend()` injects fakes   |
 | `newTestWatcher`     | `testing_helpers_test.go:432` — standard `New + cleanup` for all tests   |
+
+### Default-guard convention
+
+Every middleware that accepts a tunable (duration, count, threshold) must
+substitute a **named const** when the caller passes a non-positive value — never
+a magic literal. The decision of *where* the defaulting lives has one rule:
+
+> **Shared defaulting → `resolve*Defaults` helper. Unique defaulting → inline guard.**
+
+- **Two or more functions share the same defaulting** → extract a `resolve*Defaults`
+  helper. This is the DRY path: one named const, one guard, one test target.
+- **Exactly one function uses the default** → keep an inline `if x <= 0` guard with
+  a named const. A helper for a single caller is indirection without benefit.
+
+**Worked example** (`middleware.go`):
+
+```go
+// SHARED — two middlewares (SlidingWindowRateLimit + ErrorRateLimit) reuse the
+// same window default and the same non-positive guard. Extract.
+const defaultRateLimitWindow = time.Second
+
+func resolveRateLimitDefaults(maxValue, defaultMax int, window time.Duration) (int, time.Duration) {
+    if maxValue <= 0 {
+        maxValue = defaultMax
+    }
+    if window <= 0 {
+        window = defaultRateLimitWindow
+    }
+    return maxValue, window
+}
+
+func MiddlewareSlidingWindowRateLimit(maxEvents int, window time.Duration) Middleware {
+    maxEvents, window = resolveRateLimitDefaults(maxEvents, defaultSlidingWindowEvents, window)
+    // ...
+}
+
+// UNIQUE — only MiddlewareThrottle uses this default. Inline guard, named const.
+const defaultThrottleEvents = 100
+
+func MiddlewareThrottle(maxEvents, burst int) Middleware {
+    if maxEvents <= 0 {
+        maxEvents = defaultThrottleEvents
+    }
+    // ...
+}
+```
+
+The three shared helpers are `resolveRateLimitDefaults`, `resolveBatchDefaults`,
+and `resolveMaxFailures`. Each has direct table-driven coverage, and
+`TestMiddlewareDefaultConsts_AllUsed` guards the whole inventory: if a default
+const loses its call site in a refactor, the test fails before linters notice.
 
 ---
 

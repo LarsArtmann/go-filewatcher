@@ -37,6 +37,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **README Prometheus snippet** (`README.md`) — replaced the broken polling-loop pattern (used fake `prometheus.ExemplarAdder` type that would panic at runtime) with a correct `prometheus.Collector` wrapper implementation (Describe + Collect using `MustNewConstMetric`). Prometheus now scrapes on its own schedule — no polling loop needed.
+- **README OTel snippet** (`README.md`) — fixed incorrect API references: `trace.Attribute` → `attribute.KeyValue`, `trace.StringAttribute` → `attribute.String`, `trace.StatusError`/`trace.StatusOk` → `codes.Error`/`codes.Ok`, `stdouttracer.New()` → proper `stdouttrace.New()` + `sdktrace.NewTracerProvider` setup. Verified against the actual OTel SDK API (`go.opentelemetry.io/otel/{attribute,codes,trace}` + `exporters/stdout/stdouttrace`).
 - **`MiddlewareWriteFileLog` fd leak** (`middleware.go`) — file handle was opened lazily but never closed. Added `NewFileLogMiddleware` returning a closer, plus `WithCleanup` option to register it with the watcher lifecycle. `MiddlewareWriteFileLog` delegates to `NewFileLogMiddleware` (backward compat).
 - **`bench-baseline.txt` slog pollution** (`flake.nix`) — benchmarks now use `-run=^$` to skip test functions (whose watcher error output polluted the baseline file). The reference file is now clean for `benchstat`.
 - **4 broken `BenchmarkEmitEvent_*` benchmarks** (`benchmark_test.go`) — deadlocked because the size-1 event channel was never drained; the second emit blocked forever on a zero-value `Watcher` (nil `done` channel, uncancellable context). Extracted a shared `benchmarkEmitEvent` helper that uses a non-blocking drain, valid for both direct-emit and debounced paths.
@@ -62,6 +64,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `.editorconfig` added for consistent editor settings across platforms.
 - `art-dupl` clone groups driven to zero at all thresholds (`-t 1` through `-t 5`); the previous surviving groups at `-t 1` were eliminated by the `MustWatch` helper in `examples/demo`.
 - **Ecosystem integration (dogfooding)** — go-filewatcher integrated into three real consumer projects: `dynamic-markdown-site`, `auto-deduplicate`, and Cyberdom. Validates the public API surface against production usage patterns.
+- **`docs/DOMAIN_LANGUAGE.md` refreshed** — added missing terms: `FilterWithMeta`, `MatchResult`, `ContentHash`, `ErrorCategory`, `CircuitState` (`CircuitClosed`/`CircuitOpen`/`CircuitHalfOpen`), `Handler`, `Circuit Breaker`, `Error Category`.
+- **Docs-consistency exemption list shrunk 36→14** (`docs-consistency.yml`) — documented 22 previously-exempted exported symbols in FEATURES.md (error taxonomy, metrics types, filter variants, debouncer constructors). Remaining exemptions are phantom-type helpers (11) + 2 filter gaps + 1 deprecated.
+- **`wrapHandlerWithNilReturn` architectural constraint documented** (`watcher_internal.go`) — added doc comment explaining why middleware errors are absorbed (prevents cascade) and the implication for error-aware middleware (must be innermost layer to observe handler failures).
 
 ## [2.2.1] - 2026-07-24
 

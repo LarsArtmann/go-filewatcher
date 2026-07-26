@@ -371,13 +371,13 @@ should be fixed?** If intentional, should I document it as an ADR?
 
 ## Resolution (2026-07-26, docs-health pass)
 
-| Report item                                         | Resolution                                                                                    |
-| --------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| §c#1 — TODO_LIST items not checked off              | DONE: TODO_LIST fully rebuilt — all completed items removed (in CHANGELOG), 8 open items remain |
-| §c#2 — FEATURES.md not updated                      | DONE: version header, goreleaser status, semantic-release ⚪→✅ updated                        |
-| §d1 — Prometheus `ExemplarAdder` incorrect          | **OPEN**: tracked in TODO_LIST "Fix README Prometheus snippet"                                |
-| §d2 — OTel `stdouttracer` wrong package name        | **OPEN**: tracked in TODO_LIST "Fix README OTel snippet"                                      |
-| §b2 — 36-symbol docs exemption list                 | OPEN: tracked in TODO_LIST "Shrink docs-consistency exemption list"                           |
-| §Q1 — Prometheus snippet approach (a/b/c)           | OPEN: design decision needed (zero-dep library vs compile-verified example)                   |
-| §Q2 — TODO_LIST update ownership                    | RESOLVED: TODO_LIST is the source of truth for open work; completed items go to CHANGELOG      |
-| §Q3 — Circuit breaker pipeline limitation           | OPEN: tracked in TODO_LIST "Document wrapHandlerWithNilReturn limitation"                     |
+| Report item                                  | Resolution                                                                                      |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| §c#1 — TODO_LIST items not checked off       | DONE: TODO_LIST fully rebuilt — all completed items removed (in CHANGELOG), 8 open items remain |
+| §c#2 — FEATURES.md not updated               | DONE: version header, goreleaser status, semantic-release ⚪→✅ updated                         |
+| §d1 — Prometheus `ExemplarAdder` incorrect   | **OPEN**: tracked in TODO_LIST "Fix README Prometheus snippet"                                  |
+| §d2 — OTel `stdouttracer` wrong package name | **OPEN**: tracked in TODO_LIST "Fix README OTel snippet"                                        |
+| §b2 — 36-symbol docs exemption list          | OPEN: tracked in TODO_LIST "Shrink docs-consistency exemption list"                             |
+| §Q1 — Prometheus snippet approach (a/b/c)    | OPEN: design decision needed (zero-dep library vs compile-verified example)                     |
+| §Q2 — TODO_LIST update ownership             | RESOLVED: TODO_LIST is the source of truth for open work; completed items go to CHANGELOG       |
+| §Q3 — Circuit breaker pipeline limitation    | OPEN: tracked in TODO_LIST "Document wrapHandlerWithNilReturn limitation"                       |

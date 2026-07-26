@@ -27,62 +27,62 @@ Honest status of every capability in go-filewatcher. Statuses:
 
 ## Filtering
 
-| Feature                         | Status | Notes                                                             |
-| ------------------------------- | ------ | ----------------------------------------------------------------- |
-| Extensions / IgnoreExtensions   | ✅     | Dot-prefixed                                                      |
+| Feature                         | Status | Notes                                                                                                                              |
+| ------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Extensions / IgnoreExtensions   | ✅     | Dot-prefixed                                                                                                                       |
 | IgnoreDirs / ExcludePaths       | ✅     | Name-based (`WithIgnoreDirs`, `DefaultIgnoreDirs` / `DefaultIgnoreDirsCopy`) vs absolute-path prefix matching (`WithExcludePaths`) |
-| IgnoreHidden                    | ✅     | Dot-prefixed files/dirs                                           |
-| Operations / NotOperations      | ✅     | By `Op` enum                                                      |
-| Glob / Regex                    | ✅     | Filename glob, full-path regex                                    |
-| MinSize / MaxSize               | ✅     | Bytes                                                             |
-| MinAge / ModifiedSince          | ✅     | Time-based                                                        |
-| IgnoreGlobs (patterns)          | ✅     | `WithIgnorePatterns` option                                       |
-| ContentHash                     | ✅     | `FilterContentHash` + `ContentCheckMode`; `WithContentHashing()` — SHA-256 |
-| Gitignore repository matcher    | ✅     | `FilterGitignore(repoRoot)` — event-time check against .gitignore |
-| Generated-code detection        | ✅     | sqlc, protobuf, templ, mockgen, stringer via `NewGeneratedCodeDetector` + gogenfilter v3.2.0   |
-| Filter combinators (AND/OR/NOT) | ✅     | `FilterAnd`, `FilterOr`, `FilterNot`                              |
-| Metadata-returning filters      | ✅     | `FilterWithMeta`, `MatchResult`, `FilterWithMetaAnd`/`FilterWithMetaOr`/`FilterWithMetaNot`, `FilterFromWithMeta` |
+| IgnoreHidden                    | ✅     | Dot-prefixed files/dirs                                                                                                            |
+| Operations / NotOperations      | ✅     | By `Op` enum                                                                                                                       |
+| Glob / Regex                    | ✅     | Filename glob, full-path regex                                                                                                     |
+| MinSize / MaxSize               | ✅     | Bytes                                                                                                                              |
+| MinAge / ModifiedSince          | ✅     | Time-based                                                                                                                         |
+| IgnoreGlobs (patterns)          | ✅     | `WithIgnorePatterns` option                                                                                                        |
+| ContentHash                     | ✅     | `FilterContentHash` + `ContentCheckMode`; `WithContentHashing()` — SHA-256                                                         |
+| Gitignore repository matcher    | ✅     | `FilterGitignore(repoRoot)` — event-time check against .gitignore                                                                  |
+| Generated-code detection        | ✅     | sqlc, protobuf, templ, mockgen, stringer via `NewGeneratedCodeDetector` + gogenfilter v3.2.0                                       |
+| Filter combinators (AND/OR/NOT) | ✅     | `FilterAnd`, `FilterOr`, `FilterNot`                                                                                               |
+| Metadata-returning filters      | ✅     | `FilterWithMeta`, `MatchResult`, `FilterWithMetaAnd`/`FilterWithMetaOr`/`FilterWithMetaNot`, `FilterFromWithMeta`                  |
 
 ## Middleware
 
-| Feature                 | Status | Notes                                                          |
-| ----------------------- | ------ | -------------------------------------------------------------- |
-| Logging (slog)          | ✅     | `MiddlewareLogging(*slog.Logger)`                              |
-| Panic recovery          | ✅     | `MiddlewareRecovery()`                                         |
-| Filter-as-middleware    | ✅     | `MiddlewareFilter(Filter)`                                     |
-| OnError handling        | ✅     | `MiddlewareOnError(func(Event, error))`                        |
-| Rate limiting (fixed)   | ✅     | `MiddlewareRateLimit(maxEvents)`                               |
-| Rate limiting (sliding) | ✅     | `MiddlewareSlidingWindowRateLimit(maxEvents, window)`          |
-| Throttle (token bucket) | ✅     | `MiddlewareThrottle(maxEvents, burst)` via `golang.org/x/time` |
-| Metrics counter         | ✅     | `MiddlewareMetrics(func(Op))`                                  |
-| Deduplicate             | ✅     | `MiddlewareDeduplicate(window)`                                |
-| Batch                   | ✅     | `MiddlewareBatch(window, maxSize, flush)`                      |
-| Audit to file           | ✅     | `MiddlewareWriteFileLog(path)` or `NewFileLogMiddleware` (returns closer for fd cleanup via `WithCleanup`) |
+| Feature                 | Status | Notes                                                                                                                       |
+| ----------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------- |
+| Logging (slog)          | ✅     | `MiddlewareLogging(*slog.Logger)`                                                                                           |
+| Panic recovery          | ✅     | `MiddlewareRecovery()`                                                                                                      |
+| Filter-as-middleware    | ✅     | `MiddlewareFilter(Filter)`                                                                                                  |
+| OnError handling        | ✅     | `MiddlewareOnError(func(Event, error))`                                                                                     |
+| Rate limiting (fixed)   | ✅     | `MiddlewareRateLimit(maxEvents)`                                                                                            |
+| Rate limiting (sliding) | ✅     | `MiddlewareSlidingWindowRateLimit(maxEvents, window)`                                                                       |
+| Throttle (token bucket) | ✅     | `MiddlewareThrottle(maxEvents, burst)` via `golang.org/x/time`                                                              |
+| Metrics counter         | ✅     | `MiddlewareMetrics(func(Op))`                                                                                               |
+| Deduplicate             | ✅     | `MiddlewareDeduplicate(window)`                                                                                             |
+| Batch                   | ✅     | `MiddlewareBatch(window, maxSize, flush)`                                                                                   |
+| Audit to file           | ✅     | `MiddlewareWriteFileLog(path)` or `NewFileLogMiddleware` (returns closer for fd cleanup via `WithCleanup`)                  |
 | Circuit breaker         | ✅     | `MiddlewareCircuitBreaker(maxFailures, resetTimeout)`; `CircuitState` enum: `CircuitClosed`→`CircuitOpen`→`CircuitHalfOpen` |
-| Exponential backoff     | ✅     | `MiddlewareExponentialBackoff(maxFailures, initial, max)`      |
-| Error rate limit        | ✅     | `MiddlewareErrorRateLimit(maxErrors, window)`                  |
-| Error recovery strategy | ✅     | `MiddlewareErrorRecovery(strategy)`                            |
-| Error correlation IDs   | ✅     | `MiddlewareErrorCorrelation(idGenerator)`                      |
-| Error sanitization      | ✅     | `MiddlewareErrorSanitization(sanitize)`                        |
-| Error batching          | ✅     | `MiddlewareErrorBatch(window, maxSize, flush)`                 |
+| Exponential backoff     | ✅     | `MiddlewareExponentialBackoff(maxFailures, initial, max)`                                                                   |
+| Error rate limit        | ✅     | `MiddlewareErrorRateLimit(maxErrors, window)`                                                                               |
+| Error recovery strategy | ✅     | `MiddlewareErrorRecovery(strategy)`                                                                                         |
+| Error correlation IDs   | ✅     | `MiddlewareErrorCorrelation(idGenerator)`                                                                                   |
+| Error sanitization      | ✅     | `MiddlewareErrorSanitization(sanitize)`                                                                                     |
+| Error batching          | ✅     | `MiddlewareErrorBatch(window, maxSize, flush)`                                                                              |
 
 ## Debouncing
 
-| Feature                | Status | Notes                                                                 |
-| ---------------------- | ------ | --------------------------------------------------------------------- |
-| Global debounce        | ✅     | `WithDebounce(d)` — all events coalesced                              |
-| Per-path debounce      | ✅     | `WithPerPathDebounce(d)` — independent per file                       |
+| Feature                | Status | Notes                                                                                  |
+| ---------------------- | ------ | -------------------------------------------------------------------------------------- |
+| Global debounce        | ✅     | `WithDebounce(d)` — all events coalesced                                               |
+| Per-path debounce      | ✅     | `WithPerPathDebounce(d)` — independent per file                                        |
 | Programmatic debouncer | ✅     | `NewDebouncer` / `NewGlobalDebouncer`; `DebouncerInterface` for custom implementations |
 
 ## Observability
 
-| Feature                          | Status | Notes                                                            |
-| -------------------------------- | ------ | ---------------------------------------------------------------- |
-| `Stats()` struct                 | ✅     | Events, filters, errors, uptime, watch budget                    |
-| Structured debug logging         | ✅     | `WithDebug(*slog.Logger)`                                        |
+| Feature                          | Status | Notes                                                                             |
+| -------------------------------- | ------ | --------------------------------------------------------------------------------- |
+| `Stats()` struct                 | ✅     | Events, filters, errors, uptime, watch budget                                     |
+| Structured debug logging         | ✅     | `WithDebug(*slog.Logger)`                                                         |
 | Prometheus collector             | ✅     | `PrometheusCollector` with `StatsFunc`, `CounterMetric`, `GaugeMetric` interfaces |
-| OpenTelemetry tracing middleware | ✅     | `OTelMiddleware` with `OTelSpan` interface (zero-dep)            |
-| Stack traces on errors           | ✅     | `WatcherError.Stack` via `debug.Stack()`                         |
+| OpenTelemetry tracing middleware | ✅     | `OTelMiddleware` with `OTelSpan` interface (zero-dep)                             |
+| Stack traces on errors           | ✅     | `WatcherError.Stack` via `debug.Stack()`                                          |
 
 ## Resilience & Scalability
 
@@ -121,40 +121,40 @@ Honest status of every capability in go-filewatcher. Statuses:
 
 ## Error Handling
 
-| Feature                       | Status | Notes                                                    |
-| ----------------------------- | ------ | -------------------------------------------------------- |
-| Sentinel errors               | ✅     | `ErrWatcherClosed`, `ErrNoPaths`, `ErrPathNotFound`, ... |
-| Typed error codes             | ✅     | `ErrorCode` constants for programmatic matching          |
+| Feature                       | Status | Notes                                                                                                                              |
+| ----------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Sentinel errors               | ✅     | `ErrWatcherClosed`, `ErrNoPaths`, `ErrPathNotFound`, ...                                                                           |
+| Typed error codes             | ✅     | `ErrorCode` constants for programmatic matching                                                                                    |
 | Error category classification | ✅     | `ErrorCategory`: `CategoryTransient` (retryable) vs `CategoryPermanent` (abandon); `IsPermanentError` / `IsTransientError` helpers |
-| Structured `WatcherError`     | ✅     | Category (transient/permanent), op, stack trace; `NewWatcherError` constructor |
-| Channel-based error stream    | ✅     | `Errors() <-chan error`                                  |
-| `ErrorHandler` type           | ✅     | `func(ctx, Event, ErrorContext)` — full error context via `WithErrorHandler` |
-| Batch error aggregation       | ✅     | `BatchError` type from `MiddlewareErrorBatch`            |
-| Custom error handler callback | ✅     | `WithErrorHandler` / `WithOnError` (deprecated)          |
+| Structured `WatcherError`     | ✅     | Category (transient/permanent), op, stack trace; `NewWatcherError` constructor                                                     |
+| Channel-based error stream    | ✅     | `Errors() <-chan error`                                                                                                            |
+| `ErrorHandler` type           | ✅     | `func(ctx, Event, ErrorContext)` — full error context via `WithErrorHandler`                                                       |
+| Batch error aggregation       | ✅     | `BatchError` type from `MiddlewareErrorBatch`                                                                                      |
+| Custom error handler callback | ✅     | `WithErrorHandler` / `WithOnError` (deprecated)                                                                                    |
 
 ## Developer Experience
 
-| Feature                            | Status | Notes                                                                                                                                                                                 |
-| ---------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Nix flake dev shell                | ✅     | `nix develop`, `direnv allow`                                                                                                                                                         |
-| Nix apps for all common commands   | ✅     | `nix run .#{check,ci,test,lint,lint-fix,bench,coverage,...}`                                                                                                                          |
-| GitHub Actions CI                  | ✅     | Test with race + 90% threshold, lint, examples-build, bench                                                                                                                           |
-| Documentation website              | ✅     | Astro + Starlight site at `filewatcher.lars.software`                                                                                                                                 |
-| Godoc examples                     | ✅     | 26 examples in `example_test.go`                                                                                                                                                      |
-| Error simulation testing framework | ✅     | `error_simulation_test.go` + `fake_backend_test.go` — scripted Add failures, error injection, full pipeline tests                                                                     |
-| Runnable example programs          | ✅     | `examples/{basic,middleware,per-path-debounce,demo,filter-generated}`                                                                                                                 |
+| Feature                            | Status | Notes                                                                                                                                                                                                                                                                   |
+| ---------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nix flake dev shell                | ✅     | `nix develop`, `direnv allow`                                                                                                                                                                                                                                           |
+| Nix apps for all common commands   | ✅     | `nix run .#{check,ci,test,lint,lint-fix,bench,coverage,...}`                                                                                                                                                                                                            |
+| GitHub Actions CI                  | ✅     | Test with race + 90% threshold, lint, examples-build, bench                                                                                                                                                                                                             |
+| Documentation website              | ✅     | Astro + Starlight site at `filewatcher.lars.software`                                                                                                                                                                                                                   |
+| Godoc examples                     | ✅     | 26 examples in `example_test.go`                                                                                                                                                                                                                                        |
+| Error simulation testing framework | ✅     | `error_simulation_test.go` + `fake_backend_test.go` — scripted Add failures, error injection, full pipeline tests                                                                                                                                                       |
+| Runnable example programs          | ✅     | `examples/{basic,middleware,per-path-debounce,demo,filter-generated}`                                                                                                                                                                                                   |
 | Cross-platform releases            | 🟡     | `release.yml` triggers on `v*` tags (tests + lint + GitHub Release with auto-generated notes); release-please automates versioning from conventional commits. `.goreleaser.yml` exists but is NOT invoked — no compiled binaries shipped (see TODO_LIST open questions) |
-| Issue templates                    | ✅     | Bug report + feature request                                                                                                                                                          |
+| Issue templates                    | ✅     | Bug report + feature request                                                                                                                                                                                                                                            |
 
 ## Planned / Worth Considering
 
 See [ROADMAP.md](./ROADMAP.md) for long-term direction and [TODO_LIST.md](./TODO_LIST.md) for committed short/mid-term work. Highlights:
 
-| Feature                                         | Status | Notes                                                                                                                               |
-| ----------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| Windows-specific edge case tests                | 🔵     | Currently CI runs Linux only                                                                                                        |
-| Fuzz testing expansion                          | 🔵     | Existing fuzz tests; expand to more surfaces                                                                                        |
+| Feature                                         | Status | Notes                                                                                                                                                |
+| ----------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Windows-specific edge case tests                | 🔵     | Currently CI runs Linux only                                                                                                                         |
+| Fuzz testing expansion                          | 🔵     | Existing fuzz tests; expand to more surfaces                                                                                                         |
 | Semantic-release automation                     | ✅     | release-please wired in (`.github/workflows/release-please.yml`) + commitlint gate; see [evaluation](./docs/research/semantic-release-evaluation.md) |
-| Localizable error messages                      | ⚪     | Sentinel errors are English-only today                                                                                              |
-| fsnotify v2 tracking                            | ⚪     | Monitor upstream for breaking changes                                                                                               |
-| `WatchChanges(ctx, targetState)` idempotent API | ⚪     | For sync-style workflows; see [contract sketch](./docs/research/watchchanges-contract.md)                                           |
+| Localizable error messages                      | ⚪     | Sentinel errors are English-only today                                                                                                               |
+| fsnotify v2 tracking                            | ⚪     | Monitor upstream for breaking changes                                                                                                                |
+| `WatchChanges(ctx, targetState)` idempotent API | ⚪     | For sync-style workflows; see [contract sketch](./docs/research/watchchanges-contract.md)                                                            |

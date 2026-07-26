@@ -14,15 +14,15 @@
 > deprecation markers now. See [Resolution](#resolution-2026-07-26-later-sessions)
 > below.
 
-| Metric                   | Before session | After session                | Status |
-| ------------------------ | -------------- | ---------------------------- | ------ |
-| HIGH priority items      | 3              | 0                            | ✅     |
-| Broken benchmarks        | 4              | 0                            | ✅     |
-| Flaky tests              | 2              | 0 (unverified statistically) | 🟡     |
-| Deprecated APIs          | 1              | 3                            | 🟡     |
-| Linter issues            | 0              | 0                            | ✅     |
-| **Split brains created** | 0              | **2** ~~🔴~~ → **FIXED**     | ✅     |
-| **Docs drift created**   | 0              | **3 files** ~~🔴~~ → **FIXED**| ✅     |
+| Metric                   | Before session | After session                  | Status |
+| ------------------------ | -------------- | ------------------------------ | ------ |
+| HIGH priority items      | 3              | 0                              | ✅     |
+| Broken benchmarks        | 4              | 0                              | ✅     |
+| Flaky tests              | 2              | 0 (unverified statistically)   | 🟡     |
+| Deprecated APIs          | 1              | 3                              | 🟡     |
+| Linter issues            | 0              | 0                              | ✅     |
+| **Split brains created** | 0              | **2** ~~🔴~~ → **FIXED**       | ✅     |
+| **Docs drift created**   | 0              | **3 files** ~~🔴~~ → **FIXED** | ✅     |
 
 ---
 
@@ -227,16 +227,16 @@ I made these calls autonomously based on the "intentional boilerplate reducers /
 All P0 damage items from this report's §d and §f lists were resolved in
 subsequent 2026-07-26 sessions. Details in CHANGELOG `[Unreleased]`.
 
-| Report item                                                           | Resolution                                                                                         |
-| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| §d1 — Split brain (WithOnError/MiddlewareRateLimit in Stable + Deprecated) | DONE: removed from Stable APIs table (`API_STABILITY.md`)                                          |
-| §d2 — README docs drift (no deprecation markers)                      | DONE: ⚠️ markers added to README tables (`README.md:153,204`)                                       |
-| §d3 — `nix run .#ci` tidy permission failure                          | DONE: ci/fmt/tidy apps now run from caller CWD, not read-only nix store (`flake.nix`)               |
-| §f P0#3 — Mark deprecated in README                                    | DONE (same as §d2)                                                                                  |
-| §f P0#4 — v2.3→v3 MIGRATION.md section                                 | DONE: `MIGRATION.md` "Migrating to v2.3+" with before/after snippets                               |
-| §f P0#5 — Website deprecation badges                                   | DONE: Starlight `:::caution[Deprecated]` blocks in `api-reference.mdx`                             |
-| §f P0#6 — Investigate nix ci tidy failure                             | DONE (same as §d3)                                                                                  |
-| §f P1#9 — Cut v2.3.0                                                   | OPEN: release-please wired in; release PR auto-generates from conventional commits                  |
-| §Q1 — Fix split brain now or release first?                           | RESOLVED: remediation was done first, release is pending via release-please                         |
-| §Q2 — nix ci tidy failure: quirk or regression?                       | RESOLVED: was a real bug (read-only nix store); fixed by running from caller CWD                    |
-| §Q3 — v3 "Keep" verdicts                                               | OPEN: still pending user confirmation before v3 hardens                                             |
+| Report item                                                                | Resolution                                                                            |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| §d1 — Split brain (WithOnError/MiddlewareRateLimit in Stable + Deprecated) | DONE: removed from Stable APIs table (`API_STABILITY.md`)                             |
+| §d2 — README docs drift (no deprecation markers)                           | DONE: ⚠️ markers added to README tables (`README.md:153,204`)                         |
+| §d3 — `nix run .#ci` tidy permission failure                               | DONE: ci/fmt/tidy apps now run from caller CWD, not read-only nix store (`flake.nix`) |
+| §f P0#3 — Mark deprecated in README                                        | DONE (same as §d2)                                                                    |
+| §f P0#4 — v2.3→v3 MIGRATION.md section                                     | DONE: `MIGRATION.md` "Migrating to v2.3+" with before/after snippets                  |
+| §f P0#5 — Website deprecation badges                                       | DONE: Starlight `:::caution[Deprecated]` blocks in `api-reference.mdx`                |
+| §f P0#6 — Investigate nix ci tidy failure                                  | DONE (same as §d3)                                                                    |
+| §f P1#9 — Cut v2.3.0                                                       | OPEN: release-please wired in; release PR auto-generates from conventional commits    |
+| §Q1 — Fix split brain now or release first?                                | RESOLVED: remediation was done first, release is pending via release-please           |
+| §Q2 — nix ci tidy failure: quirk or regression?                            | RESOLVED: was a real bug (read-only nix store); fixed by running from caller CWD      |
+| §Q3 — v3 "Keep" verdicts                                                   | OPEN: still pending user confirmation before v3 hardens                               |

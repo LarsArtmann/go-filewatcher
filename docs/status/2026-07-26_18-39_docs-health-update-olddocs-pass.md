@@ -417,15 +417,15 @@ This was the first full docs-health AUDIT on the 2026-07-26 reports. A later
 pass revisited the living docs and historical reports with the benefit of
 subsequent sessions' work.
 
-| Report item                                         | Resolution                                                                                    |
-| --------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| §a1 — Goreleaser dishonesty corrected               | HOLDING: FEATURES.md still honestly says 🟡 for Cross-platform releases                        |
-| §a2 — TODO_LIST rebuilt                             | **RECURRING DECAY**: TODO_LIST was rebuilt again TWICE after this session (sessions left done items in it). Latest rebuild (this pass) removed all structural decay — 8 open items only |
-| §a3 — ROADMAP deduplicated                           | HOLDING: no TODO_LIST duplication reintroduced                                                |
-| §a4 — CHANGELOG `[Unreleased]` rebuilt              | HOLDING: comprehensive; stale `newTestWatcher` count (76→96) corrected                         |
-| §c1 — `DOMAIN_LANGUAGE.md` freshness skipped        | **OPEN**: tracked in TODO_LIST (missing ContentHash, MatchResult, FilterWithMeta, etc.)       |
-| §c3 — Broken-benchmark verification trusted          | RESOLVED: benchmarks confirmed fixed (`benchmarkEmitEvent` helper with non-blocking drain)    |
-| §d1 — Score math invented without computation        | LESSON LEARNED: later sessions show explicit `10 − 1·C − 0.5·M` math                          |
-| §d2 — Trusted report claims (bench broken, counts)   | RESOLVED: all claims verified against code in latest pass                                     |
-| §Q1 — Were the broken benches actually broken?       | RESOLVED: yes, and now fixed                                                                  |
-| §Q2 — Is `.goreleaser.yml` dead config?              | OPEN: tracked in TODO_LIST open questions                                                     |
+| Report item                                        | Resolution                                                                                                                                                                              |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| §a1 — Goreleaser dishonesty corrected              | HOLDING: FEATURES.md still honestly says 🟡 for Cross-platform releases                                                                                                                 |
+| §a2 — TODO_LIST rebuilt                            | **RECURRING DECAY**: TODO_LIST was rebuilt again TWICE after this session (sessions left done items in it). Latest rebuild (this pass) removed all structural decay — 8 open items only |
+| §a3 — ROADMAP deduplicated                         | HOLDING: no TODO_LIST duplication reintroduced                                                                                                                                          |
+| §a4 — CHANGELOG `[Unreleased]` rebuilt             | HOLDING: comprehensive; stale `newTestWatcher` count (76→96) corrected                                                                                                                  |
+| §c1 — `DOMAIN_LANGUAGE.md` freshness skipped       | **OPEN**: tracked in TODO_LIST (missing ContentHash, MatchResult, FilterWithMeta, etc.)                                                                                                 |
+| §c3 — Broken-benchmark verification trusted        | RESOLVED: benchmarks confirmed fixed (`benchmarkEmitEvent` helper with non-blocking drain)                                                                                              |
+| §d1 — Score math invented without computation      | LESSON LEARNED: later sessions show explicit `10 − 1·C − 0.5·M` math                                                                                                                    |
+| §d2 — Trusted report claims (bench broken, counts) | RESOLVED: all claims verified against code in latest pass                                                                                                                               |
+| §Q1 — Were the broken benches actually broken?     | RESOLVED: yes, and now fixed                                                                                                                                                            |
+| §Q2 — Is `.goreleaser.yml` dead config?            | OPEN: tracked in TODO_LIST open questions                                                                                                                                               |

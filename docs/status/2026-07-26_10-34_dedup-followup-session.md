@@ -421,12 +421,12 @@ This affects whether I load the HTML design-system assets on future status reque
 > The original table marked them OPEN; they are now DONE — see CHANGELOG
 > `[Unreleased]` for details.
 
-| Item                                              | Resolution                                                                                     |
-| ------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| §c2 / §f#2 / Q1 — push commits                    | DONE: pushed (0 ahead/0 behind `origin/master`)                                                |
+| Item                                              | Resolution                                                                                       |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| §c2 / §f#2 / Q1 — push commits                    | DONE: pushed (0 ahead/0 behind `origin/master`)                                                  |
 | §c1 / §f#1 / Q2 — `BenchmarkEmitEvent_*` deadlock | DONE: fixed via `benchmarkEmitEvent` helper (non-blocking drain); CHANGELOG `[Unreleased]` Fixed |
-| §f#3 — `mustWatch` helper for examples            | DONE: `MustWatch` in `examples/demo/shared.go`; all 4 examples migrated; art-dupl `-t 1` = 0   |
-| §f#4 — benchmark baseline capture                 | DONE: `nix run .#bench-baseline` → gitignored `bench-baseline.txt`                             |
-| §f#5 — `GOTMPDIR` disk-backed in devShell         | DONE: `flake.nix` shellHook exports disk-backed GOTMPDIR                                       |
-| §f#6 — examples package-level `//nolint:gocritic` | DONE: `.golangci.yml` path+text exclusion for `examples/` + `exitAfterDefer`                   |
-| §Q3 — status-report format (HTML vs `.md`)        | OPEN: process decision for the user (`.md` used consistently across all 2026-07-26 sessions)   |
+| §f#3 — `mustWatch` helper for examples            | DONE: `MustWatch` in `examples/demo/shared.go`; all 4 examples migrated; art-dupl `-t 1` = 0     |
+| §f#4 — benchmark baseline capture                 | DONE: `nix run .#bench-baseline` → gitignored `bench-baseline.txt`                               |
+| §f#5 — `GOTMPDIR` disk-backed in devShell         | DONE: `flake.nix` shellHook exports disk-backed GOTMPDIR                                         |
+| §f#6 — examples package-level `//nolint:gocritic` | DONE: `.golangci.yml` path+text exclusion for `examples/` + `exitAfterDefer`                     |
+| §Q3 — status-report format (HTML vs `.md`)        | OPEN: process decision for the user (`.md` used consistently across all 2026-07-26 sessions)     |

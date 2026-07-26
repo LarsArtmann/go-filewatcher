@@ -276,15 +276,15 @@ The `go mod tidy` step in `nix run .#ci` fails with `open /nix/store/.../source/
 All four §C P0 items and most of the §F list shipped in subsequent sessions.
 Full details in CHANGELOG `[Unreleased]`.
 
-| Report item                                         | Resolution                                                                                     |
-| --------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| §C#1 — README deprecation markers                   | DONE: ⚠️ callouts on `WithOnError` + `MiddlewareRateLimit` rows                                |
-| §C#2 — MIGRATION.md v2.3 section                    | DONE: "Migrating to v2.3+" with before/after code snippets                                     |
-| §C#3 — Website deprecation badges                   | DONE: `:::caution[Deprecated]` blocks in `api-reference.mdx`                                    |
-| §C#4 — `nix run .#ci` tidy failure                  | DONE: write-modifying apps run from caller CWD now                                              |
-| §F OTel/Prometheus examples                         | DONE in README, but **accuracy issues remain** (ExemplarAdder, stdouttracer) — see TODO_LIST    |
-| §F Docs freshness CI gate                           | DONE: `check-exported-symbol-docs` workflow (36-symbol exemption list)                          |
-| §D#2 — test-file linting blind spot                 | DONE: `nix run .#lint-tests` app added                                                          |
-| §G Q1 — Export `watchBackend`?                      | OPEN: v3 decision — see TODO_LIST open questions                                                |
-| §G Q2 — Circuit breaker pipeline limitation         | OPEN: tracked in TODO_LIST "Document wrapHandlerWithNilReturn limitation"                       |
-| §G Q3 — nix ci tidy failure                         | RESOLVED: was a real bug; fixed by running from caller CWD                                      |
+| Report item                                 | Resolution                                                                                   |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| §C#1 — README deprecation markers           | DONE: ⚠️ callouts on `WithOnError` + `MiddlewareRateLimit` rows                              |
+| §C#2 — MIGRATION.md v2.3 section            | DONE: "Migrating to v2.3+" with before/after code snippets                                   |
+| §C#3 — Website deprecation badges           | DONE: `:::caution[Deprecated]` blocks in `api-reference.mdx`                                 |
+| §C#4 — `nix run .#ci` tidy failure          | DONE: write-modifying apps run from caller CWD now                                           |
+| §F OTel/Prometheus examples                 | DONE in README, but **accuracy issues remain** (ExemplarAdder, stdouttracer) — see TODO_LIST |
+| §F Docs freshness CI gate                   | DONE: `check-exported-symbol-docs` workflow (36-symbol exemption list)                       |
+| §D#2 — test-file linting blind spot         | DONE: `nix run .#lint-tests` app added                                                       |
+| §G Q1 — Export `watchBackend`?              | OPEN: v3 decision — see TODO_LIST open questions                                             |
+| §G Q2 — Circuit breaker pipeline limitation | OPEN: tracked in TODO_LIST "Document wrapHandlerWithNilReturn limitation"                    |
+| §G Q3 — nix ci tidy failure                 | RESOLVED: was a real bug; fixed by running from caller CWD                                   |

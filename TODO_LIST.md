@@ -1,6 +1,6 @@
 # TODO List
 
-**Last Updated:** 2026-07-26
+**Last Updated:** 2026-07-27
 
 Short- and mid-term actionable work. Each item is scoped — pick one, do it, tick
 the box. An item lives here only when it is bounded and estimable; vague or
@@ -22,54 +22,26 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       validates batched registration, budget enforcement, and self-heal under
       load.
 
-## Documentation Accuracy
+## Documentation
 
-- [ ] **Fix README Prometheus snippet** — the polling-loop example uses
-      `prometheus.ExemplarAdder` (not a real type) and would panic at runtime.
-      Replace with a proper `prometheus.Collector` (Describe + Collect) wrapper,
-      or reduce to API-surface pseudo-code. The library is zero-dep by design, so
-      any snippet referencing `prometheus/client_golang` cannot be
-      compile-verified without a test-only dependency — decide the approach.
-      (`README.md:309`; `src: 2026-07-26_22-23 §d1`)
-- [ ] **Fix README OTel snippet** — references `stdouttracer.New()` (correct
-      package is `stdouttrace`) and `trace.Attribute` (likely renamed to
-      `attribute.KeyValue` in current OTel SDK). Verify against the actual SDK
-      API or mark as version-specific pseudo-code.
-      (`README.md:354,380`; `src: 2026-07-26_22-23 §d2`)
-- [ ] **`docs/DOMAIN_LANGUAGE.md` freshness pass** — the glossary is missing
-      key terms that shipped in v2.2+: `ContentHash`, `MatchResult`,
-      `FilterWithMeta`, `ErrorCategory`, `CircuitBreaker` states
-      (`CircuitClosed`/`CircuitOpen`/`CircuitHalfOpen`). Verify each term
-      against code and add entries.
-      (`src: 2026-07-26_18-39 §c1`)
 - [ ] **Shrink docs-consistency exemption list** — the
-      `check-exported-symbol-docs` CI gate exempts 36 of 124 exported symbols
-      (29%). Notable gaps: `BatchError`, `CircuitState`, `ErrorCategory`,
-      `ErrorHandler`, `IsPermanentError`, `IsTransientError`. Document a few
-      each pass until the list is empty.
-      (`src: 2026-07-26_22-23 §b2`)
-
-## Architecture
-
-- [ ] **Document `wrapHandlerWithNilReturn` limitation** — the pipeline's error
-      absorption means error-aware middleware (circuit breaker, error recovery)
-      only observe failures when they are the innermost layer. This is by design
-      (prevents middleware error cascades) but is an undocumented constraint.
-      Write an ADR or a doc comment explaining the tradeoff.
-      (`src: 2026-07-26_20-00 §B1, 2026-07-26_22-23 §e5`)
+      `check-exported-symbol-docs` CI gate exempts 14 symbols (down from 36).
+      The remaining gaps are `FilterGeneratedCodeFull` and
+      `FilterGeneratedCodeWithFilter`. Document them in FEATURES.md to reach
+      zero exemptions (excluding phantom-type helpers and deprecated symbols).
 
 ---
 
 ## Status Snapshot
 
-| Metric          | Value | Status |
-| --------------- | ----- | ------ |
-| Linter issues   | 0     | ✅     |
-| Build           | Clean | ✅     |
-| Tests           | 100%  | ✅     |
-| Flaky tests     | 0     | ✅     |
-| Broken benches  | 0     | ✅     |
-| Open items      | 8     | 🟡     |
+| Metric         | Value | Status |
+| -------------- | ----- | ------ |
+| Linter issues  | 0     | ✅     |
+| Build          | Clean | ✅     |
+| Tests          | 100%  | ✅     |
+| Flaky tests    | 0     | ✅     |
+| Broken benches | 0     | ✅     |
+| Open items     | 4     | 🟡     |
 
 ---
 

@@ -213,15 +213,15 @@ Every other app runs in the read-only nix-store source (`cd "${self}"`). Mine ca
 Every self-criticized "rough edge" (§b) and "ignored" item (§e) from this report
 was resolved in subsequent 2026-07-26 sessions.
 
-| Report item                                            | Resolution                                                                                  |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
-| §B1 — `bench-baseline.txt` polluted with slog noise    | DONE: recaptured with `-run=^$` (skips test functions)                                      |
-| §B3 — Non-hermetic `benchstat @latest`                 | DONE: vendored via `buildGoModule` in `flake.nix`                                           |
-| §B4 — Research docs orphaned from ROADMAP              | DONE: `watchchanges-contract.md` + `semantic-release-evaluation.md` linked from ROADMAP     |
-| §E1 — `addAttemptCount` dead code                      | DONE: wired into `TestSelfHeal_HealsFailedPathAfterRetry` + `TestFakeBackend_AddFailsSpecificPaths` |
-| §E2 — `examples/` not in nix fileset                   | DONE: added to `fileset.unions` + `examples-build` check                                    |
-| §E4 — Bench-baseline CI-blind (gitignored)             | OPEN: design decision — see TODO_LIST open questions                                        |
-| §f#1–6 — cleanup items from this session               | DONE: all 6 shipped (clean baseline, hermetic benchstat, CWD documented, addAttemptCount wired, research linked, nix gates run) |
-| §g Q1 — Commit baseline to CI or keep local?           | OPEN: see TODO_LIST open questions                                                          |
-| §g Q2 — Is non-hermetic benchstat acceptable?          | RESOLVED: no — vendored hermetically                                                        |
-| §g Q3 — Bench apps break `cd self` convention           | RESOLVED: documented; apps intentionally run from caller CWD to write back to repo           |
+| Report item                                         | Resolution                                                                                                                      |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| §B1 — `bench-baseline.txt` polluted with slog noise | DONE: recaptured with `-run=^$` (skips test functions)                                                                          |
+| §B3 — Non-hermetic `benchstat @latest`              | DONE: vendored via `buildGoModule` in `flake.nix`                                                                               |
+| §B4 — Research docs orphaned from ROADMAP           | DONE: `watchchanges-contract.md` + `semantic-release-evaluation.md` linked from ROADMAP                                         |
+| §E1 — `addAttemptCount` dead code                   | DONE: wired into `TestSelfHeal_HealsFailedPathAfterRetry` + `TestFakeBackend_AddFailsSpecificPaths`                             |
+| §E2 — `examples/` not in nix fileset                | DONE: added to `fileset.unions` + `examples-build` check                                                                        |
+| §E4 — Bench-baseline CI-blind (gitignored)          | OPEN: design decision — see TODO_LIST open questions                                                                            |
+| §f#1–6 — cleanup items from this session            | DONE: all 6 shipped (clean baseline, hermetic benchstat, CWD documented, addAttemptCount wired, research linked, nix gates run) |
+| §g Q1 — Commit baseline to CI or keep local?        | OPEN: see TODO_LIST open questions                                                                                              |
+| §g Q2 — Is non-hermetic benchstat acceptable?       | RESOLVED: no — vendored hermetically                                                                                            |
+| §g Q3 — Bench apps break `cd self` convention       | RESOLVED: documented; apps intentionally run from caller CWD to write back to repo                                              |

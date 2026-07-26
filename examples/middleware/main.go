@@ -50,7 +50,7 @@ func main() {
 	events, err := watcher.Watch(ctx)
 	if err != nil {
 		cancel()
-		log.Fatal(err) //nolint:gocritic // example: os.Exit is intentional
+		log.Fatal(err)
 	}
 
 	log.Println("Watching with middleware: logging + metrics")

@@ -93,6 +93,36 @@ func TestResolveMaxFailures(t *testing.T) {
 	}
 }
 
+func TestResolveBatchDefaults(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name        string
+		window      time.Duration
+		maxSize     int
+		wantWindow  time.Duration
+		wantMaxSize int
+	}{
+		{"both positive pass through", 200 * time.Millisecond, 50, 200 * time.Millisecond, 50},
+		{"zero window uses package default", 0, 50, defaultBatchWindow, 50},
+		{"negative window uses package default", -1, 50, defaultBatchWindow, 50},
+		{"zero maxSize uses package default", 200 * time.Millisecond, 0, 200 * time.Millisecond, defaultBatchSize},
+		{"negative maxSize uses package default", 200 * time.Millisecond, -1, 200 * time.Millisecond, defaultBatchSize},
+		{"both non-positive use both defaults", 0, 0, defaultBatchWindow, defaultBatchSize},
+	}
+
+	for _, tc := range tests {
+		gotWindow, gotMaxSize := resolveBatchDefaults(tc.window, tc.maxSize)
+		if gotWindow != tc.wantWindow {
+			t.Errorf("%s: window = %v, want %v", tc.name, gotWindow, tc.wantWindow)
+		}
+
+		if gotMaxSize != tc.wantMaxSize {
+			t.Errorf("%s: maxSize = %d, want %d", tc.name, gotMaxSize, tc.wantMaxSize)
+		}
+	}
+}
+
 func TestMiddlewareLogging(t *testing.T) {
 	t.Parallel()
 

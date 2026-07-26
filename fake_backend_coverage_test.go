@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"slices"
+	"strconv"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -32,7 +34,7 @@ func TestFakeBackend_AddRoutesToBackend(t *testing.T) {
 
 	// Create a real subdirectory so Add's directory walk has something to find.
 	subDir := filepath.Join(tmpDir, "subpkg")
-	if mkErr := os.MkdirAll(subDir, 0o750); mkErr != nil { //nolint:gosec // standard temp directory permissions
+	if mkErr := os.MkdirAll(subDir, 0o750); mkErr != nil {
 		t.Fatalf("mkdir: %v", mkErr)
 	}
 
@@ -46,17 +48,11 @@ func TestFakeBackend_AddRoutesToBackend(t *testing.T) {
 		fake.mu.Lock()
 		defer fake.mu.Unlock()
 
-		for _, p := range fake.addedPaths {
-			if p == subDir {
-				return true
-			}
-		}
-
-		return false
+		return slices.Contains(fake.addedPaths, subDir)
 	})
 
 	// The path should appear in the watcher's watch list.
-	if !pathInWatchList(t, watcher, subDir) {
+	if !slices.Contains(watcher.WatchList(), subDir) {
 		t.Errorf("subDir %q not in WatchList after Add", subDir)
 	}
 
@@ -98,17 +94,11 @@ func TestFakeBackend_RemoveRoutesToBackend(t *testing.T) {
 		fake.mu.Lock()
 		defer fake.mu.Unlock()
 
-		for _, p := range fake.removedPaths {
-			if p == target {
-				return true
-			}
-		}
-
-		return false
+		return slices.Contains(fake.removedPaths, target)
 	})
 
 	// The path should no longer be in the watcher's watch list.
-	if pathInWatchList(t, watcher, target) {
+	if slices.Contains(watcher.WatchList(), target) {
 		t.Errorf("path %q still in WatchList after Remove", target)
 	}
 
@@ -261,23 +251,24 @@ func TestFakeBackend_ConcurrentBurstNoGoroutineLeak(t *testing.T) {
 		t.Fatalf("Watch failed: %v", err)
 	}
 
-	const numSenders = 8
-	const eventsPerSender = 200
+	numSenders := 8
+
+	eventsPerSender := 200
 
 	var sent atomic.Int32
 
 	// Launch concurrent senders that flood the fake backend.
-	for s := range numSenders {
+	for senderIdx := range numSenders {
 		go func(senderID int) {
 			for i := range eventsPerSender {
 				fake.sendEvent(fsnotify.Event{
 					Name: filepath.Join(tmpDir,
-						"s"+itoa(senderID)+"_f"+itoa(i)+".go"),
+						"s"+strconv.Itoa(senderID)+"_f"+strconv.Itoa(i)+".go"),
 					Op: fsnotify.Create,
 				})
 				sent.Add(1)
 			}
-		}(s)
+		}(senderIdx)
 	}
 
 	// Drain events until all are received or timeout.
@@ -308,19 +299,6 @@ func TestFakeBackend_ConcurrentBurstNoGoroutineLeak(t *testing.T) {
 
 // --- helpers ---
 
-// pathInWatchList returns true if the given path is in the watcher's WatchList.
-func pathInWatchList(t *testing.T, w *Watcher, path string) bool {
-	t.Helper()
-
-	for _, p := range w.WatchList() {
-		if p == path {
-			return true
-		}
-	}
-
-	return false
-}
-
 // waitForGoroutineSettle polls NumGoroutine until it returns to at most
 // before+2 or the timeout elapses. Returns true if settled, false on timeout.
 func waitForGoroutineSettle(t *testing.T, before int, timeout time.Duration) bool {
@@ -338,23 +316,4 @@ func waitForGoroutineSettle(t *testing.T, before int, timeout time.Duration) boo
 	}
 
 	return false
-}
-
-// itoa converts a non-negative int to its decimal string representation without
-// importing strconv (keeps the test file import list lean).
-func itoa(n int) string {
-	if n == 0 {
-		return "0"
-	}
-
-	var buf [20]byte
-	pos := len(buf)
-
-	for n > 0 {
-		pos--
-		buf[pos] = byte('0' + n%10)
-		n /= 10
-	}
-
-	return string(buf[pos:])
 }

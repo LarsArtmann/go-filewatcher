@@ -231,6 +231,7 @@ func BenchmarkPassesFilters_FilterAndManyFilters(b *testing.B) {
 	// Build 10 filters: extension check + 9 cheap always-pass filters.
 	manyFilters := make([]Filter, 0, 10)
 	manyFilters = append(manyFilters, FilterExtensions(".go"))
+
 	for range 9 {
 		manyFilters = append(manyFilters, func(_ Event) bool { return true })
 	}

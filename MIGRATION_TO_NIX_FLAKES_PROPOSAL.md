@@ -1,8 +1,13 @@
 # Migration to Nix Flakes — Comprehensive Proposal
 
+> **Historical document.** This proposal was completed on 2026-05-23. It is
+> retained for reference but no longer reflects the current state of the
+> project. For up-to-date build commands and Nix flake usage, see
+> [AGENTS.md](./AGENTS.md) ("Critical Commands") and [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 **Project:** `github.com/larsartmann/go-filewatcher`
 **Date:** 2026-04-21
-**Status:** ✅ COMPLETED (2026-05-23)
+**Status:** ✅ COMPLETED (2026-05-23) — retained as historical record
 **Scope:** Full Nix Flakes adoption across dev environment, CI, and release tooling
 
 ---

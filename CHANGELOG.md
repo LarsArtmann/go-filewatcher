@@ -46,6 +46,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Examples lint hygiene** — extracted `debounceDelay` named consts in `examples/basic` and `examples/per-path-debounce` (resolves pre-existing `mnd` warnings); fixed `gocritic exitAfterDefer` and stale `nolintlint` directives in `examples/middleware` and `examples/filter-generated`.
 - `.editorconfig` added for consistent editor settings across platforms.
 - `art-dupl` clone groups driven to zero at all thresholds (`-t 1` through `-t 5`); the previous surviving groups at `-t 1` were eliminated by the `MustWatch` helper in `examples/demo`.
+- **Ecosystem integration (dogfooding)** — go-filewatcher integrated into three real consumer projects: `dynamic-markdown-site`, `auto-deduplicate`, and Cyberdom. Validates the public API surface against production usage patterns.
 
 ## [2.2.1] - 2026-07-24
 

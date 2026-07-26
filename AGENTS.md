@@ -104,6 +104,7 @@ All code in **root package** (`filewatcher`). No `internal/` or `pkg/` subdirect
 | File                   | Responsibility                                                                              |
 | ---------------------- | ------------------------------------------------------------------------------------------- |
 | `watcher.go`           | Public API: New, Watch, Add, AddRecursive, Remove, Reset, WatchList, Stats                  |
+| `backend.go`           | watchBackend interface + fsnotifyBackend adapter (test seam for fake backend injection)     |
 | `watcher_internal.go`  | Event processing: watchLoop, middleware, emitEvent, debugLog, handleError                   |
 | `watcher_walk.go`      | Directory walking: addPath, walkAndAddPaths, addBatch, symlink resolution, budget detection |
 | `watcher_gitignore.go` | .gitignore loading and matching: gitignoreCache, shouldSkipByGitignore                      |
@@ -260,7 +261,8 @@ without rebuilding from scratch.
 | Filter Composition   | `filter.go` — `FilterAnd()`, `FilterOr()`                                |
 | `resolve*Defaults`   | `middleware.go` — extract when 2+ fns share defaulting; single-fn inline |
 | `baseDebouncer.stop` | `debouncer.go` — lock/markStopped/cleanup/unlock/wait in one place       |
-| `newTestWatcher`     | `testing_helpers_test.go:412` — standard `New + cleanup` for all tests   |
+| Backend Abstraction  | `backend.go` — `watchBackend` interface; `withBackend()` injects fakes    |
+| `newTestWatcher`     | `testing_helpers_test.go:432` — standard `New + cleanup` for all tests   |
 
 ---
 

@@ -23,7 +23,8 @@ func main() {
 
 	var createCount, writeCount, removeCount atomic.Int64
 
-	events, cleanup := demo.MustWatch(ctx, []string{"."},
+	events, cleanup := demo.MustWatch(
+		ctx, []string{"."},
 		filewatcher.WithExtensions(".go"),
 		filewatcher.WithMiddleware(
 			filewatcher.MiddlewareRecovery(),

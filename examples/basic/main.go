@@ -15,7 +15,8 @@ const debounceDelay = 300 * time.Millisecond
 
 func main() {
 	demo.Run(func(ctx context.Context) {
-		events, cleanup := demo.MustWatch(ctx, []string{"."},
+		events, cleanup := demo.MustWatch(
+			ctx, []string{"."},
 			filewatcher.WithExtensions(".go", ".md"),
 			filewatcher.WithDebounce(debounceDelay),
 		)

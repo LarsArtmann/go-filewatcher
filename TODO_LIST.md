@@ -13,11 +13,11 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 
 ### Testing
 
-- [ ] **Add a `mustWatch` helper to `examples/demo`** and migrate the 5 example
+- [x] **Add a `mustWatch` helper to `examples/demo`** and migrate the example
       `main()` functions to it. Eliminates the last `art-dupl -t 1` clone group
       (the `New + err-check + log.Fatal` envelope) AND the recurring
       `gocritic`/`mnd` linter fights in `examples/` in one stroke.
-- [ ] **Unit test for `resolveBatchDefaults`** — the third shared `resolve*`
+- [x] **Unit test for `resolveBatchDefaults`** — the third shared `resolve*`
       helper in `middleware.go` is still only indirectly tested (it serves
       `MiddlewareBatch` + `MiddlewareErrorBatch`). `resolveRateLimitDefaults` and
       `resolveMaxFailures` both have direct table-driven coverage now; close the
@@ -25,7 +25,7 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 - [ ] **Windows CI matrix** — add a `windows-latest` job to `ci.yml` that runs
       `go test ./...`. Windows has different event semantics (no inotify);
       document any platform-specific skips.
-- [ ] **Error simulation testing** — build a fake `fsnotify.Watcher` that can
+- [x] **Error simulation testing** — build a fake `fsnotify.Watcher` that can
       inject ENOSPC, permission denied, and closed-watcher errors. Use it to
       exercise `MiddlewareCircuitBreaker`, `MiddlewareErrorRecovery`, and
       self-heal deterministically.
@@ -88,5 +88,5 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 | Tests           | 100%  | ✅     |
 | Flaky tests     | 0     | ✅     |
 | Broken benches  | 0     | ✅     |
-| MEDIUM priority | 12    | 🟡     |
+| MEDIUM priority | 9     | 🟡     |
 | LOW priority    | 8     | 🟢     |

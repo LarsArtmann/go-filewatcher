@@ -26,11 +26,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Internal
 
+- **Backend abstraction for testability** (`backend.go`) — introduced `watchBackend` interface abstracting `*fsnotify.Watcher`, with `fsnotifyBackend` adapter for production and unexported `withBackend()` option for test injection. `Watcher.fswatcher` field type changed from `*fsnotify.Watcher` to `watchBackend`. Enables deterministic error simulation without a real filesystem.
+- **Error simulation test suite** (`error_simulation_test.go`, `fake_backend_test.go`) — 11 tests covering self-heal retry/abandon, error channel propagation, full pipeline event flow, closed-backend graceful shutdown, circuit breaker state machine, and error recovery strategy. Uses a fake backend that scripts Add failures (ENOSPC, permission denied, permanent), event injection, and error injection.
+- **`MustWatch` helper** (`examples/demo/shared.go`) — eliminates the last `art-dupl -t 1` clone group in examples. All 4 example `main()` functions migrated; `filter-generated` also fixed a pre-existing resource leak (deferred Close ran before events were consumed).
+- **`resolveBatchDefaults` unit test** (`middleware_test.go`) — 6 table-driven cases closing the coverage gap on the third shared `resolve*` helper.
 - **Test-helper adoption** — `newTestWatcher` (the pre-existing but underused `New + err-check + defer Close` helper) now has 76 call sites across 9 test files; inline `New(` calls in tests reduced from ~63 to 20 (all deliberately retained: benchmarks, `Example*` functions, error-path and lifecycle tests).
-- **Direct unit tests** added for the shared helpers: `resolveRateLimitDefaults` (6 table cases), `resolveMaxFailures` (3 table cases), `requireNonNegativeDuration` (panic + zero/positive subtests).
+- **Direct unit tests** added for the shared helpers: `resolveRateLimitDefaults` (6 table cases), `resolveMaxFailures` (3 table cases), `resolveBatchDefaults` (6 table cases), `requireNonNegativeDuration` (panic + zero/positive subtests).
 - **Examples lint hygiene** — extracted `debounceDelay` named consts in `examples/basic` and `examples/per-path-debounce` (resolves pre-existing `mnd` warnings); fixed `gocritic exitAfterDefer` and stale `nolintlint` directives in `examples/middleware` and `examples/filter-generated`.
 - `.editorconfig` added for consistent editor settings across platforms.
-- `art-dupl` clone groups driven to zero at the recommended threshold (`-t 5`); the 2 surviving groups at `-t 1` are structurally irreducible (one enforced by `paralleltest`, one by Go `main()` idiom in examples).
+- `art-dupl` clone groups driven to zero at all thresholds (`-t 1` through `-t 5`); the previous surviving groups at `-t 1` were eliminated by the `MustWatch` helper in `examples/demo`.
 
 ## [2.2.1] - 2026-07-24
 

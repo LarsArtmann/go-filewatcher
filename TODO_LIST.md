@@ -7,86 +7,30 @@ the box. An item lives here only when it is bounded and estimable; vague or
 long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded in
 [CHANGELOG.md](./CHANGELOG.md), never here.
 
-Items cite evidence as `(code: path` / `src: docs/status/<report>.md)` so each is
-auditable. Harvested from recent status reports on 2026-07-26.
-
 ---
 
-## 🟠 HIGH Priority — v2.3.0 release prep
+## ✅ Completed — v2.3.0 release prep (2026-07-26)
 
-The next release publishes the `WithOnError` / `MiddlewareRateLimit` deprecations
-to consumers. Those deprecations are **invisible in user-facing docs today** —
-ship these before tagging.
+All HIGH and MEDIUM correctness/tooling items from the 2026-07-26 harvest are
+done. See CHANGELOG for details.
 
-- [ ] **Mark `WithOnError` + `MiddlewareRateLimit` deprecated in `README.md`** —
-      add "(deprecated, use `WithErrorHandler` / `MiddlewareThrottle`)" callouts
-      at the Options and Middleware sections.
-      (`README.md` currently has zero `deprecated` matches; `src: 2026-07-26_18-53`, `2026-07-26_20-00`)
-- [ ] **Add v2.3→v3 deprecation section to `MIGRATION.md`** with before/after
-      snippets for both newly-deprecated symbols.
-      (`MIGRATION.md` has no v2.3/deprecation content; `src: 2026-07-26_18-53`)
-- [ ] **Mark deprecated symbols in `website/src/content/docs/api-reference.mdx`**
-      with visual deprecation badges.
-      (`src: 2026-07-26_18-53`, `2026-07-26_20-00`)
-- [ ] **Fix `nix run .#ci` tidy permission failure** — the `ci` app does
-      `cd "${self}"` into the read-only nix store, then `go mod tidy` fails:
-      `open /nix/store/.../go.mod: permission denied`. Either run tidy against a
-      writable copy or drop tidy from the hermetic `ci` app.
-      (`src: 2026-07-26_18-53`, `2026-07-26_20-00`; reproduced 2026-07-26)
-- [ ] **Update `FEATURES.md` "Error simulation testing" 🔵 PLANNED → 🟢 DONE** —
-      the framework shipped (`error_simulation_test.go`, `fake_backend_test.go`).
-      (`FEATURES.md:153` is stale; `src: 2026-07-26_20-00`)
+- [x] Mark `WithOnError` + `MiddlewareRateLimit` deprecated in README.md
+- [x] Add v2.3→v3 deprecation section to MIGRATION.md
+- [x] Mark deprecated symbols in api-reference.mdx with deprecation badges
+- [x] Fix `nix run .#ci` tidy permission failure (run from caller CWD)
+- [x] Update FEATURES.md "Error simulation testing" PLANNED → DONE
+- [x] Fix `MiddlewareWriteFileLog` fd leak (`NewFileLogMiddleware` + `WithCleanup`)
+- [x] Wire up `addAttemptCount` in self-heal and fake-backend tests
+- [x] Fix `MiddlewareDeduplicate` cleanup-on-%100 quirk (event counter)
+- [x] Add `nix run .#lint-tests` app (explicit `--tests` flag)
+- [x] Add `examples/` to nix `fileset` + `examples-build` check
+- [x] Vendor `benchstat` hermetically via `buildGoModule`
+- [x] Re-capture clean `bench-baseline.txt` (`-run=^$`)
+- [x] Add commitlint CI gate (`.github/workflows/commitlint.yml`)
+- [x] Wire `release-please` (`.github/workflows/release-please.yml`)
+- [x] Add README vs API_STABILITY docs-consistency CI gate
 
 ---
-
-## 🟡 MEDIUM Priority
-
-### Correctness & bugs
-
-- [ ] **`MiddlewareWriteFileLog` fd leak** — opens the log file lazily but never
-      closes it (`middleware.go:345` has no `Close`/`defer`). Long-lived watchers
-      with `Reset()` cycles may leak descriptors. Add a `Close()` hook or register
-      cleanup with the watcher lifecycle.
-      (`middleware.go:342-391` no `Close`; `src: 2026-07-26_21-00`)
-- [ ] **Delete or wire up dead `addAttemptCount`** — `fakeBackend.addAttemptCount`
-      is unused (`gopls unusedfunc`). Either remove it or add a test that uses it.
-      (`fake_backend_test.go:85`; `src: 2026-07-26_21-00`)
-- [ ] **`MiddlewareDeduplicate` cleanup-on-%100 quirk** — cleanup fires when
-      `len(seen)%100 == 0`; a workload hovering at a multiple of 100 could clean
-      every event. Consider a time-based or counter-rollover trigger.
-      (`middleware.go:213`; `src: 2026-07-26_21-00`)
-
-### Tooling & CI
-
-- [ ] **Add `--tests` flag to `nix run .#lint`** — currently lint omits test
-      files (golangci `tests:` is on, but the app gives no `--tests` opt-in for
-      the strict path). Or add a separate `.#lint-test` app.
-      (`flake.nix` lint app; `src: 2026-07-26_20-00`)
-- [ ] **Add `examples/` to a nix build check** — `examples/` (incl.
-      `filter-generated`) is absent from the `flake.nix` `fileset.unions`, so
-      `nix build` never compiles the examples. Add a check that at least builds them.
-      (`flake.nix:31-75` no examples; `src: 2026-07-26_21-00`)
-- [ ] **Vendor `benchstat` hermetically** + fix bench app CWD convention —
-      `nix run .#bench-diff` uses `go run golang.org/x/perf/cmd/benchstat@latest`
-      (network, non-reproducible); `bench-baseline`/`bench-diff` break the
-      `cd "${self}"` convention by running in caller CWD. Resolve via flake input
-      or `buildGoModule`, and document the run-from-repo-root requirement.
-      (`flake.nix` bench apps; `src: 2026-07-26_21-00`)
-- [ ] **Re-capture clean `bench-baseline.txt`** — current baseline is polluted
-      with `slog` stderr lines (captured via `2>&1 | tee`). Re-run with stderr
-      discarded so the reference is clean for `benchstat`.
-      (`bench-baseline.txt`; `src: 2026-07-26_21-00`)
-- [ ] **Add commitlint / conventional-commit CI gate** — enforces the
-      commit-message convention that the release-please recommendation depends on
-      (15/200 recent subjects are non-conventional).
-      (`src: 2026-07-26_21-00` semantic-release-evaluation.md)
-- [ ] **Wire `release-please`** per `docs/research/semantic-release-evaluation.md`
-      — release-PR workflow deriving version + CHANGELOG from conventional commits.
-      Moves here on approval; pairs with the commitlint gate above.
-      (`src: 2026-07-26_21-00`)
-- [ ] **CI gate: README vs API_STABILITY contradiction** — add a check that
-      deprecation/stability claims don't drift between the two files.
-      (`src: 2026-07-26_20-00`)
 
 ### Testing
 
@@ -146,8 +90,8 @@ ship these before tagging.
 | Tests           | 100%  | ✅     |
 | Flaky tests     | 0     | ✅     |
 | Broken benches  | 0     | ✅     |
-| HIGH priority   | 5     | 🟠     |
-| MEDIUM priority | 22    | 🟡     |
+| HIGH priority   | 0     | ✅     |
+| MEDIUM priority | 7     | 🟡     |
 
 ---
 
@@ -156,15 +100,7 @@ ship these before tagging.
 These are **not** actionable until answered. Routed here from the 2026-07-26
 self-review so they are not lost; they do not belong in the checklist above.
 
-- **Benchmark baseline: CI-enforceable (committed) or local-only (gitignored)?**
-  The TODO said "gitignored"; the ROADMAP says "benchmark freshness CI." These
-  contradict — a gitignored file can never drive CI.
-- **Is hermetic `benchstat` a hard requirement for the bench-diff task to count
-  as done, or is `@latest` acceptable for now?**
-- **Keep the CWD-inconsistent bench apps, or restructure (explicit `--out` /
-  writable project path)?**
-
-A fourth open question — the `WatchChanges(ctx, targetState)` open design
-questions (reporting granularity, closed-watcher semantics, depth
-reconciliation) — lives in `docs/research/watchchanges-contract.md`; the
-implementation becomes a TODO once those are answered.
+The `WatchChanges(ctx, targetState)` open design questions (reporting
+granularity, closed-watcher semantics, depth reconciliation) live in
+`docs/research/watchchanges-contract.md`; the implementation becomes a TODO
+once those are answered.

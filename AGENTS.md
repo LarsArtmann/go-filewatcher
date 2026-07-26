@@ -23,14 +23,17 @@ nix run .#lint-fix       # Auto-fix linter issues
 nix run .#test           # Run tests with -race
 nix run .#test-v         # Run tests with -race -v
 nix run .#lint           # Run linter
+nix run .#lint-tests     # Run linter (--tests explicit)
 nix run .#bench          # Run benchmarks
+nix run .#bench-baseline # Capture benchmark baseline (run from repo root)
+nix run .#bench-diff     # Diff benchmarks vs baseline (hermetic benchstat)
 nix run .#coverage       # Generate coverage report
-nix run .#fmt            # Format Go code
-nix run .#tidy           # Run go mod tidy
+nix run .#fmt            # Format Go code (writes — run from repo root)
+nix run .#tidy           # Run go mod tidy (writes — run from repo root)
 nix run .                # Default = check
 
 # Nix quality gates
-nix flake check          # Run all checks (build, test, lint, fmt, vet)
+nix flake check          # Run all checks (build, test, lint, fmt, vet, examples-build)
 nix build .              # Validate reproducible build
 nix fmt                  # Format .nix files
 
@@ -314,6 +317,36 @@ The three shared helpers are `resolveRateLimitDefaults`, `resolveBatchDefaults`,
 and `resolveMaxFailures`. Each has direct table-driven coverage, and
 `TestMiddlewareDefaultConsts_AllUsed` guards the whole inventory: if a default
 const loses its call site in a refactor, the test fails before linters notice.
+
+### Middleware Resource Cleanup
+
+`Middleware` is `func(Handler) Handler` — a function type with no lifecycle hook.
+Middleware that hold resources (e.g., file handles) cannot close them automatically.
+The watcher provides `WithCleanup(fn func() error)` to register cleanup functions
+called on `Close()` (after all goroutines/channels are torn down) and cleared on `Reset()`.
+
+Pattern: factory returns `(Middleware, func() error)`; caller pairs them:
+
+```go
+mw, closeLog := NewFileLogMiddleware("audit.log")
+watcher, _ := New(paths, WithMiddleware(mw), WithCleanup(closeLog))
+defer watcher.Close() // closeLog is called automatically
+```
+
+`MiddlewareWriteFileLog` wraps `NewFileLogMiddleware` for backward compat but
+does NOT close the file — long-lived watchers should use `NewFileLogMiddleware`.
+
+---
+
+## CI Workflows
+
+| Workflow | Purpose |
+| --- | --- |
+| `ci.yml` | Test (race + coverage), lint, examples-build, benchmark |
+| `commitlint.yml` | Validates PR commit subjects follow conventional-commit format |
+| `docs-consistency.yml` | Checks README.md vs API_STABILITY.md deprecation claims don't drift |
+| `release-please.yml` | Opens release PRs from conventional commits (automates CHANGELOG + version) |
+| `release.yml` | Triggered on `v*` tags — creates GitHub Release |
 
 ---
 

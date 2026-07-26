@@ -224,6 +224,41 @@ func BenchmarkPassesFilters_ComplexFilterChain(b *testing.B) {
 	}
 }
 
+// BenchmarkPassesFilters_FilterAndManyFilters proves the short-circuit payoff
+// at scale: 10 sub-filters where the first one rejects vs. all 10 pass. The
+// first-reject case should be nearly as fast as a single filter.
+func BenchmarkPassesFilters_FilterAndManyFilters(b *testing.B) {
+	// Build 10 filters: extension check + 9 cheap always-pass filters.
+	manyFilters := make([]Filter, 0, 10)
+	manyFilters = append(manyFilters, FilterExtensions(".go"))
+	for range 9 {
+		manyFilters = append(manyFilters, func(_ Event) bool { return true })
+	}
+
+	w := &Watcher{
+		filters: []Filter{FilterAnd(manyFilters...)},
+	}
+
+	b.Run("AllPass", func(b *testing.B) {
+		b.Parallel()
+		event := Event{Op: Write, Path: benchmarkTestPathMainGo}
+
+		for b.Loop() {
+			_ = w.passesFilters(event)
+		}
+	})
+
+	b.Run("FirstRejects", func(b *testing.B) {
+		b.Parallel()
+		// .txt extension is rejected by FilterExtensions(".go") immediately.
+		event := Event{Op: Write, Path: "/tmp/notes.txt"}
+
+		for b.Loop() {
+			_ = w.passesFilters(event)
+		}
+	})
+}
+
 // ============================================================================
 // Middleware Pipeline Benchmarks
 // ============================================================================

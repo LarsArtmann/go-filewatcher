@@ -6,6 +6,11 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
+// Compile-time assertion that fakeBackend satisfies watchBackend. If the
+// interface or the fake drifts, this fails at build time. The matching
+// fsnotifyBackend assertion lives in backend.go.
+var _ watchBackend = (*fakeBackend)(nil)
+
 // fakeBackend is a test double for watchBackend that allows injecting scripted
 // events, errors, and Add failures. It enables deterministic testing of
 // self-heal, error handling, and the event pipeline without a real filesystem

@@ -22,6 +22,12 @@ type fsnotifyBackend struct {
 func (b fsnotifyBackend) Events() <-chan fsnotify.Event { return b.Watcher.Events }
 func (b fsnotifyBackend) Errors() <-chan error          { return b.Watcher.Errors }
 
+// Compile-time assertion that fsnotifyBackend satisfies watchBackend. If the
+// interface or the adapter drifts, this fails at build time instead of
+// surfacing as a runtime nil-pointer. The matching fakeBackend assertion lives
+// in fake_backend_test.go (test-only type).
+var _ watchBackend = (*fsnotifyBackend)(nil)
+
 // withBackend overrides the filesystem notification backend.
 // This is an unexported option for test injection only.
 func withBackend(b watchBackend) Option {

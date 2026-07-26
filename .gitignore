@@ -61,6 +61,8 @@ workflow-audit-log.*
 
 ## Reports and coverage
 reports/
+# Local benchmark baseline for benchstat diffs (machine-specific)
+bench-baseline.txt
 
 ## Go
 *.exe

@@ -151,6 +151,12 @@
               shellHook = ''
                 echo "go-filewatcher development shell"
                 echo "Go version: $(go version)"
+                # Redirect Go's temp dir off the tmpfs /tmp onto disk. Long
+                # sessions (many nix invocations) previously filled a 24G /tmp;
+                # a cache-backed GOTMPDIR avoids that exhaustion.
+                export GOTMPDIR="''${XDG_CACHE_HOME:-$HOME/.cache}/go-filewatcher/gotmp"
+                mkdir -p "$GOTMPDIR"
+                echo "GOTMPDIR=$GOTMPDIR (disk-backed)"
               '';
 
               GOWORK = "off";
@@ -201,6 +207,26 @@
             bench = mkApp "bench" ''
               cd "${self}"
               go test -bench=. -benchmem -race ./...
+            '';
+
+            # Capture a clean benchmark baseline to bench-baseline.txt for later
+            # benchstat comparison. Omits -race (it adds overhead and noise) and
+            # runs -count=6 so benchstat has enough samples for stable deltas.
+            bench-baseline = mkApp "bench-baseline" ''
+              cd "${self}"
+              go test -bench=. -benchmem -count=6 ./... | tee bench-baseline.txt
+            '';
+
+            # Run fresh benchmarks and diff against bench-baseline.txt with
+            # benchstat. Requires a captured baseline (run bench-baseline first).
+            bench-diff = mkApp "bench-diff" ''
+              cd "${self}"
+              if [ ! -f bench-baseline.txt ]; then
+                echo "bench-baseline.txt not found. Run 'nix run .#bench-baseline' first."
+                exit 1
+              fi
+              go test -bench=. -benchmem -count=6 ./... > "''${TMPDIR:-/tmp}/bench-new.txt"
+              go run golang.org/x/perf/cmd/benchstat@latest bench-baseline.txt "''${TMPDIR:-/tmp}/bench-new.txt"
             '';
 
             coverage = mkApp "coverage" ''

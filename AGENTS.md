@@ -321,16 +321,6 @@ Plain `type X string` named types for compile-time type safety on path-like stri
 
 ## Known Issues
 
-### Flaky Tests
-
-These tests are timing-sensitive and may fail intermittently (tracked in
-[TODO_LIST.md](./TODO_LIST.md) under HIGH priority):
-
-| Test                               | Reason                                                                                     |
-| ---------------------------------- | ------------------------------------------------------------------------------------------ |
-| `TestWatcher_Stats_Metrics`        | Counts `EventsProcessed` but filesystem write coalescing may produce 2 events instead of 1 |
-| `TestWatcher_Watch_WithMiddleware` | Similar timing issue with middleware call counting                                         |
-
 ### Pre-existing Linter Warning
 
 `watcher_coverage_test.go:1` has an unused `modernize` nolint directive — do not fix (unrelated to current work).

@@ -9,27 +9,6 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 
 ---
 
-## 🔴 HIGH Priority
-
-- [ ] **Fix or delete the 4 broken `BenchmarkEmitEvent_*` benchmarks** —
-      `BenchmarkEmitEvent_NoDebounce`, `_WithMiddleware`, `_WithGlobalDebounce`,
-      `_WithPerPathDebounce` (in `benchmark_test.go`) deadlock/panic because they
-      construct a zero-value `&Watcher{}` with no event channel. Proven
-      pre-existing (reproduced at commit `de459a1`). They block `nix run .#bench`
-      from completing cleanly and prevent regression detection for every future
-      refactor. Either wire up the channel / use `newTestWatcher`-style
-      construction, or delete them.
-- [ ] **Harden or quarantine flaky tests** — `TestWatcher_Stats_Metrics` and
-      `TestWatcher_Watch_WithMiddleware` intermittently fail due to fsnotify
-      write coalescing (see AGENTS.md "Known Issues"). Either make assertions
-      event-count-agnostic or `t.Skip` with a tracked issue and a re-enable plan.
-- [ ] **Deprecation audit for v3** — `WithWatchedIgnoreDirs` is the only declared
-      deprecation. Inventory other candidates (e.g. the two-arg `ErrorHandler`
-      signature) and list them in `API_STABILITY.md` so v3 scope is clear before
-      cutting.
-
----
-
 ## 🟡 MEDIUM Priority
 
 ### Testing
@@ -107,8 +86,7 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 | Linter issues   | 0     | ✅     |
 | Build           | Clean | ✅     |
 | Tests           | 100%  | ✅     |
-| Flaky tests     | 2     | 🟡     |
-| Broken benches  | 4     | 🔴     |
-| HIGH priority   | 3     | 🔴     |
+| Flaky tests     | 0     | ✅     |
+| Broken benches  | 0     | ✅     |
 | MEDIUM priority | 12    | 🟡     |
 | LOW priority    | 8     | 🟢     |

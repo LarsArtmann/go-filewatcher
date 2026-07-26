@@ -254,21 +254,21 @@ without rebuilding from scratch.
 
 ## Key Patterns
 
-| Pattern              | Where                                                                    |
-| -------------------- | ------------------------------------------------------------------------ |
-| Functional Options   | `options.go` — `type Option func(*Watcher)`                              |
-| Middleware Chain     | `middleware.go` — applied in **reverse** order                           |
-| Filter Composition   | `filter.go` — `FilterAnd()`, `FilterOr()`                                |
+| Pattern              | Where                                                                             |
+| -------------------- | --------------------------------------------------------------------------------- |
+| Functional Options   | `options.go` — `type Option func(*Watcher)`                                       |
+| Middleware Chain     | `middleware.go` — applied in **reverse** order                                    |
+| Filter Composition   | `filter.go` — `FilterAnd()`, `FilterOr()`                                         |
 | `resolve*Defaults`   | `middleware.go` — see [Default-guard convention](#default-guard-convention) below |
-| `baseDebouncer.stop` | `debouncer.go` — lock/markStopped/cleanup/unlock/wait in one place       |
-| Backend Abstraction  | `backend.go` — `watchBackend` interface; `withBackend()` injects fakes   |
-| `newTestWatcher`     | `testing_helpers_test.go:432` — standard `New + cleanup` for all tests   |
+| `baseDebouncer.stop` | `debouncer.go` — lock/markStopped/cleanup/unlock/wait in one place                |
+| Backend Abstraction  | `backend.go` — `watchBackend` interface; `withBackend()` injects fakes            |
+| `newTestWatcher`     | `testing_helpers_test.go:432` — standard `New + cleanup` for all tests            |
 
 ### Default-guard convention
 
 Every middleware that accepts a tunable (duration, count, threshold) must
 substitute a **named const** when the caller passes a non-positive value — never
-a magic literal. The decision of *where* the defaulting lives has one rule:
+a magic literal. The decision of _where_ the defaulting lives has one rule:
 
 > **Shared defaulting → `resolve*Defaults` helper. Unique defaulting → inline guard.**
 

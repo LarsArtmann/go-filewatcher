@@ -18,16 +18,16 @@ derive both the changelog and the version bump from the git history automaticall
 The commit history is **already mostly conventional**. Of the last 200 commit
 subjects:
 
-| Type      | Count |
-| --------- | ----- |
-| `chore:`  | 51    |
-| `docs:`   | 44    |
-| `fix:`    | 28    |
-| `feat:`   | 24    |
-| `refactor:`| 20   |
-| `test:`   | 14    |
-| `style:`  | 2     |
-| `ci:`     | 2     |
+| Type                 | Count  |
+| -------------------- | ------ |
+| `chore:`             | 51     |
+| `docs:`              | 44     |
+| `fix:`               | 28     |
+| `feat:`              | 24     |
+| `refactor:`          | 20     |
+| `test:`              | 14     |
+| `style:`             | 2      |
+| `ci:`                | 2      |
 | **non-conventional** | **15** |
 
 ~92% follow `type(scope): subject`. The 15 outliers are older summary commits

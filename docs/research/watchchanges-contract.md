@@ -33,7 +33,7 @@ semantics as `kubectl apply`.
 
 - Streaming/long-poll of state changes (possible later: `<-chan ChangeSet`).
 - Mutation of filters/middleware (those are construction-time config; the watch
-  *set* is what reconciles).
+  _set_ is what reconciles).
 - Watching individual files (always directories, matching current model).
 
 ## Proposed types
@@ -81,7 +81,7 @@ func (w *Watcher) WatchChanges(ctx context.Context, target WatchState) (ChangeSe
 3. **Normalization.** Targets are Abs-normalized exactly like `withResolvedPath`.
    Duplicate targets after normalization collapse to one.
 4. **Empty target.** `WatchState{}` removes everything (converge to "watch
-   nothing"). This is *not* an error.
+   nothing"). This is _not_ an error.
 5. **Partial failure does not abort.** A path that fails to add (ENOSPC,
    permission denied) is recorded in `ChangeSet.Failed`, increments
    `Stats.WatchErrors`, and is added to `failedPaths` for self-heal — exactly as
@@ -99,13 +99,13 @@ func (w *Watcher) WatchChanges(ctx context.Context, target WatchState) (ChangeSe
 
 ## Interaction with existing options
 
-| Option            | Behavior under WatchChanges                                       |
-| ----------------- | ----------------------------------------------------------------- |
-| `WithGitignore`   | Still applied during the walk for each added target               |
-| `WithExcludePaths`| Still honored (excluded subtrees are never added)                 |
-| `WithMaxWatches`  | Budget still enforced; over-budget targets land in `Failed`       |
-| `WithSelfHeal`    | Failed targets queued for retry as today                          |
-| Filters/middleware| Unaffected — `WatchChanges` only reconciles the *watch set*       |
+| Option             | Behavior under WatchChanges                                 |
+| ------------------ | ----------------------------------------------------------- |
+| `WithGitignore`    | Still applied during the walk for each added target         |
+| `WithExcludePaths` | Still honored (excluded subtrees are never added)           |
+| `WithMaxWatches`   | Budget still enforced; over-budget targets land in `Failed` |
+| `WithSelfHeal`     | Failed targets queued for retry as today                    |
+| Filters/middleware | Unaffected — `WatchChanges` only reconciles the _watch set_ |
 
 ## Why `MaxDepth` per-target, not per-call
 

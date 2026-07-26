@@ -78,8 +78,7 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       `docs/research/watchchanges-contract.md` (idempotent sync/reconcile API for
       sync/backup workflows). Implementation deferred to a scoped task.
 - [x] **Semantic-release / conventional commits** — evaluated in
-      `docs/research/semantic-release-evaluation.md`; recommends `release-please`
-      + a commit-subject lint gate over `semantic-release` for a Go module.
+      `docs/research/semantic-release-evaluation.md`; recommends `release-please` + a commit-subject lint gate over `semantic-release` for a Go module.
 
 ---
 

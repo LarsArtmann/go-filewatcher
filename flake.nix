@@ -362,6 +362,23 @@
                     fi
                     touch "$out"
                   '';
+
+              examples-build =
+                pkgs.runCommand "examples-build"
+                  {
+                    nativeBuildInputs = [
+                      pkgs.go_1_26
+                      pkgs.gcc
+                    ];
+                  }
+                  ''
+                    export GOWORK=off
+                    export HOME="$TMPDIR"
+                    cp -r "${self}" src && chmod -R u+w src && cd src
+                    ln -s "${goModules}" vendor
+                    go build ./examples/...
+                    touch "$out"
+                  '';
             };
         };
 

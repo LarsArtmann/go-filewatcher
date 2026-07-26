@@ -99,7 +99,7 @@ jobs:
           # 3. Remaining undocumented gaps — remove as they get documented:
           #    FilterGeneratedCodeFull, FilterGeneratedCodeWithFilter
           EXEMPT_SYMBOLS="LogSubstring NewLogSubstring TempDir NewTempDir OpString NewOpString DebounceKey NewDebounceKey \
-            FilterGeneratedCodeFull FilterGeneratedCodeWithFilter \
+            FilterGeneratedCodeFull FilterGeneratedCodeWithFilter WatcherStateFlags \
             WithWatchedIgnoreDirs NewEventPath NewRootPath NewWatcherError"
 
           # Extract top-level exported symbols (skip methods and unexported).

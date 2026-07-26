@@ -1,0 +1,27 @@
+name: Release Please
+
+on:
+  push:
+    branches: [master, main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    name: Create Release PR
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          release-type: go
+          # Use plain v-prefixed tags (v2.3.0), not component-prefixed.
+          include-component-in-tag: false
+          # Update the existing Keep a Changelog file.
+          changelog-path: CHANGELOG.md
+          # The v prefix matches existing tags (v2.2.1, v2.2.0, ...).
+          tag-separator: "-"
+          # Bootstrap from the last release. release-please reads the tag
+          # history to determine the next version.
+          bump-minor-pre-major: true

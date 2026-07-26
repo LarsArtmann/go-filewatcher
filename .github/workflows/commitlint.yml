@@ -1,0 +1,65 @@
+name: Commitlint
+
+on:
+  pull_request:
+    branches: [master, main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint-commits:
+    name: Validate Commit Messages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check conventional commit format
+        run: |
+          set -euo pipefail
+
+          # Conventional commit pattern: type(scope?): subject
+          # Types follow Angular/Conventional Commits spec.
+          PATTERN='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|revert)(\(.+\))?: .+'
+
+          # Get all commit subjects in the PR range.
+          # For PRs, GitHub provides the base and head SHAs via event payload.
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+
+          FAIL=0
+
+          for sha in $(git rev-list "$BASE_SHA".."$HEAD_SHA"); do
+            SUBJECT=$(git log -1 --format='%s' "$sha")
+
+            # Skip merge commits — they are auto-generated and exempt.
+            if [[ "$SUBJECT" == Merge* ]]; then
+              continue
+            fi
+
+            # Check format.
+            if ! [[ "$SUBJECT" =~ $PATTERN ]]; then
+              echo "::error::Commit $sha does not follow conventional commit format:"
+              echo "::error::  $SUBJECT"
+              echo "::error::Expected: type(scope?): subject"
+              echo "::error::Valid types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+              FAIL=1
+              continue
+            fi
+
+            # Check subject length (first line <= 72 chars, per Git convention).
+            if [ ${#SUBJECT} -gt 72 ]; then
+              echo "::error::Commit $sha subject exceeds 72 characters (${#SUBJECT} chars):"
+              echo "::error::  $SUBJECT"
+              FAIL=1
+            fi
+          done
+
+          if [ $FAIL -ne 0 ]; then
+            echo ""
+            echo "See https://www.conventionalcommits.org/ for the spec."
+            exit 1
+          fi
+
+          echo "All commit messages follow the conventional commit format."

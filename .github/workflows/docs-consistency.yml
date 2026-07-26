@@ -1,0 +1,75 @@
+name: Docs Consistency
+
+on:
+  pull_request:
+    branches: [master, main]
+  push:
+    branches: [master, main]
+
+permissions:
+  contents: read
+
+jobs:
+  check-deprecation-consistency:
+    name: README vs API_STABILITY Drift Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify deprecated symbols are consistent
+        run: |
+          set -euo pipefail
+
+          FAIL=0
+
+          # --- Extract deprecated symbols from API_STABILITY.md ---
+          # Lines like: | Options | `WithOnError` | **Deprecated** | ...
+          # We extract the backtick-quoted symbol name from deprecated rows.
+          DEPRECATED_SYMBOLS=$(grep -oP '`[A-Za-z]+`.*\*\*Deprecated\*\*' API_STABILITY.md \
+            | grep -oP '`\K[A-Za-z]+' || true)
+
+          if [ -z "$DEPRECATED_SYMBOLS" ]; then
+            echo "No deprecated symbols found in API_STABILITY.md."
+            echo "If this is unexpected, check the Deprecated APIs table format."
+          fi
+
+          for symbol in $DEPRECATED_SYMBOLS; do
+            echo "Checking deprecated symbol: $symbol"
+
+            # 1. If README.md mentions the symbol, it must be marked deprecated.
+            #    (If it's not in README at all, that's not a contradiction —
+            #    just undocumented.)
+            if grep -q "$symbol" README.md; then
+              if ! grep -qi "deprecated" README.md; then
+                echo "::error::README.md mentions $symbol but has no 'deprecated' callout."
+                echo "::error::$symbol is deprecated in API_STABILITY.md."
+                FAIL=1
+              fi
+            fi
+
+            # 2. API_STABILITY.md must NOT list it as Stable.
+            # Check the Stable APIs table — grep for the symbol in a Stable row.
+            if grep -P "\|\s*\`$symbol\`.*\*\*Stable\*\*" API_STABILITY.md >/dev/null 2>&1; then
+              echo "::error::$symbol is listed as both Stable AND Deprecated in API_STABILITY.md"
+              FAIL=1
+            fi
+          done
+
+          # --- Check README deprecated symbols exist in API_STABILITY.md ---
+          # Find symbols in README marked with ⚠️ (deprecated marker).
+          README_DEPRECATED=$(grep -oP '`\K[A-Za-z]+(?=`.*⚠️)' README.md || true)
+
+          for symbol in $README_DEPRECATED; do
+            if ! grep -q "$symbol" API_STABILITY.md; then
+              echo "::error::$symbol is marked deprecated in README.md but missing from API_STABILITY.md"
+              FAIL=1
+            fi
+          done
+
+          if [ $FAIL -ne 0 ]; then
+            echo ""
+            echo "::error::Deprecation claims are inconsistent between README.md and API_STABILITY.md."
+            echo "::error::Fix the drift so both files agree on which symbols are deprecated."
+            exit 1
+          fi
+
+          echo "README.md and API_STABILITY.md deprecation claims are consistent."

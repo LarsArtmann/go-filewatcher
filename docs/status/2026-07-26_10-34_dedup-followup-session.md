@@ -28,12 +28,12 @@ have sufficed. Details in section (d) and (e).
 The prior session migrated ~15 sites and left ~20 unflagged candidates as an open
 question (Question 3). This session resolved it by migrating every defensible site:
 
-| File | Sites migrated | Notes |
-|------|---------------|-------|
-| `watcher_walk_test.go` | 10 | File already partially migrated (2 sites); now fully consistent |
-| `watcher_coverage_test.go` | 14 | Skipped 2: multi-path `New([]{dir1,dir2})`, panic test |
-| `watcher_test.go` | 17 | Skipped 8: creation-helper, error-path, manual-Close lifecycle tests |
-| `errors_test.go` | 2 | Skipped 1: closure-scoped `defer` (timing semantics differ) |
+| File                       | Sites migrated | Notes                                                                |
+| -------------------------- | -------------- | -------------------------------------------------------------------- |
+| `watcher_walk_test.go`     | 10             | File already partially migrated (2 sites); now fully consistent      |
+| `watcher_coverage_test.go` | 14             | Skipped 2: multi-path `New([]{dir1,dir2})`, panic test               |
+| `watcher_test.go`          | 17             | Skipped 8: creation-helper, error-path, manual-Close lifecycle tests |
+| `errors_test.go`           | 2              | Skipped 1: closure-scoped `defer` (timing semantics differ)          |
 
 **Final adoption:** `newTestWatcher` is now called **76 times** across 9 test files.
 Remaining inline `New(` calls (20 total) are all **deliberately retained** —
@@ -42,6 +42,7 @@ package API), error-path tests (assert on the error), and lifecycle tests (test
 `Close()` behavior explicitly).
 
 **Two compile regressions caught and fixed immediately by `go vet`:**
+
 - `watcher_test.go:438` — `w` declared-not-used (handler test only used `w` in `defer Close`)
 - `watcher_test.go:789` — `err` undefined (missed converting `_, err =` to `:=`)
 
@@ -57,6 +58,7 @@ in sibling `examples/middleware/main.go` (`exampleTimeout`, `maxEventCount`).
 ### a3. Middleware default-guard consistency — `MiddlewareThrottle`
 
 Surveyed all 11 `resolve*`/inline default guards in `middleware.go`. Policy decision:
+
 - **Shared defaulting** (2+ functions) → extract `resolve*Defaults` helper (already done prior session)
 - **Unique defaulting** (1 function) → inline guard with named const
 
@@ -121,12 +123,15 @@ now; could be richer.
 ## c) NOT STARTED
 
 ### c1. Fix the pre-existing `BenchmarkEmitEvent_NoDebounce` deadlock
+
 (See d2 — confirmed pre-existing, not my regression. Out of scope; not started.)
 
 ### c2. Push the 6 unpushed commits on `master` ahead of `origin/master`
+
 (Release-cadence question for the user — not started, awaiting Question 1.)
 
 ### c3. Status-report skill HTML format
+
 (Skill specifies styled HTML dashboard; user overrode to `.md` this session and
 prior. Not migrated — see Question 3.)
 
@@ -137,6 +142,7 @@ prior. Not migrated — see Question 3.)
 ### d1. Benchmark execution was a multi-round fumble
 
 **What happened:**
+
 1. Ran `nix run .#bench` blindly → moved to background after 3 min with no output
 2. Polled `job_output` twice → still "no output"
 3. Eventually ran `ps aux` → discovered a **stale benchmark process from 06:16**
@@ -150,7 +156,7 @@ prior. Not migrated — see Question 3.)
 benches. Wasted ~6 rounds on diagnosis that one careful command would have skipped.
 
 **Root cause:** I treated "run benchmarks" as a single black-box step instead of
-thinking about *which* benchmarks matter for *which* refactor.
+thinking about _which_ benchmarks matter for _which_ refactor.
 
 ### d2. Disk-full incident interrupted the final quality gate
 
@@ -169,7 +175,7 @@ unlike disk-backed paths.
 **Iteration 1:** Added `cancel()` before `log.Fatal`, **kept the original misplaced
 `//nolint:gocritic` on the line above.** → `nolintlint` flagged it as unused (correctly).
 **Iteration 2:** Moved nolint to same-line on **both** `log.Fatal` calls. → gocritic
-only flags the *first* fatal in a function, so the second nolint was unused → `nolintlint`.
+only flags the _first_ fatal in a function, so the second nolint was unused → `nolintlint`.
 **Iteration 3:** Removed the second nolint. → Finally clean.
 
 **What I should have known cold:** `gocritic`'s `exitAfterDefer` fires once per function
@@ -199,7 +205,7 @@ cache-vs-source discrepancy. Lesson: nix lint results can be cached; always dist
 2. **Watch `/tmp` and go-cache size during long sessions.** 15+ nix invocations on a
    tmpfs will fill it. Run `go clean -cache` between major phases.
 3. **Know the linters' firing semantics before silencing them.** `gocritic
-   exitAfterDefer` fires once per function; `nolintlint` flags unused nolints.
+exitAfterDefer` fires once per function; `nolintlint` flags unused nolints.
    Reading the lint output carefully once beats iterating.
 4. **Distrust suspiciously-fast "0 issues" results** — nix caches lint output.
 5. **`gocritic exitAfterDefer` is the wrong fight in `main()` functions.** Example
@@ -228,6 +234,7 @@ cache-vs-source discrepancy. Lesson: nix lint results can be cached; always dist
 ## f) Next Steps (ranked, up to 50)
 
 ### High impact — do next
+
 1. **Fix or delete the 4 broken `BenchmarkEmitEvent_*` benchmarks.** They block
    `nix run .#bench` from completing cleanly. (See Question 2.)
 2. **Push the 6 unpushed commits** on `master` ahead of `origin/master` — or
@@ -241,6 +248,7 @@ cache-vs-source discrepancy. Lesson: nix lint results can be cached; always dist
    tmpfs exhaustion during long sessions.
 
 ### Medium impact — quality hardening
+
 6. **Add a `//nolint:gocritic` exception at the `examples/` package level** (or via
    config) for `exitAfterDefer`, since `log.Fatal` in `main()` is intentional there.
 7. **Add unit tests for `resolveBatchDefaults`** — the third `resolve*` helper,
@@ -257,6 +265,7 @@ cache-vs-source discrepancy. Lesson: nix lint results can be cached; always dist
     (`go build ./examples/...`) — currently only validated transitively.
 
 ### Lower impact — polish
+
 13. **Extract a `setupWatchCtx(t, timeout)` test helper** — the
     `ctx := setupTestContext(t, 5*time.Second)` line repeats ~15x and could fold
     into `newTestWatcher` as an option.
@@ -335,6 +344,7 @@ cache-vs-source discrepancy. Lesson: nix lint results can be cached; always dist
 ## g) Questions I CANNOT Answer Myself
 
 ### Q1. Push policy — 6 unpushed commits on `master`
+
 There are now **6 commits on `master` ahead of `origin/master`** (the prior session
 left 5; this session's daemon added more). I cannot infer your release cadence from
 the repo history (some releases are tagged, some aren't; commits sometimes pile up,
@@ -342,6 +352,7 @@ sometimes get pushed immediately). **Do you want these pushed now, or held for a
 tagged release (`v2.2.2` / `v2.3.0`)?** I will not push without explicit instruction.
 
 ### Q2. The pre-existing `BenchmarkEmitEvent_*` deadlock — fix now or ticket it?
+
 I **proved** (via `git switch --detach de459a1`) that 4 benchmarks
 (`BenchmarkEmitEvent_NoDebounce`, `_WithMiddleware`, `_WithGlobalDebounce`,
 `_WithPerPathDebounce`) deadlock/panic due to a zero-value `&Watcher{}` missing
@@ -352,6 +363,7 @@ leave them as documented pre-existing tech debt?** Fixing would unblock benchmar
 regression detection for all future refactors.
 
 ### Q3. Status-report format: skill says HTML, you say `.md` — which wins long-term?
+
 The `status-report` skill explicitly specifies a "self-contained styled HTML
 dashboard." You've now overridden to `.md` **twice** (prior session + this one). I
 followed your instruction both times. **Should I (a) update the skill's default to
@@ -362,21 +374,22 @@ This affects whether I load the HTML design-system assets on future status reque
 
 ## Metrics Summary
 
-| Metric | Before session (`de459a1`) | After session |
-|--------|---------------------------|---------------|
-| `art-dupl -t 5` clone groups | 0 | **0** |
-| `art-dupl -t 1` clone groups | 2 | **2** (unchanged — both proven irreducible) |
-| `nix run .#check` | NON-GREEN (2 `mnd` warnings) | **GREEN — 0 issues** |
-| `newTestWatcher` call sites | ~33 | **76** |
-| Inline `New(` in tests | ~63 | **20** (all deliberately retained) |
-| Unit tests for shared helpers | 0 | **3** (8 table cases) |
-| Unpushed commits ahead of origin | 5 | **6** |
+| Metric                           | Before session (`de459a1`)   | After session                               |
+| -------------------------------- | ---------------------------- | ------------------------------------------- |
+| `art-dupl -t 5` clone groups     | 0                            | **0**                                       |
+| `art-dupl -t 1` clone groups     | 2                            | **2** (unchanged — both proven irreducible) |
+| `nix run .#check`                | NON-GREEN (2 `mnd` warnings) | **GREEN — 0 issues**                        |
+| `newTestWatcher` call sites      | ~33                          | **76**                                      |
+| Inline `New(` in tests           | ~63                          | **20** (all deliberately retained)          |
+| Unit tests for shared helpers    | 0                            | **3** (8 table cases)                       |
+| Unpushed commits ahead of origin | 5                            | **6**                                       |
 
 ---
 
 ## Files Changed This Session
 
 **Code (authored by this session):**
+
 - `options_test.go` — 2 `newTestWatcher` migrations + `TestRequireNonNegativeDuration`
 - `middleware_test.go` — `TestResolveRateLimitDefaults` + `TestResolveMaxFailures`
 - `watcher_test.go` — 17 `newTestWatcher` migrations

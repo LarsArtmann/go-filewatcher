@@ -8,6 +8,12 @@
 
 ## At a Glance
 
+> **Update 2026-07-26 (later sessions):** the two 🔴 items below (split brain +
+> docs drift) are **FIXED**. `WithOnError` and `MiddlewareRateLimit` were removed
+> from the Stable APIs table; README, MIGRATION.md, and the website all carry
+> deprecation markers now. See [Resolution](#resolution-2026-07-26-later-sessions)
+> below.
+
 | Metric                   | Before session | After session                | Status |
 | ------------------------ | -------------- | ---------------------------- | ------ |
 | HIGH priority items      | 3              | 0                            | ✅     |
@@ -15,8 +21,8 @@
 | Flaky tests              | 2              | 0 (unverified statistically) | 🟡     |
 | Deprecated APIs          | 1              | 3                            | 🟡     |
 | Linter issues            | 0              | 0                            | ✅     |
-| **Split brains created** | 0              | **2**                        | 🔴     |
-| **Docs drift created**   | 0              | **3 files**                  | 🔴     |
+| **Split brains created** | 0              | **2** ~~🔴~~ → **FIXED**     | ✅     |
+| **Docs drift created**   | 0              | **3 files** ~~🔴~~ → **FIXED**| ✅     |
 
 ---
 
@@ -75,9 +81,12 @@ Added Fixed + Deprecated entries under `[Unreleased]`. Accurate. **But** no vers
 
 ---
 
-## d) TOTALLY FUCKED UP 🔴
+## d) TOTALLY FUCKED UP ~~🔴~~ → FIXED
 
-### 1. SPLIT BRAIN: deprecated symbols still listed as "Stable"
+> **All three items below were fixed in later 2026-07-26 sessions.** See the
+> Resolution appendix at the end of this file.
+
+### 1. SPLIT BRAIN: deprecated symbols still listed as "Stable" — FIXED
 
 **This is the worst thing I did this session.** In `API_STABILITY.md`:
 
@@ -87,11 +96,11 @@ Added Fixed + Deprecated entries under `[Unreleased]`. Accurate. **But** no vers
 
 A reader now sees the same symbol called both "Stable" and "Deprecated" in one file. This is a textbook split brain. I edited the Deprecated section and the "v3 candidates" section but **never went back and pruned the Stable table**. Sloppy.
 
-### 2. DOCS DRIFT: `README.md` now lies
+### 2. DOCS DRIFT: `README.md` now lies — FIXED
 
 `README.md:153` lists `WithOnError(fn)` and `README.md:204` lists `MiddlewareRateLimit(maxEvents)` in feature tables, with no deprecation marker. The README is the sales/onboarding page — new users will adopt the deprecated APIs. I touched `API_STABILITY.md` and `CHANGELOG.md` but never grep'd the README for the symbols I just deprecated.
 
-### 3. Dismissed the broken `nix run .#ci` as "cosmetic"
+### 3. Dismissed the broken `nix run .#ci` as "cosmetic" — FIXED
 
 The `tidy` step failed with `open .../go.mod: permission denied` (Nix sandbox read-only source). I called it "cosmetic" and ran checks directly. **I did not investigate whether `nix run .#ci` is broken for everyone**, whether the `proxyVendor` setup is the cause, or file a follow-up. If the documented CI command doesn't run, that's a real regression I waved away.
 
@@ -210,3 +219,24 @@ I made these calls autonomously based on the "intentional boilerplate reducers /
 **Documentation discipline: poor.** I created a live split brain (same symbol "Stable" + "Deprecated") and left the README and website stale. This is the kind of inconsistency the project's own `docs-health` skill exists to prevent. I should have run a deprecation-consistency check before declaring done.
 
 **Honest grade: B−.** The engineering is solid; the follow-through on docs consistency is not.
+
+---
+
+## Resolution (2026-07-26, later sessions)
+
+All P0 damage items from this report's §d and §f lists were resolved in
+subsequent 2026-07-26 sessions. Details in CHANGELOG `[Unreleased]`.
+
+| Report item                                                           | Resolution                                                                                         |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| §d1 — Split brain (WithOnError/MiddlewareRateLimit in Stable + Deprecated) | DONE: removed from Stable APIs table (`API_STABILITY.md`)                                          |
+| §d2 — README docs drift (no deprecation markers)                      | DONE: ⚠️ markers added to README tables (`README.md:153,204`)                                       |
+| §d3 — `nix run .#ci` tidy permission failure                          | DONE: ci/fmt/tidy apps now run from caller CWD, not read-only nix store (`flake.nix`)               |
+| §f P0#3 — Mark deprecated in README                                    | DONE (same as §d2)                                                                                  |
+| §f P0#4 — v2.3→v3 MIGRATION.md section                                 | DONE: `MIGRATION.md` "Migrating to v2.3+" with before/after snippets                               |
+| §f P0#5 — Website deprecation badges                                   | DONE: Starlight `:::caution[Deprecated]` blocks in `api-reference.mdx`                             |
+| §f P0#6 — Investigate nix ci tidy failure                             | DONE (same as §d3)                                                                                  |
+| §f P1#9 — Cut v2.3.0                                                   | OPEN: release-please wired in; release PR auto-generates from conventional commits                  |
+| §Q1 — Fix split brain now or release first?                           | RESOLVED: remediation was done first, release is pending via release-please                         |
+| §Q2 — nix ci tidy failure: quirk or regression?                       | RESOLVED: was a real bug (read-only nix store); fixed by running from caller CWD                    |
+| §Q3 — v3 "Keep" verdicts                                               | OPEN: still pending user confirmation before v3 hardens                                             |

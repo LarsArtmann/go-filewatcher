@@ -413,19 +413,16 @@ This affects whether I load the HTML design-system assets on future status reque
 
 ## Resolution (2026-07-26)
 
-This was the most recent session; most of its work is current. One item closed
-since, the rest routed to the backlog:
+> **Updated 2026-07-26 (later sessions):** All items below have since shipped.
+> The original table marked them OPEN; they are now DONE — see CHANGELOG
+> `[Unreleased]` for details.
 
-| Item                                              | Resolution                                      |
-| ------------------------------------------------- | ----------------------------------------------- |
-| §c2 / §f#2 / Q1 — push commits                    | DONE: pushed (0 ahead/0 behind `origin/master`) |
-| §c1 / §f#1 / Q2 — `BenchmarkEmitEvent_*` deadlock | OPEN: TODO_LIST HIGH                            |
-| §f#3 — `mustWatch` helper for examples            | OPEN: TODO_LIST MEDIUM                          |
-| §f#4 — benchmark baseline capture                 | OPEN: TODO_LIST LOW                             |
-| §f#5 — `GOTMPDIR` disk-backed in devShell         | OPEN: TODO_LIST LOW                             |
-| §f#6 — examples package-level `//nolint:gocritic` | OPEN: TODO_LIST LOW                             |
-| §Q3 — status-report format (HTML vs `.md`)        | OPEN: process decision for the user             |
-
-The docs-health / update-old-docs pass that produced this annotation also rebuilt
-TODO_LIST.md, ROADMAP.md, FEATURES.md, and CHANGELOG.md from the verified current
-state of the repo.
+| Item                                              | Resolution                                                                                     |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| §c2 / §f#2 / Q1 — push commits                    | DONE: pushed (0 ahead/0 behind `origin/master`)                                                |
+| §c1 / §f#1 / Q2 — `BenchmarkEmitEvent_*` deadlock | DONE: fixed via `benchmarkEmitEvent` helper (non-blocking drain); CHANGELOG `[Unreleased]` Fixed |
+| §f#3 — `mustWatch` helper for examples            | DONE: `MustWatch` in `examples/demo/shared.go`; all 4 examples migrated; art-dupl `-t 1` = 0   |
+| §f#4 — benchmark baseline capture                 | DONE: `nix run .#bench-baseline` → gitignored `bench-baseline.txt`                             |
+| §f#5 — `GOTMPDIR` disk-backed in devShell         | DONE: `flake.nix` shellHook exports disk-backed GOTMPDIR                                       |
+| §f#6 — examples package-level `//nolint:gocritic` | DONE: `.golangci.yml` path+text exclusion for `examples/` + `exitAfterDefer`                   |
+| §Q3 — status-report format (HTML vs `.md`)        | OPEN: process decision for the user (`.md` used consistently across all 2026-07-26 sessions)   |

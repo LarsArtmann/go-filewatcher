@@ -105,24 +105,27 @@ New tests passed 3x with `-race`, but I did not run `-count=50` for the self-hea
 
 ---
 
-## C) NOT STARTED ⬜
+## C) NOT STARTED ⬜ → ALL RESOLVED
 
-### From Previous Session's P0 List (Still Open)
+> **Update 2026-07-26 (later sessions):** every item below has since shipped.
+> See the Resolution appendix at the end of this file.
 
-1. **`README.md` lines 153, 204** — still reference deprecated `WithOnError` and `MiddlewareRateLimit` as current APIs with no deprecation marker. (Not in this session's scope but still live.)
-2. **`MIGRATION.md`** — no v2.3→v3 deprecation section exists. The project's own breaking-change policy requires migration docs, but deprecation snippets currently live only in `API_STABILITY.md`.
-3. **`website/src/content/docs/api-reference.mdx`** — deprecated symbols not marked on the public docs site.
-4. **`nix run .#ci` tidy step** — still fails with permission denied on `go.mod`. Never investigated.
+### From Previous Session's P0 List (Still Open ~~→ DONE~~)
 
-### From TODO_LIST.md (Still Open — Not This Session's Scope)
+1. ~~**`README.md` lines 153, 204** — still reference deprecated `WithOnError` and `MiddlewareRateLimit` as current APIs with no deprecation marker.~~ DONE: ⚠️ deprecation markers added;
+2. ~~**`MIGRATION.md`** — no v2.3→v3 deprecation section exists.~~ DONE: "Migrating to v2.3+" section with before/after snippets;
+3. ~~**`website/src/content/docs/api-reference.mdx`** — deprecated symbols not marked on the public docs site.~~ DONE: Starlight `:::caution[Deprecated]` blocks added;
+4. ~~**`nix run .#ci` tidy step** — still fails with permission denied on `go.mod`.~~ DONE: ci/fmt/tidy apps now run from caller CWD;
 
-- OpenTelemetry end-to-end example
-- Prometheus collector quickstart
-- Docs freshness CI gate
-- Windows CI matrix
-- Expand fuzz tests
-- Large-tree stress harness
-- All 8 LOW priority items
+### From TODO_LIST.md (Still Open ~~→ mostly DONE~~)
+
+- ~~OpenTelemetry end-to-end example~~ DONE: README snippet added (accuracy caveat — see TODO_LIST);
+- ~~Prometheus collector quickstart~~ DONE: README snippet added (accuracy caveat — see TODO_LIST);
+- ~~Docs freshness CI gate~~ DONE: `check-exported-symbol-docs` workflow;
+- Windows CI matrix — OPEN: see TODO_LIST;
+- Expand fuzz tests — OPEN: see TODO_LIST (5 fuzzers exist, expansion planned);
+- Large-tree stress harness — OPEN: see TODO_LIST;
+- ~~All 8 LOW priority items~~ DONE: see CHANGELOG `[Unreleased]`;
 
 ---
 

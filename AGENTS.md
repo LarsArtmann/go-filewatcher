@@ -1,6 +1,6 @@
 # Agent Guide: go-filewatcher
 
-**Go 1.26.4** | `github.com/larsartmann/go-filewatcher/v2` | **MIT License**
+**Go 1.26.5** | `github.com/larsartmann/go-filewatcher/v2` | **MIT License**
 
 > **Companion docs:** [FEATURES.md](./FEATURES.md) (feature inventory) ·
 > [ROADMAP.md](./ROADMAP.md) (long-term direction) · [TODO_LIST.md](./TODO_LIST.md)

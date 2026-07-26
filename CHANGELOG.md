@@ -9,6 +9,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - **Self-heal respects permanent failures** (`watcher_selfheal.go`) — `attemptSelfHeal` now checks `IsPermanent()` and abandons paths that can never recover (deleted directory, wrong entry type) instead of retrying them forever. Retry budget is now spent only on genuinely transient failures.
+- Go toolchain bumped from 1.26.4 to 1.26.5
+- **Middleware default-guard consistency** (`middleware.go`) — every middleware default is now a named const (`defaultThrottleEvents` extracted; zero magic literals remain in default-guard code). Shared defaulting (2+ functions) goes through a `resolve*Defaults` helper; single-function defaulting uses an inline guard with a named const.
+- **Debouncer `Stop` lifecycle consolidated** (`debouncer.go`) — `baseDebouncer.stop(cleanup)` centralizes the lock → markStopped → cleanup → unlock → wait envelope shared by `Debouncer.Stop()` and `GlobalDebouncer.Stop()`.
+- **Negative-duration panics unified** (`options.go`) — `requireNonNegativeDuration(optionName, delay)` is now used by both `WithDebounce` and `WithPerPathDebounce`.
+
+### Internal
+
+- **Test-helper adoption** — `newTestWatcher` (the pre-existing but underused `New + err-check + defer Close` helper) now has 76 call sites across 9 test files; inline `New(` calls in tests reduced from ~63 to 20 (all deliberately retained: benchmarks, `Example*` functions, error-path and lifecycle tests).
+- **Direct unit tests** added for the shared helpers: `resolveRateLimitDefaults` (6 table cases), `resolveMaxFailures` (3 table cases), `requireNonNegativeDuration` (panic + zero/positive subtests).
+- **Examples lint hygiene** — extracted `debounceDelay` named consts in `examples/basic` and `examples/per-path-debounce` (resolves pre-existing `mnd` warnings); fixed `gocritic exitAfterDefer` and stale `nolintlint` directives in `examples/middleware` and `examples/filter-generated`.
+- `.editorconfig` added for consistent editor settings across platforms.
+- `art-dupl` clone groups driven to zero at the recommended threshold (`-t 5`); the 2 surviving groups at `-t 1` are structurally irreducible (one enforced by `paralleltest`, one by Go `main()` idiom in examples).
 
 ## [2.2.1] - 2026-07-24
 

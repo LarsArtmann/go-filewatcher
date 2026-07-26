@@ -1,6 +1,6 @@
 # Feature Inventory
 
-**Last Updated:** 2026-07-13 · **Version:** v2.2.0
+**Last Updated:** 2026-07-26 · **Version:** v2.2.1
 
 Honest status of every capability in go-filewatcher. Statuses:
 
@@ -139,7 +139,7 @@ Honest status of every capability in go-filewatcher. Statuses:
 | Documentation website            | ✅     | Astro + Starlight site at `filewatcher.lars.software`                 |
 | Godoc examples                   | ✅     | 26 examples in `example_test.go`                                      |
 | Runnable example programs        | ✅     | `examples/{basic,middleware,per-path-debounce,demo,filter-generated}` |
-| Cross-platform releases          | ✅     | `.goreleaser.yml` + `release.yml` workflow on `v*` tags               |
+| Cross-platform releases          | 🟡     | `release.yml` triggers on `v*` tags (tests + lint + GitHub Release with auto-generated notes), but `.goreleaser.yml` is configured and NOT invoked — no compiled binaries shipped yet |
 | Issue templates                  | ✅     | Bug report + feature request                                          |
 
 ## Planned / Worth Considering
@@ -151,7 +151,7 @@ See [ROADMAP.md](./ROADMAP.md) for long-term direction and [TODO_LIST.md](./TODO
 | Windows-specific edge case tests                | 🔵     | Currently CI runs Linux only                                           |
 | Fuzz testing expansion                          | 🔵     | Existing fuzz tests; expand to more surfaces                           |
 | Error simulation testing framework              | 🔵     | For testing error middleware paths                                     |
-| Goreleaser release pipeline                     | ✅     | `release.yml` triggers on `v*` tags with tests + lint + GitHub Release |
+| Goreleaser release pipeline                     | 🟡     | `.goreleaser.yml` configured but NOT invoked by `release.yml`; release workflow ships GitHub Releases, not cross-platform artifacts |
 | Semantic-release automation                     | ⚪     | Currently manual version bumps                                         |
 | Localizable error messages                      | ⚪     | Sentinel errors are English-only today                                 |
 | fsnotify v2 tracking                            | ⚪     | Monitor upstream for breaking changes                                  |

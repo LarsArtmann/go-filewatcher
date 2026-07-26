@@ -92,6 +92,22 @@
           ...
         }:
         let
+          # Hermetically-built benchstat from golang.org/x/perf (avoids
+          # `go run ...@latest` network dependency in bench-diff).
+          benchstat = pkgs.buildGoModule {
+            pname = "benchstat";
+            version = "unstable-2025-07-26";
+            src = pkgs.fetchFromGitHub {
+              owner = "golang";
+              repo = "perf";
+              rev = "82a0b07e230d76fa1b3036c383d7a98172f87334";
+              hash = "sha256-TOzEoIWofdWlAfKWBS5KWxVpHsn2wx6GZDjACxFZiKI=";
+            };
+            vendorHash = "sha256-PBvMccuMBBGfJlETw0Xjm5Ojkgg1BS+y9Kc3vwGW5kk=";
+            subPackages = [ "cmd/benchstat" ];
+            doCheck = false;
+          };
+
           mkApp = name: text: {
             type = "app";
             program = "${
@@ -101,6 +117,20 @@
                   go_1_26
                   golangci-lint
                   gofumpt
+                ];
+              }
+            }/bin/${name}";
+          };
+
+          # Like mkApp but also includes benchstat in runtimeInputs.
+          mkBenchApp = name: text: {
+            type = "app";
+            program = "${
+              pkgs.writeShellApplication {
+                inherit name text;
+                runtimeInputs = with pkgs; [
+                  go_1_26
+                  benchstat
                 ];
               }
             }/bin/${name}";
@@ -221,22 +251,27 @@
             # Capture a clean benchmark baseline to bench-baseline.txt for later
             # benchstat comparison. Omits -race (it adds overhead and noise) and
             # runs -count=6 so benchstat has enough samples for stable deltas.
-            # Runs in the CALLER's working directory (not the nix store copy) so
-            # the gitignored baseline lands in the repo root — invoke from the
-            # project root.
-            bench-baseline = mkApp "bench-baseline" ''
-              go test -bench=. -benchmem -count=6 ./... | tee bench-baseline.txt
+            #
+            # IMPORTANT: Runs in the CALLER's working directory (not the nix
+            # store copy) so the gitignored baseline lands in the repo root.
+            # Invoke from the project root: nix run .#bench-baseline
+            bench-baseline = mkBenchApp "bench-baseline" ''
+              go test -bench=. -benchmem -count=6 ./... 2>/dev/null | tee bench-baseline.txt
             '';
 
             # Run fresh benchmarks and diff against bench-baseline.txt with
-            # benchstat. Requires a captured baseline (run bench-baseline first).
-            bench-diff = mkApp "bench-diff" ''
+            # the hermetically-built benchstat (no network needed).
+            # Requires a captured baseline (run bench-baseline first).
+            #
+            # IMPORTANT: Runs in the CALLER's working directory. Invoke from
+            # the project root: nix run .#bench-diff
+            bench-diff = mkBenchApp "bench-diff" ''
               if [ ! -f bench-baseline.txt ]; then
                 echo "bench-baseline.txt not found. Run 'nix run .#bench-baseline' first."
                 exit 1
               fi
-              go test -bench=. -benchmem -count=6 ./... > "''${TMPDIR:-/tmp}/bench-new.txt"
-              go run golang.org/x/perf/cmd/benchstat@latest bench-baseline.txt "''${TMPDIR:-/tmp}/bench-new.txt"
+              go test -bench=. -benchmem -count=6 ./... 2>/dev/null > "''${TMPDIR:-/tmp}/bench-new.txt"
+              benchstat bench-baseline.txt "''${TMPDIR:-/tmp}/bench-new.txt"
             '';
 
             coverage = mkApp "coverage" ''

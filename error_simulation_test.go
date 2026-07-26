@@ -78,6 +78,13 @@ func TestSelfHeal_HealsFailedPathAfterRetry(t *testing.T) {
 		t.Fatal("expected failed paths after ENOSPC")
 	}
 
+	// Each path should have been attempted at least once (and failed).
+	for _, p := range fake.addedPaths {
+		if fake.addAttemptCount(p) < 1 {
+			t.Errorf("path %q was never attempted", p)
+		}
+	}
+
 	// Verify WatchErrors counter was incremented.
 	if got := watcher.Stats().WatchErrors; got == 0 {
 		t.Error("expected WatchErrors > 0")
@@ -91,6 +98,14 @@ func TestSelfHeal_HealsFailedPathAfterRetry(t *testing.T) {
 	waitForCondition(t, 2*time.Second, "failedPaths healed to zero", func() bool {
 		return watcher.failedPathCount() == 0
 	})
+
+	// Self-heal should have retried: each path should now have >= 2 attempts
+	// (initial failure + at least one retry that succeeded).
+	for _, p := range fake.addedPaths {
+		if attempts := fake.addAttemptCount(p); attempts < 2 {
+			t.Errorf("path %q: expected >= 2 add attempts after self-heal, got %d", p, attempts)
+		}
+	}
 
 	cancelAndDrain(cancel, events)
 }

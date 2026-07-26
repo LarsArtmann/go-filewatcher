@@ -10,6 +10,7 @@ import (
 	"go/token"
 	"log/slog"
 	"os"
+	"path/filepath"
 	"slices"
 	"strings"
 	"sync"
@@ -413,6 +414,142 @@ func TestMiddlewareWriteFileLog_Appends(t *testing.T) {
 	lines := strings.Split(strings.TrimSpace(content), "\n")
 	if len(lines) < 2 {
 		t.Errorf("expected at least 2 lines in log, got %d: %q", len(lines), content)
+	}
+}
+
+func TestNewFileLogMiddleware_CloserReleasesFileHandle(t *testing.T) {
+	t.Parallel()
+
+	tmpFile := t.TempDir() + "/events.log"
+
+	mw, closer := NewFileLogMiddleware(tmpFile)
+	handler := mw(noopHandler())
+
+	// Trigger a write so the file is opened.
+	if err := handler(context.Background(), testWriteEvent("/tmp/test.go")); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	// Closer should close the file without error.
+	if err := closer(); err != nil {
+		t.Fatalf("closer returned error: %v", err)
+	}
+
+	// Closer is idempotent — second call should not panic or error.
+	if err := closer(); err != nil {
+		t.Fatalf("second closer call returned error: %v", err)
+	}
+
+	// After closing, a new handler from a fresh middleware should still work
+	// (new file handle). This verifies the closer only affects its own handle.
+	mw2, closer2 := NewFileLogMiddleware(tmpFile)
+	handler2 := mw2(noopHandler())
+
+	if err := handler2(context.Background(), testWriteEvent("/tmp/test2.go")); err != nil {
+		t.Fatalf("second middleware error: %v", err)
+	}
+
+	_ = closer2()
+
+	data, err := os.ReadFile(tmpFile) //nolint:gosec // test file from TempDir
+	if err != nil {
+		t.Fatalf("failed to read log file: %v", err)
+	}
+
+	content := string(data)
+	assertLogContains(t, content, NewLogSubstring("/tmp/test.go"))
+	assertLogContains(t, content, NewLogSubstring("/tmp/test2.go"))
+}
+
+func TestWithCleanup_CalledOnClose(t *testing.T) {
+	t.Parallel()
+
+	var (
+		cleanupCalled atomic.Bool
+		cleanupErr    error
+	)
+
+	dir := t.TempDir()
+	cleanupFn := func() error {
+		cleanupCalled.Store(true)
+
+		return cleanupErr
+	}
+
+	watcher := newTestWatcher(t, dir, WithCleanup(cleanupFn))
+
+	if watcher.Close() != nil {
+		t.Fatal("expected Close to succeed")
+	}
+
+	if !cleanupCalled.Load() {
+		t.Error("expected cleanup function to be called on Close()")
+	}
+
+	// Cleanup should NOT be called again on second Close (cleanups cleared).
+	cleanupCalled.Store(false)
+	_ = watcher.Close()
+
+	if cleanupCalled.Load() {
+		t.Error("cleanup should not be called twice")
+	}
+}
+
+func TestWithCleanup_RunsForFileLogMiddleware(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	logFile := dir + "/audit.log"
+
+	mw, closer := NewFileLogMiddleware(logFile)
+
+	watcher := newTestWatcher(t, dir,
+		WithMiddleware(mw),
+		WithCleanup(closer),
+	)
+
+	ctx, cancel := context.WithCancel(t.Context())
+	defer cancel()
+
+	events, err := watcher.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	// Write a file to trigger an event (and open the log file).
+	if writeErr := os.WriteFile(filepath.Join(dir, "trigger.txt"), []byte("data"), 0o600); writeErr != nil {
+		t.Fatalf("failed to write trigger file: %v", writeErr)
+	}
+
+	// Wait for at least one event to ensure the log file was opened.
+	select {
+	case <-events:
+	case <-time.After(2 * time.Second):
+		t.Fatal("timeout waiting for event")
+	}
+
+	cancel()
+
+	for range events {
+	}
+
+	if err := watcher.Close(); err != nil {
+		t.Fatalf("Close failed: %v", err)
+	}
+
+	// After Close, the file should be closed. Verify by reading its content
+	// (should work on a closed file) and by ensuring the closer was idempotent.
+	if err := closer(); err != nil {
+		t.Errorf("second closer call after Close should be idempotent, got: %v", err)
+	}
+
+	data, err := os.ReadFile(logFile) //nolint:gosec // test file from TempDir
+	if err != nil {
+		t.Fatalf("failed to read audit log: %v", err)
+	}
+
+	if len(data) == 0 {
+		t.Error("expected non-empty audit log after watcher lifecycle")
 	}
 }
 

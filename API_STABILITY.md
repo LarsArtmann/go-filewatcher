@@ -36,11 +36,11 @@ These APIs work as documented but may have behavioral changes:
 
 | Category   | Symbols                                                                                                                                                                                                        | Status       |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| Features   | `WithPolling`, `WithPollInterval`, `WithDebug`, `WithFollowSymlinks`, `WithSelfHeal`, `WithContentHashing`                                                                                                     | **Evolving** |
+| Features   | `WithPolling`, `WithPollInterval`, `WithDebug`, `WithFollowSymlinks`, `WithSelfHeal`, `WithContentHashing`, `WithCleanup`                                                                                       | **Evolving** |
 | Debouncer  | `GlobalDebouncer`, `Debouncer`, `DebounceKey`                                                                                                                                                                  | **Evolving** |
 | Types      | `EventPath`, `OpString`, `DebounceKey`, `RootPath`, `OTelSpan`                                                                                                                                                 | **Evolving** |
 | Filters    | `FilterContentHash`, `FilterWithMeta`, `FilterFromWithMeta`, `FilterWithMetaAnd`, `FilterWithMetaOr`, `FilterWithMetaNot`, `WithMeta`, `MatchResult`                                                           | **Evolving** |
-| Middleware | `MiddlewareCircuitBreaker`, `MiddlewareThrottle`, `MiddlewareErrorSanitization`, `MiddlewareErrorRateLimit`, `MiddlewareErrorRecovery`, `MiddlewareErrorCorrelation`, `MiddlewareErrorBatch`, `OTelMiddleware` | **Evolving** |
+| Middleware | `MiddlewareCircuitBreaker`, `MiddlewareThrottle`, `MiddlewareErrorSanitization`, `MiddlewareErrorRateLimit`, `MiddlewareErrorRecovery`, `MiddlewareErrorCorrelation`, `MiddlewareErrorBatch`, `OTelMiddleware`, `NewFileLogMiddleware` | **Evolving** |
 
 Evolving APIs will not be removed without a deprecation period of at least
 one minor version.

@@ -198,8 +198,9 @@
               go vet ./...
             '';
 
+            # Writes to the working tree, so run in the CALLER's directory
+            # (not the read-only nix store copy). Invoke from repo root.
             fmt = mkApp "fmt" ''
-              cd "${self}"
               go fmt ./...
               gofumpt -w .
             '';
@@ -237,8 +238,9 @@
               go tool cover -func="$COVERAGE_OUT"
             '';
 
+            # Writes to the working tree, so run in the CALLER's directory
+            # (not the read-only nix store copy). Invoke from repo root.
             tidy = mkApp "tidy" ''
-              cd "${self}"
               go mod tidy
             '';
 
@@ -253,12 +255,14 @@
               echo "All checks passed."
             '';
 
+            # Writes to the working tree (tidy + fmt), so run in the CALLER's
+            # directory — not the read-only nix store copy. Invoke from repo root.
             ci = mkApp "ci" ''
-              cd "${self}"
               echo "Running tidy..."
               go mod tidy
               echo "Running fmt..."
               go fmt ./...
+              gofumpt -w .
               echo "Running vet..."
               go vet ./...
               echo "Running lint..."

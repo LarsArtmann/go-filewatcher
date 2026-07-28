@@ -46,9 +46,9 @@ func TestSelfHeal_TracksFailedPaths(t *testing.T) {
 
 	watcher := newTestWatcher(t, tmpDir)
 
-	// Manually add non-existent paths
-	watcher.failedPaths["/nonexistent/path"] = struct{}{}
-	watcher.failedPaths["/another/missing"] = struct{}{}
+	// Manually add non-existent paths (value is original-case path)
+	watcher.failedPaths["/nonexistent/path"] = "/nonexistent/path"
+	watcher.failedPaths["/another/missing"] = "/another/missing"
 
 	if got := watcher.failedPathCount(); got != 2 {
 		t.Errorf("failedPathCount = %d, want 2", got)

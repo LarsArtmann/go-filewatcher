@@ -33,7 +33,7 @@ func (c FilesystemCaseSensitivity) String() string {
 	case CaseSensitivityAuto:
 		return "auto"
 	default:
-		return "unknown"
+		return categoryStringUnknown
 	}
 }
 

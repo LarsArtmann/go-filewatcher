@@ -213,27 +213,9 @@ func New( //nolint:funlen // constructor with full field initialization
 		return nil, fmt.Errorf("%w: at least one path must be provided", ErrNoPaths)
 	}
 
-	// Validate all paths exist and normalize to absolute, cleaned paths.
-	// Storing relative or differently-cased paths leads to mismatches between
-	// Add(), Remove(), and event paths on case-insensitive filesystems.
-	normalizedPaths := make([]string, 0, len(paths))
-
-	for _, p := range paths {
-		abs, resolveErr := filepath.Abs(p)
-		if resolveErr != nil {
-			return nil, fmt.Errorf("resolving path %q during validation: %w", p, resolveErr)
-		}
-
-		info, statErr := os.Stat(abs)
-		if statErr != nil {
-			return nil, fmt.Errorf("%w: path %q (resolved: %q)", ErrPathNotFound, p, abs)
-		}
-
-		if !info.IsDir() {
-			return nil, fmt.Errorf("%w: path %q must be a directory", ErrPathNotDir, p)
-		}
-
-		normalizedPaths = append(normalizedPaths, abs)
+	normalizedPaths, err := validateAndNormalizePaths(paths)
+	if err != nil {
+		return nil, err
 	}
 
 	w := &Watcher{
@@ -754,4 +736,30 @@ func (w *Watcher) Close() error {
 	}
 
 	return nil
+}
+
+// validateAndNormalizePaths validates that all paths exist and are directories,
+// then returns absolute paths. Centralized so the constructor stays lean.
+func validateAndNormalizePaths(paths []string) ([]string, error) {
+	normalized := make([]string, 0, len(paths))
+
+	for _, p := range paths {
+		abs, resolveErr := filepath.Abs(p)
+		if resolveErr != nil {
+			return nil, fmt.Errorf("resolving path %q during validation: %w", p, resolveErr)
+		}
+
+		info, statErr := os.Stat(abs)
+		if statErr != nil {
+			return nil, fmt.Errorf("%w: path %q (resolved: %q)", ErrPathNotFound, p, abs)
+		}
+
+		if !info.IsDir() {
+			return nil, fmt.Errorf("%w: path %q must be a directory", ErrPathNotDir, p)
+		}
+
+		normalized = append(normalized, abs)
+	}
+
+	return normalized, nil
 }

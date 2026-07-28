@@ -54,8 +54,9 @@ func (w *Watcher) attemptSelfHeal() {
 	}
 
 	// Snapshot the failed paths to avoid holding the lock during fsnotify operations.
+	// Values are original-case paths; keys are canonical pathKeys.
 	paths := make([]string, 0, len(w.failedPaths))
-	for p := range w.failedPaths {
+	for _, p := range w.failedPaths {
 		paths = append(paths, p)
 	}
 

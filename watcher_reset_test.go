@@ -98,3 +98,42 @@ func TestWatcher_Reset_WhileRunning(t *testing.T) {
 		t.Error("expected error when resetting while running")
 	}
 }
+
+func TestWatcher_Reset_PreservesCaseSensitivity(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	watcher, err := New(
+		[]string{tmpDir},
+		WithCaseSensitivity(CaseInsensitive),
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Verify config before close
+	if watcher.caseSensitivity != CaseInsensitive {
+		t.Fatalf("pre-close caseSensitivity = %v, want CaseInsensitive", watcher.caseSensitivity)
+	}
+
+	closeErr := watcher.Close()
+	if closeErr != nil {
+		t.Fatal(closeErr)
+	}
+
+	resetErr := watcher.Reset()
+	if resetErr != nil {
+		t.Fatalf("Reset() failed: %v", resetErr)
+	}
+
+	// Config should survive Reset
+	if watcher.caseSensitivity != CaseInsensitive {
+		t.Errorf("post-reset caseSensitivity = %v, want CaseInsensitive", watcher.caseSensitivity)
+	}
+
+	// effectiveCaseSensitivity should be re-resolved
+	if watcher.effectiveCaseSensitivity != CaseInsensitive {
+		t.Errorf("post-reset effectiveCaseSensitivity = %v, want CaseInsensitive", watcher.effectiveCaseSensitivity)
+	}
+}

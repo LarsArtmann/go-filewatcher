@@ -13,6 +13,7 @@ Common issues and solutions when using go-filewatcher.
 - [Watcher Won't Start](#watcher-wont-start)
 - [Race Detector Warnings](#race-detector-warnings)
 - [Platform-Specific Issues](#platform-specific-issues)
+- [Filesystem Compatibility](#filesystem-compatibility)
 
 ## No Events Received
 
@@ -197,3 +198,56 @@ If you find one, please file a bug report.
 
 - Long paths (>260 chars) may cause issues. Use UNC paths (`\\?\C:\...`).
 - Network drives may not emit events. Use `WithPolling(true)`.
+
+## Filesystem Compatibility
+
+### Wrong Events or Missing Matches on macOS
+
+**Symptoms:** Exclude paths don't match, gitignore rules are silently bypassed,
+or debounce doesn't coalesce events for files with non-ASCII names (e.g., `café`,
+`München`).
+
+**Cause:** macOS stores filenames as NFD (decomposed Unicode) but most
+user-configured paths are NFC (composed). Additionally, APFS is
+case-insensitive by default. The watcher handles both transparently via
+`pathKey()`, which applies NFC normalization and optional case-folding to all
+internal path comparisons.
+
+**Check:**
+
+```go
+// Verify the resolved mode
+stats := watcher.Stats()
+fmt.Println(stats.CaseSensitivity) // "case-insensitive" on macOS
+```
+
+**Fix:** The default `CaseSensitivityAuto` handles this automatically. For
+non-default filesystems (e.g., case-sensitive APFS), override explicitly:
+
+```go
+filewatcher.WithCaseSensitivity(filewatcher.CaseSensitive)
+```
+
+### No Events on NFS/Docker Volumes
+
+**Symptoms:** `Watch()` succeeds but no events arrive from files modified
+through NFS mounts, Docker bind-mounts, or FUSE filesystems.
+
+**Cause:** These filesystems may not support inotify/fsnotify events.
+
+**Fix:** Enable polling mode:
+
+```go
+filewatcher.WithPolling(true),
+filewatcher.WithPollInterval(500 * time.Millisecond),
+```
+
+### Case-Only Rename Produces Phantom Events
+
+**Symptoms:** On case-insensitive filesystems (NTFS, APFS), renaming `File.go`
+to `file.go` produces Create + Remove events instead of being recognized as the
+same file.
+
+**Status:** Fixed. The poll loop snapshot now uses canonical pathKeys for map
+comparison, so case-only renames don't trigger phantom events. Ensure
+`WithCaseSensitivity(CaseInsensitive)` is set (default on macOS/Windows).

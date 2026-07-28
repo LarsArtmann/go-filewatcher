@@ -5,8 +5,6 @@ import (
 	"runtime"
 	"strings"
 	"testing"
-
-	"golang.org/x/text/unicode/norm"
 )
 
 func TestFilesystemCaseSensitivity_String(t *testing.T) {

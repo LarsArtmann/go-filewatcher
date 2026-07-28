@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **NFC Unicode normalization in `pathKey()`** (`filesystem.go`) — all path comparisons now apply `norm.NFC.String()` before case-folding, fixing the invisible mismatch where macOS stores filenames as NFD (decomposed) but user-configured paths are NFC (composed). Without this, exclude-path matching, debounce deduplication, and gitignore prefix checks silently fail on any non-ASCII filename (`café`, `München`, `東京`). Idempotent on ASCII, zero impact on pure-ASCII paths.
+- **`normalizePath()` helper** (`filesystem.go`) — `filepath.Clean(filepath.Abs(path))` applied to all path resolution sites (`New`, `Add`, `Remove`, `WithExcludePaths`, `FilterExcludePaths`), preventing trailing-slash, `..`, and redundant-separator mismatches between operations.
+- **`addToWatchList()` / `rebuildWatchListKeys()` helpers** (`watcher.go`) — single point of mutation for the parallel `watchList` slice and `watchListKeys` map, eliminating the desync risk from updating them independently at 5+ call sites.
+- **Poll loop case-awareness** (`watcher_poll.go`) — `pollWalkDir` and `pollDetectChanges` now use `pathKey()` for snapshot/current map keys, preventing phantom Create+Remove events on case-only renames on case-insensitive filesystems.
+- **Gitignore matcher case-awareness** (`watcher_gitignore.go`) — `gitignoreCache.load()` and `shouldSkipByGitignore()` now use canonical pathKeys for map storage and ancestor-prefix matching, closing the gap where gitignore rules were silently bypassed on macOS.
+- **NFC normalization tests** (`filesystem_test.go`) — 6 tests covering NFC vs NFD pathKey equality, ASCII idempotency, exclude-path matching, and debounce key collision.
+- **Poll + gitignore case-awareness tests** (`filesystem_poll_gitignore_test.go`) — 7 tests covering poll snapshot canonical keys, original-path preservation in event emission, case-only rename phantom-event prevention, and gitignore ancestor-prefix matching.
+
+### Fixed
+
+- **`Remove()` watchListKeys desync** (`watcher.go`) — `Remove()` only deleted the exact path key from `watchListKeys`, leaving subtree path keys orphaned. Now uses `rebuildWatchListKeys()` to guarantee the map stays in sync after bulk subtree removal.
+- **`golang.org/x/text` promoted to direct dependency** (`go.mod`) — was an indirect dependency; now explicitly required for `unicode/norm` NFC normalization in `pathKey()`.
+
 ## [2.3.0] - 2026-07-27
 
 ### Added

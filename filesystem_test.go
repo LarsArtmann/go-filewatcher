@@ -6,6 +6,8 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+
+	"golang.org/x/text/unicode/norm"
 )
 
 func TestFilesystemCaseSensitivity_String(t *testing.T) {
@@ -432,6 +434,42 @@ func TestPathKey_EdgeCases(t *testing.T) {
 
 			if got := ci.pathKey(tt.input); got != tt.wantCI {
 				t.Errorf("pathKey(case-insensitive)(%q) = %q, want %q", tt.input, got, tt.wantCI)
+			}
+		})
+	}
+}
+
+// TestPathKey_NFCEquivalenceProperty proves the core invariant that pathKey
+// canonicalizes any Unicode input to the same key as its NFC form — across
+// diverse scripts (accented Latin, Cyrillic, Greek, CJK, emoji). This is the
+// property that makes NFD-encoded filesystem paths (macOS) match NFC user input.
+func TestPathKey_NFCEquivalenceProperty(t *testing.T) {
+	t.Parallel()
+
+	cs := &Watcher{effectiveCaseSensitivity: CaseSensitive}
+	ci := &Watcher{effectiveCaseSensitivity: CaseInsensitive}
+
+	inputs := []string{
+		"/home/café/file.go",
+		"/home/Москва/документ.txt",
+		"/home/Αθήνα/κατάλογος",
+		"/home/東京/ファイル.go",
+		"/home/😀/emoji.txt",
+		"/home/Überwachung/Datei.go",
+	}
+
+	for _, in := range inputs {
+		t.Run(in, func(t *testing.T) {
+			t.Parallel()
+
+			nfc := norm.NFC.String(in)
+
+			if cs.pathKey(in) != cs.pathKey(nfc) {
+				t.Errorf("case-sensitive: pathKey(P) != pathKey(NFC(P)) for %q", in)
+			}
+
+			if ci.pathKey(in) != ci.pathKey(nfc) {
+				t.Errorf("case-insensitive: pathKey(P) != pathKey(NFC(P)) for %q", in)
 			}
 		})
 	}

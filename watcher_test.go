@@ -579,6 +579,60 @@ func TestWatcher_Remove_PrunesSubtreeKeys(t *testing.T) {
 	}
 }
 
+// TestWatcher_Remove_UnicodeNFDMatchesNFCWatch proves that Remove() accepts an
+// NFD-encoded path and removes a directory that was watched under its NFC form.
+// On macOS the filesystem stores filenames as NFD while user input is typically
+// NFC; pathKey()'s NFC normalization makes the two forms resolve to one key.
+func TestWatcher_Remove_UnicodeNFDMatchesNFCWatch(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	// Directory whose name is NFC-precomposed (é = U+00E9).
+	nfcDir := filepath.Join(tmpDir, "café")
+	if err := os.MkdirAll(nfcDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	other := filepath.Join(tmpDir, "other")
+	if err := os.MkdirAll(other, 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	w := newTestWatcher(t, tmpDir)
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	if _, err := w.Watch(ctx); err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	w.mu.RLock()
+	_, watched := w.watchListKeys[w.pathKey(nfcDir)]
+	w.mu.RUnlock()
+
+	if !watched {
+		t.Fatal("expected NFC dir key to be watched before Remove")
+	}
+
+	// Remove using the NFD form (e + combining acute U+0301).
+	nfdDir := filepath.Join(tmpDir, "cafe\u0301")
+	if err := w.Remove(nfdDir); err != nil {
+		t.Fatalf("Remove(NFD) failed: %v", err)
+	}
+
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	if _, ok := w.watchListKeys[w.pathKey(nfcDir)]; ok {
+		t.Errorf("NFD Remove should remove the NFC-watched key via pathKey NFC normalization")
+	}
+
+	if _, ok := w.watchListKeys[w.pathKey(other)]; !ok {
+		t.Errorf("unrelated key should survive Unicode Remove")
+	}
+}
+
 func TestWatcher_WatchList(t *testing.T) {
 	t.Parallel()
 

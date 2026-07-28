@@ -85,7 +85,7 @@ type Watcher struct {
 	gitignoreCache   *gitignoreCache     // cache of compiled gitignore matchers
 	contentHashing   bool                // compute SHA-256 hash of file content on events
 	selfHealInterval time.Duration       // interval for self-healing failed watch registrations (0=disabled)
-	failedPaths              map[string]struct{}          // paths that failed to add; retried by selfHealLoop
+	failedPaths              map[string]string            // pathKey → original path; retried by selfHealLoop
 	done                     chan struct{}                // closed by Close() to signal shutdown to in-flight goroutines
 	cleanups                 []func() error               // lifecycle cleanup funcs registered via WithCleanup
 	caseSensitivity          FilesystemCaseSensitivity    // configured case-sensitivity mode
@@ -278,7 +278,7 @@ func New( //nolint:funlen // constructor with full field initialization
 		gitignoreCache:           newGitignoreCache(),
 		contentHashing:           false,
 		selfHealInterval:         0,
-		failedPaths:              make(map[string]struct{}),
+		failedPaths:              make(map[string]string),
 		done:                     make(chan struct{}),
 		cleanups:                 nil,
 		caseSensitivity:          CaseSensitivityAuto,

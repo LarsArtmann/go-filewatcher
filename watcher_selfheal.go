@@ -3,7 +3,6 @@ package filewatcher
 import (
 	"context"
 	"log/slog"
-	"slices"
 	"time"
 )
 
@@ -109,7 +108,9 @@ func (w *Watcher) isPathWatched(path string) bool {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
-	return slices.Contains(w.watchList, path)
+	_, ok := w.watchListKeys[w.pathKey(path)]
+
+	return ok
 }
 
 // appendToWatchList adds path to the watch list under mutex protection.
@@ -117,7 +118,14 @@ func (w *Watcher) appendToWatchList(path string) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
+	key := w.pathKey(path)
+
+	if _, ok := w.watchListKeys[key]; ok {
+		return
+	}
+
 	w.watchList = append(w.watchList, path)
+	w.watchListKeys[key] = struct{}{}
 }
 
 // removeFailedPath removes a path from the failed set under mutex protection.
@@ -125,7 +133,7 @@ func (w *Watcher) removeFailedPath(path string) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	delete(w.failedPaths, path)
+	delete(w.failedPaths, w.pathKey(path))
 }
 
 // failedPathCount returns the number of paths still failing.

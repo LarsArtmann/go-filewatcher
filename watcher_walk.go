@@ -62,7 +62,7 @@ func (w *Watcher) tryAddPath(path string) {
 	addErr := w.fswatcher.Add(path)
 	if addErr != nil {
 		w.watchErrors.Add(1)
-		w.failedPaths[pathKey] = struct{}{}
+		w.failedPaths[pathKey] = path
 		w.handleError(ErrorContext{
 			Operation: opAddPath,
 			Path:      path,

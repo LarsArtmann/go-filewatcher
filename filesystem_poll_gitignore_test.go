@@ -113,7 +113,8 @@ func TestPollDetectChanges_NoPhantomEventsOnCaseInsensitive(t *testing.T) {
 	}
 
 	fb := newFakeBackend()
-	watcher := newTestWatcher(t, tmpDir, withBackend(fb),
+	watcher := newTestWatcher(
+		t, tmpDir, withBackend(fb),
 		WithCaseSensitivity(CaseInsensitive),
 		WithPolling(true),
 		WithPollInterval(100*time.Millisecond),

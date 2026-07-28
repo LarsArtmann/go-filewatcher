@@ -1,4 +1,3 @@
-//nolint:wsl_v5 // test formatting flexibility for setup boilerplate
 package filewatcher
 
 import (
@@ -17,6 +16,7 @@ func TestPollWalkDir_UsesCanonicalKeys_CaseInsensitive(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	subDir := filepath.Join(tmpDir, "MyDir", "SubFolder")
+
 	mkdirErr := os.MkdirAll(subDir, 0o750)
 	if mkdirErr != nil {
 		t.Fatal(mkdirErr)
@@ -45,6 +45,7 @@ func TestPollWalkDir_UsesCanonicalKeys_CaseSensitive(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	subDir := filepath.Join(tmpDir, "MyDir", "SubFolder")
+
 	mkdirErr := os.MkdirAll(subDir, 0o750)
 	if mkdirErr != nil {
 		t.Fatal(mkdirErr)
@@ -75,6 +76,7 @@ func TestPollWalkDir_PreservesOriginalPathInState(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	testFile := filepath.Join(tmpDir, "TestFile.txt")
+
 	writeErr := os.WriteFile(testFile, []byte("content"), 0o600)
 	if writeErr != nil {
 		t.Fatal(writeErr)
@@ -107,6 +109,7 @@ func TestPollDetectChanges_NoPhantomEventsOnCaseInsensitive(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	testFile := filepath.Join(tmpDir, "File.txt")
+
 	writeErr := os.WriteFile(testFile, []byte("initial"), 0o600)
 	if writeErr != nil {
 		t.Fatal(writeErr)
@@ -130,6 +133,7 @@ func TestPollDetectChanges_NoPhantomEventsOnCaseInsensitive(t *testing.T) {
 	time.Sleep(250 * time.Millisecond)
 
 	newFile := filepath.Join(tmpDir, "file.txt")
+
 	renameErr := os.Rename(testFile, newFile)
 	if renameErr != nil {
 		t.Fatal(renameErr)
@@ -169,12 +173,14 @@ func TestGitignore_AncestorPrefix_CaseInsensitive(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	gitignoreDir := filepath.Join(tmpDir, "Project")
+
 	mkdirErr := os.MkdirAll(gitignoreDir, 0o750)
 	if mkdirErr != nil {
 		t.Fatal(mkdirErr)
 	}
 
 	gitignorePath := filepath.Join(gitignoreDir, ".gitignore")
+
 	writeErr := os.WriteFile(gitignorePath, []byte("*.tmp\n"), 0o600)
 	if writeErr != nil {
 		t.Fatal(writeErr)
@@ -197,12 +203,14 @@ func TestGitignore_AncestorPrefix_CaseSensitiveDoesNotMatch(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	gitignoreDir := filepath.Join(tmpDir, "Project")
+
 	mkdirErr := os.MkdirAll(gitignoreDir, 0o750)
 	if mkdirErr != nil {
 		t.Fatal(mkdirErr)
 	}
 
 	gitignorePath := filepath.Join(gitignoreDir, ".gitignore")
+
 	writeErr := os.WriteFile(gitignorePath, []byte("*.tmp\n"), 0o600)
 	if writeErr != nil {
 		t.Fatal(writeErr)
@@ -225,6 +233,7 @@ func TestGitignore_RuleMatches_CaseInsensitiveDir(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	gitignorePath := filepath.Join(tmpDir, ".gitignore")
+
 	writeErr := os.WriteFile(gitignorePath, []byte("secret\n"), 0o600)
 	if writeErr != nil {
 		t.Fatal(writeErr)

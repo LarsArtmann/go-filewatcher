@@ -24,7 +24,7 @@
     }:
     let
       version = self.rev or self.dirtyRev or "dev";
-      vendorHash = "sha256-UqxEQDqf0T/SabJZup2FGFtZVbKAaPEMUMcgJB4lt+s=";
+      vendorHash = "sha256-yZ7WvzdwcnLHP7vCL/m7egX+34Hm8oIIZgVSZLtd6Lk=";
 
       src = nixpkgs.lib.fileset.toSource {
         root = ./.;
@@ -43,6 +43,8 @@
           ./filter_gogen.go
           ./filter_gogen_test.go
           ./filter_test.go
+          ./filesystem.go
+          ./filesystem_test.go
           ./fuzz_test.go
           ./metrics.go
           ./metrics_test.go

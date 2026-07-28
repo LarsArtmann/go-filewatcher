@@ -1,6 +1,7 @@
 package filewatcher
 
 import (
+	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -51,6 +52,20 @@ func resolveCaseSensitivity(mode FilesystemCaseSensitivity) FilesystemCaseSensit
 	}
 
 	return CaseSensitive
+}
+
+// normalizePath resolves a path to an absolute, cleaned form.
+// It calls filepath.Abs to make the path absolute, then filepath.Clean to
+// eliminate trailing slashes, redundant separators, and ".." / "." components.
+// This ensures that Add(), Remove(), event paths, and exclude paths all use
+// the same canonical representation, preventing subtle mismatches.
+func normalizePath(path string) (string, error) {
+	abs, err := filepath.Abs(path)
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Clean(abs), nil
 }
 
 // pathKey returns a canonical string key for path lookups.

@@ -180,7 +180,7 @@ func (w *Watcher) withResolvedPath(path, opName, caller string, fn func(abs stri
 		return err
 	}
 
-	abs, resolveErr := filepath.Abs(path)
+	abs, resolveErr := normalizePath(path)
 	if resolveErr != nil {
 		return fmt.Errorf("resolving path %q in %s: %w", path, caller, resolveErr)
 	}
@@ -744,7 +744,7 @@ func validateAndNormalizePaths(paths []string) ([]string, error) {
 	normalized := make([]string, 0, len(paths))
 
 	for _, p := range paths {
-		abs, resolveErr := filepath.Abs(p)
+		abs, resolveErr := normalizePath(p)
 		if resolveErr != nil {
 			return nil, fmt.Errorf("resolving path %q during validation: %w", p, resolveErr)
 		}

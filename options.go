@@ -245,7 +245,7 @@ func WithFollowSymlinks(follow bool) Option {
 func WithExcludePaths(paths ...string) Option {
 	return func(w *Watcher) { //nolint:varnamelen // w is idiomatic for functional options
 		for _, p := range paths {
-			abs, err := filepath.Abs(p)
+			abs, err := normalizePath(p)
 			if err == nil {
 				w.excludePaths[abs] = struct{}{}
 			} else {

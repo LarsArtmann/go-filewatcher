@@ -113,6 +113,7 @@ All code in **root package** (`filewatcher`). No `internal/` or `pkg/` subdirect
 | `watcher_gitignore.go` | .gitignore loading and matching: gitignoreCache, shouldSkipByGitignore                      |
 | `watcher_selfheal.go`  | Self-healing: selfHealLoop, attemptSelfHeal, failed path tracking                           |
 | `watcher_poll.go`      | Polling mode: pollLoop for NFS/FUSE environments                                            |
+| `filesystem.go`        | Filesystem case-sensitivity: FilesystemCaseSensitivity enum, pathKey(), resolveCaseSensitivity() |
 | `filter.go`            | All Filter functions + FilterWithMeta and combinators                                       |
 | `filter_gogen.go`      | Generated-code detection filter (gogenfilter v3 integration)                                |
 | `middleware.go`        | All Middleware functions (circuit breaker, error batch, correlation, exponential backoff)   |
@@ -260,6 +261,34 @@ the top-level directory. This prevents watch leaks.
 middleware, debounce, options). Allows re-calling `Watch()` after `Close()`
 without rebuilding from scratch.
 
+### 18. Filesystem Case-Sensitivity Awareness
+
+Different filesystems treat filename case differently: NTFS (Windows) and APFS
+(macOS) are case-insensitive, while ext4/XFS/btrfs (Linux) are case-sensitive.
+The watcher must be aware of this to avoid:
+
+- **Duplicate watches**: `/dir/MyFile` and `/dir/myfile` on NTFS are the same file
+- **Broken Remove()**: calling `Remove("/dir/MyFile")` must match `/dir/myfile`
+- **Incorrect exclusion**: `WithExcludePaths("/Build")` must catch `/build/output`
+- **Debounce misses**: events for `/File.go` and `/file.go` must coalesce
+
+`WithCaseSensitivity(mode)` configures the mode:
+
+- `CaseSensitivityAuto` (default): resolves per-platform (Windows/macOS → insensitive)
+- `CaseSensitive`: paths differing only in case are distinct
+- `CaseInsensitive`: paths differing only in case are identical
+
+Internally, `pathKey()` returns a canonical key (lowercased on case-insensitive).
+This key is used for: `watchListKeys` dedup set, `failedPaths`, `excludePaths`,
+debounce keys, and `Remove()` subtree matching.
+
+### 19. O(1) Watched-Path Lookup
+
+`watchListKeys` is a `map[string]struct{}` of pathKeys, maintained alongside
+`watchList`. This enables:
+- O(1) duplicate detection in `tryAddPath` (was O(n) `slices.Contains`)
+- O(1) self-heal check in `isPathWatched` (was O(n) `slices.Contains`)
+
 ---
 
 ## Key Patterns
@@ -273,6 +302,8 @@ without rebuilding from scratch.
 | `baseDebouncer.stop` | `debouncer.go` — lock/markStopped/cleanup/unlock/wait in one place                |
 | Backend Abstraction  | `backend.go` — `watchBackend` interface; `withBackend()` injects fakes            |
 | `newTestWatcher`     | `testing_helpers_test.go:432` — standard `New + cleanup` for all tests            |
+| Case-sensitivity     | `filesystem.go` — `pathKey()`, `resolveCaseSensitivity()`, `WithCaseSensitivity`  |
+| O(1) path lookup     | `watcher.go` — `watchListKeys` map alongside `watchList` for dedup + O(1) checks   |
 
 ### Default-guard convention
 

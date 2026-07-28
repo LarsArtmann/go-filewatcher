@@ -63,41 +63,41 @@ type Watcher struct {
 	fswatcher watchBackend
 
 	// Configuration
-	paths            []string
-	filters          []Filter
-	middleware       []Middleware
-	recursive        bool
-	globalDebounce   time.Duration
-	perPathDebounce  time.Duration
-	skipDotDirs      bool
-	bufferSize       int
-	onAdd            func(path string)   // callback when a path is added
-	ignoreDirNames   []string            // user-configured dir names to skip during walk
-	excludePaths     map[string]struct{} // absolute paths to exclude during walk
-	errorHandler     ErrorHandler        // callback for errors during event processing
-	lazyIsDir        bool                // skip os.Stat calls in convertEvent for performance
-	pollInterval     time.Duration       // polling interval for NFS/FUSE filesystems (0 = disabled)
-	polling          bool                // polling mode enabled (supplements fsnotify with periodic scans)
-	debug            bool                // enable verbose debug logging
-	debugLogger      *slog.Logger        // logger for debug output
-	followSymlinks   bool                // follow symbolic links during directory walking
-	gitignoreEnabled bool                // enable .gitignore-aware walk filtering
-	gitignoreCache   *gitignoreCache     // cache of compiled gitignore matchers
-	contentHashing   bool                // compute SHA-256 hash of file content on events
-	selfHealInterval time.Duration       // interval for self-healing failed watch registrations (0=disabled)
-	failedPaths              map[string]string            // pathKey → original path; retried by selfHealLoop
-	done                     chan struct{}                // closed by Close() to signal shutdown to in-flight goroutines
-	cleanups                 []func() error               // lifecycle cleanup funcs registered via WithCleanup
-	caseSensitivity          FilesystemCaseSensitivity    // configured case-sensitivity mode
-	effectiveCaseSensitivity FilesystemCaseSensitivity    // resolved (auto → concrete) for fast pathKey
+	paths                    []string
+	filters                  []Filter
+	middleware               []Middleware
+	recursive                bool
+	globalDebounce           time.Duration
+	perPathDebounce          time.Duration
+	skipDotDirs              bool
+	bufferSize               int
+	onAdd                    func(path string)         // callback when a path is added
+	ignoreDirNames           []string                  // user-configured dir names to skip during walk
+	excludePaths             map[string]struct{}       // absolute paths to exclude during walk
+	errorHandler             ErrorHandler              // callback for errors during event processing
+	lazyIsDir                bool                      // skip os.Stat calls in convertEvent for performance
+	pollInterval             time.Duration             // polling interval for NFS/FUSE filesystems (0 = disabled)
+	polling                  bool                      // polling mode enabled (supplements fsnotify with periodic scans)
+	debug                    bool                      // enable verbose debug logging
+	debugLogger              *slog.Logger              // logger for debug output
+	followSymlinks           bool                      // follow symbolic links during directory walking
+	gitignoreEnabled         bool                      // enable .gitignore-aware walk filtering
+	gitignoreCache           *gitignoreCache           // cache of compiled gitignore matchers
+	contentHashing           bool                      // compute SHA-256 hash of file content on events
+	selfHealInterval         time.Duration             // interval for self-healing failed watch registrations (0=disabled)
+	failedPaths              map[string]string         // pathKey → original path; retried by selfHealLoop
+	done                     chan struct{}             // closed by Close() to signal shutdown to in-flight goroutines
+	cleanups                 []func() error            // lifecycle cleanup funcs registered via WithCleanup
+	caseSensitivity          FilesystemCaseSensitivity // configured case-sensitivity mode
+	effectiveCaseSensitivity FilesystemCaseSensitivity // resolved (auto → concrete) for fast pathKey
 
 	// Internal state
 	mu            sync.RWMutex
-	state         WatcherStateFlags // bit flags: closed, watching
-	watchList     []string          // tracked paths currently being watched
+	state         WatcherStateFlags   // bit flags: closed, watching
+	watchList     []string            // tracked paths currently being watched
 	watchListKeys map[string]struct{} // pathKey(path) → present; O(1) watched check and dedup
-	walkBatch     []string          // batch accumulator for walkDirFunc (nil when not batching)
-	wg            sync.WaitGroup    // tracks watchLoop goroutine for clean shutdown
+	walkBatch     []string            // batch accumulator for walkDirFunc (nil when not batching)
+	wg            sync.WaitGroup      // tracks watchLoop goroutine for clean shutdown
 
 	// Event channel - stored so Close() can close it after stopping debouncer
 	// This prevents race between debouncer callbacks and channel close

@@ -173,7 +173,8 @@ func TestShouldExcludePath_CaseInsensitive(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	excluded := filepath.Join(tmpDir, "Build")
-	watcher := newTestWatcher(t, tmpDir, withBackend(fb),
+	watcher := newTestWatcher(
+		t, tmpDir, withBackend(fb),
 		WithCaseSensitivity(CaseInsensitive),
 		WithExcludePaths(excluded),
 	)
@@ -192,7 +193,8 @@ func TestShouldExcludePath_CaseSensitiveDoesNotMatchDifferentCase(t *testing.T) 
 	tmpDir := t.TempDir()
 
 	excluded := filepath.Join(tmpDir, "Build")
-	watcher := newTestWatcher(t, tmpDir, withBackend(fb),
+	watcher := newTestWatcher(
+		t, tmpDir, withBackend(fb),
 		WithCaseSensitivity(CaseSensitive),
 		WithExcludePaths(excluded),
 	)

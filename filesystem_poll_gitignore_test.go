@@ -6,6 +6,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"golang.org/x/text/unicode/norm"
 )
 
 // --- Poll Loop Case-Awareness Tests (T7) ---
@@ -252,5 +254,49 @@ func TestGitignore_RuleMatches_CaseInsensitiveDir(t *testing.T) {
 	normalPath := filepath.Join(tmpDir, "normal.go")
 	if watcher.shouldSkipByGitignore(normalPath) {
 		t.Errorf("shouldSkipByGitignore(%q) = true, want false (no pattern match)", normalPath)
+	}
+}
+
+// TestGitignore_ExcludesDirDuringWalk_EndToEnd is a full integration test: it
+// creates a real directory tree with a .gitignore, starts a real watcher in
+// case-insensitive mode, and verifies the gitignored directory is never added
+// to the watch list while a sibling is. This exercises the entire
+// walk -> gitignore check -> tryAddPath pipeline.
+func TestGitignore_ExcludesDirDuringWalk_EndToEnd(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	writeErr := os.WriteFile(filepath.Join(tmpDir, ".gitignore"), []byte("excluded\n"), 0o600)
+	if writeErr != nil {
+		t.Fatal(writeErr)
+	}
+
+	excluded := filepath.Join(tmpDir, "excluded")
+	included := filepath.Join(tmpDir, "included")
+
+	for _, dir := range []string{excluded, included} {
+		if err := os.MkdirAll(dir, 0o750); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	watcher := newTestWatcher(t, tmpDir, WithCaseSensitivity(CaseInsensitive))
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	if _, err := watcher.Watch(ctx); err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	watcher.mu.RLock()
+	defer watcher.mu.RUnlock()
+
+	if _, ok := watcher.watchListKeys[watcher.pathKey(excluded)]; ok {
+		t.Errorf("gitignored dir %q should NOT be in watchListKeys", excluded)
+	}
+
+	if _, ok := watcher.watchListKeys[watcher.pathKey(included)]; !ok {
+		t.Errorf("non-gitignored dir %q should be in watchListKeys", included)
 	}
 }

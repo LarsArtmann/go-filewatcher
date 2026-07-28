@@ -96,6 +96,7 @@ const (
 	metricUptimeSeconds     = "filewatcher_uptime_seconds"
 	metricWatchLimit        = "filewatcher_watch_limit"
 	metricWatchBudgetUsed   = "filewatcher_watch_budget_used_ratio"
+	metricCaseSensitivity   = "filewatcher_case_sensitivity"
 )
 
 // Counters returns the current counter values from the watcher stats.
@@ -162,6 +163,11 @@ func (c *PrometheusCollector) Gauges() []GaugeMetric {
 			Help:  "Percentage of inotify budget used (0.0-1.0)",
 			Value: stats.WatchBudgetUsed,
 		},
+		{
+			Name:  metricCaseSensitivity,
+			Help:  "Resolved case-sensitivity mode (0=case-sensitive, 1=case-insensitive, 2=auto)",
+			Value: caseSensitivityGauge(stats.CaseSensitivity),
+		},
 	}
 }
 
@@ -171,4 +177,17 @@ func boolToFloat(b bool) float64 {
 	}
 
 	return 0
+}
+
+func caseSensitivityGauge(mode string) float64 {
+	switch mode {
+	case caseSensitiveStr:
+		return 0
+	case caseInsensitiveStr:
+		return 1
+	case caseAutoStr:
+		return 2
+	default:
+		return -1
+	}
 }

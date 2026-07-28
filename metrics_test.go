@@ -51,7 +51,7 @@ func TestPrometheusCollector_CountersAndGauges(t *testing.T) {
 	}
 
 	gauges := collector.Gauges()
-	assertLen(t, "gauges", len(gauges), 6)
+	assertLen(t, "gauges", len(gauges), 7)
 
 	// Verify gauge values
 	for _, g := range gauges {
@@ -64,6 +64,8 @@ func TestPrometheusCollector_CountersAndGauges(t *testing.T) {
 			assertEqual(t, "is_closed", g.Value, 0.0)
 		case "filewatcher_uptime_seconds":
 			assertEqual(t, "uptime_seconds", g.Value, 5.0)
+		case "filewatcher_case_sensitivity":
+			assertEqual(t, "case_sensitivity", g.Value, 0.0) // case-sensitive = 0
 		}
 	}
 

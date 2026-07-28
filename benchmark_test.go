@@ -508,6 +508,61 @@ func BenchmarkGitignoreCache_Load(b *testing.B) {
 }
 
 // ============================================================================
+// Path Key / NFC Normalization Benchmarks
+// ============================================================================
+
+// BenchmarkPathKey_* measures the cost of pathKey() — which runs on every
+// event, debounce-key computation, and poll comparison. NFC normalization
+// (norm.NFC.String) is always applied; the benchmarks isolate the cost on
+// pure-ASCII paths (fast path) vs Unicode NFC (pre-composed, no work) vs
+// Unicode NFD (decomposed, forces real NFC conversion + allocation).
+
+func BenchmarkPathKey_ASCII_CaseSensitive(b *testing.B) {
+	w := &Watcher{effectiveCaseSensitivity: CaseSensitive}
+	path := "/home/user/projects/go-filewatcher/watcher.go"
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = w.pathKey(path)
+	}
+}
+
+func BenchmarkPathKey_ASCII_CaseInsensitive(b *testing.B) {
+	w := &Watcher{effectiveCaseSensitivity: CaseInsensitive}
+	path := "/home/user/projects/go-filewatcher/watcher.go"
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = w.pathKey(path)
+	}
+}
+
+func BenchmarkPathKey_UnicodeNFC_CaseSensitive(b *testing.B) {
+	w := &Watcher{effectiveCaseSensitivity: CaseSensitive}
+	path := "/home/user/café/résumé/Über/File.go" // NFC pre-composed
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = w.pathKey(path)
+	}
+}
+
+func BenchmarkPathKey_UnicodeNFD_CaseSensitive(b *testing.B) {
+	w := &Watcher{effectiveCaseSensitivity: CaseSensitive}
+	// NFD decomposed: base + combining marks forces real NFC conversion work.
+	path := "/home/user/cafe\u0301/re\u0301sume\u0301/U\u0308ber/File.go"
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = w.pathKey(path)
+	}
+}
+
+// ============================================================================
 // Benchmark Regression Baselines
 // ============================================================================
 

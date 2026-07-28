@@ -369,3 +369,70 @@ func TestFilterCaseInsensitive_NFCNormalizes(t *testing.T) {
 		t.Errorf("FilterCaseInsensitive should normalize NFD path to match NFC pattern")
 	}
 }
+
+func TestNormalizePath_EdgeCases(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{"parent reference", "/a/b/../c", "/a/c"},
+		{"trailing slash", "/a/b/", "/a/b"},
+		{"redundant separators", "/a//b", "/a/b"},
+		{"dot component", "/a/./b", "/a/b"},
+		{"dotdot at end", "/a/b/..", "/a"},
+		{"root trailing slash", "/", "/"},
+		{"multiple dotdot", "/a/b/c/../../d", "/a/d"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			got, err := normalizePath(tt.input)
+			if err != nil {
+				t.Fatalf("normalizePath(%q) returned unexpected error: %v", tt.input, err)
+			}
+
+			if got != tt.want {
+				t.Errorf("normalizePath(%q) = %q, want %q", tt.input, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPathKey_EdgeCases(t *testing.T) {
+	t.Parallel()
+
+	cs := &Watcher{effectiveCaseSensitivity: CaseSensitive}
+	ci := &Watcher{effectiveCaseSensitivity: CaseInsensitive}
+
+	tests := []struct {
+		name   string
+		input  string
+		wantCS string
+		wantCI string
+	}{
+		{"empty", "", "", ""},
+		{"root", "/", "/", "/"},
+		{"dot", ".", ".", "."},
+		{"dotdot", "..", "..", ".."},
+		{"ascii upper", "/ABC/File.GO", "/ABC/File.GO", "/abc/file.go"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got := cs.pathKey(tt.input); got != tt.wantCS {
+				t.Errorf("pathKey(case-sensitive)(%q) = %q, want %q", tt.input, got, tt.wantCS)
+			}
+
+			if got := ci.pathKey(tt.input); got != tt.wantCI {
+				t.Errorf("pathKey(case-insensitive)(%q) = %q, want %q", tt.input, got, tt.wantCI)
+			}
+		})
+	}
+}

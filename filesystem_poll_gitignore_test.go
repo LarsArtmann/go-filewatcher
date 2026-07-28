@@ -1,4 +1,4 @@
-//nolint:varnamelen // idiomatic short names: w (watcher), t (testing)
+//nolint:wsl_v5 // test formatting flexibility for setup boilerplate
 package filewatcher
 
 import (

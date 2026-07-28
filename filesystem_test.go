@@ -1,4 +1,4 @@
-//nolint:varnamelen,goconst // idiomatic short names: w (watcher), fb (fakeBackend); test assertion literals
+//nolint:varnamelen // idiomatic short names: w (watcher), fb (fakeBackend)
 package filewatcher
 
 import (
@@ -214,8 +214,8 @@ func TestPathKey_NFCNormalization_CaseSensitive(t *testing.T) {
 
 	w := &Watcher{effectiveCaseSensitivity: CaseSensitive}
 
-	nfc := "/home/user/café/file.go"           // NFC: é = U+00E9 (2 bytes)
-	nfd := "/home/user/cafe\u0301/file.go"     // NFD: e + combining acute = U+0065 U+0301 (3 bytes)
+	nfc := "/home/user/café/file.go"       // NFC: é = U+00E9 (2 bytes)
+	nfd := "/home/user/cafe\u0301/file.go" // NFD: e + combining acute = U+0065 U+0301 (3 bytes)
 
 	keyNFC := w.pathKey(nfc)
 	keyNFD := w.pathKey(nfd)
@@ -236,7 +236,7 @@ func TestPathKey_NFCNormalization_CaseInsensitive(t *testing.T) {
 
 	w := &Watcher{effectiveCaseSensitivity: CaseInsensitive}
 
-	nfc := "/home/user/München/File.GO"        // NFC
+	nfc := "/home/user/München/File.GO"       // NFC
 	nfd := "/home/user/Mu\u0308nchen/File.go" // NFD (ü decomposed)
 
 	keyNFC := w.pathKey(nfc)

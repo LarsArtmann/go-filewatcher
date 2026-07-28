@@ -526,13 +526,13 @@ func (w *Watcher) Remove(path string) error {
 
 			if pKey == absKey || strings.HasPrefix(pKey, prefix) {
 				_ = w.fswatcher.Remove(p)
+				delete(w.watchListKeys, pKey) // incremental: drop only pruned subtree keys
 			} else {
 				remaining = append(remaining, p)
 			}
 		}
 
 		w.watchList = remaining
-		w.rebuildWatchListKeys()
 
 		return nil
 	})
@@ -544,18 +544,6 @@ func (w *Watcher) Remove(path string) error {
 func (w *Watcher) addToWatchList(path string) {
 	w.watchList = append(w.watchList, path)
 	w.watchListKeys[w.pathKey(path)] = struct{}{}
-}
-
-// rebuildWatchListKeys reconstructs the watchListKeys map from the current
-// watchList slice. Used after bulk removal operations (e.g., Remove subtree
-// pruning) to guarantee watchListKeys stays in sync with watchList.
-// Caller must hold w.mu.
-func (w *Watcher) rebuildWatchListKeys() {
-	clear(w.watchListKeys)
-
-	for _, p := range w.watchList {
-		w.watchListKeys[w.pathKey(p)] = struct{}{}
-	}
 }
 
 // copyWatchList returns a defensive copy of the watch list under RLock.

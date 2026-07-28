@@ -526,6 +526,59 @@ func TestWatcher_Remove_ClosedWatcher(t *testing.T) {
 	}
 }
 
+// TestWatcher_Remove_PrunesSubtreeKeys verifies that Remove() deletes the
+// canonical keys of the removed path AND every nested subdirectory from the
+// watchListKeys map — not just the watchList slice. A stale key would let a
+// later Add() of the same path be silently skipped (treated as already-watched).
+func TestWatcher_Remove_PrunesSubtreeKeys(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	sub1 := filepath.Join(tmpDir, "sub1")
+	deep := filepath.Join(sub1, "deep")
+	sub2 := filepath.Join(tmpDir, "sub2")
+
+	for _, dir := range []string{deep, sub2} {
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	w := newTestWatcher(t, tmpDir)
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	if _, err := w.Watch(ctx); err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	w.mu.RLock()
+	preCount := len(w.watchListKeys)
+	w.mu.RUnlock()
+
+	if preCount < 4 { // tmpDir + sub1 + deep + sub2
+		t.Fatalf("expected at least 4 watched paths, got %d", preCount)
+	}
+
+	if err := w.Remove(sub1); err != nil {
+		t.Fatalf("Remove failed: %v", err)
+	}
+
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	for _, p := range []string{sub1, deep} {
+		if _, ok := w.watchListKeys[w.pathKey(p)]; ok {
+			t.Errorf("watchListKeys still contains pruned subtree key %q", p)
+		}
+	}
+
+	if _, ok := w.watchListKeys[w.pathKey(sub2)]; !ok {
+		t.Errorf("watchListKeys lost unrelated key %q after subtree Remove", sub2)
+	}
+}
+
 func TestWatcher_WatchList(t *testing.T) {
 	t.Parallel()
 

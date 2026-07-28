@@ -58,4 +58,21 @@
 // Two debounce modes:
 //   - WithDebounce: global debounce (all events coalesced)
 //   - WithPerPathDebounce: per-path debounce (independent per file)
+//
+// # Filesystem Compatibility
+//
+// Different platforms and filesystems have different semantics for filename
+// case and Unicode normalization. The watcher handles this transparently:
+//
+//	watcher, _ := filewatcher.New(paths,
+//	    // Auto-detects: case-insensitive on Windows/macOS, case-sensitive on Linux.
+//	    // Override with CaseSensitive or CaseInsensitive for non-default filesystems.
+//	    filewatcher.WithCaseSensitivity(filewatcher.CaseSensitivityAuto),
+//	)
+//
+// Internally, all path comparisons (watch dedup, Remove matching, debounce keys,
+// exclude paths, gitignore matching, poll loop snapshots) use a canonical pathKey
+// that applies NFC Unicode normalization and optional case-folding. This fixes
+// the invisible mismatches that occur when macOS stores filenames as NFD
+// (decomposed) but user-configured paths are NFC (composed).
 package filewatcher

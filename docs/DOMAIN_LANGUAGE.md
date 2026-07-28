@@ -22,6 +22,8 @@ If a word means something different to a developer than to a customer, define it
 | Gitignore-aware Walk | Directory walking that skips paths matching `.gitignore` patterns                                                    | Walk-time optimization            |
 | Circuit Breaker      | Fault-tolerance middleware: closes (drops events) after N failures, opens after timeout, half-opens to test recovery | Resilience / Middleware           |
 | Error Category       | Classification of errors as transient (retryable, e.g. ENOSPC) or permanent (e.g. ErrPathNotDir)                     | Error handling                    |
+| Case Sensitivity     | Whether the filesystem treats `/Foo` and `/foo` as the same path (insensitive) or distinct (sensitive)              | NTFS/APFS = insensitive, ext4 = sensitive |
+| NFC Normalization    | Converting Unicode strings to composed form (NFC) for consistent path comparison; fixes macOS NFD/NFC mismatch      | Applied in `pathKey()`            |
 
 ## Entities
 
@@ -50,6 +52,9 @@ Immutable objects defined by attributes.
 | ErrorCode      | Typed string constant for programmatic error matching                                                                                           | Error handling               |
 | CircuitState   | Circuit breaker state: `CircuitClosed` (healthy), `CircuitOpen` (tripped, events dropped), `CircuitHalfOpen` (testing recovery, 1 event passes) | `middleware.go`              |
 | Handler        | `func(ctx, Event) error` — the function signature middleware wrap                                                                               | Middleware pipeline          |
+| FilesystemCaseSensitivity | Enum controlling path comparison mode: `CaseSensitivityAuto` (platform default), `CaseSensitive`, `CaseInsensitive` | `filesystem.go`              |
+| pathKey        | Canonical string key for path lookups: NFC-normalized (always) + lowercased (on case-insensitive). Used for dedup, Remove, debounce, exclude, gitignore, poll | Internal canonicalization  |
+| NFC Normalization | Converting Unicode to composed form (`é` = U+00E9) to match macOS NFD (`e` + combining acute = U+0065 U+0301) | Applied in `pathKey()`       |
 
 ## Events
 

@@ -340,3 +340,31 @@ func TestStats_CaseSensitivityReflectsAuto(t *testing.T) {
 		t.Errorf("Stats().CaseSensitivity = %q, want %q (auto-resolved)", stats.CaseSensitivity, expected)
 	}
 }
+
+func TestFilterCaseInsensitive_LowercasesPath(t *testing.T) {
+	t.Parallel()
+
+	// Inner filter that matches an exact (lowercase) path
+	inner := FilterRegex(`^/project/src/main\.go$`)
+	wrapped := FilterCaseInsensitive(inner)
+
+	// Mixed-case path should match when wrapped
+	event := Event{Path: "/Project/Src/Main.go", Op: Write}
+	if !wrapped(event) {
+		t.Errorf("FilterCaseInsensitive should allow mixed-case path to match lowercase pattern")
+	}
+}
+
+func TestFilterCaseInsensitive_NFCNormalizes(t *testing.T) {
+	t.Parallel()
+
+	// Inner filter with NFC path pattern
+	inner := FilterRegex(`^/data/café\.txt$`)
+	wrapped := FilterCaseInsensitive(inner)
+
+	// NFD path should match NFC pattern through the wrapper
+	nfdEvent := Event{Path: "/data/cafe\u0301.txt", Op: Write}
+	if !wrapped(nfdEvent) {
+		t.Errorf("FilterCaseInsensitive should normalize NFD path to match NFC pattern")
+	}
+}

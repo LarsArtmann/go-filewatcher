@@ -408,3 +408,16 @@ func ExampleOp() {
 	// WRITE
 	// "WRITE"
 }
+
+// ExampleWithCaseSensitivity demonstrates configuring filesystem
+// case-sensitivity awareness for cross-platform compatibility.
+func ExampleWithCaseSensitivity() {
+	runExampleWatcher(
+		func(watcher *filewatcher.Watcher) {
+			stats := watcher.Stats()
+			fmt.Println(stats.CaseSensitivity)
+		},
+		filewatcher.WithCaseSensitivity(filewatcher.CaseInsensitive),
+	)
+	// Output: case-insensitive
+}

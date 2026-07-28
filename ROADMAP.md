@@ -33,6 +33,16 @@ certain directions worth exploring.
   or test the divergences (current CI is Linux-only).
 - **BSD/kqueue** — fsnotify supports it; verify our assumptions (budget
   detection, batched registration) hold.
+- **Real filesystem probing (v3)** — `CaseSensitivityAuto` currently resolves by
+  `runtime.GOOS`, not by probing the actual mount. A Linux box with a
+  case-insensitive ext4 mount (rare) gets the wrong mode. A `CaseSensitivityProbed`
+  mode that writes two differently-cased probe files at startup would detect the
+  truth. NFC normalization, `pathKey`, and the poll/gitignore case-awareness are
+  already in place; probing is the remaining gap.
+- **macOS/Windows CI for case-insensitive tests** — the case-insensitive and
+  NFD/NFC behavior is verified as *logic* on Linux (case-sensitive ext4). Real
+  filesystem behavior on APFS/NTFS is only provable with a macOS/Windows CI
+  matrix.
 
 ### API Evolution
 
@@ -45,6 +55,12 @@ certain directions worth exploring.
 - **Streaming filter protocol** — current `Filter` is a sync bool. Consider
   returning `(keep bool, err error)` or a channel-based variant for filters
   that need async I/O (e.g. remote manifest lookup).
+- **`WithNormalizeUnicode(false)` escape hatch** — NFC normalization is always
+  on in `pathKey`. A small minority of systems (NFD-preficient, byte-exact
+  comparison needs) may want raw-byte keys. An opt-out belongs in a v3 pass.
+- **Phantom-typed `PathKey`** — `pathKey()` returns a bare `string`; a named
+  `type PathKey string` (like the existing `EventPath`/`RootPath` phantom types)
+  would make accidental misuse of raw paths vs canonical keys a compile error.
 
 ### Observability
 
@@ -55,6 +71,13 @@ certain directions worth exploring.
 
 - **Zero-allocation event path** — current `ConvertEvent`/`Create` is 3 allocs;
   investigate pooling or stack-allocated `Event` for hot paths.
+- **NFD path-key caching** — `pathKey` on decomposed (NFD) input — emitted by
+  the macOS filesystem — allocates (~1 µs/op, 3 allocs). ASCII and pre-composed
+  NFC are allocation-free. An LRU/sync.Map cache would only matter at extreme
+  macOS throughput (>10k Unicode events/sec); measured, not yet needed.
+- **Trie-based exclude-path matching** — `shouldExcludePath` is O(n) in the
+  number of excluded paths (linear prefix scan). For large exclude sets, a trie
+  or prefix map gives O(path-depth) lookup.
 - **Benchmark freshness CI** — local baseline capture (`nix run .#bench-baseline`)
   and diff (`nix run .#bench-diff`) tooling exist, but the baseline is gitignored.
   The open question is whether to commit a sanitized baseline and add a CI

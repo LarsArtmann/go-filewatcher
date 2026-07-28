@@ -1,6 +1,6 @@
 # TODO List
 
-**Last Updated:** 2026-07-27
+**Last Updated:** 2026-07-29
 
 Short- and mid-term actionable work. Each item is scoped — pick one, do it, tick
 the box. An item lives here only when it is bounded and estimable; vague or
@@ -14,10 +14,16 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 - [ ] **Windows CI matrix** — add a `windows-latest` job to `ci.yml` that runs
       `go test ./...`. Windows has different event semantics (no inotify);
       document any platform-specific skips.
+- [ ] **macOS CI matrix for case-insensitive verification** — the case-
+      sensitivity and NFD/NFC behavior is verified as *logic* on Linux
+      (case-sensitive ext4). Real APFS behavior (case-only rename coalescing,
+      NFD event paths) is only provable on macOS. Add a `macos-latest` job or
+      document the limitation explicitly. (See ROADMAP → Platform Coverage.)
 - [ ] **Expand fuzz tests** — current corpus covers `FilterRegex`,
-      `FilterExtensions`, `FilterIgnoreGlobs`, `OpUnmarshalText`, `FilterMinSize`.
-      Add fuzzers for `FilterAnd`/`FilterOr`/`FilterNot` composition, `Event`
-      JSON round-trip, and the gitignore matcher.
+      `FilterExtensions`, `FilterIgnoreGlobs`, `OpUnmarshalText`, `FilterMinSize`,
+      and `PathKey` (NFC/idempotency/case-folding, added 2026-07-29). Add fuzzers
+      for `FilterAnd`/`FilterOr`/`FilterNot` composition, `Event` JSON round-trip,
+      and the gitignore matcher.
 - [ ] **Large-tree stress harness** — synthetic 100k-directory fixture that
       validates batched registration, budget enforcement, and self-heal under
       load.
@@ -41,7 +47,7 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 | Tests          | 100%  | ✅     |
 | Flaky tests    | 0     | ✅     |
 | Broken benches | 0     | ✅     |
-| Open items     | 4     | 🟡     |
+| Open items     | 5     | 🟡     |
 
 ---
 

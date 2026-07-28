@@ -300,3 +300,54 @@ func TestGitignore_ExcludesDirDuringWalk_EndToEnd(t *testing.T) {
 		t.Errorf("non-gitignored dir %q should be in watchListKeys", included)
 	}
 }
+
+// TestPollWalkDir_NormalizesUnicodeKeysAndPreservesOriginalPath proves the
+// Unicode pipeline: a file stored on disk with an NFD-decomposed filename is
+// keyed in the poll snapshot by its NFC-normalized form (so NFD/NFC variants
+// collide and don't produce phantom events), while the original NFD path is
+// preserved in fileState for accurate event emission.
+func TestPollWalkDir_NormalizesUnicodeKeysAndPreservesOriginalPath(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	// NFD-decomposed filename (e + combining acute U+0301).
+	nfdName := "cafe\u0301.txt"
+	nfdPath := filepath.Join(tmpDir, nfdName)
+
+	writeErr := os.WriteFile(nfdPath, []byte("data"), 0o600)
+	if writeErr != nil {
+		t.Fatal(writeErr)
+	}
+
+	fb := newFakeBackend()
+	watcher := newTestWatcher(t, tmpDir, withBackend(fb), WithCaseSensitivity(CaseSensitive))
+
+	snapshot := make(map[string]fileState)
+	watcher.pollWalkDir(tmpDir, snapshot)
+
+	// The snapshot key must be the NFC-normalized form.
+	nfcName := norm.NFC.String(nfdName)
+	nfcKey := watcher.pathKey(filepath.Join(tmpDir, nfcName))
+
+	state, ok := snapshot[nfcKey]
+	if !ok {
+		keys := make([]string, 0, len(snapshot))
+
+		for k := range snapshot {
+			keys = append(keys, k)
+		}
+
+		t.Fatalf("snapshot missing NFC key %q; have keys: %v", nfcKey, keys)
+	}
+
+	// The original NFD path must be preserved for event emission.
+	if state.path != nfdPath {
+		t.Errorf("fileState.path = %q, want original NFD path %q", state.path, nfdPath)
+	}
+
+	// The NFC and NFD forms must produce identical keys (no phantom entries).
+	if watcher.pathKey(nfdPath) != nfcKey {
+		t.Errorf("pathKey(NFD) != pathKey(NFC): %q != %q", watcher.pathKey(nfdPath), nfcKey)
+	}
+}

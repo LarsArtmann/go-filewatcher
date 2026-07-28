@@ -10,15 +10,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **NFC Unicode normalization in `pathKey()`** (`filesystem.go`) — all path comparisons now apply `norm.NFC.String()` before case-folding, fixing the invisible mismatch where macOS stores filenames as NFD (decomposed) but user-configured paths are NFC (composed). Without this, exclude-path matching, debounce deduplication, and gitignore prefix checks silently fail on any non-ASCII filename (`café`, `München`, `東京`). Idempotent on ASCII, zero impact on pure-ASCII paths.
 - **`normalizePath()` helper** (`filesystem.go`) — `filepath.Clean(filepath.Abs(path))` applied to all path resolution sites (`New`, `Add`, `Remove`, `WithExcludePaths`, `FilterExcludePaths`), preventing trailing-slash, `..`, and redundant-separator mismatches between operations.
-- **`addToWatchList()` / `rebuildWatchListKeys()` helpers** (`watcher.go`) — single point of mutation for the parallel `watchList` slice and `watchListKeys` map, eliminating the desync risk from updating them independently at 5+ call sites.
+- **`addToWatchList()` helper** (`watcher.go`) — single point of mutation for the parallel `watchList` slice and `watchListKeys` map, eliminating the desync risk from updating them independently at 5+ call sites. `Remove()` prunes subtree keys incrementally via `delete()` rather than a full O(n) rebuild.
 - **Poll loop case-awareness** (`watcher_poll.go`) — `pollWalkDir` and `pollDetectChanges` now use `pathKey()` for snapshot/current map keys, preventing phantom Create+Remove events on case-only renames on case-insensitive filesystems.
 - **Gitignore matcher case-awareness** (`watcher_gitignore.go`) — `gitignoreCache.load()` and `shouldSkipByGitignore()` now use canonical pathKeys for map storage and ancestor-prefix matching, closing the gap where gitignore rules were silently bypassed on macOS.
 - **NFC normalization tests** (`filesystem_test.go`) — 6 tests covering NFC vs NFD pathKey equality, ASCII idempotency, exclude-path matching, and debounce key collision.
 - **Poll + gitignore case-awareness tests** (`filesystem_poll_gitignore_test.go`) — 7 tests covering poll snapshot canonical keys, original-path preservation in event emission, case-only rename phantom-event prevention, and gitignore ancestor-prefix matching.
+- **`FilterCaseInsensitive(inner Filter)` wrapper** (`filter.go`) — lowercases + NFC-normalizes the event path before delegating to an inner filter, enabling filter-level case-insensitivity without changing the watcher-wide mode.
+- **`Stats.CaseSensitivity` field + Prometheus gauge** (`watcher.go`, `metrics.go`) — the resolved case-sensitivity mode is now exposed via `Stats()` and as a `filewatcher_case_sensitivity` gauge (0=case-sensitive, 1=case-insensitive, 2=auto).
+- **`pathKey()` benchmarks** (`benchmark_test.go`) — `BenchmarkPathKey_{ASCII,UnicodeNFC,UnicodeNFD}_{CaseSensitive,CaseInsensitive}` measuring NFC normalization cost: ASCII is ~26 ns/0 allocs (free), pre-composed NFC ~140 ns/0 allocs, decomposed NFD ~1 µs/3 allocs (macOS fs paths only).
+- **`FuzzPathKey`** (`fuzz_test.go`) — fuzz target proving `pathKey()` never panics and is deterministic + idempotent across combining marks, emoji, ZWJ sequences, and invalid UTF-8.
+- **README "Filesystem Compatibility" section** — documents case-sensitivity awareness, NFC normalization, and `FilterCaseInsensitive` for end users.
 
 ### Fixed
 
-- **`Remove()` watchListKeys desync** (`watcher.go`) — `Remove()` only deleted the exact path key from `watchListKeys`, leaving subtree path keys orphaned. Now uses `rebuildWatchListKeys()` to guarantee the map stays in sync after bulk subtree removal.
+- **`Remove()` watchListKeys desync** (`watcher.go`) — `Remove()` only deleted the exact path key from `watchListKeys`, leaving subtree path keys orphaned. Now deletes each pruned subtree key incrementally (O(removed), not O(n) rebuild), guaranteeing the map stays in sync after bulk subtree removal.
+- **`normalizePath()` best-effort cleaning on `Abs` failure** (`filesystem.go`) — when `filepath.Abs` fails (e.g. unreadable cwd), the returned path is now still `filepath.Clean`'d so trailing slashes, `..`, and redundant separators are normalized. `FilterExcludePaths`/`WithExcludePaths` use the always-cleaned result instead of swallowing the error and falling back to the raw path.
 - **`golang.org/x/text` promoted to direct dependency** (`go.mod`) — was an indirect dependency; now explicitly required for `unicode/norm` NFC normalization in `pathKey()`.
 
 ## [2.3.0] - 2026-07-27

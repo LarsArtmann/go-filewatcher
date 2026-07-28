@@ -5,6 +5,8 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+
+	"golang.org/x/text/unicode/norm"
 )
 
 func TestFilesystemCaseSensitivity_String(t *testing.T) {
@@ -203,5 +205,111 @@ func TestShouldExcludePath_CaseSensitiveDoesNotMatchDifferentCase(t *testing.T) 
 	other := filepath.Join(tmpDir, "build", "output")
 	if watcher.shouldExcludePath(other) {
 		t.Errorf("shouldExcludePath(%q) = true, want false (case-sensitive, different case)", other)
+	}
+}
+
+// --- NFC Normalization Tests ---
+
+func TestPathKey_NFCNormalization_CaseSensitive(t *testing.T) {
+	t.Parallel()
+
+	w := &Watcher{effectiveCaseSensitivity: CaseSensitive}
+
+	nfc := "/home/user/café/file.go"           // NFC: é = U+00E9 (2 bytes)
+	nfd := "/home/user/cafe\u0301/file.go"     // NFD: e + combining acute = U+0065 U+0301 (3 bytes)
+
+	keyNFC := w.pathKey(nfc)
+	keyNFD := w.pathKey(nfd)
+
+	if keyNFC != keyNFD {
+		t.Errorf("pathKey should normalize NFC/NFD on case-sensitive: NFC=%q (len %d) vs NFD=%q (len %d)",
+			keyNFC, len(keyNFC), keyNFD, len(keyNFD))
+	}
+
+	// Verify the key is in NFC form (not NFD)
+	if keyNFC != nfc {
+		t.Errorf("pathKey should produce NFC output: got %q, want %q", keyNFC, nfc)
+	}
+}
+
+func TestPathKey_NFCNormalization_CaseInsensitive(t *testing.T) {
+	t.Parallel()
+
+	w := &Watcher{effectiveCaseSensitivity: CaseInsensitive}
+
+	nfc := "/home/user/München/File.GO"        // NFC
+	nfd := "/home/user/Mu\u0308nchen/File.go" // NFD (ü decomposed)
+
+	keyNFC := w.pathKey(nfc)
+	keyNFD := w.pathKey(nfd)
+
+	if keyNFC != keyNFD {
+		t.Errorf("pathKey should normalize NFC/NFD + lowercase: NFC=%q vs NFD=%q", keyNFC, keyNFD)
+	}
+}
+
+func TestPathKey_NFCNormalization_ASCIIUnchanged(t *testing.T) {
+	t.Parallel()
+
+	w := &Watcher{effectiveCaseSensitivity: CaseSensitive}
+
+	ascii := "/home/user/project/src/main.go"
+	key := w.pathKey(ascii)
+
+	// ASCII paths must be byte-identical after NFC normalization
+	if key != ascii {
+		t.Errorf("pathKey should not modify ASCII paths: got %q, want %q", key, ascii)
+	}
+}
+
+func TestPathKey_NFCNormalization_Idempotent(t *testing.T) {
+	t.Parallel()
+
+	w := &Watcher{effectiveCaseSensitivity: CaseSensitive}
+
+	nfc := "/data/café.txt"
+	once := w.pathKey(nfc)
+	twice := w.pathKey(once)
+
+	if once != twice {
+		t.Errorf("pathKey should be idempotent on NFC input: once=%q, twice=%q", once, twice)
+	}
+}
+
+func TestExcludePath_NFCMatchesNFD(t *testing.T) {
+	t.Parallel()
+
+	fb := newFakeBackend()
+	tmpDir := t.TempDir()
+
+	// Exclude path in NFC form
+	nfcExcluded := filepath.Join(tmpDir, "café")
+	nfdPath := filepath.Join(tmpDir, "cafe\u0301")
+
+	watcher := newTestWatcher(
+		t, tmpDir, withBackend(fb),
+		WithCaseSensitivity(CaseSensitive),
+		WithExcludePaths(nfcExcluded),
+	)
+
+	// NFD form of the same path should be excluded (NFC normalization)
+	if !watcher.shouldExcludePath(nfdPath) {
+		t.Errorf("shouldExcludePath(%q) = false, want true (NFC exclude should match NFD path)", nfdPath)
+	}
+}
+
+func TestDebounceKey_NFCNormalization(t *testing.T) {
+	t.Parallel()
+
+	w := &Watcher{effectiveCaseSensitivity: CaseSensitive}
+
+	nfc := "/project/over/café.go"
+	nfd := "/project/over/cafe\u0301.go"
+
+	keyNFC := w.getDebounceKey(nfc)
+	keyNFD := w.getDebounceKey(nfd)
+
+	if keyNFC != keyNFD {
+		t.Errorf("debounce keys should be equal after NFC normalization: NFC=%q vs NFD=%q", keyNFC, keyNFD)
 	}
 }

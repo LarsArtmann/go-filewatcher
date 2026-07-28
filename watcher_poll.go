@@ -73,7 +73,8 @@ func (w *Watcher) pollWalkDir(rootPath string, snapshot map[string]fileState) {
 			return nil //nolint:nilerr
 		}
 
-		snapshot[path] = fileState{
+		snapshot[w.pathKey(path)] = fileState{
+			path:    path,
 			modTime: info.ModTime(),
 			size:    info.Size(),
 			isDir:   d.IsDir(),
@@ -97,27 +98,26 @@ func (w *Watcher) pollDetectChanges(
 	}
 
 	// Detect new and modified files
-	for path, curState := range current {
-		prevState, existed := snapshot[path]
+	for key, curState := range current {
+		prevState, existed := snapshot[key]
 
 		if !existed {
-			w.pollEmitEvent(ctx, Create, path, curState, eventCh)
+			w.pollEmitEvent(ctx, Create, curState.path, curState, eventCh)
 
 			continue
 		}
 
 		if !curState.isDir &&
 			(curState.modTime != prevState.modTime || curState.size != prevState.size) {
-			w.pollEmitEvent(ctx, Write, path, curState, eventCh)
+			w.pollEmitEvent(ctx, Write, curState.path, curState, eventCh)
 		}
 	}
 
 	// Detect removed files
-	for path := range snapshot {
-		if _, exists := current[path]; !exists {
-			prevState := snapshot[path]
-
-			w.pollEmitEvent(ctx, Remove, path, fileState{
+	for key, prevState := range snapshot {
+		if _, exists := current[key]; !exists {
+			w.pollEmitEvent(ctx, Remove, prevState.path, fileState{
+				path:    prevState.path,
 				modTime: time.Time{},
 				size:    0,
 				isDir:   prevState.isDir,

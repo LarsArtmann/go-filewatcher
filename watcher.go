@@ -85,16 +85,19 @@ type Watcher struct {
 	gitignoreCache   *gitignoreCache     // cache of compiled gitignore matchers
 	contentHashing   bool                // compute SHA-256 hash of file content on events
 	selfHealInterval time.Duration       // interval for self-healing failed watch registrations (0=disabled)
-	failedPaths      map[string]struct{} // paths that failed to add; retried by selfHealLoop
-	done             chan struct{}       // closed by Close() to signal shutdown to in-flight goroutines
-	cleanups         []func() error      // lifecycle cleanup funcs registered via WithCleanup
+	failedPaths              map[string]struct{}          // paths that failed to add; retried by selfHealLoop
+	done                     chan struct{}                // closed by Close() to signal shutdown to in-flight goroutines
+	cleanups                 []func() error               // lifecycle cleanup funcs registered via WithCleanup
+	caseSensitivity          FilesystemCaseSensitivity    // configured case-sensitivity mode
+	effectiveCaseSensitivity FilesystemCaseSensitivity    // resolved (auto → concrete) for fast pathKey
 
 	// Internal state
-	mu        sync.RWMutex
-	state     WatcherStateFlags // bit flags: closed, watching
-	watchList []string          // tracked paths currently being watched
-	walkBatch []string          // batch accumulator for walkDirFunc (nil when not batching)
-	wg        sync.WaitGroup    // tracks watchLoop goroutine for clean shutdown
+	mu            sync.RWMutex
+	state         WatcherStateFlags // bit flags: closed, watching
+	watchList     []string          // tracked paths currently being watched
+	watchListKeys map[string]struct{} // pathKey(path) → present; O(1) watched check and dedup
+	walkBatch     []string          // batch accumulator for walkDirFunc (nil when not batching)
+	wg            sync.WaitGroup    // tracks watchLoop goroutine for clean shutdown
 
 	// Event channel - stored so Close() can close it after stopping debouncer
 	// This prevents race between debouncer callbacks and channel close
@@ -210,7 +213,11 @@ func New( //nolint:funlen // constructor with full field initialization
 		return nil, fmt.Errorf("%w: at least one path must be provided", ErrNoPaths)
 	}
 
-	// Validate all paths exist
+	// Validate all paths exist and normalize to absolute, cleaned paths.
+	// Storing relative or differently-cased paths leads to mismatches between
+	// Add(), Remove(), and event paths on case-insensitive filesystems.
+	normalizedPaths := make([]string, 0, len(paths))
+
 	for _, p := range paths {
 		abs, resolveErr := filepath.Abs(p)
 		if resolveErr != nil {
@@ -225,56 +232,72 @@ func New( //nolint:funlen // constructor with full field initialization
 		if !info.IsDir() {
 			return nil, fmt.Errorf("%w: path %q must be a directory", ErrPathNotDir, p)
 		}
+
+		normalizedPaths = append(normalizedPaths, abs)
 	}
 
 	w := &Watcher{
-		fswatcher:         nil,
-		paths:             paths,
-		recursive:         true,
-		filters:           nil,
-		middleware:        nil,
-		globalDebounce:    0,
-		perPathDebounce:   0,
-		errorHandler:      nil,
-		skipDotDirs:       true,
-		bufferSize:        defaultEventBufferSize,
-		onAdd:             nil,
-		ignoreDirNames:    nil,
-		excludePaths:      make(map[string]struct{}),
-		mu:                sync.RWMutex{},
-		state:             0,
-		watchList:         make([]string, 0, len(paths)),
-		walkBatch:         nil,
-		wg:                sync.WaitGroup{},
-		eventCh:           nil,
-		closeEventChOnce:  sync.Once{},
-		debounceInterface: nil,
-		errorsCh:          nil,
-		errorsMu:          sync.Mutex{},
-		errorsOnce:        sync.Once{},
-		eventsProcessed:   atomic.Uint64{},
-		eventsFilteredOut: atomic.Uint64{},
-		errorsEncountered: atomic.Uint64{},
-		watchErrors:       atomic.Uint64{},
-		startTime:         time.Time{},
-		maxWatches:        0,
-		lazyIsDir:         false,
-		pollInterval:      0,
-		polling:           false,
-		debug:             false,
-		debugLogger:       nil,
-		followSymlinks:    false,
-		gitignoreEnabled:  true,
-		gitignoreCache:    newGitignoreCache(),
-		contentHashing:    false,
-		selfHealInterval:  0,
-		failedPaths:       make(map[string]struct{}),
-		done:              make(chan struct{}),
-		cleanups:          nil,
+		fswatcher:                nil,
+		paths:                    normalizedPaths,
+		recursive:                true,
+		filters:                  nil,
+		middleware:               nil,
+		globalDebounce:           0,
+		perPathDebounce:          0,
+		errorHandler:             nil,
+		skipDotDirs:              true,
+		bufferSize:               defaultEventBufferSize,
+		onAdd:                    nil,
+		ignoreDirNames:           nil,
+		excludePaths:             make(map[string]struct{}),
+		mu:                       sync.RWMutex{},
+		state:                    0,
+		watchList:                make([]string, 0, len(paths)),
+		watchListKeys:            make(map[string]struct{}),
+		walkBatch:                nil,
+		wg:                       sync.WaitGroup{},
+		eventCh:                  nil,
+		closeEventChOnce:         sync.Once{},
+		debounceInterface:        nil,
+		errorsCh:                 nil,
+		errorsMu:                 sync.Mutex{},
+		errorsOnce:               sync.Once{},
+		eventsProcessed:          atomic.Uint64{},
+		eventsFilteredOut:        atomic.Uint64{},
+		errorsEncountered:        atomic.Uint64{},
+		watchErrors:              atomic.Uint64{},
+		startTime:                time.Time{},
+		maxWatches:               0,
+		lazyIsDir:                false,
+		pollInterval:             0,
+		polling:                  false,
+		debug:                    false,
+		debugLogger:              nil,
+		followSymlinks:           false,
+		gitignoreEnabled:         true,
+		gitignoreCache:           newGitignoreCache(),
+		contentHashing:           false,
+		selfHealInterval:         0,
+		failedPaths:              make(map[string]struct{}),
+		done:                     make(chan struct{}),
+		cleanups:                 nil,
+		caseSensitivity:          CaseSensitivityAuto,
+		effectiveCaseSensitivity: CaseSensitive,
 	}
 
 	for _, opt := range opts {
 		opt(w)
+	}
+
+	// Resolve auto case-sensitivity after options have been applied.
+	w.effectiveCaseSensitivity = resolveCaseSensitivity(w.caseSensitivity)
+
+	// Re-normalize initial paths using the effective case-sensitivity mode.
+	// This ensures that paths differing only in case collapse to one key on
+	// case-insensitive filesystems before any watches are registered.
+	for i, p := range w.paths {
+		w.paths[i] = p
+		_ = w.pathKey(p) //nolint:staticcheck // ensures pathKey is exercised during init
 	}
 
 	// Create real backend if not injected by withBackend option (tests)

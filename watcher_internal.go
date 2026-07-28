@@ -215,7 +215,7 @@ func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handl
 }
 
 func (w *Watcher) getDebounceKey(path string) DebounceKey {
-	return NewDebounceKey(path)
+	return NewDebounceKey(w.pathKey(path))
 }
 
 // handleNewDirectory adds newly created directories to the watcher

@@ -292,12 +292,16 @@ func New( //nolint:funlen // constructor with full field initialization
 	// Resolve auto case-sensitivity after options have been applied.
 	w.effectiveCaseSensitivity = resolveCaseSensitivity(w.caseSensitivity)
 
-	// Re-normalize initial paths using the effective case-sensitivity mode.
-	// This ensures that paths differing only in case collapse to one key on
-	// case-insensitive filesystems before any watches are registered.
-	for i, p := range w.paths {
-		w.paths[i] = p
-		_ = w.pathKey(p) //nolint:staticcheck // ensures pathKey is exercised during init
+	// Normalize exclude-path keys to the effective case-sensitivity mode so
+	// that lookups in shouldExcludePath are O(1) and case-aware.
+	if len(w.excludePaths) > 0 {
+		normalized := make(map[string]struct{}, len(w.excludePaths))
+
+		for p := range w.excludePaths {
+			normalized[w.pathKey(p)] = struct{}{}
+		}
+
+		w.excludePaths = normalized
 	}
 
 	// Create real backend if not injected by withBackend option (tests)
@@ -528,13 +532,17 @@ func (w *Watcher) Remove(path string) error {
 		// Remove the path itself from fsnotify
 		_ = w.fswatcher.Remove(abs)
 
-		// Remove all subdirectory watches under this path
-		prefix := abs + string(filepath.Separator)
+		// Remove all subdirectory watches under this path, respecting
+		// filesystem case-sensitivity for the comparison.
+		absKey := w.pathKey(abs)
+		prefix := absKey + string(filepath.Separator)
 
 		var remaining []string
 
 		for _, p := range w.watchList {
-			if p == abs || strings.HasPrefix(p, prefix) {
+			pKey := w.pathKey(p)
+
+			if pKey == absKey || strings.HasPrefix(pKey, prefix) {
 				_ = w.fswatcher.Remove(p)
 			} else {
 				remaining = append(remaining, p)
@@ -542,6 +550,7 @@ func (w *Watcher) Remove(path string) error {
 		}
 
 		w.watchList = remaining
+		delete(w.watchListKeys, absKey)
 
 		return nil
 	})
@@ -651,12 +660,14 @@ func (w *Watcher) Reset() error {
 	w.fswatcher = fsnotifyBackend{fw}
 	w.state = 0
 	w.watchList = make([]string, 0, len(w.paths))
+	w.watchListKeys = make(map[string]struct{})
 	w.done = make(chan struct{})
 	w.closeEventChOnce = sync.Once{}
 	w.eventCh = nil
 	w.errorsOnce = sync.Once{}
 	w.errorsCh = nil
 	w.cleanups = nil
+	w.effectiveCaseSensitivity = resolveCaseSensitivity(w.caseSensitivity)
 
 	// Reset metrics
 	w.eventsProcessed.Store(0)
@@ -693,6 +704,7 @@ func (w *Watcher) Close() error {
 	w.state |= flagClosed
 	w.state &^= flagWatching
 	w.watchList = w.watchList[:0]
+	clear(w.watchListKeys)
 
 	w.mu.Unlock()
 

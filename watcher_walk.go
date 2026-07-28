@@ -40,6 +40,14 @@ func (w *Watcher) addPath(root RootPath) error {
 // Skips silently when the inotify budget is exhausted; otherwise handles
 // fswatcher.Add failures via handleError and failedPaths (for self-heal).
 func (w *Watcher) tryAddPath(path string) {
+	pathKey := w.pathKey(path)
+
+	if _, alreadyWatched := w.watchListKeys[pathKey]; alreadyWatched {
+		w.debugLog("path already watched, skipping", slog.String("path", path))
+
+		return
+	}
+
 	if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
 		w.debugLog(
 			"watch budget exhausted, skipping path",
@@ -54,7 +62,7 @@ func (w *Watcher) tryAddPath(path string) {
 	addErr := w.fswatcher.Add(path)
 	if addErr != nil {
 		w.watchErrors.Add(1)
-		w.failedPaths[path] = struct{}{}
+		w.failedPaths[pathKey] = struct{}{}
 		w.handleError(ErrorContext{
 			Operation: opAddPath,
 			Path:      path,
@@ -65,8 +73,9 @@ func (w *Watcher) tryAddPath(path string) {
 		return
 	}
 
-	delete(w.failedPaths, path)
+	delete(w.failedPaths, pathKey)
 	w.watchList = append(w.watchList, path)
+	w.watchListKeys[pathKey] = struct{}{}
 
 	if w.onAdd != nil {
 		w.onAdd(path)
@@ -94,8 +103,11 @@ func (w *Watcher) walkAndAddPaths(root RootPath) error {
 
 	// Track the root path only if it wasn't already added via addBatch.
 	// filepath.WalkDir visits the root first, so it's already in watchList.
-	if len(w.watchList) == 0 || w.watchList[len(w.watchList)-1] != root.Get() {
+	rootKey := w.pathKey(root.Get())
+
+	if _, ok := w.watchListKeys[rootKey]; !ok {
 		w.watchList = append(w.watchList, root.Get())
+		w.watchListKeys[rootKey] = struct{}{}
 	}
 
 	return nil
@@ -187,19 +199,24 @@ func (w *Watcher) shouldExcludePath(path string) bool {
 		return false
 	}
 
-	_, exact := w.excludePaths[path]
+	key := w.pathKey(path)
+
+	_, exact := w.excludePaths[key]
 	if exact {
 		return true
 	}
 
-	prefix := path + string(filepath.Separator)
+	sep := string(filepath.Separator)
+	prefix := key + sep
 
 	for excludedPath := range w.excludePaths {
-		if strings.HasPrefix(excludedPath, prefix) {
+		excludedKey := w.pathKey(excludedPath)
+
+		if strings.HasPrefix(excludedKey, prefix) {
 			return false // path is a parent of an excluded path, don't skip it
 		}
 
-		if strings.HasPrefix(path, excludedPath+string(filepath.Separator)) {
+		if strings.HasPrefix(key, excludedKey+sep) {
 			return true // path is under an excluded subtree
 		}
 	}

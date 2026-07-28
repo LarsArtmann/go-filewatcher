@@ -266,6 +266,27 @@ func WithGitignore(enabled bool) Option {
 	}
 }
 
+// WithCaseSensitivity configures how the watcher compares paths.
+//
+// Different filesystems treat filename case differently: NTFS (Windows) and
+// APFS (macOS) are case-insensitive by default, while ext4/XFS/btrfs (Linux)
+// are case-sensitive. The watcher uses this setting when deduplicating watches,
+// matching Remove() targets, comparing exclude paths, and generating debounce
+// keys.
+//
+//   - CaseSensitivityAuto (default): case-insensitive on Windows and macOS,
+//     case-sensitive everywhere else.
+//   - CaseSensitive: paths that differ only in case are treated as distinct.
+//   - CaseInsensitive: paths that differ only in case are treated as identical.
+//
+// Event paths reported by the watcher preserve the case provided by the
+// underlying backend; only internal comparisons are affected.
+func WithCaseSensitivity(mode FilesystemCaseSensitivity) Option {
+	return func(w *Watcher) {
+		w.caseSensitivity = mode
+	}
+}
+
 // WithMaxWatches sets the maximum number of inotify watches the watcher
 // will attempt to create. When this limit is reached, additional directories
 // are skipped with a warning. If set to 0 (default), the limit is auto-detected

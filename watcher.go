@@ -586,6 +586,7 @@ type Stats struct {
 	Uptime            time.Duration // Time since watcher was started
 	WatchLimit        int           // System inotify limit (0 if unknown)
 	WatchBudgetUsed   float64       // Percentage of budget used (0.0-1.0)
+	CaseSensitivity   string        // Resolved case-sensitivity mode ("case-sensitive", "case-insensitive", "auto")
 }
 
 // Stats returns current statistics about the watcher.
@@ -615,6 +616,7 @@ func (w *Watcher) Stats() Stats {
 		Uptime:            uptime,
 		WatchLimit:        w.maxWatches,
 		WatchBudgetUsed:   budgetUsed,
+		CaseSensitivity:   w.effectiveCaseSensitivity.String(),
 	}
 }
 

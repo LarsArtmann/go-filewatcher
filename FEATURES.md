@@ -97,7 +97,8 @@ Honest status of every capability in go-filewatcher. Statuses:
 | Symlink following                        | ✅     | `WithFollowSymlinks(true)`                                          |
 | .gitignore-aware walking                 | ✅     | `WithGitignore(true)` (default) skips gitignored dirs at walk time  |
 | Path-level exclusions                    | ✅     | `WithExcludePaths(paths...)` prefix-matches during walk             |
-| Filesystem case-sensitivity awareness    | ✅     | `WithCaseSensitivity(mode)` — auto/sensitive/insensitive; dedup, Remove, debounce, exclude all case-aware |
+| Filesystem case-sensitivity awareness    | ✅     | `WithCaseSensitivity(mode)` — auto/sensitive/insensitive; dedup, Remove, debounce, exclude, poll loop, gitignore all case-aware |
+| NFC Unicode normalization                | ✅     | `pathKey()` applies `norm.NFC.String()` — fixes macOS NFD/NFC path mismatch on all non-ASCII filenames |
 | O(1) watched-path lookup & deduplication | ✅     | `watchListKeys` set prevents duplicate watch registration           |
 
 ## Event Metadata

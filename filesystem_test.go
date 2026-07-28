@@ -311,3 +311,32 @@ func TestDebounceKey_NFCNormalization(t *testing.T) {
 		t.Errorf("debounce keys should be equal after NFC normalization: NFC=%q vs NFD=%q", keyNFC, keyNFD)
 	}
 }
+
+func TestStats_CaseSensitivityReflectsMode(t *testing.T) {
+	t.Parallel()
+
+	fb := newFakeBackend()
+	tmpDir := t.TempDir()
+
+	w := newTestWatcher(t, tmpDir, withBackend(fb), WithCaseSensitivity(CaseInsensitive))
+	stats := w.Stats()
+
+	if stats.CaseSensitivity != "case-insensitive" {
+		t.Errorf("Stats().CaseSensitivity = %q, want %q", stats.CaseSensitivity, "case-insensitive")
+	}
+}
+
+func TestStats_CaseSensitivityReflectsAuto(t *testing.T) {
+	t.Parallel()
+
+	fb := newFakeBackend()
+	tmpDir := t.TempDir()
+
+	w := newTestWatcher(t, tmpDir, withBackend(fb)) // Auto default
+	stats := w.Stats()
+
+	expected := resolveCaseSensitivity(CaseSensitivityAuto).String()
+	if stats.CaseSensitivity != expected {
+		t.Errorf("Stats().CaseSensitivity = %q, want %q (auto-resolved)", stats.CaseSensitivity, expected)
+	}
+}

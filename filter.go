@@ -11,6 +11,7 @@ import (
 	"time"
 
 	gitignore "github.com/sabhiram/go-gitignore"
+	"golang.org/x/text/unicode/norm"
 )
 
 // Filter determines whether a file event should be processed.
@@ -467,5 +468,23 @@ func FilterGitignore(repoRoot string) Filter {
 		}
 
 		return !ignoreMatcher.MatchesPath(relPath)
+	}
+}
+
+// FilterCaseInsensitive wraps an inner Filter, normalizing the event path to
+// lowercase + NFC before passing it to the inner filter. This makes path-based
+// filters (FilterRegex, FilterGlob, FilterExcludePaths, etc.) match
+// case-insensitively without modifying their implementation.
+//
+// This is a standalone filter-level wrapper. For full filesystem-awareness
+// (watch dedup, Remove matching, debounce keys, gitignore, poll loop), use
+// WithCaseSensitivity(CaseInsensitive) instead — this wrapper only affects
+// the specific filter it wraps.
+func FilterCaseInsensitive(inner Filter) Filter {
+	return func(event Event) bool {
+		normalized := event
+		normalized.Path = norm.NFC.String(strings.ToLower(event.Path))
+
+		return inner(normalized)
 	}
 }

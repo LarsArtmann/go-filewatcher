@@ -25,6 +25,7 @@ func TestPrometheusCollector_CountersAndGauges(t *testing.T) {
 			Uptime:            5 * time.Second,
 			WatchLimit:        8192,
 			WatchBudgetUsed:   0.005,
+			CaseSensitivity:   "case-sensitive",
 		}
 	}
 
@@ -93,8 +94,9 @@ func TestPrometheusCollector_BoolConversion(t *testing.T) {
 
 	statsFn := func() Stats {
 		return Stats{
-			IsWatching: true,
-			IsClosed:   true,
+			IsWatching:      true,
+			IsClosed:        true,
+			CaseSensitivity: "auto",
 		}
 	}
 

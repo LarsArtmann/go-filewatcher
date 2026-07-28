@@ -278,9 +278,13 @@ The watcher must be aware of this to avoid:
 - `CaseSensitive`: paths differing only in case are distinct
 - `CaseInsensitive`: paths differing only in case are identical
 
-Internally, `pathKey()` returns a canonical key (lowercased on case-insensitive).
-This key is used for: `watchListKeys` dedup set, `failedPaths`, `excludePaths`,
-debounce keys, and `Remove()` subtree matching.
+Internally, `pathKey()` returns a canonical key: NFC-normalized (always), then
+lowercased on case-insensitive filesystems. NFC normalization fixes the invisible
+mismatch where macOS stores filenames as NFD (decomposed) but user-configured paths
+are NFC (composed) — without it, exclude matching, debounce, and gitignore silently
+fail on any non-ASCII filename. This key is used for: `watchListKeys` dedup set,
+`failedPaths`, `excludePaths`, debounce keys, `Remove()` subtree matching, poll
+loop snapshot keys, and gitignore cache keys.
 
 ### 19. O(1) Watched-Path Lookup
 

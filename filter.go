@@ -107,14 +107,10 @@ func FilterIgnoreDirs(dirs ...string) Filter {
 func FilterExcludePaths(paths ...string) Filter {
 	pathSet := make(map[string]struct{}, len(paths))
 	for _, path := range paths {
-		// Normalize to absolute path for consistent matching
-		abs, err := normalizePath(path)
-		if err == nil {
-			pathSet[abs] = struct{}{}
-		} else {
-			// Fall back to original path if Abs fails
-			pathSet[path] = struct{}{}
-		}
+		// normalizePath returns a cleaned path even when absolute resolution
+		// fails (best-effort relative path), so exclude matching stays consistent.
+		normalized, _ := normalizePath(path)
+		pathSet[normalized] = struct{}{}
 	}
 
 	return func(event Event) bool {

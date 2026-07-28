@@ -244,12 +244,10 @@ func WithFollowSymlinks(follow bool) Option {
 func WithExcludePaths(paths ...string) Option {
 	return func(w *Watcher) { //nolint:varnamelen // w is idiomatic for functional options
 		for _, p := range paths {
-			abs, err := normalizePath(p)
-			if err == nil {
-				w.excludePaths[abs] = struct{}{}
-			} else {
-				w.excludePaths[p] = struct{}{}
-			}
+			// normalizePath returns a cleaned path even when absolute resolution
+			// fails (best-effort relative path), so exclude matching stays consistent.
+			normalized, _ := normalizePath(p)
+			w.excludePaths[normalized] = struct{}{}
 		}
 	}
 }

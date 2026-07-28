@@ -71,7 +71,11 @@ func resolveCaseSensitivity(mode FilesystemCaseSensitivity) FilesystemCaseSensit
 func normalizePath(path string) (string, error) {
 	abs, err := filepath.Abs(path)
 	if err != nil {
-		return "", fmt.Errorf("resolving absolute path for %q: %w", path, err)
+		// Best-effort: clean the path even when absolute resolution fails (e.g. the
+		// working directory is unreadable) so trailing slashes, "..", and redundant
+		// separators are still normalized. Callers that require an absolute path
+		// must check the returned error.
+		return filepath.Clean(path), fmt.Errorf("resolving absolute path for %q: %w", path, err)
 	}
 
 	return filepath.Clean(abs), nil

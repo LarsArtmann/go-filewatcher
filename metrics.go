@@ -49,6 +49,7 @@ func NewPrometheusCollector(stats StatsFunc) *PrometheusCollector {
 				Uptime:            0,
 				WatchLimit:        0,
 				WatchBudgetUsed:   0,
+				CaseSensitivity:   "",
 			}
 		}
 	}

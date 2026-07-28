@@ -141,6 +141,7 @@ linters:
             - github.com/fsnotify/fsnotify
             - github.com/larsartmann/go-filewatcher
             - github.com/sabhiram/go-gitignore
+            - golang.org/x/text
             - golang.org/x/time
           files:
             - "!examples/"

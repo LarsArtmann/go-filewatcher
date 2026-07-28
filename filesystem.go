@@ -1,6 +1,7 @@
 package filewatcher
 
 import (
+	"fmt"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -26,15 +27,23 @@ const (
 	CaseInsensitive
 )
 
+// String representations for case-sensitivity modes.
+// Named constants satisfy goconst (these strings appear in String(), tests, and Stats).
+const (
+	caseSensitiveStr   = "case-sensitive"
+	caseInsensitiveStr = "case-insensitive"
+	caseAutoStr        = "auto"
+)
+
 // String returns a human-readable representation of the case-sensitivity mode.
 func (c FilesystemCaseSensitivity) String() string {
 	switch c {
 	case CaseSensitive:
-		return "case-sensitive"
+		return caseSensitiveStr
 	case CaseInsensitive:
-		return "case-insensitive"
+		return caseInsensitiveStr
 	case CaseSensitivityAuto:
-		return "auto"
+		return caseAutoStr
 	default:
 		return categoryStringUnknown
 	}
@@ -62,7 +71,7 @@ func resolveCaseSensitivity(mode FilesystemCaseSensitivity) FilesystemCaseSensit
 func normalizePath(path string) (string, error) {
 	abs, err := filepath.Abs(path)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("resolving absolute path for %q: %w", path, err)
 	}
 
 	return filepath.Clean(abs), nil

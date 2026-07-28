@@ -1,3 +1,4 @@
+//nolint:varnamelen,goconst // idiomatic short names: w (watcher), fb (fakeBackend); test assertion literals
 package filewatcher
 
 import (

@@ -75,4 +75,7 @@
 // that applies NFC Unicode normalization and optional case-folding. This fixes
 // the invisible mismatches that occur when macOS stores filenames as NFD
 // (decomposed) but user-configured paths are NFC (composed).
+//
+// For filter-level case-insensitivity without changing the watcher-wide mode,
+// wrap any Filter with FilterCaseInsensitive (see the example).
 package filewatcher

@@ -421,3 +421,18 @@ func ExampleWithCaseSensitivity() {
 	)
 	// Output: case-insensitive
 }
+
+// ExampleFilterCaseInsensitive demonstrates wrapping a filter so event paths are
+// matched case-insensitively and NFC-normalized, regardless of the watcher-wide
+// case-sensitivity mode.
+func ExampleFilterCaseInsensitive() {
+	runExampleWatcher(
+		func(_ *filewatcher.Watcher) {
+			fmt.Println("Watcher with case-insensitive .go filter")
+		},
+		filewatcher.WithFilter(
+			filewatcher.FilterCaseInsensitive(filewatcher.FilterExtensions(".go")),
+		),
+	)
+	// Output: Watcher with case-insensitive .go filter
+}

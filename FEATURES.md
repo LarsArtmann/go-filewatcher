@@ -41,6 +41,7 @@ Honest status of every capability in go-filewatcher. Statuses:
 | Gitignore repository matcher    | ✅     | `FilterGitignore(repoRoot)` — event-time check against .gitignore                                                                  |
 | Generated-code detection        | ✅     | sqlc, protobuf, templ, mockgen, stringer via `NewGeneratedCodeDetector` + gogenfilter v3.2.0                                       |
 | Filter combinators (AND/OR/NOT) | ✅     | `FilterAnd`, `FilterOr`, `FilterNot`                                                                                               |
+| Case-insensitive filter wrapper | ✅     | `FilterCaseInsensitive(inner)` — lowercases + NFC-normalizes the event path before delegating to the inner filter                  |
 | Metadata-returning filters      | ✅     | `FilterWithMeta`, `MatchResult`, `FilterWithMetaAnd`/`FilterWithMetaOr`/`FilterWithMetaNot`, `FilterFromWithMeta`                  |
 
 ## Middleware

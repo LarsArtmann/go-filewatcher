@@ -261,6 +261,40 @@ watcher, err := filewatcher.New(
 )
 ```
 
+### Filesystem Compatibility
+
+Filesystems differ in two ways that silently break naive watchers: **case
+sensitivity** (NTFS/APFS are case-insensitive, ext4/XFS are case-sensitive) and
+**Unicode normalization** (macOS stores filenames as decomposed NFD; most other
+systems use composed NFC). `go-filewatcher` handles both automatically.
+
+```go
+watcher, err := filewatcher.New(
+    []string{"./project"},
+    // Auto-detects from the OS: case-insensitive on macOS/Windows,
+    // case-sensitive on Linux. Override explicitly when needed:
+    filewatcher.WithCaseSensitivity(filewatcher.CaseSensitivityAuto),
+)
+```
+
+How it works:
+
+- **NFC normalization is always on.** Every path key (`Add`, `Remove`, debounce,
+  exclude-path, poll snapshot, and gitignore matching) is normalized to NFC, so
+  an NFD path from the macOS filesystem and an NFC path from user input resolve
+  to the same key. ASCII paths are unaffected (zero-cost fast path).
+- **Case-sensitivity is configurable.** In case-insensitive mode, path keys are
+  lowercased so `File.txt` and `file.txt` collide — preventing duplicate watches,
+  missed `Remove()` calls, and case-only-rename phantom events.
+- **Check the resolved mode at runtime:** `stats := watcher.Stats(); stats.CaseSensitivity`.
+
+Filter-level case-insensitivity (without changing the watcher-wide mode):
+
+```go
+// Match events case-insensitively against ".go" files, even on Linux:
+filter := filewatcher.FilterCaseInsensitive(filewatcher.FilterExtensions(".go"))
+```
+
 ## Observability
 
 ### Stats

@@ -286,6 +286,14 @@ fail on any non-ASCII filename. This key is used for: `watchListKeys` dedup set,
 `failedPaths`, `excludePaths`, debounce keys, `Remove()` subtree matching, poll
 loop snapshot keys, and gitignore cache keys.
 
+**pathKey performance contract** (measured via `BenchmarkPathKey_*`): NFC is
+free for pure-ASCII paths (~26 ns/op, 0 allocs — the common case). Pre-composed
+NFC Unicode is allocation-free (~140 ns/op). Only decomposed NFD input — emitted
+by the macOS filesystem — allocates (~1 µs/op, 3 allocs, 672 B). This is
+negligible for event-driven watching; caching is only worth considering for
+extreme macOS throughput (>10k Unicode events/sec). ASCII and NFC paths never
+allocate.
+
 ### 19. O(1) Watched-Path Lookup
 
 `watchListKeys` is a `map[string]struct{}` of pathKeys, maintained alongside
@@ -414,6 +422,7 @@ Run `nix run .#lint-fix` — it auto-fixes many issues.
 github.com/fsnotify/fsnotify          # Core file watching (v1.10.1)
 github.com/LarsArtmann/gogenfilter/v3 # Generated code detection (v3.2.0, local replace)
 github.com/sabhiram/go-gitignore      # .gitignore pattern matching (zero transitive deps)
+golang.org/x/text/unicode/norm        # NFC Unicode normalization in pathKey (v0.40.0)
 golang.org/x/time/rate                # rate.Limiter for MiddlewareThrottle
 ```
 

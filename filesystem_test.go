@@ -453,7 +453,7 @@ func TestPathKey_NFCEquivalenceProperty(t *testing.T) {
 		"/home/café/file.go",
 		"/home/Москва/документ.txt",
 		"/home/Αθήνα/κατάλογος",
-		"/home/東京/ファイル.go",
+		"/home/東京/ファイル.go", //nolint:gosmopolitan // intentional CJK test input
 		"/home/😀/emoji.txt",
 		"/home/Überwachung/Datei.go",
 	}

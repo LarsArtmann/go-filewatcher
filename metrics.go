@@ -182,12 +182,20 @@ func boolToFloat(b bool) float64 {
 func caseSensitivityGauge(mode string) float64 {
 	switch mode {
 	case caseSensitiveStr:
-		return 0
+		return gaugeCaseSensitive
 	case caseInsensitiveStr:
-		return 1
+		return gaugeCaseInsensitive
 	case caseAutoStr:
-		return 2
+		return gaugeCaseAuto
 	default:
 		return -1
 	}
 }
+
+// Numeric encoding for the filewatcher_case_sensitivity gauge. Named constants
+// satisfy mnd and document the wire format consumed by dashboards/alerts.
+const (
+	gaugeCaseSensitive   = 0
+	gaugeCaseInsensitive = 1
+	gaugeCaseAuto        = 2
+)

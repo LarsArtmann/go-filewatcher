@@ -1,3 +1,4 @@
+//nolint:varnamelen // idiomatic short names: cs/ci (case-sensitive/insensitive watcher)
 package filewatcher
 
 import (
@@ -150,8 +151,8 @@ func FuzzFilterMinSize(f *testing.F) {
 func FuzzPathKey(f *testing.F) {
 	seeds := []string{
 		"/home/user/file.go",
-		"/home/user/café/file.go",                       // NFC
-		"/home/user/cafe\u0301/file.go",                 // NFD
+		"/home/user/café/file.go",       // NFC
+		"/home/user/cafe\u0301/file.go", // NFD
 		"/Users/CAFÉ/FILE.GO",
 		"",
 		"/",
@@ -159,8 +160,8 @@ func FuzzPathKey(f *testing.F) {
 		"..",
 		"/path/with/emoji/😀/file.txt",
 		"/family/\U0001F468\u200D\U0001F469\u200D\U0001F467/", // ZWJ family
-		"/combining/a\u0308b",                            // a with combining diaeresis
-		"\\x80\\xffinvalid",                              // invalid UTF-8 escapes
+		"/combining/a\u0308b", // a with combining diaeresis
+		"\\x80\\xffinvalid",   // invalid UTF-8 escapes
 	}
 
 	for _, s := range seeds {

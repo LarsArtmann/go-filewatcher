@@ -540,7 +540,7 @@ func TestWatcher_Remove_PrunesSubtreeKeys(t *testing.T) {
 	sub2 := filepath.Join(tmpDir, "sub2")
 
 	for _, dir := range []string{deep, sub2} {
-		if err := os.MkdirAll(dir, 0o755); err != nil {
+		if err := os.MkdirAll(dir, 0o750); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -590,12 +590,12 @@ func TestWatcher_Remove_UnicodeNFDMatchesNFCWatch(t *testing.T) {
 
 	// Directory whose name is NFC-precomposed (é = U+00E9).
 	nfcDir := filepath.Join(tmpDir, "café")
-	if err := os.MkdirAll(nfcDir, 0o755); err != nil {
+	if err := os.MkdirAll(nfcDir, 0o750); err != nil {
 		t.Fatal(err)
 	}
 
 	other := filepath.Join(tmpDir, "other")
-	if err := os.MkdirAll(other, 0o755); err != nil {
+	if err := os.MkdirAll(other, 0o750); err != nil {
 		t.Fatal(err)
 	}
 

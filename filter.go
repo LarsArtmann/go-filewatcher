@@ -107,7 +107,7 @@ func FilterExcludePaths(paths ...string) Filter {
 	pathSet := make(map[string]struct{}, len(paths))
 	for _, path := range paths {
 		// Normalize to absolute path for consistent matching
-		abs, err := filepath.Abs(path)
+		abs, err := normalizePath(path)
 		if err == nil {
 			pathSet[abs] = struct{}{}
 		} else {

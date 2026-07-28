@@ -10,6 +10,7 @@ import (
 
 // fileState holds the metadata snapshot for a single file/directory.
 type fileState struct {
+	path    string // original filesystem path (used for event emission)
 	modTime time.Time
 	size    int64
 	isDir   bool

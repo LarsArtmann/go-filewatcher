@@ -74,8 +74,7 @@ func (w *Watcher) tryAddPath(path string) {
 	}
 
 	delete(w.failedPaths, pathKey)
-	w.watchList = append(w.watchList, path)
-	w.watchListKeys[pathKey] = struct{}{}
+	w.addToWatchList(path)
 
 	if w.onAdd != nil {
 		w.onAdd(path)
@@ -106,8 +105,7 @@ func (w *Watcher) walkAndAddPaths(root RootPath) error {
 	rootKey := w.pathKey(root.Get())
 
 	if _, ok := w.watchListKeys[rootKey]; !ok {
-		w.watchList = append(w.watchList, root.Get())
-		w.watchListKeys[rootKey] = struct{}{}
+		w.addToWatchList(root.Get())
 	}
 
 	return nil

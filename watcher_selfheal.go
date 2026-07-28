@@ -125,8 +125,7 @@ func (w *Watcher) appendToWatchList(path string) {
 		return
 	}
 
-	w.watchList = append(w.watchList, path)
-	w.watchListKeys[key] = struct{}{}
+	w.addToWatchList(path)
 }
 
 // removeFailedPath removes a path from the failed set under mutex protection.

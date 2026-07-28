@@ -3,7 +3,6 @@ package filewatcher
 import (
 	"fmt"
 	"log/slog"
-	"path/filepath"
 	"time"
 )
 

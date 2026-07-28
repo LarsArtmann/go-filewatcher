@@ -532,10 +532,30 @@ func (w *Watcher) Remove(path string) error {
 		}
 
 		w.watchList = remaining
-		delete(w.watchListKeys, absKey)
+		w.rebuildWatchListKeys()
 
 		return nil
 	})
+}
+
+// addToWatchList appends path to both watchList and watchListKeys, keeping the
+// parallel data structures in sync. The caller must hold w.mu and must have
+// already verified the path is not already watched (via watchListKeys).
+func (w *Watcher) addToWatchList(path string) {
+	w.watchList = append(w.watchList, path)
+	w.watchListKeys[w.pathKey(path)] = struct{}{}
+}
+
+// rebuildWatchListKeys reconstructs the watchListKeys map from the current
+// watchList slice. Used after bulk removal operations (e.g., Remove subtree
+// pruning) to guarantee watchListKeys stays in sync with watchList.
+// Caller must hold w.mu.
+func (w *Watcher) rebuildWatchListKeys() {
+	clear(w.watchListKeys)
+
+	for _, p := range w.watchList {
+		w.watchListKeys[w.pathKey(p)] = struct{}{}
+	}
 }
 
 // copyWatchList returns a defensive copy of the watch list under RLock.

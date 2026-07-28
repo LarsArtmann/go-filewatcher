@@ -3,6 +3,8 @@ package filewatcher
 import (
 	"runtime"
 	"strings"
+
+	"golang.org/x/text/unicode/norm"
 )
 
 // FilesystemCaseSensitivity controls whether path comparisons treat character case.
@@ -54,10 +56,20 @@ func resolveCaseSensitivity(mode FilesystemCaseSensitivity) FilesystemCaseSensit
 // pathKey returns a canonical string key for path lookups.
 // On case-insensitive filesystems the key is lowercased so that paths differing
 // only in case collide in maps and equality checks.
+//
+// NFC normalization is always applied (even on case-sensitive filesystems) so
+// that NFC and NFD representations of the same Unicode path produce identical
+// keys. This is critical on macOS, where the filesystem stores filenames as NFD
+// (decomposed) but user-configured paths are typically NFC (composed). Without
+// normalization, exclude-path matching, debounce deduplication, and gitignore
+// prefix checks silently fail on any non-ASCII filename.
+// norm.NFC.String is idempotent on ASCII, so pure-ASCII paths are unaffected.
 func (w *Watcher) pathKey(path string) string {
+	normalized := norm.NFC.String(path)
+
 	if w.effectiveCaseSensitivity == CaseInsensitive {
-		return strings.ToLower(path)
+		return strings.ToLower(normalized)
 	}
 
-	return path
+	return normalized
 }

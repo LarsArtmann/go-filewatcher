@@ -564,18 +564,18 @@ func (w *Watcher) WatchList() []string {
 
 // Stats provides observability metrics for the watcher.
 type Stats struct {
-	WatchCount        int
-	IsWatching        bool
-	IsClosed          bool
-	EventsProcessed   uint64        // Total events that passed all filters
-	EventsFilteredOut uint64        // Events filtered out (dropped by filters)
-	ErrorsEncountered uint64        // Errors encountered during processing
-	WatchErrors       uint64        // Watch add failures (ENOSPC, permission denied, etc.)
-	Uptime            time.Duration // Time since watcher was started
-	WatchLimit        int           // System inotify limit (0 if unknown)
-	WatchBudgetUsed     float64                    // Percentage of budget used (0.0-1.0)
-	CaseSensitivity     string                     // Resolved case-sensitivity mode ("case-sensitive", "case-insensitive", "auto")
-	CaseSensitivityMode FilesystemCaseSensitivity  // Resolved case-sensitivity mode (enum, type-safe)
+	WatchCount          int
+	IsWatching          bool
+	IsClosed            bool
+	EventsProcessed     uint64                    // Total events that passed all filters
+	EventsFilteredOut   uint64                    // Events filtered out (dropped by filters)
+	ErrorsEncountered   uint64                    // Errors encountered during processing
+	WatchErrors         uint64                    // Watch add failures (ENOSPC, permission denied, etc.)
+	Uptime              time.Duration             // Time since watcher was started
+	WatchLimit          int                       // System inotify limit (0 if unknown)
+	WatchBudgetUsed     float64                   // Percentage of budget used (0.0-1.0)
+	CaseSensitivity     string                    // Resolved case-sensitivity mode ("case-sensitive", "case-insensitive", "auto")
+	CaseSensitivityMode FilesystemCaseSensitivity // Resolved case-sensitivity mode (enum, type-safe)
 }
 
 // Stats returns current statistics about the watcher.
@@ -595,16 +595,16 @@ func (w *Watcher) Stats() Stats {
 	}
 
 	return Stats{
-		WatchCount:        len(w.watchList),
-		IsWatching:        w.state&flagWatching != 0,
-		IsClosed:          w.state&flagClosed != 0,
-		EventsProcessed:   w.eventsProcessed.Load(),
-		EventsFilteredOut: w.eventsFilteredOut.Load(),
-		ErrorsEncountered: w.errorsEncountered.Load(),
-		WatchErrors:       w.watchErrors.Load(),
-		Uptime:            uptime,
-		WatchLimit:        w.maxWatches,
-		WatchBudgetUsed:   budgetUsed,
+		WatchCount:          len(w.watchList),
+		IsWatching:          w.state&flagWatching != 0,
+		IsClosed:            w.state&flagClosed != 0,
+		EventsProcessed:     w.eventsProcessed.Load(),
+		EventsFilteredOut:   w.eventsFilteredOut.Load(),
+		ErrorsEncountered:   w.errorsEncountered.Load(),
+		WatchErrors:         w.watchErrors.Load(),
+		Uptime:              uptime,
+		WatchLimit:          w.maxWatches,
+		WatchBudgetUsed:     budgetUsed,
 		CaseSensitivity:     w.effectiveCaseSensitivity.String(),
 		CaseSensitivityMode: w.effectiveCaseSensitivity,
 	}

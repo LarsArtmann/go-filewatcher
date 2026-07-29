@@ -39,16 +39,16 @@ func NewPrometheusCollector(stats StatsFunc) *PrometheusCollector {
 	if stats == nil {
 		stats = func() Stats {
 			return Stats{
-				WatchCount:        0,
-				IsWatching:        false,
-				IsClosed:          false,
-				EventsProcessed:   0,
-				EventsFilteredOut: 0,
-				ErrorsEncountered: 0,
-				WatchErrors:       0,
-				Uptime:            0,
-				WatchLimit:        0,
-				WatchBudgetUsed:   0,
+				WatchCount:          0,
+				IsWatching:          false,
+				IsClosed:            false,
+				EventsProcessed:     0,
+				EventsFilteredOut:   0,
+				ErrorsEncountered:   0,
+				WatchErrors:         0,
+				Uptime:              0,
+				WatchLimit:          0,
+				WatchBudgetUsed:     0,
 				CaseSensitivity:     "",
 				CaseSensitivityMode: CaseSensitivityAuto,
 			}
@@ -179,4 +179,3 @@ func boolToFloat(b bool) float64 {
 
 	return 0
 }
-

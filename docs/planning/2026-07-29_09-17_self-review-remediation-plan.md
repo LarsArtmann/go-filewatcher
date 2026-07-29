@@ -102,24 +102,24 @@ graph TD
 
 ## Detailed Task Breakdown
 
-| ID  | Task                                                        | Impact | Effort | Files                                     |
-| --- | ----------------------------------------------------------- | ------ | ------ | ----------------------------------------- |
-| D1  | Document go-gitignore trailing-slash limitation in AGENTS.md | High   | Low    | AGENTS.md                                 |
-| D2  | Document go-gitignore trailing-slash in Troubleshooting.md   | Med    | Low    | Troubleshooting.md                        |
-| D3  | Add WithCaseSensitivity + FilterCaseInsensitive + FilesystemCaseSensitivity to API_STABILITY.md | High | Low | API_STABILITY.md                   |
-| D4  | Add t.Log to phantom-event test explaining Linux ext4 limitation | Med | Low    | filesystem_poll_gitignore_test.go         |
-| D5  | Fix `_` error discarding — explicit handling + comment       | Med    | Low    | filter.go, options.go                     |
-| D6  | Move gauge constants to filesystem.go + add GaugeValue() method | Med | Med    | filesystem.go                            |
-| D7  | Simplify metrics.go caseSensitivityGauge to use GaugeValue() | Low    | Low    | metrics.go                                |
-| D8  | Recover pre-NFC baseline from git history (git show)         | Med    | Low    | bench-baseline.pre-nfc.txt                |
-| D9  | Run nix run .#bench-diff against recovered baseline          | High   | Med    | (measurement)                             |
-| D10 | Document bench-diff regression results in status report       | Med    | Low    | docs/status/                              |
-| D11 | Add NFD allocation behavior note to pathKey godoc             | Low    | Low    | filesystem.go                             |
-| D12 | Run FuzzPathKey for 5 minutes                                 | Low    | Low    | (verification)                            |
-| D13 | Add BenchmarkShouldExcludePath to benchmark_test.go           | Low    | Low    | benchmark_test.go                         |
-| D14 | Write this plan doc                                           | —      | Med    | docs/planning/ (this file)                |
-| D15 | Full quality gate: nix run .#check + nix flake check          | High   | Med    | (verification)                            |
-| D16 | Git commit with detailed message + push                       | —      | Low    | (git)                                     |
+| ID  | Task                                                                                            | Impact | Effort | Files                             |
+| --- | ----------------------------------------------------------------------------------------------- | ------ | ------ | --------------------------------- |
+| D1  | Document go-gitignore trailing-slash limitation in AGENTS.md                                    | High   | Low    | AGENTS.md                         |
+| D2  | Document go-gitignore trailing-slash in Troubleshooting.md                                      | Med    | Low    | Troubleshooting.md                |
+| D3  | Add WithCaseSensitivity + FilterCaseInsensitive + FilesystemCaseSensitivity to API_STABILITY.md | High   | Low    | API_STABILITY.md                  |
+| D4  | Add t.Log to phantom-event test explaining Linux ext4 limitation                                | Med    | Low    | filesystem_poll_gitignore_test.go |
+| D5  | Fix `_` error discarding — explicit handling + comment                                          | Med    | Low    | filter.go, options.go             |
+| D6  | Move gauge constants to filesystem.go + add GaugeValue() method                                 | Med    | Med    | filesystem.go                     |
+| D7  | Simplify metrics.go caseSensitivityGauge to use GaugeValue()                                    | Low    | Low    | metrics.go                        |
+| D8  | Recover pre-NFC baseline from git history (git show)                                            | Med    | Low    | bench-baseline.pre-nfc.txt        |
+| D9  | Run nix run .#bench-diff against recovered baseline                                             | High   | Med    | (measurement)                     |
+| D10 | Document bench-diff regression results in status report                                         | Med    | Low    | docs/status/                      |
+| D11 | Add NFD allocation behavior note to pathKey godoc                                               | Low    | Low    | filesystem.go                     |
+| D12 | Run FuzzPathKey for 5 minutes                                                                   | Low    | Low    | (verification)                    |
+| D13 | Add BenchmarkShouldExcludePath to benchmark_test.go                                             | Low    | Low    | benchmark_test.go                 |
+| D14 | Write this plan doc                                                                             | —      | Med    | docs/planning/ (this file)        |
+| D15 | Full quality gate: nix run .#check + nix flake check                                            | High   | Med    | (verification)                    |
+| D16 | Git commit with detailed message + push                                                         | —      | Low    | (git)                             |
 
 **Total:** 16 tasks, ~120 min estimated.
 
@@ -128,6 +128,7 @@ graph TD
 ## Design Decisions
 
 ### Q1: normalizePath error handling
+
 **Decision:** Keep the best-effort behavior but make it explicit. Instead of `_`,
 use a named error variable with a comment explaining the error is intentionally
 ignored because `normalizePath` always returns a cleaned path. This respects the
@@ -135,11 +136,13 @@ ignored because `normalizePath` always returns a cleaned path. This respects the
 the correct behavior.
 
 ### Q2: go-gitignore trailing-slash limitation
+
 **Decision:** Document as a known limitation. Working around a library quirk
 adds complexity and risks breaking the gitignore matching for legitimate cases.
 Users should use `Build` instead of `Build/` for directory-level gitignore
 patterns that need to prevent watching.
 
 ### Q3: macOS CI availability
+
 **Decision:** Document the limitation prominently. If macOS CI is added later,
 the existing logic tests are ready. I cannot create infrastructure.

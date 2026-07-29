@@ -8,22 +8,22 @@ If a word means something different to a developer than to a customer, define it
 
 ## Glossary
 
-| Term                 | Definition                                                                                                           | Context                           |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| Watcher              | The central type that monitors filesystem paths and emits events                                                     | Core abstraction of the library   |
-| Event                | A single filesystem change notification with path, op, timestamp, and metadata                                       | The primary output of the watcher |
-| Op                   | The operation type: Create, Write, Remove, or Rename                                                                 | Enumerated on every Event         |
-| Filter               | A predicate function `(Event) bool` that decides which events to emit                                                | Filtering pipeline stage          |
-| Middleware           | A function wrapping event handlers for cross-cutting concerns                                                        | Middleware pipeline stage         |
-| Debouncer            | Coalesces rapid successive events into a single emission                                                             | Debouncing stage                  |
-| Watch Budget         | The inotify watch limit; auto-detected or overridden via `WithMaxWatches`                                            | Resilience context                |
-| Self-healing         | Auto-retry of failed watch registrations at a configurable interval                                                  | Resilience context                |
-| Polling Mode         | Fallback event detection via periodic filesystem snapshots (NFS/FUSE)                                                | Resilience context                |
-| Gitignore-aware Walk | Directory walking that skips paths matching `.gitignore` patterns                                                    | Walk-time optimization            |
-| Circuit Breaker      | Fault-tolerance middleware: closes (drops events) after N failures, opens after timeout, half-opens to test recovery | Resilience / Middleware           |
-| Error Category       | Classification of errors as transient (retryable, e.g. ENOSPC) or permanent (e.g. ErrPathNotDir)                     | Error handling                    |
-| Case Sensitivity     | Whether the filesystem treats `/Foo` and `/foo` as the same path (insensitive) or distinct (sensitive)              | NTFS/APFS = insensitive, ext4 = sensitive |
-| NFC Normalization    | Converting Unicode strings to composed form (NFC) for consistent path comparison; fixes macOS NFD/NFC mismatch      | Applied in `pathKey()`            |
+| Term                 | Definition                                                                                                           | Context                                   |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Watcher              | The central type that monitors filesystem paths and emits events                                                     | Core abstraction of the library           |
+| Event                | A single filesystem change notification with path, op, timestamp, and metadata                                       | The primary output of the watcher         |
+| Op                   | The operation type: Create, Write, Remove, or Rename                                                                 | Enumerated on every Event                 |
+| Filter               | A predicate function `(Event) bool` that decides which events to emit                                                | Filtering pipeline stage                  |
+| Middleware           | A function wrapping event handlers for cross-cutting concerns                                                        | Middleware pipeline stage                 |
+| Debouncer            | Coalesces rapid successive events into a single emission                                                             | Debouncing stage                          |
+| Watch Budget         | The inotify watch limit; auto-detected or overridden via `WithMaxWatches`                                            | Resilience context                        |
+| Self-healing         | Auto-retry of failed watch registrations at a configurable interval                                                  | Resilience context                        |
+| Polling Mode         | Fallback event detection via periodic filesystem snapshots (NFS/FUSE)                                                | Resilience context                        |
+| Gitignore-aware Walk | Directory walking that skips paths matching `.gitignore` patterns                                                    | Walk-time optimization                    |
+| Circuit Breaker      | Fault-tolerance middleware: closes (drops events) after N failures, opens after timeout, half-opens to test recovery | Resilience / Middleware                   |
+| Error Category       | Classification of errors as transient (retryable, e.g. ENOSPC) or permanent (e.g. ErrPathNotDir)                     | Error handling                            |
+| Case Sensitivity     | Whether the filesystem treats `/Foo` and `/foo` as the same path (insensitive) or distinct (sensitive)               | NTFS/APFS = insensitive, ext4 = sensitive |
+| NFC Normalization    | Converting Unicode strings to composed form (NFC) for consistent path comparison; fixes macOS NFD/NFC mismatch       | Applied in `pathKey()`                    |
 
 ## Entities
 
@@ -37,26 +37,26 @@ Objects with identity and lifecycle.
 
 Immutable objects defined by attributes.
 
-| Term           | Definition                                                                                                                                      | Context                      |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| Event          | Filesystem change notification (path, op, timestamp, size, modtime)                                                                             | Emitted on the event channel |
-| Op             | Operation enum: `Create`, `Write`, `Remove`, `Rename`                                                                                           | Part of every Event          |
-| Filter         | Predicate `(Event) bool` — composable via AND/OR/NOT                                                                                            | Filtering pipeline           |
-| FilterWithMeta | Filter returning `MatchResult` (matched + reason + filter name)                                                                                 | Rich filtering with metadata |
-| MatchResult    | Structured outcome: `Matched bool`, `Reason string`, `FilterName string`                                                                        | Returned by FilterWithMeta   |
-| ContentHash    | Hex-encoded SHA-256 of file content (opt-in via `WithContentHashing`)                                                                           | Event.Hash field             |
-| Stats          | Runtime counters: events processed, filtered, errors, watch budget                                                                              | Observability                |
-| WatcherError   | Structured error with category (transient/permanent), code, stack                                                                               | Error handling               |
-| ErrorCategory  | Classifies errors as transient (retryable) or permanent                                                                                         | `errors.go`                  |
-| EventPath      | Phantom-typed path string with `.Base()`, `.Dir()`, `.Ext()`, `.Join()`                                                                         | Type safety on event paths   |
-| ErrorCode      | Typed string constant for programmatic error matching                                                                                           | Error handling               |
-| CircuitState   | Circuit breaker state: `CircuitClosed` (healthy), `CircuitOpen` (tripped, events dropped), `CircuitHalfOpen` (testing recovery, 1 event passes) | `middleware.go`              |
-| Handler        | `func(ctx, Event) error` — the function signature middleware wrap                                                                               | Middleware pipeline          |
-| FilesystemCaseSensitivity | Enum controlling path comparison mode: `CaseSensitivityAuto` (platform default), `CaseSensitive`, `CaseInsensitive` | `filesystem.go`              |
-| pathKey        | Canonical string key for path lookups: NFC-normalized (always) + lowercased (on case-insensitive). Used for dedup, Remove, debounce, exclude, gitignore, poll | Internal canonicalization  |
-| GaugeValue     | Numeric encoding for the Prometheus gauge: 0=case-sensitive, 1=case-insensitive, 2=auto. Single source of truth on `FilesystemCaseSensitivity` | `filesystem.go`             |
-| Effective Case Sensitivity | The resolved case-sensitivity mode after auto-detection. Queried via `EffectiveCaseSensitivity()` or `Stats.CaseSensitivityMode` | Runtime resolution          |
-| NFC Normalization | Converting Unicode to composed form (`é` = U+00E9) to match macOS NFD (`e` + combining acute = U+0065 U+0301) | Applied in `pathKey()`       |
+| Term                       | Definition                                                                                                                                                    | Context                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| Event                      | Filesystem change notification (path, op, timestamp, size, modtime)                                                                                           | Emitted on the event channel |
+| Op                         | Operation enum: `Create`, `Write`, `Remove`, `Rename`                                                                                                         | Part of every Event          |
+| Filter                     | Predicate `(Event) bool` — composable via AND/OR/NOT                                                                                                          | Filtering pipeline           |
+| FilterWithMeta             | Filter returning `MatchResult` (matched + reason + filter name)                                                                                               | Rich filtering with metadata |
+| MatchResult                | Structured outcome: `Matched bool`, `Reason string`, `FilterName string`                                                                                      | Returned by FilterWithMeta   |
+| ContentHash                | Hex-encoded SHA-256 of file content (opt-in via `WithContentHashing`)                                                                                         | Event.Hash field             |
+| Stats                      | Runtime counters: events processed, filtered, errors, watch budget                                                                                            | Observability                |
+| WatcherError               | Structured error with category (transient/permanent), code, stack                                                                                             | Error handling               |
+| ErrorCategory              | Classifies errors as transient (retryable) or permanent                                                                                                       | `errors.go`                  |
+| EventPath                  | Phantom-typed path string with `.Base()`, `.Dir()`, `.Ext()`, `.Join()`                                                                                       | Type safety on event paths   |
+| ErrorCode                  | Typed string constant for programmatic error matching                                                                                                         | Error handling               |
+| CircuitState               | Circuit breaker state: `CircuitClosed` (healthy), `CircuitOpen` (tripped, events dropped), `CircuitHalfOpen` (testing recovery, 1 event passes)               | `middleware.go`              |
+| Handler                    | `func(ctx, Event) error` — the function signature middleware wrap                                                                                             | Middleware pipeline          |
+| FilesystemCaseSensitivity  | Enum controlling path comparison mode: `CaseSensitivityAuto` (platform default), `CaseSensitive`, `CaseInsensitive`                                           | `filesystem.go`              |
+| pathKey                    | Canonical string key for path lookups: NFC-normalized (always) + lowercased (on case-insensitive). Used for dedup, Remove, debounce, exclude, gitignore, poll | Internal canonicalization    |
+| GaugeValue                 | Numeric encoding for the Prometheus gauge: 0=case-sensitive, 1=case-insensitive, 2=auto. Single source of truth on `FilesystemCaseSensitivity`                | `filesystem.go`              |
+| Effective Case Sensitivity | The resolved case-sensitivity mode after auto-detection. Queried via `EffectiveCaseSensitivity()` or `Stats.CaseSensitivityMode`                              | Runtime resolution           |
+| NFC Normalization          | Converting Unicode to composed form (`é` = U+00E9) to match macOS NFD (`e` + combining acute = U+0065 U+0301)                                                 | Applied in `pathKey()`       |
 
 ## Events
 

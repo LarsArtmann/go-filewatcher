@@ -38,22 +38,22 @@ but compares case-insensitively.
 
 ### Filesystem Behavior Matrix
 
-| Filesystem | Case Behavior | Preserves Case | Notes |
-| --- | --- | --- | --- |
-| ext2 / ext3 / ext4 | Sensitive | Yes | Default Linux |
-| XFS | Sensitive | Yes | RHEL default |
-| Btrfs | Sensitive | Yes | |
-| ZFS | Sensitive | Yes | |
-| APFS (default) | **Insensitive** | Yes | macOS default since 10.13 |
-| APFS (case-sensitive) | Sensitive | Yes | Optional format |
-| HFS+ (default) | **Insensitive** | Yes | macOS pre-APFS |
-| HFS+ / HFSX | Sensitive | Yes | Optional format |
-| NTFS | **Insensitive** | Yes | Windows default |
-| FAT12 / FAT16 / FAT32 | **Insensitive** | **No** (uppercases) | Floppy, USB, SD |
-| exFAT | **Insensitive** | Yes | Large USB, SDXC |
-| CIFS / SMB (Windows server) | **Insensitive** | Yes | |
-| CIFS / SMB (Samba) | Configurable | Yes | `case sensitive = yes/no` |
-| NFS | Follows server | Yes | |
+| Filesystem                  | Case Behavior   | Preserves Case      | Notes                     |
+| --------------------------- | --------------- | ------------------- | ------------------------- |
+| ext2 / ext3 / ext4          | Sensitive       | Yes                 | Default Linux             |
+| XFS                         | Sensitive       | Yes                 | RHEL default              |
+| Btrfs                       | Sensitive       | Yes                 |                           |
+| ZFS                         | Sensitive       | Yes                 |                           |
+| APFS (default)              | **Insensitive** | Yes                 | macOS default since 10.13 |
+| APFS (case-sensitive)       | Sensitive       | Yes                 | Optional format           |
+| HFS+ (default)              | **Insensitive** | Yes                 | macOS pre-APFS            |
+| HFS+ / HFSX                 | Sensitive       | Yes                 | Optional format           |
+| NTFS                        | **Insensitive** | Yes                 | Windows default           |
+| FAT12 / FAT16 / FAT32       | **Insensitive** | **No** (uppercases) | Floppy, USB, SD           |
+| exFAT                       | **Insensitive** | Yes                 | Large USB, SDXC           |
+| CIFS / SMB (Windows server) | **Insensitive** | Yes                 |                           |
+| CIFS / SMB (Samba)          | Configurable    | Yes                 | `case sensitive = yes/no` |
+| NFS                         | Follows server  | Yes                 |                           |
 
 ### Impact on File Watching
 
@@ -98,13 +98,13 @@ normalization form and enforce it on write.
 
 ### Filesystem Behavior Matrix
 
-| Filesystem | Normalization | Impact |
-| --- | --- | --- |
-| **APFS** | NFD enforced | `café.txt` (NFC input) stored as NFD |
-| **HFS+** | HFS+ variant of NFD (non-standard!) | Apple's own broken variant; subtly different from Unicode NFD |
-| ext4 / XFS / Btrfs | None (raw bytes) | Stores whatever bytes the application writes |
-| NTFS | None (UTF-16 as-is) | Stores whatever the application writes |
-| FAT / exFAT | None | OS-dependent translation layer |
+| Filesystem         | Normalization                       | Impact                                                        |
+| ------------------ | ----------------------------------- | ------------------------------------------------------------- |
+| **APFS**           | NFD enforced                        | `café.txt` (NFC input) stored as NFD                          |
+| **HFS+**           | HFS+ variant of NFD (non-standard!) | Apple's own broken variant; subtly different from Unicode NFD |
+| ext4 / XFS / Btrfs | None (raw bytes)                    | Stores whatever bytes the application writes                  |
+| NTFS               | None (UTF-16 as-is)                 | Stores whatever the application writes                        |
+| FAT / exFAT        | None                                | OS-dependent translation layer                                |
 
 ### Impact on File Watching
 
@@ -165,12 +165,12 @@ supported by these mechanisms. When a filesystem doesn't fire events, the watche
 
 ### Backend Support Matrix
 
-| Backend | Filesystems with Event Support | Filesystems WITHOUT Events |
-| --- | --- | --- |
-| **Linux inotify** | ext2/3/4, XFS, Btrfs, ZFS, F2FS, tmpfs | NFS, CIFS, most FUSE, `/proc`, `/sys` |
-| **macOS FSEvents** | APFS, HFS+ | Network mounts (unreliable), some FUSE |
-| **BSD kqueue** (`evfilt_vnode`) | UFS, UFS2, ZFS, ext2 | NFS, most FUSE |
-| **Windows ReadDirectoryChangesW** | NTFS, FAT32, exFAT, ReFS | Network shares (unreliable), mapped drives (delayed) |
+| Backend                           | Filesystems with Event Support         | Filesystems WITHOUT Events                           |
+| --------------------------------- | -------------------------------------- | ---------------------------------------------------- |
+| **Linux inotify**                 | ext2/3/4, XFS, Btrfs, ZFS, F2FS, tmpfs | NFS, CIFS, most FUSE, `/proc`, `/sys`                |
+| **macOS FSEvents**                | APFS, HFS+                             | Network mounts (unreliable), some FUSE               |
+| **BSD kqueue** (`evfilt_vnode`)   | UFS, UFS2, ZFS, ext2                   | NFS, most FUSE                                       |
+| **Windows ReadDirectoryChangesW** | NTFS, FAT32, exFAT, ReFS               | Network shares (unreliable), mapped drives (delayed) |
 
 ### Impact on File Watching
 
@@ -214,18 +214,18 @@ missed.
 
 ### Filesystem Behavior Matrix
 
-| Filesystem | mtime Resolution | Practical Impact |
-| --- | --- | --- |
-| FAT16 / FAT32 | **2 seconds** | Rapid edits within 2s are invisible |
-| exFAT | 10ms | Usually fine |
-| ext3 (without `iatime`) | 1 second | Edits within 1s may be missed |
-| ext4 / XFS / Btrfs | 1 nanosecond | Excellent |
-| APFS | 1 nanosecond | Excellent |
-| NTFS | 100 nanoseconds | Excellent |
-| HFS+ | 1 second | Same 1s gap as ext3 |
-| NFS v3 | 1 second (server-dependent) | Unreliable for fast edits |
-| NFS v4 | Sub-second (if server supports) | Better, but not guaranteed |
-| SMB / CIFS | Server-dependent | Often coarse (1s) |
+| Filesystem              | mtime Resolution                | Practical Impact                    |
+| ----------------------- | ------------------------------- | ----------------------------------- |
+| FAT16 / FAT32           | **2 seconds**                   | Rapid edits within 2s are invisible |
+| exFAT                   | 10ms                            | Usually fine                        |
+| ext3 (without `iatime`) | 1 second                        | Edits within 1s may be missed       |
+| ext4 / XFS / Btrfs      | 1 nanosecond                    | Excellent                           |
+| APFS                    | 1 nanosecond                    | Excellent                           |
+| NTFS                    | 100 nanoseconds                 | Excellent                           |
+| HFS+                    | 1 second                        | Same 1s gap as ext3                 |
+| NFS v3                  | 1 second (server-dependent)     | Unreliable for fast edits           |
+| NFS v4                  | Sub-second (if server supports) | Better, but not guaranteed          |
+| SMB / CIFS              | Server-dependent                | Often coarse (1s)                   |
 
 ### Impact on File Watching
 
@@ -276,13 +276,13 @@ copy + delete, producing different event sequences.
 
 ### Filesystem Behavior Matrix
 
-| Filesystem | `rename()` Atomic? | Event Sequence |
-| --- | --- | --- |
-| ext4, XFS, Btrfs, ZFS, APFS, NTFS | ✅ Atomic | Clean Rename event |
-| NFS | ⚠️ Not guaranteed | May appear as CREATE + DELETE, especially after reconnection |
-| SMB / CIFS | ⚠️ Not guaranteed | Often CREATE + DELETE, especially cross-directory |
-| FAT / exFAT | ❌ Not atomic | Always copy + delete semantics |
-| Cross-filesystem (any → any) | ❌ Never atomic | POSIX `rename` fails `EXDEV`; apps fall back to copy + delete |
+| Filesystem                        | `rename()` Atomic? | Event Sequence                                                |
+| --------------------------------- | ------------------ | ------------------------------------------------------------- |
+| ext4, XFS, Btrfs, ZFS, APFS, NTFS | ✅ Atomic          | Clean Rename event                                            |
+| NFS                               | ⚠️ Not guaranteed  | May appear as CREATE + DELETE, especially after reconnection  |
+| SMB / CIFS                        | ⚠️ Not guaranteed  | Often CREATE + DELETE, especially cross-directory             |
+| FAT / exFAT                       | ❌ Not atomic      | Always copy + delete semantics                                |
+| Cross-filesystem (any → any)      | ❌ Never atomic    | POSIX `rename` fails `EXDEV`; apps fall back to copy + delete |
 
 ### Impact on File Watching
 
@@ -329,12 +329,12 @@ create subtler identity ambiguities.
 
 ### Filesystem Behavior Matrix
 
-| Feature | Filesystems | Behavior |
-| --- | --- | --- |
-| Hard links | ext4, XFS, Btrfs, ZFS, APFS, NTFS (hardlinks within same volume) | Multiple paths, same inode, same data |
-| Copy-on-write snapshots | Btrfs, ZFS, APFS | Snapshot files share inodes until modified |
-| Inline dedup | ZFS, Btrfs, NetApp | Different inodes, identical block content |
-| Reflinks | XFS (`copy_file_range`), Btrfs, APFS | Instant copy shares data until written |
+| Feature                 | Filesystems                                                      | Behavior                                   |
+| ----------------------- | ---------------------------------------------------------------- | ------------------------------------------ |
+| Hard links              | ext4, XFS, Btrfs, ZFS, APFS, NTFS (hardlinks within same volume) | Multiple paths, same inode, same data      |
+| Copy-on-write snapshots | Btrfs, ZFS, APFS                                                 | Snapshot files share inodes until modified |
+| Inline dedup            | ZFS, Btrfs, NetApp                                               | Different inodes, identical block content  |
+| Reflinks                | XFS (`copy_file_range`), Btrfs, APFS                             | Instant copy shares data until written     |
 
 ### Impact on File Watching
 
@@ -345,7 +345,7 @@ problems:
    `/dir/B/file.txt` if they're hard-linked. inotify reports the event on the watched path
    only — the other path's watcher sees nothing.
 2. **Snapshot events**: Creating a Btrfs snapshot doesn't fire events. But modifying a
-   file *inside* a snapshot fires on the snapshot path, not the original.
+   file _inside_ a snapshot fires on the snapshot path, not the original.
 3. **Reflink confusion**: A reflink copy shares data blocks. A watcher might see two files
    with identical content and size but different paths. Deduplication logic that assumes
    1:1 path-to-content mapping breaks.
@@ -369,16 +369,16 @@ length. They also reserve certain names.
 
 ### Filesystem Behavior Matrix
 
-| Filesystem | Max Path | Max Filename | Illegal Characters | Reserved Names |
-| --- | --- | --- | --- | --- |
-| ext4 | 4096 bytes | 255 bytes | `/`, `NUL` | None |
-| XFS | 4096 bytes | 255 bytes | `/`, `NUL` | None |
-| NTFS | 32,767 chars (with `\\?\`) | 255 chars | `\`, `/`, `:`, `*`, `?`, `"`, `<`, `>`, `\|` | `CON`, `PRN`, `AUX`, `NUL`, `COM1-9`, `LPT1-9` |
-| FAT32 | 260 chars | 255 chars | Same as NTFS | Same as NTFS |
-| exFAT | 32,760 chars | 255 chars | Same as NTFS | Same as NTFS |
-| APFS | ~1024 chars (NFD-normalized) | 255 chars (NFD-normalized) | `:` (historically), `NUL` | None |
-| HFS+ | ~1024 chars | 255 chars | `:` (converted to `/` in classic Mac OS) | None |
-| CIFS / SMB | Server-dependent | 255 chars | Server-dependent | Server-dependent |
+| Filesystem | Max Path                     | Max Filename               | Illegal Characters                           | Reserved Names                                 |
+| ---------- | ---------------------------- | -------------------------- | -------------------------------------------- | ---------------------------------------------- |
+| ext4       | 4096 bytes                   | 255 bytes                  | `/`, `NUL`                                   | None                                           |
+| XFS        | 4096 bytes                   | 255 bytes                  | `/`, `NUL`                                   | None                                           |
+| NTFS       | 32,767 chars (with `\\?\`)   | 255 chars                  | `\`, `/`, `:`, `*`, `?`, `"`, `<`, `>`, `\|` | `CON`, `PRN`, `AUX`, `NUL`, `COM1-9`, `LPT1-9` |
+| FAT32      | 260 chars                    | 255 chars                  | Same as NTFS                                 | Same as NTFS                                   |
+| exFAT      | 32,760 chars                 | 255 chars                  | Same as NTFS                                 | Same as NTFS                                   |
+| APFS       | ~1024 chars (NFD-normalized) | 255 chars (NFD-normalized) | `:` (historically), `NUL`                    | None                                           |
+| HFS+       | ~1024 chars                  | 255 chars                  | `:` (converted to `/` in classic Mac OS)     | None                                           |
+| CIFS / SMB | Server-dependent             | 255 chars                  | Server-dependent                             | Server-dependent                               |
 
 ### Impact on File Watching
 
@@ -412,12 +412,12 @@ it. The locking model varies by OS and filesystem.
 
 ### Filesystem Behavior Matrix
 
-| Platform / Filesystem | Locking Model | Impact |
-| --- | --- | --- |
-| POSIX (ext4, XFS, etc.) | **Advisory** (`flock`, `fcntl`) | File is always readable; locks are cooperative |
-| Windows / NTFS | **Mandatory** (by default) | File may be **unreadable** while another process has it open |
-| SMB / CIFS | **Mandatory** (oplocks) | Same as Windows, plus network oplock semantics |
-| NFS | NLM (Network Lock Manager) | Advisory in practice; stale locks common on disconnect |
+| Platform / Filesystem   | Locking Model                   | Impact                                                       |
+| ----------------------- | ------------------------------- | ------------------------------------------------------------ |
+| POSIX (ext4, XFS, etc.) | **Advisory** (`flock`, `fcntl`) | File is always readable; locks are cooperative               |
+| Windows / NTFS          | **Mandatory** (by default)      | File may be **unreadable** while another process has it open |
+| SMB / CIFS              | **Mandatory** (oplocks)         | Same as Windows, plus network oplock semantics               |
+| NFS                     | NLM (Network Lock Manager)      | Advisory in practice; stale locks common on disconnect       |
 
 ### Impact on File Watching
 
@@ -466,12 +466,12 @@ events. Multiple operations may be merged, reordered, or split.
 
 ### Backend Behavior Matrix
 
-| Backend | Coalescing Behavior | Impact |
-| --- | --- | --- |
-| **Linux inotify** | Multiple writes within the kernel event buffer are merged into one `IN_MODIFY`. A `Create + Write` may arrive as just `Create`. | Fewer events than operations |
-| **macOS FSEvents** | Events are **time-batched** (typically 1-second latency by design). Events are historical, not real-time. | Sub-second debounce is meaningless on macOS |
-| **Windows ReadDirectoryChangesW** | Multiple operations may be batched in a single buffer read. Renames always produce `OLD_NAME + NEW_NAME` pairs. | Rename detection requires pairing logic |
-| **BSD kqueue** | Only reports changes since last `kevent` call. If the queue overflows, events are **dropped**. | Silent event loss under load |
+| Backend                           | Coalescing Behavior                                                                                                             | Impact                                      |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| **Linux inotify**                 | Multiple writes within the kernel event buffer are merged into one `IN_MODIFY`. A `Create + Write` may arrive as just `Create`. | Fewer events than operations                |
+| **macOS FSEvents**                | Events are **time-batched** (typically 1-second latency by design). Events are historical, not real-time.                       | Sub-second debounce is meaningless on macOS |
+| **Windows ReadDirectoryChangesW** | Multiple operations may be batched in a single buffer read. Renames always produce `OLD_NAME + NEW_NAME` pairs.                 | Rename detection requires pairing logic     |
+| **BSD kqueue**                    | Only reports changes since last `kevent` call. If the queue overflows, events are **dropped**.                                  | Silent event loss under load                |
 
 ### Impact on File Watching
 
@@ -561,13 +561,13 @@ errors.
 
 ### Filesystem Behavior Matrix
 
-| Filesystem | Disconnect Behavior | Default Timeout |
-| --- | --- | --- |
-| **NFS (hard mount)** | All operations **hang indefinitely** until reconnect | None (infinite) |
-| **NFS (soft mount)** | Operations retry for `timeo × retrans`, then return error | ~60s |
-| **SMB / CIFS** | Operations hang until reconnect or TCP timeout | 15-60s |
-| **SSHFS** | All operations hang until SSH timeout | 10-30s |
-| **9P (WSL2)** | Usually reliable; drops on WSL restart | Immediate error |
+| Filesystem           | Disconnect Behavior                                       | Default Timeout |
+| -------------------- | --------------------------------------------------------- | --------------- |
+| **NFS (hard mount)** | All operations **hang indefinitely** until reconnect      | None (infinite) |
+| **NFS (soft mount)** | Operations retry for `timeo × retrans`, then return error | ~60s            |
+| **SMB / CIFS**       | Operations hang until reconnect or TCP timeout            | 15-60s          |
+| **SSHFS**            | All operations hang until SSH timeout                     | 10-30s          |
+| **9P (WSL2)**        | Usually reliable; drops on WSL restart                    | Immediate error |
 
 ### Impact on File Watching
 
@@ -635,13 +635,13 @@ multiple physical layers.
 
 ### Scenario Matrix
 
-| Scenario | Impact on File Watching |
-| --- | --- |
-| **OverlayFS (Docker containers)** | Events fire on the **upper layer** (writable container layer) only. Reads from the lower layer (image) don't trigger events. Modifications to a file in the lower layer that gets copied-up produce a Create on the upper layer. |
-| **Bind mounts** | inotify watches the underlying inode. Events on the bind mount path may or may not fire depending on kernel version. On older kernels, watching a bind mount path doesn't see events from the original path. |
-| **autofs** | Directory may not exist (not yet mounted) when `Add()` is called. The watch fails. When the filesystem auto-mounts later, no watch is registered. |
-| **Submounts / cross-mount walking** | `filepath.WalkDir` does cross mount points by default. But inotify watches are per-inode; if a submount replaces the inode, the watch becomes stale. |
-| **FUSE passthrough** | FUSE filesystems decide whether to implement inotify support. Most don't, making event-based watching impossible without polling. |
+| Scenario                            | Impact on File Watching                                                                                                                                                                                                          |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **OverlayFS (Docker containers)**   | Events fire on the **upper layer** (writable container layer) only. Reads from the lower layer (image) don't trigger events. Modifications to a file in the lower layer that gets copied-up produce a Create on the upper layer. |
+| **Bind mounts**                     | inotify watches the underlying inode. Events on the bind mount path may or may not fire depending on kernel version. On older kernels, watching a bind mount path doesn't see events from the original path.                     |
+| **autofs**                          | Directory may not exist (not yet mounted) when `Add()` is called. The watch fails. When the filesystem auto-mounts later, no watch is registered.                                                                                |
+| **Submounts / cross-mount walking** | `filepath.WalkDir` does cross mount points by default. But inotify watches are per-inode; if a submount replaces the inode, the watch becomes stale.                                                                             |
+| **FUSE passthrough**                | FUSE filesystems decide whether to implement inotify support. Most don't, making event-based watching impossible without polling.                                                                                                |
 
 ### Impact on File Watching — Docker / Kubernetes (Most Common Case)
 
@@ -693,10 +693,10 @@ Linux inotify has two events related to file writing:
 
 ### The Difference
 
-| Event | When | File Safe to Read? | Use Case |
-| --- | --- | --- | --- |
-| `IN_MODIFY` | After each `write()` call | **No** — file may be partially written | Real-time monitoring, live tail |
-| `IN_CLOSE_WRITE` | After `close()` on a file opened for writing | **Yes** — writer is done | Build triggers, post-processing |
+| Event            | When                                         | File Safe to Read?                     | Use Case                        |
+| ---------------- | -------------------------------------------- | -------------------------------------- | ------------------------------- |
+| `IN_MODIFY`      | After each `write()` call                    | **No** — file may be partially written | Real-time monitoring, live tail |
+| `IN_CLOSE_WRITE` | After `close()` on a file opened for writing | **Yes** — writer is done               | Build triggers, post-processing |
 
 ### Impact on File Watching
 
@@ -745,11 +745,11 @@ unresolved.
 
 ### Platform Behavior
 
-| Platform | Behavior |
-| --- | --- |
-| **POSIX** | `/foo/` and `/foo` refer to the same path. `filepath.Clean` strips trailing `/`. `/foo/../bar` normalizes to `/bar`. |
+| Platform    | Behavior                                                                                                                                     |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **POSIX**   | `/foo/` and `/foo` refer to the same path. `filepath.Clean` strips trailing `/`. `/foo/../bar` normalizes to `/bar`.                         |
 | **Windows** | `C:\foo\` and `C:\foo` are the same. But `C:` (drive current directory) ≠ `C:\` (drive root). Forward slashes are normalized to backslashes. |
-| **macOS** | Same as POSIX. Finder sometimes adds trailing slashes in AppleScript paths. |
+| **macOS**   | Same as POSIX. Finder sometimes adds trailing slashes in AppleScript paths.                                                                  |
 
 ### Impact on File Watching
 
@@ -811,24 +811,24 @@ that accept paths.
 
 Ranked by **impact on correctness × likelihood of encountering the issue**:
 
-| Priority | Property | Current Status | Effort | Affected Users |
-| --- | --- | --- | --- | --- |
-| 🔴 P0 | Unicode normalization (NFC/NFD) | Not handled | Medium | All macOS users |
-| 🔴 P0 | Network FS `stat()` hangs | Not handled | Low-Medium | NFS/SMB/SSHFS users |
-| 🟡 P1 | Poll loop case-awareness | Not handled (gap in case-sensitivity impl) | Low | macOS + polling users |
-| 🟡 P1 | Gitignore case-awareness | Not handled (gap in case-sensitivity impl) | Low | macOS + gitignore users |
-| 🟡 P1 | Timestamp resolution (FAT 2s gap) | Not handled | Low | USB/SD card users |
-| 🟡 P1 | Event backend auto-detection | Partial (manual polling exists) | Medium | All NFS/FUSE users |
-| 🟡 P1 | Windows mandatory locking + hashing | Not handled | Low | Windows users |
-| 🟡 P1 | Path canonicalization (Clean, trailing slash) | Partially handled | Low | All platforms |
-| 🟢 P2 | Rename atomicity (network FS) | Not handled | High | NFS/SMB users |
-| 🟢 P2 | FSEvents directory-level + latency | Not documented | Low (docs only) | macOS users |
-| 🟢 P2 | OverlayFS layer semantics | Not handled | High (kernel-dependent) | Docker/K8s users |
-| 🟢 P2 | `IN_CLOSE_WRITE` vs `IN_MODIFY` | Not handled | Medium (new Op type) | Build tool users |
-| ⚪ P3 | Hard link identity | Not handled | Very high | Rare (advanced users) |
-| ⚪ P3 | Event coalescing documentation | Not documented | Low (docs only) | All users (expectations) |
-| ⚪ P3 | Path length / reserved names | Not handled | Low (docs only) | Windows users |
-| ⚪ P3 | kqueue overflow detection | Not handled | Medium | BSD users under load |
+| Priority | Property                                      | Current Status                             | Effort                  | Affected Users           |
+| -------- | --------------------------------------------- | ------------------------------------------ | ----------------------- | ------------------------ |
+| 🔴 P0    | Unicode normalization (NFC/NFD)               | Not handled                                | Medium                  | All macOS users          |
+| 🔴 P0    | Network FS `stat()` hangs                     | Not handled                                | Low-Medium              | NFS/SMB/SSHFS users      |
+| 🟡 P1    | Poll loop case-awareness                      | Not handled (gap in case-sensitivity impl) | Low                     | macOS + polling users    |
+| 🟡 P1    | Gitignore case-awareness                      | Not handled (gap in case-sensitivity impl) | Low                     | macOS + gitignore users  |
+| 🟡 P1    | Timestamp resolution (FAT 2s gap)             | Not handled                                | Low                     | USB/SD card users        |
+| 🟡 P1    | Event backend auto-detection                  | Partial (manual polling exists)            | Medium                  | All NFS/FUSE users       |
+| 🟡 P1    | Windows mandatory locking + hashing           | Not handled                                | Low                     | Windows users            |
+| 🟡 P1    | Path canonicalization (Clean, trailing slash) | Partially handled                          | Low                     | All platforms            |
+| 🟢 P2    | Rename atomicity (network FS)                 | Not handled                                | High                    | NFS/SMB users            |
+| 🟢 P2    | FSEvents directory-level + latency            | Not documented                             | Low (docs only)         | macOS users              |
+| 🟢 P2    | OverlayFS layer semantics                     | Not handled                                | High (kernel-dependent) | Docker/K8s users         |
+| 🟢 P2    | `IN_CLOSE_WRITE` vs `IN_MODIFY`               | Not handled                                | Medium (new Op type)    | Build tool users         |
+| ⚪ P3    | Hard link identity                            | Not handled                                | Very high               | Rare (advanced users)    |
+| ⚪ P3    | Event coalescing documentation                | Not documented                             | Low (docs only)         | All users (expectations) |
+| ⚪ P3    | Path length / reserved names                  | Not handled                                | Low (docs only)         | Windows users            |
+| ⚪ P3    | kqueue overflow detection                     | Not handled                                | Medium                  | BSD users under load     |
 
 ---
 
@@ -837,25 +837,25 @@ Ranked by **impact on correctness × likelihood of encountering the issue**:
 A condensed reference of the most commonly encountered filesystems and their relevant
 properties:
 
-| Filesystem | Case | Unicode | mtime Resolution | rename Atomic | Events | Locking |
-| --- | --- | --- | --- | --- | --- | --- |
-| ext4 | Sensitive | Raw bytes | 1ns | Yes | inotify ✅ | Advisory |
-| XFS | Sensitive | Raw bytes | 1ns | Yes | inotify ✅ | Advisory |
-| Btrfs | Sensitive | Raw bytes | 1ns | Yes | inotify ✅ | Advisory |
-| ZFS | Sensitive | Raw bytes | 1ns | Yes | inotify ✅ | Advisory |
-| APFS (default) | **Insensitive** | **NFD** | 1ns | Yes | FSEvents ⚠️ | Advisory |
-| HFS+ (default) | **Insensitive** | **HFS+ NFD** | 1s | Yes | FSEvents ⚠️ | Advisory |
-| NTFS | **Insensitive** | None (UTF-16) | 100ns | Yes | ReadDirChangesW ✅ | **Mandatory** |
-| FAT32 | **Insensitive** | None | **2s** | **No** | ReadDirChangesW ✅ | None |
-| exFAT | **Insensitive** | None | 10ms | **No** | ReadDirChangesW ✅ | None |
-| NFS v3 | Follows server | Raw bytes | **1s** | ⚠️ Unreliable | **None** ⛔ | NLM (unreliable) |
-| SMB/CIFS | Usually insensitive | None | Variable | ⚠️ Unreliable | **None** ⛔ | Mandatory |
-| OverlayFS | Sensitive | Raw bytes | 1ns | Yes (upper) | inotify (upper only) | Advisory |
-| tmpfs | Sensitive | Raw bytes | 1ns | Yes | inotify ✅ | Advisory |
+| Filesystem     | Case                | Unicode       | mtime Resolution | rename Atomic | Events               | Locking          |
+| -------------- | ------------------- | ------------- | ---------------- | ------------- | -------------------- | ---------------- |
+| ext4           | Sensitive           | Raw bytes     | 1ns              | Yes           | inotify ✅           | Advisory         |
+| XFS            | Sensitive           | Raw bytes     | 1ns              | Yes           | inotify ✅           | Advisory         |
+| Btrfs          | Sensitive           | Raw bytes     | 1ns              | Yes           | inotify ✅           | Advisory         |
+| ZFS            | Sensitive           | Raw bytes     | 1ns              | Yes           | inotify ✅           | Advisory         |
+| APFS (default) | **Insensitive**     | **NFD**       | 1ns              | Yes           | FSEvents ⚠️          | Advisory         |
+| HFS+ (default) | **Insensitive**     | **HFS+ NFD**  | 1s               | Yes           | FSEvents ⚠️          | Advisory         |
+| NTFS           | **Insensitive**     | None (UTF-16) | 100ns            | Yes           | ReadDirChangesW ✅   | **Mandatory**    |
+| FAT32          | **Insensitive**     | None          | **2s**           | **No**        | ReadDirChangesW ✅   | None             |
+| exFAT          | **Insensitive**     | None          | 10ms             | **No**        | ReadDirChangesW ✅   | None             |
+| NFS v3         | Follows server      | Raw bytes     | **1s**           | ⚠️ Unreliable | **None** ⛔          | NLM (unreliable) |
+| SMB/CIFS       | Usually insensitive | None          | Variable         | ⚠️ Unreliable | **None** ⛔          | Mandatory        |
+| OverlayFS      | Sensitive           | Raw bytes     | 1ns              | Yes (upper)   | inotify (upper only) | Advisory         |
+| tmpfs          | Sensitive           | Raw bytes     | 1ns              | Yes           | inotify ✅           | Advisory         |
 
 Legend: ✅ Full support · ⚠️ Partial / caveats · ⛔ No support
 
 ---
 
-*This document is a living reference. Update when new filesystem properties are discovered
-or when go-filewatcher adds handling for existing ones.*
+_This document is a living reference. Update when new filesystem properties are discovered
+or when go-filewatcher adds handling for existing ones._

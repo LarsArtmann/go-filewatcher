@@ -1,7 +1,5 @@
 # API Stability Policy
 
-
-
 ## Versioning
 
 go-filewatcher follows [Semantic Versioning 2.0.0](https://semver.org/).
@@ -18,17 +16,17 @@ Given a version `MAJOR.MINOR.PATCH`:
 
 These types and functions have strong backward-compatibility guarantees:
 
-| Category      | Symbols                                                                                                                                                                                                                                                                                                               | Status     |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| Category | Symbols | Status |
+| -------- | ------- | ------ |
 
-| Constructor   | `New()`                                                                                                                                                                                                                                                                                                               | **Stable** |
-| Options       | `WithDebounce`, `WithPerPathDebounce`, `WithFilter`, `WithExtensions`, `WithIgnoreDirs`, `WithIgnoreHidden`, `WithRecursive`, `WithMiddleware`, `WithBuffer`, `WithErrorHandler`, `WithSkipDotDirs`, `WithOnAdd`, `WithLazyIsDir`, `WithIgnorePatterns`, `WithGitignore`, `WithExcludePaths`, `WithMaxWatches`        | **Stable** |
-| Filters       | `FilterExtensions`, `FilterIgnoreDirs`, `FilterIgnoreHidden`, `FilterGlob`, `FilterRegex`, `FilterOperations`, `FilterMinSize`, `FilterMaxSize`, `FilterMinAge`, `FilterMaxAge`, `FilterModifiedSince`, `FilterExcludePaths`, `FilterIgnoreExtensions`, `FilterNotOperations`, `FilterIgnoreGlobs`, `FilterGitignore` | **Stable** |
-| Middleware    | `MiddlewareLogging`, `MiddlewareRecovery`, `MiddlewareFilter`, `MiddlewareOnError`, `MiddlewareSlidingWindowRateLimit`, `MiddlewareMetrics`, `MiddlewareDeduplicate`, `MiddlewareThrottle`, `MiddlewareWriteFileLog`, `MiddlewareExponentialBackoff`                                                                  | **Stable** |
-| Methods       | `Watch()`, `WatchOnce()`, `Add()`, `Remove()`, `Close()`, `WatchList()`, `Stats()`, `IsClosed()`, `IsWatching()`, `Errors()`, `Reset()`                                                                                                                                                                               | **Stable** |
-| Errors        | `WatcherError`, `ErrorCategory`, all sentinel errors                                                                                                                                                                                                                                                                  | **Stable** |
-| Handlers      | `Handler`, `ErrorHandler`, `ErrorContext`                                                                                                                                                                                                                                                                             | **Stable** |
-| Observability | `PrometheusCollector`, `NewPrometheusCollector`, `StatsFunc`, `CounterMetric`, `GaugeMetric`, `Attribute`                                                                                                                                                                                                             | **Stable** |
+| Constructor | `New()` | **Stable** |
+| Options | `WithDebounce`, `WithPerPathDebounce`, `WithFilter`, `WithExtensions`, `WithIgnoreDirs`, `WithIgnoreHidden`, `WithRecursive`, `WithMiddleware`, `WithBuffer`, `WithErrorHandler`, `WithSkipDotDirs`, `WithOnAdd`, `WithLazyIsDir`, `WithIgnorePatterns`, `WithGitignore`, `WithExcludePaths`, `WithMaxWatches` | **Stable** |
+| Filters | `FilterExtensions`, `FilterIgnoreDirs`, `FilterIgnoreHidden`, `FilterGlob`, `FilterRegex`, `FilterOperations`, `FilterMinSize`, `FilterMaxSize`, `FilterMinAge`, `FilterMaxAge`, `FilterModifiedSince`, `FilterExcludePaths`, `FilterIgnoreExtensions`, `FilterNotOperations`, `FilterIgnoreGlobs`, `FilterGitignore` | **Stable** |
+| Middleware | `MiddlewareLogging`, `MiddlewareRecovery`, `MiddlewareFilter`, `MiddlewareOnError`, `MiddlewareSlidingWindowRateLimit`, `MiddlewareMetrics`, `MiddlewareDeduplicate`, `MiddlewareThrottle`, `MiddlewareWriteFileLog`, `MiddlewareExponentialBackoff` | **Stable** |
+| Methods | `Watch()`, `WatchOnce()`, `Add()`, `Remove()`, `Close()`, `WatchList()`, `Stats()`, `IsClosed()`, `IsWatching()`, `Errors()`, `Reset()` | **Stable** |
+| Errors | `WatcherError`, `ErrorCategory`, all sentinel errors | **Stable** |
+| Handlers | `Handler`, `ErrorHandler`, `ErrorContext` | **Stable** |
+| Observability | `PrometheusCollector`, `NewPrometheusCollector`, `StatsFunc`, `CounterMetric`, `GaugeMetric`, `Attribute` | **Stable** |
 
 ### Evolving APIs (may change between minor versions)
 
@@ -36,10 +34,10 @@ These APIs work as documented but may have behavioral changes:
 
 | Category   | Symbols                                                                                                                                                                                                                                | Status       |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| Features   | `WithPolling`, `WithPollInterval`, `WithDebug`, `WithFollowSymlinks`, `WithSelfHeal`, `WithContentHashing`, `WithCleanup`, `WithCaseSensitivity`, `EffectiveCaseSensitivity`                                                                                              | **Evolving** |
+| Features   | `WithPolling`, `WithPollInterval`, `WithDebug`, `WithFollowSymlinks`, `WithSelfHeal`, `WithContentHashing`, `WithCleanup`, `WithCaseSensitivity`, `EffectiveCaseSensitivity`                                                           | **Evolving** |
 | Debouncer  | `GlobalDebouncer`, `Debouncer`, `DebounceKey`                                                                                                                                                                                          | **Evolving** |
-| Types      | `EventPath`, `OpString`, `DebounceKey`, `RootPath`, `OTelSpan`                                                                                                                                                                                                         | **Evolving** |
-| Filters    | `FilterContentHash`, `FilterWithMeta`, `FilterFromWithMeta`, `FilterWithMetaAnd`, `FilterWithMetaOr`, `FilterWithMetaNot`, `WithMeta`, `MatchResult`, `FilterCaseInsensitive`, `FilterCaseSensitive`                                                                    | **Evolving** |
+| Types      | `EventPath`, `OpString`, `DebounceKey`, `RootPath`, `OTelSpan`                                                                                                                                                                         | **Evolving** |
+| Filters    | `FilterContentHash`, `FilterWithMeta`, `FilterFromWithMeta`, `FilterWithMetaAnd`, `FilterWithMetaOr`, `FilterWithMetaNot`, `WithMeta`, `MatchResult`, `FilterCaseInsensitive`, `FilterCaseSensitive`                                   | **Evolving** |
 | Middleware | `MiddlewareCircuitBreaker`, `MiddlewareThrottle`, `MiddlewareErrorSanitization`, `MiddlewareErrorRateLimit`, `MiddlewareErrorRecovery`, `MiddlewareErrorCorrelation`, `MiddlewareErrorBatch`, `OTelMiddleware`, `NewFileLogMiddleware` | **Evolving** |
 
 Evolving APIs will not be removed without a deprecation period of at least

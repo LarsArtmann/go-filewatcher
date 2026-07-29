@@ -15,7 +15,7 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       `go test ./...`. Windows has different event semantics (no inotify);
       document any platform-specific skips.
 - [ ] **macOS CI matrix for case-insensitive verification** — the case-
-      sensitivity and NFD/NFC behavior is verified as *logic* on Linux
+      sensitivity and NFD/NFC behavior is verified as _logic_ on Linux
       (case-sensitive ext4). Real APFS behavior (case-only rename coalescing,
       NFD event paths) is only provable on macOS. Add a `macos-latest` job or
       document the limitation explicitly. (See ROADMAP → Platform Coverage.)

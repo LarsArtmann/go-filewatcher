@@ -38,6 +38,7 @@ benchmark, skipped the CHANGELOG, and lied to myself about what "done" means.
 ## b) PARTIALLY DONE
 
 ### D6+D7: Gauge constant unification — INCOMPLETE
+
 I moved the gauge constants from `metrics.go` to `filesystem.go` and added a
 `GaugeValue()` method to `FilesystemCaseSensitivity`. But **`caseSensitivityGauge()`
 in metrics.go still takes a `string` parameter and matches against string
@@ -49,6 +50,7 @@ this design mismatch, didn't document the tradeoff, and shipped a half-finished
 unification while marking it done.
 
 ### D9: Bench-diff regression measurement — INVALIDATED
+
 The timing comparison is worthless. I ran the fuzz test (5 min, 32 workers) in
 parallel with `bench-diff` (6 runs × all benchmarks). Both were CPU-intensive and
 competed for cores. The ±18-59% variance in the timing results is because of CPU
@@ -57,6 +59,7 @@ deterministic regardless of CPU load), but the ns/op comparison is garbage. I
 should have killed the fuzz before running bench-diff, or run them sequentially.
 
 ### D5: `_` error discarding — BANDAID, NOT FIX
+
 I added comments saying the error is "intentionally ignored." But comments don't
 fix code smells — the code still discards errors with `_`. The real options were:
 rename `normalizePath` to signal best-effort intent, propagate the error, or
@@ -81,6 +84,7 @@ paragraph explaining why a code smell is OK. That's a rationalization, not a fix
 ## d) TOTALLY FUCKED UP
 
 ### 1. I shipped dead code and called it "done"
+
 `FilesystemCaseSensitivity.GaugeValue()` is defined in `filesystem.go:71` but
 **never called anywhere in the codebase**. I marked D6 ("add GaugeValue method")
 and D7 ("simplify metrics.go to use GaugeValue") as complete. D7 did not happen.
@@ -90,6 +94,7 @@ eliminate duplication, and instead I added a second unused code path alongside
 the duplication.
 
 ### 2. I invalidated my own benchmark and documented the results as if they mattered
+
 I ran `bench-diff` with the fuzz test hammering all 32 CPU cores simultaneously.
 The timing data shows ±18-59% variance — it's noise, not signal. I then
 documented the results in AGENTS.md as "timing comparisons were inconclusive due
@@ -98,6 +103,7 @@ my own test methodology. The truth is: I don't know the timing regression becaus
 I sabotaged the measurement.
 
 ### 3. I created unnecessary lint churn
+
 Adding `"runtime"` to the test file for the phantom-event `t.Log` introduced 3
 new `"darwin"`/`"windows"` string literals that triggered goconst. I then had to
 extract `osWindows`/`osDarwin` constants and update 3 files to fix the goconst
@@ -106,6 +112,7 @@ needed in `filesystem.go`), this churn wouldn't exist. I made work for myself by
 not thinking ahead.
 
 ### 4. API_STABILITY classification was lazy
+
 I dumped `FilesystemCaseSensitivity`, `WithCaseSensitivity`, and
 `FilterCaseInsensitive` into "Evolving" without analyzing whether they should be
 "Stable." `FilesystemCaseSensitivity` is a core enum that controls `pathKey()`
@@ -119,6 +126,7 @@ defaulting to "new = evolving."
 ## e) WHAT WE SHOULD IMPROVE
 
 ### Architecture
+
 1. **`Stats.CaseSensitivity` is a `string`, not `FilesystemCaseSensitivity`** —
    this is the root cause of the dead `GaugeValue()` code. The Stats struct stores
    a string representation, so any code that needs the enum value has to parse it
@@ -129,6 +137,7 @@ defaulting to "new = evolving."
    duplication I was supposed to eliminate still exists.
 
 ### Process
+
 3. **I mark tasks "done" before verifying they're wired up** — D7 is the proof.
    I should have grepped for `GaugeValue()` callers before marking it complete.
 4. **I run benchmarks and fuzz tests simultaneously** — CPU contention makes
@@ -141,6 +150,7 @@ defaulting to "new = evolving."
 ## f) Up to 50 Things We Should Get Done Next
 
 ### Critical (fix the damage from this session)
+
 1. **Wire up `GaugeValue()` or delete it** — either change `caseSensitivityGauge`
    to parse the string and call `GaugeValue()`, or delete the dead method
 2. **Update CHANGELOG.md** with all remediation changes
@@ -149,6 +159,7 @@ defaulting to "new = evolving."
 5. **Audit dependabot alerts** — `fast-uri` (high) and `astro` (medium) in website
 
 ### High Priority (close remaining gaps)
+
 6. **Actually fix the `_` error discarding** — create `cleanPath()` that doesn't
    return an error, or propagate the error properly
 7. **Add `FilterCaseSensitive(inner Filter)`** for symmetry with
@@ -165,6 +176,7 @@ defaulting to "new = evolving."
     parallel CPU-intensive workloads
 
 ### Medium Priority (robustness + polish)
+
 13. **Run `BenchmarkShouldExcludePath_ManyPaths`** and record the O(n) cost at
     100 exclude paths
 14. **Add website API reference** for `FilterCaseInsensitive` and
@@ -191,6 +203,7 @@ defaulting to "new = evolving."
 30. **Add `CHANGELOG.md` cross-references** from status reports
 
 ### Lower Priority (nice-to-have)
+
 31. **Add `ExampleGaugeValue`** to example_test.go once the method is wired up
 32. **Document `gaugeCaseSensitive` encoding** in Prometheus section of README
 33. **Add `FilterCaseInsensitive` benchmark** — measure wrapper overhead
@@ -222,6 +235,7 @@ defaulting to "new = evolving."
 The field is currently a `string` because it's in the `Stats` struct which is
 marked "Stable." Changing the type is technically breaking for anyone who reads
 `stats.CaseSensitivity` as a string (though most just print it). Options:
+
 - (a) Change the type (clean but breaking — requires v3 or a major version bump)
 - (b) Add a second field `Stats.CaseSensitivityMode FilesystemCaseSensitivity`
   (additive, non-breaking, but two fields for the same concept is a split-brain)
@@ -236,6 +250,7 @@ additive vs breaking changes in "Stable" structs.
 The 2 open alerts (`fast-uri` high, `astro` medium) are in the website's
 `package.json`, not in the Go module. The website is a separate deployment
 (Firebase Hosting). Should I:
+
 - (a) Fix them now (update website deps — separate toolchain, separate concern)
 - (b) Track them as a TODO and proceed with Go library work
 - (c) Treat them as blocking until resolved

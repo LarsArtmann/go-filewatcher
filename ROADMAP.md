@@ -40,7 +40,7 @@ certain directions worth exploring.
   truth. NFC normalization, `pathKey`, and the poll/gitignore case-awareness are
   already in place; probing is the remaining gap.
 - **macOS/Windows CI for case-insensitive tests** — the case-insensitive and
-  NFD/NFC behavior is verified as *logic* on Linux (case-sensitive ext4). Real
+  NFD/NFC behavior is verified as _logic_ on Linux (case-sensitive ext4). Real
   filesystem behavior on APFS/NTFS is only provable with a macOS/Windows CI
   matrix.
 

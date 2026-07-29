@@ -20,53 +20,53 @@ mode and gitignore-aware walking on macOS/Windows.
 
 ## a) FULLY DONE
 
-| Item | Details |
-| --- | --- |
-| `FilesystemCaseSensitivity` enum | `filesystem.go` — `CaseSensitivityAuto` (default), `CaseSensitive`, `CaseInsensitive` with `String()` method |
-| `resolveCaseSensitivity()` | Auto → platform-aware: Windows/macOS = insensitive, Linux/BSD = sensitive |
-| `pathKey()` method | Single canonical point for path comparison keys. Lowercases on case-insensitive, preserves on case-sensitive |
-| `WithCaseSensitivity(mode)` option | `options.go` — public functional option, documented |
-| Watch deduplication | `tryAddPath` now checks `watchListKeys` set (O(1)) instead of appending blindly — prevents duplicate watches for paths differing only in case |
-| `Remove()` case-aware subtree matching | `watcher.go:519` — uses `pathKey` for prefix comparison so `Remove("/dir/MyFile")` matches `/dir/myfile` on NTFS |
-| `shouldExcludePath()` case-aware | `watcher_walk.go:195` — all comparisons through `pathKey` |
-| `excludePaths` normalization | Keys pre-normalized to `pathKey` form in `New()` for O(1) lookups |
-| Debounce key case-awareness | `getDebounceKey()` uses `pathKey` — events for `/File.go` and `/file.go` coalesce on case-insensitive |
-| Self-heal case-aware | `failedPaths` keyed by `pathKey` with original-case values; `isPathWatched` and `appendToWatchList` use `watchListKeys` |
-| `appendToWatchList` dedup | Now self-deduplicates (was unconditional append before) |
-| O(1) `watchListKeys` map | Replaces two O(n) `slices.Contains` calls with O(1) map lookups |
-| Path normalization in `New()` | Extracted `validateAndNormalizePaths()` helper — paths stored as absolute from the start |
-| `Reset()` re-resolves case sensitivity | `effectiveCaseSensitivity` re-computed on reset |
-| `Close()` clears `watchListKeys` | No state leak across close/restart cycles |
-| Tests: 13 new in `filesystem_test.go` | Covers enum String, resolve, pathKey (both modes), dedup, Remove, debounce, exclude — all pass with `-race` |
-| `watcher_selfheal_test.go` updated | Fixed `failedPaths` type from `struct{}` to `string` |
-| `FEATURES.md` updated | New rows for case-sensitivity and O(1) lookup |
-| `AGENTS.md` updated | Gotchas #18 and #19, Key Patterns table, File Organization table |
+| Item                                   | Details                                                                                                                                       |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `FilesystemCaseSensitivity` enum       | `filesystem.go` — `CaseSensitivityAuto` (default), `CaseSensitive`, `CaseInsensitive` with `String()` method                                  |
+| `resolveCaseSensitivity()`             | Auto → platform-aware: Windows/macOS = insensitive, Linux/BSD = sensitive                                                                     |
+| `pathKey()` method                     | Single canonical point for path comparison keys. Lowercases on case-insensitive, preserves on case-sensitive                                  |
+| `WithCaseSensitivity(mode)` option     | `options.go` — public functional option, documented                                                                                           |
+| Watch deduplication                    | `tryAddPath` now checks `watchListKeys` set (O(1)) instead of appending blindly — prevents duplicate watches for paths differing only in case |
+| `Remove()` case-aware subtree matching | `watcher.go:519` — uses `pathKey` for prefix comparison so `Remove("/dir/MyFile")` matches `/dir/myfile` on NTFS                              |
+| `shouldExcludePath()` case-aware       | `watcher_walk.go:195` — all comparisons through `pathKey`                                                                                     |
+| `excludePaths` normalization           | Keys pre-normalized to `pathKey` form in `New()` for O(1) lookups                                                                             |
+| Debounce key case-awareness            | `getDebounceKey()` uses `pathKey` — events for `/File.go` and `/file.go` coalesce on case-insensitive                                         |
+| Self-heal case-aware                   | `failedPaths` keyed by `pathKey` with original-case values; `isPathWatched` and `appendToWatchList` use `watchListKeys`                       |
+| `appendToWatchList` dedup              | Now self-deduplicates (was unconditional append before)                                                                                       |
+| O(1) `watchListKeys` map               | Replaces two O(n) `slices.Contains` calls with O(1) map lookups                                                                               |
+| Path normalization in `New()`          | Extracted `validateAndNormalizePaths()` helper — paths stored as absolute from the start                                                      |
+| `Reset()` re-resolves case sensitivity | `effectiveCaseSensitivity` re-computed on reset                                                                                               |
+| `Close()` clears `watchListKeys`       | No state leak across close/restart cycles                                                                                                     |
+| Tests: 13 new in `filesystem_test.go`  | Covers enum String, resolve, pathKey (both modes), dedup, Remove, debounce, exclude — all pass with `-race`                                   |
+| `watcher_selfheal_test.go` updated     | Fixed `failedPaths` type from `struct{}` to `string`                                                                                          |
+| `FEATURES.md` updated                  | New rows for case-sensitivity and O(1) lookup                                                                                                 |
+| `AGENTS.md` updated                    | Gotchas #18 and #19, Key Patterns table, File Organization table                                                                              |
 
 ---
 
 ## b) PARTIALLY DONE
 
-| Item | What's Done | What's Missing |
-| --- | --- | --- |
+| Item                     | What's Done                                                                                           | What's Missing                                                                                                                         |
+| ------------------------ | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | **`pathKey()` coverage** | Applied to: `tryAddPath`, `Remove`, `shouldExcludePath`, `getDebounceKey`, self-heal, `watchListKeys` | **NOT** applied to: `watcher_poll.go` (2 functions), `watcher_gitignore.go` (1 function), `filter.go` (3+ functions) — see section (c) |
-| **Documentation** | `AGENTS.md`, `FEATURES.md` updated | `CHANGELOG.md`, `doc.go`, `Troubleshooting.md`, `DOMAIN_LANGUAGE.md`, website — not touched |
-| **Test coverage** | Unit tests for all new code paths | No example in `example_test.go`; no integration test that simulates case-insensitive filesystem behavior end-to-end |
+| **Documentation**        | `AGENTS.md`, `FEATURES.md` updated                                                                    | `CHANGELOG.md`, `doc.go`, `Troubleshooting.md`, `DOMAIN_LANGUAGE.md`, website — not touched                                            |
+| **Test coverage**        | Unit tests for all new code paths                                                                     | No example in `example_test.go`; no integration test that simulates case-insensitive filesystem behavior end-to-end                    |
 
 ---
 
 ## c) NOT STARTED
 
-| # | Item | Impact | Priority |
-| --- | --- | --- | --- |
-| 1 | **Poll loop case-awareness** (`watcher_poll.go`) | `pollDetectChanges` uses raw path strings as map keys in `snapshot`/`current`. On case-insensitive FS, rename `File.go` → `file.go` produces false Remove+Create instead of no-op. Also `pollWalkDir` stores raw paths. | **CRITICAL** |
-| 2 | **Gitignore matcher case-awareness** (`watcher_gitignore.go`) | `shouldSkipByGitignore` uses `strings.HasPrefix(path, prefix)` with raw strings. If gitignore dir and event path differ in case, prefix match fails, gitignore rules silently bypassed. | **CRITICAL** |
-| 3 | **User-facing filters case-awareness** (`filter.go`) | `FilterIgnoreDirs`, `FilterExcludePaths`, `FilterGlob` compare paths directly. `FilterExtensions` already lowercases extensions, proving the pattern exists. | **HIGH** (debatable — user-facing API) |
-| 4 | **CHANGELOG.md entry** | No release note for the new `WithCaseSensitivity` option | MEDIUM |
-| 5 | **doc.go package doc** | No mention of case-sensitivity in package-level docs | MEDIUM |
-| 6 | **example_test.go** | No runnable example for `WithCaseSensitivity` | LOW |
-| 7 | **Troubleshooting.md** | No guidance for case-sensitivity issues | LOW |
-| 8 | **DOMAIN_LANGUAGE.md** | No entries for `FilesystemCaseSensitivity`, `pathKey`, `CaseSensitive`/`CaseInsensitive` | LOW |
-| 9 | **Website docs** | `website/src/content/docs/` not updated with case-sensitivity guide | LOW |
+| #   | Item                                                          | Impact                                                                                                                                                                                                                  | Priority                               |
+| --- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| 1   | **Poll loop case-awareness** (`watcher_poll.go`)              | `pollDetectChanges` uses raw path strings as map keys in `snapshot`/`current`. On case-insensitive FS, rename `File.go` → `file.go` produces false Remove+Create instead of no-op. Also `pollWalkDir` stores raw paths. | **CRITICAL**                           |
+| 2   | **Gitignore matcher case-awareness** (`watcher_gitignore.go`) | `shouldSkipByGitignore` uses `strings.HasPrefix(path, prefix)` with raw strings. If gitignore dir and event path differ in case, prefix match fails, gitignore rules silently bypassed.                                 | **CRITICAL**                           |
+| 3   | **User-facing filters case-awareness** (`filter.go`)          | `FilterIgnoreDirs`, `FilterExcludePaths`, `FilterGlob` compare paths directly. `FilterExtensions` already lowercases extensions, proving the pattern exists.                                                            | **HIGH** (debatable — user-facing API) |
+| 4   | **CHANGELOG.md entry**                                        | No release note for the new `WithCaseSensitivity` option                                                                                                                                                                | MEDIUM                                 |
+| 5   | **doc.go package doc**                                        | No mention of case-sensitivity in package-level docs                                                                                                                                                                    | MEDIUM                                 |
+| 6   | **example_test.go**                                           | No runnable example for `WithCaseSensitivity`                                                                                                                                                                           | LOW                                    |
+| 7   | **Troubleshooting.md**                                        | No guidance for case-sensitivity issues                                                                                                                                                                                 | LOW                                    |
+| 8   | **DOMAIN_LANGUAGE.md**                                        | No entries for `FilesystemCaseSensitivity`, `pathKey`, `CaseSensitive`/`CaseInsensitive`                                                                                                                                | LOW                                    |
+| 9   | **Website docs**                                              | `website/src/content/docs/` not updated with case-sensitivity guide                                                                                                                                                     | LOW                                    |
 
 ---
 
@@ -215,6 +215,7 @@ renames in the poll loop.
 But `FilterIgnoreDirs("Vendor")` matching `/vendor/pkg` is a user expectation question.
 If we auto-apply case-sensitivity, users on Linux might be surprised that their
 case-sensitive filter silently becomes case-insensitive. Options:
+
 - (A) Auto-apply: filters read the watcher's `effectiveCaseSensitivity` (requires passing
   watcher state into filters, which currently have no such access — `Filter` is just
   `func(Event) bool`).

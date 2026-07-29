@@ -20,12 +20,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **`pathKey()` benchmarks** (`benchmark_test.go`) — `BenchmarkPathKey_{ASCII,UnicodeNFC,UnicodeNFD}_{CaseSensitive,CaseInsensitive}` measuring NFC normalization cost: ASCII is ~26 ns/0 allocs (free), pre-composed NFC ~140 ns/0 allocs, decomposed NFD ~1 µs/3 allocs (macOS fs paths only).
 - **`FuzzPathKey`** (`fuzz_test.go`) — fuzz target proving `pathKey()` never panics and is deterministic + idempotent across combining marks, emoji, ZWJ sequences, and invalid UTF-8.
 - **README "Filesystem Compatibility" section** — documents case-sensitivity awareness, NFC normalization, and `FilterCaseInsensitive` for end users.
+- **`cleanPath()` helper** (`filesystem.go`) — best-effort path cleaning without error return. Replaces `normalized, _ := normalizePath(path)` idiom in `FilterExcludePaths` and `WithExcludePaths`, eliminating the error-discarding code smell.
+- **`Stats.CaseSensitivityMode` field** (`watcher.go`) — additive `FilesystemCaseSensitivity` enum field alongside the existing `CaseSensitivity string`. Provides type-safe enum access without parsing, and enables the Prometheus gauge to call `GaugeValue()` directly.
+- **`FilterCaseSensitive(inner Filter)` wrapper** (`filter.go`) — NFC-normalizes the event path without case-folding. Symmetric with `FilterCaseInsensitive`. Useful on macOS where event paths arrive as NFD but case-sensitive matching is needed.
+- **`EffectiveCaseSensitivity()` method** (`watcher.go`) — returns the resolved `FilesystemCaseSensitivity` enum without the overhead of a full `Stats()` call. Type-safe alternative to `Stats().CaseSensitivity` (string).
+- **GaugeValue + consistency tests** (`filesystem_test.go`) — `TestFilesystemCaseSensitivity_GaugeValue`, `TestStats_CaseSensitivityFieldsConsistent`, `TestStats_CaseSensitivityModeReflectsMode`, and `TestCleanPath` verify the wired-up gauge encoding and string/enum field consistency.
+- **FilterCaseSensitive + EffectiveCaseSensitivity tests** (`filesystem_test.go`) — verify NFC normalization without case-folding, case preservation, and correct auto-detection resolution.
+- **Edge-case tests** (`watcher_test.go`) — `TestWatcher_Add_TrailingSlashNormalized` and `TestWatcher_Remove_DeeplyNestedUnicodeSubtree` (3-level Unicode tree: café/München/東京) verify path normalization and subtree key cleanup.
+- **Filter + emoji benchmarks** (`benchmark_test.go`) — `BenchmarkFilterCaseInsensitive` (~250 ns/1 alloc), `BenchmarkFilterCaseSensitive` (~115 ns/0 allocs), and `BenchmarkPathKey_EmojiZWJ_CaseSensitive` (~170 ns/0 allocs) measuring wrapper overhead and deep Unicode normalization cost.
 
 ### Fixed
 
 - **`Remove()` watchListKeys desync** (`watcher.go`) — `Remove()` only deleted the exact path key from `watchListKeys`, leaving subtree path keys orphaned. Now deletes each pruned subtree key incrementally (O(removed), not O(n) rebuild), guaranteeing the map stays in sync after bulk subtree removal.
 - **`normalizePath()` best-effort cleaning on `Abs` failure** (`filesystem.go`) — when `filepath.Abs` fails (e.g. unreadable cwd), the returned path is now still `filepath.Clean`'d so trailing slashes, `..`, and redundant separators are normalized. `FilterExcludePaths`/`WithExcludePaths` use the always-cleaned result instead of swallowing the error and falling back to the raw path.
 - **`golang.org/x/text` promoted to direct dependency** (`go.mod`) — was an indirect dependency; now explicitly required for `unicode/norm` NFC normalization in `pathKey()`.
+
+### Changed
+
+- **`FilesystemCaseSensitivity` promoted to Stable API** (`API_STABILITY.md`) — the enum values are foundational (control `pathKey()` behavior) and will not change. Adding new values (e.g., `CaseSensitivityProbed` in v3) is backward-compatible. `WithCaseSensitivity` and `FilterCaseInsensitive` remain Evolving.
+- **Prometheus gauge uses `GaugeValue()` directly** (`metrics.go`) — the `filewatcher_case_sensitivity` gauge now reads `stats.CaseSensitivityMode.GaugeValue()` instead of parsing a string. Single source of truth for the gauge encoding.
+
+### Fixed
+
+- **Dead code: `GaugeValue()` never called** (`metrics.go`, `filesystem.go`) — the `GaugeValue()` method was defined but never invoked. The Prometheus gauge used a separate `caseSensitivityGauge(string)` function with its own switch/case, duplicating the gauge encoding. Now wired via `Stats.CaseSensitivityMode`, and the duplicate `caseSensitivityGauge()` function is deleted.
+- **`_` error discarding code smell** (`filter.go`, `options.go`) — `FilterExcludePaths` and `WithExcludePaths` used `normalized, _ := normalizePath(path)`, discarding the error with a comment. Replaced with the `cleanPath()` helper that encapsulates the best-effort intent.
 
 ## [2.3.0] - 2026-07-27
 

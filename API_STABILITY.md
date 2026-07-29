@@ -1,6 +1,6 @@
 # API Stability Policy
 
-**Last Updated:** 2026-07-26
+
 
 ## Versioning
 
@@ -20,7 +20,7 @@ These types and functions have strong backward-compatibility guarantees:
 
 | Category      | Symbols                                                                                                                                                                                                                                                                                                               | Status     |
 | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| Core types    | `Event`, `Op`, `Watcher`, `Filter`                                                                                                                                                                                                                                                                                    | **Stable** |
+
 | Constructor   | `New()`                                                                                                                                                                                                                                                                                                               | **Stable** |
 | Options       | `WithDebounce`, `WithPerPathDebounce`, `WithFilter`, `WithExtensions`, `WithIgnoreDirs`, `WithIgnoreHidden`, `WithRecursive`, `WithMiddleware`, `WithBuffer`, `WithErrorHandler`, `WithSkipDotDirs`, `WithOnAdd`, `WithLazyIsDir`, `WithIgnorePatterns`, `WithGitignore`, `WithExcludePaths`, `WithMaxWatches`        | **Stable** |
 | Filters       | `FilterExtensions`, `FilterIgnoreDirs`, `FilterIgnoreHidden`, `FilterGlob`, `FilterRegex`, `FilterOperations`, `FilterMinSize`, `FilterMaxSize`, `FilterMinAge`, `FilterMaxAge`, `FilterModifiedSince`, `FilterExcludePaths`, `FilterIgnoreExtensions`, `FilterNotOperations`, `FilterIgnoreGlobs`, `FilterGitignore` | **Stable** |
@@ -36,10 +36,10 @@ These APIs work as documented but may have behavioral changes:
 
 | Category   | Symbols                                                                                                                                                                                                                                | Status       |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| Features   | `WithPolling`, `WithPollInterval`, `WithDebug`, `WithFollowSymlinks`, `WithSelfHeal`, `WithContentHashing`, `WithCleanup`, `WithCaseSensitivity`                                                                                              | **Evolving** |
+| Features   | `WithPolling`, `WithPollInterval`, `WithDebug`, `WithFollowSymlinks`, `WithSelfHeal`, `WithContentHashing`, `WithCleanup`, `WithCaseSensitivity`, `EffectiveCaseSensitivity`                                                                                              | **Evolving** |
 | Debouncer  | `GlobalDebouncer`, `Debouncer`, `DebounceKey`                                                                                                                                                                                          | **Evolving** |
-| Types      | `EventPath`, `OpString`, `DebounceKey`, `RootPath`, `OTelSpan`, `FilesystemCaseSensitivity`                                                                                                                                           | **Evolving** |
-| Filters    | `FilterContentHash`, `FilterWithMeta`, `FilterFromWithMeta`, `FilterWithMetaAnd`, `FilterWithMetaOr`, `FilterWithMetaNot`, `WithMeta`, `MatchResult`, `FilterCaseInsensitive`                                                          | **Evolving** |
+| Types      | `EventPath`, `OpString`, `DebounceKey`, `RootPath`, `OTelSpan`                                                                                                                                                                                                         | **Evolving** |
+| Filters    | `FilterContentHash`, `FilterWithMeta`, `FilterFromWithMeta`, `FilterWithMetaAnd`, `FilterWithMetaOr`, `FilterWithMetaNot`, `WithMeta`, `MatchResult`, `FilterCaseInsensitive`, `FilterCaseSensitive`                                                                    | **Evolving** |
 | Middleware | `MiddlewareCircuitBreaker`, `MiddlewareThrottle`, `MiddlewareErrorSanitization`, `MiddlewareErrorRateLimit`, `MiddlewareErrorRecovery`, `MiddlewareErrorCorrelation`, `MiddlewareErrorBatch`, `OTelMiddleware`, `NewFileLogMiddleware` | **Evolving** |
 
 Evolving APIs will not be removed without a deprecation period of at least

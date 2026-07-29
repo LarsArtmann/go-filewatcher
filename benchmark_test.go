@@ -671,3 +671,56 @@ func TestBenchmarkBaselines(t *testing.T) {
 		})
 	}
 }
+
+// ============================================================================
+// Filter Wrapper Benchmarks
+// ============================================================================
+
+// BenchmarkFilterCaseInsensitive measures the overhead of the FilterCaseInsensitive
+// wrapper: NFC normalization + ToLower + inner filter dispatch.
+func BenchmarkFilterCaseInsensitive(b *testing.B) {
+	inner := FilterRegex(`\.go$`)
+	wrapped := FilterCaseInsensitive(inner)
+
+	event := Event{Path: "/home/user/Src/Main.go", Op: Write}
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = wrapped(event)
+	}
+}
+
+// BenchmarkFilterCaseSensitive measures the overhead of the FilterCaseSensitive
+// wrapper: NFC normalization only + inner filter dispatch.
+func BenchmarkFilterCaseSensitive(b *testing.B) {
+	inner := FilterRegex(`\.go$`)
+	wrapped := FilterCaseSensitive(inner)
+
+	event := Event{Path: "/home/user/Src/Main.go", Op: Write}
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = wrapped(event)
+	}
+}
+
+// ============================================================================
+// Deep Unicode Path Benchmarks
+// ============================================================================
+
+// BenchmarkPathKey_EmojiZWJ measures pathKey on a path containing emoji with
+// zero-width joiner (ZWJ) sequences — the most complex Unicode normalization case.
+// ZWJ sequences require multi-codepoint composition, stress-testing norm.NFC.
+func BenchmarkPathKey_EmojiZWJ_CaseSensitive(b *testing.B) {
+	w := &Watcher{effectiveCaseSensitivity: CaseSensitive}
+	// 👨‍👩‍👧 = man + ZWJ + woman + ZWJ + girl (7 codepoints)
+	path := "/home/user/\U0001F468\u200D\U0001F469\u200D\U0001F467/file.go"
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = w.pathKey(path)
+	}
+}

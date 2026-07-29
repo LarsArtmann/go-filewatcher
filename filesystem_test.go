@@ -372,6 +372,76 @@ func TestFilterCaseInsensitive_NFCNormalizes(t *testing.T) {
 	}
 }
 
+func TestFilterCaseSensitive_NFCNormalizes(t *testing.T) {
+	t.Parallel()
+
+	// Inner filter with NFC path pattern (case-sensitive)
+	inner := FilterRegex(`^/data/café\.txt$`)
+	wrapped := FilterCaseSensitive(inner)
+
+	// NFD path should match NFC pattern through the wrapper (case preserved)
+	nfdEvent := Event{Path: "/data/cafe\u0301.txt", Op: Write}
+	if !wrapped(nfdEvent) {
+		t.Errorf("FilterCaseSensitive should normalize NFD path to match NFC pattern")
+	}
+}
+
+func TestFilterCaseSensitive_PreservesCase(t *testing.T) {
+	t.Parallel()
+
+	// Inner filter that matches an exact mixed-case path
+	inner := FilterRegex(`^/Project/Src/Main\.go$`)
+	wrapped := FilterCaseSensitive(inner)
+
+	// Matching case path should pass
+	matchEvent := Event{Path: "/Project/Src/Main.go", Op: Write}
+	if !wrapped(matchEvent) {
+		t.Errorf("FilterCaseSensitive should allow matching-case path")
+	}
+
+	// Mismatched case path should NOT pass (case is preserved, not folded)
+	mismatchEvent := Event{Path: "/project/src/main.go", Op: Write}
+	if wrapped(mismatchEvent) {
+		t.Errorf("FilterCaseSensitive should reject mismatched-case path (case preserved)")
+	}
+}
+
+func TestEffectiveCaseSensitivity(t *testing.T) {
+	t.Parallel()
+
+	fb := newFakeBackend()
+	tmpDir := t.TempDir()
+
+	t.Run("explicit_insensitive", func(t *testing.T) {
+		t.Parallel()
+
+		w := newTestWatcher(t, tmpDir, withBackend(fb), WithCaseSensitivity(CaseInsensitive))
+		if got := w.EffectiveCaseSensitivity(); got != CaseInsensitive {
+			t.Errorf("EffectiveCaseSensitivity() = %v, want %v", got, CaseInsensitive)
+		}
+	})
+
+	t.Run("explicit_sensitive", func(t *testing.T) {
+		t.Parallel()
+
+		w := newTestWatcher(t, t.TempDir(), withBackend(newFakeBackend()), WithCaseSensitivity(CaseSensitive))
+		if got := w.EffectiveCaseSensitivity(); got != CaseSensitive {
+			t.Errorf("EffectiveCaseSensitivity() = %v, want %v", got, CaseSensitive)
+		}
+	})
+
+	t.Run("auto_resolved", func(t *testing.T) {
+		t.Parallel()
+
+		w := newTestWatcher(t, t.TempDir(), withBackend(newFakeBackend())) // Auto default
+
+		want := resolveCaseSensitivity(CaseSensitivityAuto)
+		if got := w.EffectiveCaseSensitivity(); got != want {
+			t.Errorf("EffectiveCaseSensitivity() = %v, want %v (auto-resolved)", got, want)
+		}
+	})
+}
+
 func TestNormalizePath_EdgeCases(t *testing.T) {
 	t.Parallel()
 

@@ -633,6 +633,106 @@ func TestWatcher_Remove_UnicodeNFDMatchesNFCWatch(t *testing.T) {
 	}
 }
 
+// TestWatcher_Add_TrailingSlashNormalized proves that Add() normalizes trailing
+// slashes via normalizePath, so Add("foo/") and Add("foo") are equivalent.
+func TestWatcher_Add_TrailingSlashNormalized(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	subDir := filepath.Join(tmpDir, "subdir")
+	if err := os.MkdirAll(subDir, 0o750); err != nil {
+		t.Fatal(err)
+	}
+
+	w := newTestWatcher(t, tmpDir)
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	if _, err := w.Watch(ctx); err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	// Add with trailing separator — normalizePath should clean it.
+	if err := w.Add(subDir + string(filepath.Separator)); err != nil {
+		t.Fatalf("Add with trailing slash: %v", err)
+	}
+
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	// The watchListKeys should contain the cleaned path (no trailing slash).
+	cleanKey := w.pathKey(cleanPath(subDir))
+	if _, ok := w.watchListKeys[cleanKey]; !ok {
+		t.Errorf("Add with trailing slash did not normalize: key %q not found in watchListKeys", cleanKey)
+	}
+}
+
+// TestWatcher_Remove_DeeplyNestedUnicodeSubtree proves that Remove() cleans up
+// all subtree keys when removing a deeply nested Unicode directory tree (3+ levels).
+func TestWatcher_Remove_DeeplyNestedUnicodeSubtree(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	// Create a 3-level Unicode subtree: café/München/東京
+	level1 := filepath.Join(tmpDir, "café")
+	level2 := filepath.Join(level1, "München")
+	level3 := filepath.Join(level2, "東京") //nolint:gosmopolitan // intentional CJK test input
+
+	for _, dir := range []string{level1, level2, level3} {
+		if err := os.MkdirAll(dir, 0o750); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	// Also create an unrelated sibling to verify it survives.
+	other := filepath.Join(tmpDir, "other")
+	if err := os.MkdirAll(other, 0o750); err != nil {
+		t.Fatal(err)
+	}
+
+	w := newTestWatcher(t, tmpDir)
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	if _, err := w.Watch(ctx); err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	// Verify all Unicode dirs are watched.
+	w.mu.RLock()
+
+	for _, p := range []string{level1, level2, level3} {
+		if _, ok := w.watchListKeys[w.pathKey(p)]; !ok {
+			w.mu.RUnlock()
+			t.Fatalf("expected %q to be watched before Remove", p)
+		}
+	}
+
+	w.mu.RUnlock()
+
+	// Remove the root of the Unicode subtree.
+	if err := w.Remove(level1); err != nil {
+		t.Fatalf("Remove failed: %v", err)
+	}
+
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	// All subtree keys should be gone.
+	for _, p := range []string{level1, level2, level3} {
+		if _, ok := w.watchListKeys[w.pathKey(p)]; ok {
+			t.Errorf("watchListKeys still contains pruned Unicode subtree key %q", p)
+		}
+	}
+
+	// Unrelated key should survive.
+	if _, ok := w.watchListKeys[w.pathKey(other)]; !ok {
+		t.Errorf("unrelated key should survive Unicode subtree Remove")
+	}
+}
+
 func TestWatcher_WatchList(t *testing.T) {
 	t.Parallel()
 

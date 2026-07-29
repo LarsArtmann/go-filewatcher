@@ -120,6 +120,7 @@ func normalizePath(path string) (string, error) {
 // use normalizePath and check the returned error.
 func cleanPath(path string) string {
 	cleaned, _ := normalizePath(path)
+
 	return cleaned
 }
 

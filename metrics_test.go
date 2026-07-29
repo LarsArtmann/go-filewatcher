@@ -15,17 +15,18 @@ func TestPrometheusCollector_CountersAndGauges(t *testing.T) {
 		callCount.Add(1)
 
 		return Stats{
-			WatchCount:        42,
-			IsWatching:        true,
-			IsClosed:          false,
-			EventsProcessed:   100,
-			EventsFilteredOut: 10,
-			ErrorsEncountered: 2,
-			WatchErrors:       0,
-			Uptime:            5 * time.Second,
-			WatchLimit:        8192,
-			WatchBudgetUsed:   0.005,
-			CaseSensitivity:   "case-sensitive",
+			WatchCount:          42,
+			IsWatching:          true,
+			IsClosed:            false,
+			EventsProcessed:     100,
+			EventsFilteredOut:   10,
+			ErrorsEncountered:   2,
+			WatchErrors:         0,
+			Uptime:              5 * time.Second,
+			WatchLimit:          8192,
+			WatchBudgetUsed:     0.005,
+			CaseSensitivity:     "case-sensitive",
+			CaseSensitivityMode: CaseSensitive,
 		}
 	}
 
@@ -96,9 +97,10 @@ func TestPrometheusCollector_BoolConversion(t *testing.T) {
 
 	statsFn := func() Stats {
 		return Stats{
-			IsWatching:      true,
-			IsClosed:        true,
-			CaseSensitivity: "auto",
+			IsWatching:          true,
+			IsClosed:            true,
+			CaseSensitivity:     "auto",
+			CaseSensitivityMode: CaseSensitivityAuto,
 		}
 	}
 

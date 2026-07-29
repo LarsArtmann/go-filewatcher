@@ -49,7 +49,8 @@ func NewPrometheusCollector(stats StatsFunc) *PrometheusCollector {
 				Uptime:            0,
 				WatchLimit:        0,
 				WatchBudgetUsed:   0,
-				CaseSensitivity:   "",
+				CaseSensitivity:     "",
+				CaseSensitivityMode: CaseSensitivityAuto,
 			}
 		}
 	}
@@ -166,7 +167,7 @@ func (c *PrometheusCollector) Gauges() []GaugeMetric {
 		{
 			Name:  metricCaseSensitivity,
 			Help:  "Resolved case-sensitivity mode (0=case-sensitive, 1=case-insensitive, 2=auto)",
-			Value: caseSensitivityGauge(stats.CaseSensitivity),
+			Value: stats.CaseSensitivityMode.GaugeValue(),
 		},
 	}
 }
@@ -179,19 +180,3 @@ func boolToFloat(b bool) float64 {
 	return 0
 }
 
-// caseSensitivityGauge maps the Stats.CaseSensitivity string to the numeric
-// gauge encoding. The constants (gaugeCaseSensitive etc.) are defined in
-// filesystem.go alongside the FilesystemCaseSensitivity enum — single source
-// of truth for all representations of the enum.
-func caseSensitivityGauge(mode string) float64 {
-	switch mode {
-	case caseSensitiveStr:
-		return gaugeCaseSensitive
-	case caseInsensitiveStr:
-		return gaugeCaseInsensitive
-	case caseAutoStr:
-		return gaugeCaseAuto
-	default:
-		return -1
-	}
-}

@@ -184,7 +184,7 @@ didn't check if it renders. Same mistake, second time.
    `CaseSensitivityMode` directly), but users who read the string field have no
    way to convert it back.
 4. **Benchmark baseline is stale** — the 6 new benchmarks have no baseline.
-  Future bench-diff runs can't detect regressions in them.
+   Future bench-diff runs can't detect regressions in them.
 
 ### Process
 
@@ -301,6 +301,7 @@ didn't check if it renders. Same mistake, second time.
 
 The name is a usability trap — it implies the wrapper enforces case-sensitive
 matching, but it only NFC-normalizes without case-folding. Options:
+
 - (a) **Rename to `FilterNFCNormalized`** now (before anyone depends on it).
   Honest but breaks the symmetry with `FilterCaseInsensitive`.
 - (b) **Keep the name** and document the behavior clearly. Users may expect
@@ -317,6 +318,7 @@ judgment call I can't make alone.
 `EffectiveCaseSensitivity()` takes `w.mu.RLock()`. The field is set only in
 `New()` and `Reset()` (both happen before/after concurrent operation), so it's
 safe to read without a lock. Options:
+
 - (a) **Remove the lock** from `EffectiveCaseSensitivity()` — consistent with
   `pathKey()`, lower overhead, but technically a data race if someone calls
   `Reset()` concurrently (which they shouldn't).
@@ -333,6 +335,7 @@ fields that are effectively immutable during concurrent operation.
 Four benchmarks show `p=0.002` timing regressions (95-100% slower), but I
 didn't touch the code they exercise (gitignore, event string, middleware). The
 allocation data is perfectly clean. Options:
+
 - (a) **Environmental noise** — CPU throttling, background processes, cache
   effects. Re-run to confirm.
 - (b) **Real regression from indirect effects** — e.g., the `Stats` struct grew

@@ -300,6 +300,13 @@ negligible for event-driven watching; caching is only worth considering for
 extreme macOS throughput (>10k Unicode events/sec). ASCII and NFC paths never
 allocate.
 
+**Bench-diff regression verification** (pre-NFC vs post-NFC): zero allocation
+regression on ALL hot-path benchmarks (ConvertEvent, PassesFilters, EmitEvent,
+ShouldSkipDir, Stats, all Filters, all Middleware). The only allocation change
+is +1 alloc in `New()` (one-time startup cost from NFC initialization in
+pathKey). Timing comparisons were inconclusive due to high variance (±18-59%)
+but absolute PathKey benchmarks confirm ASCII = ~26ns/0-allocs.
+
 ### 19. O(1) Watched-Path Lookup
 
 `watchListKeys` is a `map[string]struct{}` of pathKeys, maintained alongside

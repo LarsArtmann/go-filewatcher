@@ -35,6 +35,16 @@ const (
 	caseAutoStr        = "auto"
 )
 
+// Gauge encoding for the filewatcher_case_sensitivity Prometheus metric.
+// Named constants satisfy mnd and document the wire format consumed by dashboards.
+// These live with the enum (not in metrics.go) so all representations of
+// FilesystemCaseSensitivity are defined in one place.
+const (
+	gaugeCaseSensitive   = 0.0
+	gaugeCaseInsensitive = 1.0
+	gaugeCaseAuto        = 2.0
+)
+
 // String returns a human-readable representation of the case-sensitivity mode.
 func (c FilesystemCaseSensitivity) String() string {
 	switch c {
@@ -46,6 +56,22 @@ func (c FilesystemCaseSensitivity) String() string {
 		return caseAutoStr
 	default:
 		return categoryStringUnknown
+	}
+}
+
+// GaugeValue returns the numeric encoding for the Prometheus
+// filewatcher_case_sensitivity gauge (0=case-sensitive, 1=case-insensitive,
+// 2=auto). This is the single source of truth for the gauge encoding.
+func (c FilesystemCaseSensitivity) GaugeValue() float64 {
+	switch c {
+	case CaseSensitive:
+		return gaugeCaseSensitive
+	case CaseInsensitive:
+		return gaugeCaseInsensitive
+	case CaseSensitivityAuto:
+		return gaugeCaseAuto
+	default:
+		return -1
 	}
 }
 

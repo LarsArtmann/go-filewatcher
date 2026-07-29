@@ -245,7 +245,9 @@ func WithExcludePaths(paths ...string) Option {
 	return func(w *Watcher) {
 		for _, p := range paths {
 			// normalizePath returns a cleaned path even when absolute resolution
-			// fails (best-effort relative path), so exclude matching stays consistent.
+			// fails (best-effort relative path). For exclude-path matching we need
+			// consistency, not necessarily absolute paths, so the error is
+			// intentionally ignored here.
 			normalized, _ := normalizePath(p)
 			w.excludePaths[normalized] = struct{}{}
 		}

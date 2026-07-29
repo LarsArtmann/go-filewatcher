@@ -3,6 +3,7 @@ package filewatcher
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -107,6 +108,18 @@ func TestPollWalkDir_PreservesOriginalPathInState(t *testing.T) {
 
 func TestPollDetectChanges_NoPhantomEventsOnCaseInsensitive(t *testing.T) {
 	t.Parallel()
+
+	// NOTE: On Linux (case-sensitive ext4), File.txt -> file.txt is a GENUINE
+	// rename — the kernel sees two different files. This test verifies the poll
+	// loop's canonical-key logic, but on case-sensitive filesystems it passes
+	// due to timing leniency, not because canonicalization is proven. The
+	// canonicalization correctness is independently verified by
+	// TestPollWalkDir_NormalizesUnicodeKeysAndPreservesOriginalPath and
+	// TestPathKey_NFCEquivalenceProperty. This test becomes meaningful on
+	// macOS/Windows CI where the filesystem is genuinely case-insensitive.
+	if runtime.GOOS != "darwin" && runtime.GOOS != "windows" {
+		t.Log("Running on case-sensitive filesystem (ext4/XFS). This test verifies timing behavior; canonicalization correctness is proven by pathKey tests.")
+	}
 
 	tmpDir := t.TempDir()
 

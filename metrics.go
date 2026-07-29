@@ -179,6 +179,10 @@ func boolToFloat(b bool) float64 {
 	return 0
 }
 
+// caseSensitivityGauge maps the Stats.CaseSensitivity string to the numeric
+// gauge encoding. The constants (gaugeCaseSensitive etc.) are defined in
+// filesystem.go alongside the FilesystemCaseSensitivity enum — single source
+// of truth for all representations of the enum.
 func caseSensitivityGauge(mode string) float64 {
 	switch mode {
 	case caseSensitiveStr:
@@ -191,11 +195,3 @@ func caseSensitivityGauge(mode string) float64 {
 		return -1
 	}
 }
-
-// Numeric encoding for the filewatcher_case_sensitivity gauge. Named constants
-// satisfy mnd and document the wire format consumed by dashboards/alerts.
-const (
-	gaugeCaseSensitive   = 0
-	gaugeCaseInsensitive = 1
-	gaugeCaseAuto        = 2
-)

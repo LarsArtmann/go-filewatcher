@@ -237,6 +237,12 @@ Don't remove the nolint — this is intentional.
 - Directories matching gitignore patterns are skipped (not added to inotify)
 - Uses `github.com/sabhiram/go-gitignore` (zero transitive deps)
 - gitignore cache is stored per-directory for hierarchical matching
+- **Trailing-slash directory patterns don't match the dir itself**: the
+  go-gitignore library returns `MatchesPath("Build") == false` for pattern
+  `Build/` — it only matches paths *inside* (`Build/foo`). This means a
+  `.gitignore` with `Build/` does NOT prevent the `Build` directory from being
+  added to the watch list during walk. Use `Build` (no trailing slash) for
+  patterns that need to skip the directory itself.
 
 ### 14. Batched Watch Registration
 

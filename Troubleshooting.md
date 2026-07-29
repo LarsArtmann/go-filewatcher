@@ -251,3 +251,27 @@ same file.
 **Status:** Fixed. The poll loop snapshot now uses canonical pathKeys for map
 comparison, so case-only renames don't trigger phantom events. Ensure
 `WithCaseSensitivity(CaseInsensitive)` is set (default on macOS/Windows).
+
+### Gitignored Directory Still Gets Watched
+
+**Symptoms:** A `.gitignore` with `Build/` does not prevent the `Build`
+directory from being added to the watch list.
+
+**Cause:** The `github.com/sabhiram/go-gitignore` library returns
+`MatchesPath("Build") == false` for a trailing-slash directory pattern (`Build/`).
+It only matches paths *inside* the directory (`Build/foo`). This is library
+behavior, not a bug in go-filewatcher.
+
+**Fix:** Use the pattern without the trailing slash for directories that should
+be skipped entirely during walk:
+
+```gitignore
+# Instead of:
+Build/
+
+# Use:
+Build
+```
+
+The trailing-slash form still works for filtering *events* from files inside the
+directory — it just doesn't prevent the directory itself from being watched.

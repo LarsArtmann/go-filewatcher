@@ -304,8 +304,14 @@ allocate.
 regression on ALL hot-path benchmarks (ConvertEvent, PassesFilters, EmitEvent,
 ShouldSkipDir, Stats, all Filters, all Middleware). The only allocation change
 is +1 alloc in `New()` (one-time startup cost from NFC initialization in
-pathKey). Timing comparisons were inconclusive due to high variance (±18-59%)
-but absolute PathKey benchmarks confirm ASCII = ~26ns/0-allocs.
+pathKey).
+
+**Bench-diff methodology**: benchmarks MUST run without parallel CPU-intensive
+workloads (fuzz tests, builds, etc.). Previous bench-diff runs were invalidated
+by running a 5-minute fuzz test (32 workers) simultaneously — the ±18-59% timing
+variance was CPU contention, not NFC overhead. Allocation data is always valid
+(deterministic regardless of CPU load). Rule: kill all background work before
+`nix run .#bench-diff`.
 
 ### 19. O(1) Watched-Path Lookup
 

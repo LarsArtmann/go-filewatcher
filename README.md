@@ -286,13 +286,16 @@ How it works:
 - **Case-sensitivity is configurable.** In case-insensitive mode, path keys are
   lowercased so `File.txt` and `file.txt` collide — preventing duplicate watches,
   missed `Remove()` calls, and case-only-rename phantom events.
-- **Check the resolved mode at runtime:** `stats := watcher.Stats(); stats.CaseSensitivity`.
+- **Check the resolved mode at runtime:** `watcher.EffectiveCaseSensitivity()` returns the type-safe `FilesystemCaseSensitivity` enum, or `stats.CaseSensitivity` for the string form.
 
-Filter-level case-insensitivity (without changing the watcher-wide mode):
+Filter-level wrappers (without changing the watcher-wide mode):
 
 ```go
-// Match events case-insensitively against ".go" files, even on Linux:
+// Case-insensitive: lowercase + NFC-normalize before the inner filter:
 filter := filewatcher.FilterCaseInsensitive(filewatcher.FilterExtensions(".go"))
+
+// Case-sensitive: NFC-normalize only (useful on macOS NFD paths):
+filter := filewatcher.FilterCaseSensitive(filewatcher.FilterRegex(`^/Project/.*\.go$`))
 ```
 
 ## Observability
@@ -353,6 +356,10 @@ func (f *filewatcherCollector) Collect(ch chan<- prometheus.Metric) {
 coll := filewatcher.NewPrometheusCollector(watcher.Stats)
 prometheus.MustRegister(newFilewatcherCollector(coll))
 ```
+
+The `filewatcher_case_sensitivity` gauge encodes the resolved mode as a number:
+`0` = case-sensitive, `1` = case-insensitive, `2` = auto (will resolve to 0 or 1
+at runtime). Use this to alert when a watcher is unexpectedly in the wrong mode.
 
 ### OpenTelemetry
 

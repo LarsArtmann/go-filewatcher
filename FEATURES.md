@@ -42,6 +42,7 @@ Honest status of every capability in go-filewatcher. Statuses:
 | Generated-code detection        | ✅     | sqlc, protobuf, templ, mockgen, stringer via `NewGeneratedCodeDetector` + gogenfilter v3.2.0                                       |
 | Filter combinators (AND/OR/NOT) | ✅     | `FilterAnd`, `FilterOr`, `FilterNot`                                                                                               |
 | Case-insensitive filter wrapper | ✅     | `FilterCaseInsensitive(inner)` — lowercases + NFC-normalizes the event path before delegating to the inner filter                  |
+| Case-sensitive filter wrapper   | ✅     | `FilterCaseSensitive(inner)` — NFC-normalizes without case-folding (useful on macOS NFD paths)                                   |
 | Metadata-returning filters      | ✅     | `FilterWithMeta`, `MatchResult`, `FilterWithMetaAnd`/`FilterWithMetaOr`/`FilterWithMetaNot`, `FilterFromWithMeta`                  |
 
 ## Middleware
@@ -96,10 +97,11 @@ Honest status of every capability in go-filewatcher. Statuses:
 | Batched watch registration               | ✅     | 1000 dirs/batch with `runtime.Gosched()` between batches            |
 | Polling mode (NFS/FUSE)                  | ✅     | `WithPolling(true)` + `WithPollInterval(d)`                         |
 | Symlink following                        | ✅     | `WithFollowSymlinks(true)`                                          |
-| .gitignore-aware walking                 | ✅     | `WithGitignore(true)` (default) skips gitignored dirs at walk time  |
+| .gitignore-aware walking                 | ✅     | `WithGitignore(true)` (default) skips gitignored dirs at walk time. Note: go-gitignore trailing-slash limitation — see Troubleshooting.md |
 | Path-level exclusions                    | ✅     | `WithExcludePaths(paths...)` prefix-matches during walk             |
 | Filesystem case-sensitivity awareness    | ✅     | `WithCaseSensitivity(mode)` — auto/sensitive/insensitive; dedup, Remove, debounce, exclude, poll loop, gitignore all case-aware |
 | NFC Unicode normalization                | ✅     | `pathKey()` applies `norm.NFC.String()` — fixes macOS NFD/NFC path mismatch on all non-ASCII filenames |
+| Effective case-sensitivity query        | ✅     | `EffectiveCaseSensitivity()` — returns resolved enum without full `Stats()` call. Also via `Stats.CaseSensitivityMode` (type-safe enum) |
 | O(1) watched-path lookup & deduplication | ✅     | `watchListKeys` set prevents duplicate watch registration           |
 
 ## Event Metadata

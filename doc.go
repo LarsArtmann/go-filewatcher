@@ -76,6 +76,17 @@
 // the invisible mismatches that occur when macOS stores filenames as NFD
 // (decomposed) but user-configured paths are NFC (composed).
 //
+// Example: the filename "café" is stored on macOS as the bytes
+// 63 61 66 65 CC 81 (NFD: "cafe" + combining acute U+0301), while user input
+// is typically 63 61 66 C3 A9 (NFC: precomposed é U+00E9). Without NFC
+// normalization, these two byte sequences never compare equal, causing
+// exclude-path matching, debounce deduplication, and gitignore prefix checks
+// to silently fail.
+//
 // For filter-level case-insensitivity without changing the watcher-wide mode,
-// wrap any Filter with FilterCaseInsensitive (see the example).
+// wrap any Filter with FilterCaseInsensitive (see the example). For NFC
+// normalization without case-folding, use FilterCaseSensitive.
+//
+// Check the resolved mode at runtime via EffectiveCaseSensitivity() (returns
+// the FilesystemCaseSensitivity enum) or Stats().CaseSensitivityMode.
 package filewatcher

@@ -54,6 +54,8 @@ Immutable objects defined by attributes.
 | Handler        | `func(ctx, Event) error` — the function signature middleware wrap                                                                               | Middleware pipeline          |
 | FilesystemCaseSensitivity | Enum controlling path comparison mode: `CaseSensitivityAuto` (platform default), `CaseSensitive`, `CaseInsensitive` | `filesystem.go`              |
 | pathKey        | Canonical string key for path lookups: NFC-normalized (always) + lowercased (on case-insensitive). Used for dedup, Remove, debounce, exclude, gitignore, poll | Internal canonicalization  |
+| GaugeValue     | Numeric encoding for the Prometheus gauge: 0=case-sensitive, 1=case-insensitive, 2=auto. Single source of truth on `FilesystemCaseSensitivity` | `filesystem.go`             |
+| Effective Case Sensitivity | The resolved case-sensitivity mode after auto-detection. Queried via `EffectiveCaseSensitivity()` or `Stats.CaseSensitivityMode` | Runtime resolution          |
 | NFC Normalization | Converting Unicode to composed form (`é` = U+00E9) to match macOS NFD (`e` + combining acute = U+0065 U+0301) | Applied in `pathKey()`       |
 
 ## Events

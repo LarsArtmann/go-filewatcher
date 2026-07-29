@@ -117,8 +117,10 @@ func TestPollDetectChanges_NoPhantomEventsOnCaseInsensitive(t *testing.T) {
 	// TestPollWalkDir_NormalizesUnicodeKeysAndPreservesOriginalPath and
 	// TestPathKey_NFCEquivalenceProperty. This test becomes meaningful on
 	// macOS/Windows CI where the filesystem is genuinely case-insensitive.
-	if runtime.GOOS != "darwin" && runtime.GOOS != "windows" {
-		t.Log("Running on case-sensitive filesystem (ext4/XFS). This test verifies timing behavior; canonicalization correctness is proven by pathKey tests.")
+	if runtime.GOOS != osDarwin && runtime.GOOS != osWindows {
+		t.Log("Running on case-sensitive filesystem (ext4/XFS). " +
+			"This test verifies timing behavior; canonicalization " +
+			"correctness is proven by pathKey tests.")
 	}
 
 	tmpDir := t.TempDir()

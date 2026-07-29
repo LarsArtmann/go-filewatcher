@@ -45,6 +45,12 @@ const (
 	gaugeCaseAuto        = 2.0
 )
 
+// OS name constants used for runtime.GOOS comparisons. Satisfy goconst.
+const (
+	osWindows = "windows"
+	osDarwin  = "darwin"
+)
+
 // String returns a human-readable representation of the case-sensitivity mode.
 func (c FilesystemCaseSensitivity) String() string {
 	switch c {
@@ -82,7 +88,7 @@ func resolveCaseSensitivity(mode FilesystemCaseSensitivity) FilesystemCaseSensit
 		return mode
 	}
 
-	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+	if runtime.GOOS == osWindows || runtime.GOOS == osDarwin {
 		return CaseInsensitive
 	}
 

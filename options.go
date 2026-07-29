@@ -242,7 +242,7 @@ func WithFollowSymlinks(follow bool) Option {
 // Use this to exclude entire subtrees like "/home/user/projects/forks" without
 // affecting directories with the same name elsewhere.
 func WithExcludePaths(paths ...string) Option {
-	return func(w *Watcher) {
+	return func(w *Watcher) { //nolint:varnamelen // w is idiomatic for functional options
 		for _, p := range paths {
 			// normalizePath returns a cleaned path even when absolute resolution
 			// fails (best-effort relative path). For exclude-path matching we need

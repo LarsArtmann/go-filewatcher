@@ -36,7 +36,7 @@ func TestResolveCaseSensitivity_AutoResolvesByPlatform(t *testing.T) {
 	result := resolveCaseSensitivity(CaseSensitivityAuto)
 
 	switch runtime.GOOS {
-	case "windows", "darwin":
+	case osWindows, osDarwin:
 		assertEqual(t, "auto on "+runtime.GOOS, result, CaseInsensitive)
 	default:
 		assertEqual(t, "auto on "+runtime.GOOS, result, CaseSensitive)

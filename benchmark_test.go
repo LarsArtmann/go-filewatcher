@@ -571,7 +571,7 @@ func BenchmarkPathKey_UnicodeNFD_CaseSensitive(b *testing.B) {
 
 func BenchmarkShouldExcludePath_Empty(b *testing.B) {
 	w := &Watcher{
-		excludePaths:            map[string]struct{}{},
+		excludePaths:             map[string]struct{}{},
 		effectiveCaseSensitivity: CaseSensitive,
 	}
 
@@ -592,7 +592,7 @@ func BenchmarkShouldExcludePath_FewPaths(b *testing.B) {
 	}
 
 	w := &Watcher{
-		excludePaths:            excludes,
+		excludePaths:             excludes,
 		effectiveCaseSensitivity: CaseSensitive,
 	}
 
@@ -613,7 +613,7 @@ func BenchmarkShouldExcludePath_ManyPaths(b *testing.B) {
 	}
 
 	w := &Watcher{
-		excludePaths:            excludes,
+		excludePaths:             excludes,
 		effectiveCaseSensitivity: CaseSensitive,
 	}
 

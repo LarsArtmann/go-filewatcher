@@ -563,6 +563,70 @@ func BenchmarkPathKey_UnicodeNFD_CaseSensitive(b *testing.B) {
 }
 
 // ============================================================================
+// Exclude Path Benchmarks
+// ============================================================================
+
+// BenchmarkShouldExcludePath measures the O(n) prefix scan over the excludePaths
+// map. shouldExcludePath is called once per directory during walk.
+
+func BenchmarkShouldExcludePath_Empty(b *testing.B) {
+	w := &Watcher{
+		excludePaths:            map[string]struct{}{},
+		effectiveCaseSensitivity: CaseSensitive,
+	}
+
+	testPath := "/home/user/project/src/main.go"
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = w.shouldExcludePath(testPath)
+	}
+}
+
+func BenchmarkShouldExcludePath_FewPaths(b *testing.B) {
+	excludes := map[string]struct{}{}
+
+	for _, p := range []string{"/home/user/forks", "/home/user/vendor", "/home/user/.cache"} {
+		excludes[p] = struct{}{}
+	}
+
+	w := &Watcher{
+		excludePaths:            excludes,
+		effectiveCaseSensitivity: CaseSensitive,
+	}
+
+	testPath := "/home/user/project/src/main.go"
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = w.shouldExcludePath(testPath)
+	}
+}
+
+func BenchmarkShouldExcludePath_ManyPaths(b *testing.B) {
+	excludes := make(map[string]struct{}, 100)
+
+	for idx := range 100 {
+		excludes[fmt.Sprintf("/home/user/exclude%d", idx)] = struct{}{}
+	}
+
+	w := &Watcher{
+		excludePaths:            excludes,
+		effectiveCaseSensitivity: CaseSensitive,
+	}
+
+	testPath := "/home/user/project/src/main.go"
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = w.shouldExcludePath(testPath)
+	}
+}
+
+// ============================================================================
 // Benchmark Regression Baselines
 // ============================================================================
 

@@ -113,6 +113,16 @@ func normalizePath(path string) (string, error) {
 	return filepath.Clean(abs), nil
 }
 
+// cleanPath returns a cleaned, best-effort canonical path.
+// It calls normalizePath but discards the error — use this when you need
+// path consistency (trailing slashes, "..", redundant separators removed)
+// but do not require the path to be absolute. For strict absolute resolution,
+// use normalizePath and check the returned error.
+func cleanPath(path string) string {
+	cleaned, _ := normalizePath(path)
+	return cleaned
+}
+
 // pathKey returns a canonical string key for path lookups.
 // On case-insensitive filesystems the key is lowercased so that paths differing
 // only in case collide in maps and equality checks.

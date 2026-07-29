@@ -36,6 +36,25 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       `FilterGeneratedCodeWithFilter`. Document them in FEATURES.md to reach
       zero exemptions (excluding phantom-type helpers and deprecated symbols).
 
+## Website Maintenance
+
+- [ ] **Fix website dependabot alerts** — `fast-uri` (high, host confusion) and
+      `astro` (medium, reflected XSS) in `website/package.json`. These are in
+      the website toolchain (separate flake.nix), not the Go library. Update
+      website deps with `cd website && npm update`.
+      (`src: 2026-07-29_14-06 §Dependabot`)
+
+## v3 Candidates
+
+- [ ] **Phantom-typed `PathKey`** — `type PathKey string` for compile-time safety
+      on path keys. Currently keys are bare strings. Would prevent accidental
+      mixing of raw paths and canonicalized keys.
+- [ ] **`CaseSensitivityProbed` mode** — actually probe the filesystem (write a
+      test file with mixed-case name, check if it collides) instead of relying
+      on `runtime.GOOS`. More accurate for edge cases (case-sensitive NTFS,
+      case-sensitive APFS volume).
+      (`src: 2026-07-29_09-44 §f #27`)
+
 ---
 
 ## Status Snapshot
@@ -47,7 +66,7 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 | Tests          | 100%  | ✅     |
 | Flaky tests    | 0     | ✅     |
 | Broken benches | 0     | ✅     |
-| Open items     | 5     | 🟡     |
+| Open items     | 8     | 🟡     |
 
 ---
 
@@ -81,3 +100,15 @@ self-reviews so they are not lost; they do not belong in the checklist above.
    integration testing. Tradeoff: more public API surface vs. more consumer
    value. This is a v3 decision — exporting it is a breaking commitment.
    (`src: 2026-07-26_20-00 §G Q1`)
+
+### Resolved (2026-07-29)
+
+- ~~Should `Stats.CaseSensitivity` change from `string` to
+  `FilesystemCaseSensitivity`?~~ **Resolved:** Added `Stats.CaseSensitivityMode`
+  as an additive enum field. Non-breaking, eliminates string-to-float mapping
+  duplication.
+- ~~Should dependabot vulnerabilities in website toolchain block Go library
+  releases?~~ **Resolved:** No. Website is separate deployment (Firebase
+  Hosting) with its own toolchain. Tracked as TODO.
+- ~~Should `FilesystemCaseSensitivity` be Stable or Evolving?~~ **Resolved:**
+  Stable. Foundational enum, values will not change.

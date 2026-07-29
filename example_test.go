@@ -436,3 +436,30 @@ func ExampleFilterCaseInsensitive() {
 	)
 	// Output: Watcher with case-insensitive .go filter
 }
+
+// ExampleWatcher_EffectiveCaseSensitivity demonstrates querying the resolved
+// case-sensitivity mode as a type-safe enum.
+func ExampleWatcher_EffectiveCaseSensitivity() {
+	runExampleWatcher(
+		func(watcher *filewatcher.Watcher) {
+			mode := watcher.EffectiveCaseSensitivity()
+			fmt.Println(mode)
+		},
+		filewatcher.WithCaseSensitivity(filewatcher.CaseSensitive),
+	)
+	// Output: case-sensitive
+}
+
+// ExampleFilterCaseSensitive demonstrates wrapping a filter so event paths are
+// NFC-normalized (fixing macOS NFD paths) while preserving character case.
+func ExampleFilterCaseSensitive() {
+	runExampleWatcher(
+		func(_ *filewatcher.Watcher) {
+			fmt.Println("Watcher with case-sensitive NFC-normalized filter")
+		},
+		filewatcher.WithFilter(
+			filewatcher.FilterCaseSensitive(filewatcher.FilterExtensions(".go")),
+		),
+	)
+	// Output: Watcher with case-sensitive NFC-normalized filter
+}

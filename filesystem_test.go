@@ -474,3 +474,94 @@ func TestPathKey_NFCEquivalenceProperty(t *testing.T) {
 		})
 	}
 }
+
+func TestFilesystemCaseSensitivity_GaugeValue(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		mode FilesystemCaseSensitivity
+		want float64
+	}{
+		{CaseSensitive, gaugeCaseSensitive},
+		{CaseInsensitive, gaugeCaseInsensitive},
+		{CaseSensitivityAuto, gaugeCaseAuto},
+		{FilesystemCaseSensitivity(99), -1},
+	}
+
+	for _, tt := range tests {
+		if got := tt.mode.GaugeValue(); got != tt.want {
+			t.Errorf("%d.GaugeValue() = %v, want %v", tt.mode, got, tt.want)
+		}
+	}
+}
+
+func TestStats_CaseSensitivityFieldsConsistent(t *testing.T) {
+	t.Parallel()
+
+	modes := []FilesystemCaseSensitivity{
+		CaseSensitive,
+		CaseInsensitive,
+		CaseSensitivityAuto,
+	}
+
+	for _, mode := range modes {
+		resolved := resolveCaseSensitivity(mode)
+
+		// The gauge value from GaugeValue() must be valid (>= 0).
+		gauge := resolved.GaugeValue()
+		if gauge < 0 {
+			t.Errorf("resolved mode %v has invalid gauge value %v", resolved, gauge)
+		}
+
+		// GaugeValue() must agree with the string representation:
+		// each known string maps to exactly one gauge value.
+		if resolved.String() == categoryStringUnknown {
+			t.Errorf("resolved mode %v has unknown string representation", resolved)
+		}
+	}
+}
+
+func TestStats_CaseSensitivityModeReflectsMode(t *testing.T) {
+	t.Parallel()
+
+	fb := newFakeBackend()
+	tmpDir := t.TempDir()
+
+	w := newTestWatcher(t, tmpDir, withBackend(fb), WithCaseSensitivity(CaseInsensitive))
+	stats := w.Stats()
+
+	if stats.CaseSensitivityMode != CaseInsensitive {
+		t.Errorf("Stats().CaseSensitivityMode = %v, want %v", stats.CaseSensitivityMode, CaseInsensitive)
+	}
+
+	if stats.CaseSensitivity != stats.CaseSensitivityMode.String() {
+		t.Errorf("Stats().CaseSensitivity (%q) != CaseSensitivityMode.String() (%q)",
+			stats.CaseSensitivity, stats.CaseSensitivityMode.String())
+	}
+}
+
+func TestCleanPath(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{"trailing slash", "/a/b/", "/a/b"},
+		{"parent reference", "/a/b/../c", "/a/c"},
+		{"redundant separators", "/a//b", "/a/b"},
+		{"dot component", "/a/./b", "/a/b"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := cleanPath(tt.input)
+			if got != tt.want {
+				t.Errorf("cleanPath(%q) = %q, want %q", tt.input, got, tt.want)
+			}
+		})
+	}
+}

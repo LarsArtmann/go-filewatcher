@@ -610,6 +610,18 @@ func (w *Watcher) Stats() Stats {
 	}
 }
 
+// EffectiveCaseSensitivity returns the resolved case-sensitivity mode
+// (auto-detection resolved to concrete CaseSensitive or CaseInsensitive).
+// This is the type-safe enum equivalent of Stats().CaseSensitivity (string).
+//
+// This method is safe for concurrent use with other methods.
+func (w *Watcher) EffectiveCaseSensitivity() FilesystemCaseSensitivity {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	return w.effectiveCaseSensitivity
+}
+
 // Errors returns a receive-only channel that receives errors from the watcher.
 // This provides an alternative to the error handler callback. If both are
 // configured, errors are sent to the channel AND passed to the error handler.

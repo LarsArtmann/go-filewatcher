@@ -481,3 +481,16 @@ func FilterCaseInsensitive(inner Filter) Filter {
 		return inner(normalized)
 	}
 }
+
+// FilterCaseSensitive wraps an inner Filter, NFC-normalizing the event path
+// before passing it to the inner filter. Unlike FilterCaseInsensitive, it
+// preserves character case. This is useful on macOS (where event paths may
+// arrive as NFD) to ensure NFC-normalized matching without case-folding.
+func FilterCaseSensitive(inner Filter) Filter {
+	return func(event Event) bool {
+		normalized := event
+		normalized.Path = norm.NFC.String(event.Path)
+
+		return inner(normalized)
+	}
+}

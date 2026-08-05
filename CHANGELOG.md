@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2.4.0](https://github.com/LarsArtmann/go-filewatcher/compare/v2.3.0...v2.4.0) (2026-08-05)
+
+
+### Features
+
+* **filewatcher:** enhance filtering and filesystem event handling ([467fa16](https://github.com/LarsArtmann/go-filewatcher/commit/467fa163cdeb5b79cb1634576943ea1df2937648))
+* **metrics:** add metrics collection and observability for file watcher ([123c635](https://github.com/LarsArtmann/go-filewatcher/commit/123c635a5f61c71cf1510ccf74882e57eb0abdb4))
+* **metrics:** add metrics collection and testing for file watcher operations ([016dd1d](https://github.com/LarsArtmann/go-filewatcher/commit/016dd1d779588c0d9f8aed031efc13ea4c437a86))
+* **tests:** add filesystem polling gitignore integration tests ([f0546bf](https://github.com/LarsArtmann/go-filewatcher/commit/f0546bfbb54523d6ceb997148d73142207215362))
+* **watcher:** add configurable metrics collection and enhance test coverage ([51bff0c](https://github.com/LarsArtmann/go-filewatcher/commit/51bff0cc2592897b7aed0729db12fef24935c1b3))
+* **watcher:** add file watching capabilities with documentation updates ([55b64b6](https://github.com/LarsArtmann/go-filewatcher/commit/55b64b68160f49a5095363239d371c80f453f3d9))
+* **watcher:** add filesystem abstraction and self-healing support ([75ef17c](https://github.com/LarsArtmann/go-filewatcher/commit/75ef17c2231c2409f540f0505463e47b8f9552c6))
+* **watcher:** add self-healing capabilities for resilient file monitoring ([9a7c9d8](https://github.com/LarsArtmann/go-filewatcher/commit/9a7c9d8eac46436d969c81b07080ea4388b8d9f7))
+* **watcher:** enhance file filtering capabilities with custom rules ([f703edd](https://github.com/LarsArtmann/go-filewatcher/commit/f703eddd039de360fcd6951f18644edfcc02beaf))
+* **watcher:** enhance file watching capabilities with event filtering ([9d66aa5](https://github.com/LarsArtmann/go-filewatcher/commit/9d66aa58b5cce747513e9e62149401c8f508f338))
+* **watcher:** enhance file watching with initial directory walk and improved options ([c800591](https://github.com/LarsArtmann/go-filewatcher/commit/c8005912c550481ac5ab1f18088809598efc2ec2))
+* **watcher:** integrate gitignore support with polling watcher ([304f12d](https://github.com/LarsArtmann/go-filewatcher/commit/304f12d7bfe3305d6cc243167ad39a7596138a81))
+
 ## [Unreleased]
 
 ### Added

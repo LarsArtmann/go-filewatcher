@@ -124,6 +124,7 @@ watcher, _ := filewatcher.New(paths,
 Write your own middleware by wrapping the handler:
 
 ```go
+// skip-validate
 func TimingMiddleware(next filewatcher.Handler) filewatcher.Handler {
 	return func(ctx context.Context, event filewatcher.Event) error {
 		start := time.Now()

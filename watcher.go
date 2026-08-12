@@ -78,14 +78,14 @@ type Watcher struct {
 	lazyIsDir                bool                      // skip os.Stat calls in convertEvent for performance
 	pollInterval             time.Duration             // polling interval for NFS/FUSE filesystems (0 = disabled)
 	polling                  bool                      // polling mode enabled (supplements fsnotify with periodic scans)
-	eventDropOnFull          bool                      // drop events when channel is full instead of blocking
+	errorBufferSize          int                       // size of the error channel (0 = use bufferSize)
 	debug                    bool                      // enable verbose debug logging
 	debugLogger              *slog.Logger              // logger for debug output
 	followSymlinks           bool                      // follow symbolic links during directory walking
 	watchFilteredDirs        bool                      // watch new directories even when the Create event was filtered out
 	gitignoreEnabled         bool                      // enable .gitignore-aware walk filtering
 	gitignoreCache           *gitignoreCache           // cache of compiled gitignore matchers
-	contentHashing           bool                      // compute SHA-256 hash of file content on events
+	contentHashMaxSize       int64                     // Max file size for content hashing (0 = disabled, default 10 MiB when enabled)
 	selfHealInterval         time.Duration             // interval for self-healing failed watch registrations (0=disabled)
 	failedPaths              map[string]string         // pathKey → original path; retried by selfHealLoop
 	done                     chan struct{}             // closed by Close() to signal shutdown to in-flight goroutines
@@ -129,6 +129,7 @@ type Watcher struct {
 	maxWatches                  int           // Maximum inotify watches allowed (0 = no limit)
 	maxWatchesExplicit          bool          // True when maxWatches was set via WithMaxWatches(n)
 	maxWatchesFraction          float64       // Safety fraction applied to auto-detected maxWatches (default 1.0)
+	maxWatchesDetected          int           // Raw system-detected limit before safety fraction (0 if explicit or unknown)
 }
 
 // Compile-time interface check: Watcher implements io.Closer.
@@ -281,17 +282,19 @@ func New( //nolint:funlen // constructor with full field initialization
 		maxWatches:                  0,
 		maxWatchesExplicit:          false,
 		maxWatchesFraction:          1.0, // default: use full system limit (set WithMaxWatchesSafetyFraction for shared environments)
+		maxWatchesDetected:          0,
 		lazyIsDir:                   false,
 		pollInterval:                0,
 		polling:                     false,
 		eventDropOnFull:             false,
+		errorBufferSize:             0,
 		debug:                       false,
 		debugLogger:                 nil,
 		followSymlinks:              false,
 		watchFilteredDirs:           true, // default: keep watching new dirs even if Create event was filtered
 		gitignoreEnabled:            true,
 		gitignoreCache:              newGitignoreCache(),
-		contentHashing:              false,
+		contentHashMaxSize:          0,
 		selfHealInterval:            0,
 		failedPaths:                 make(map[string]string),
 		done:                        make(chan struct{}),
@@ -342,6 +345,7 @@ func New( //nolint:funlen // constructor with full field initialization
 	// limits from WithMaxWatches(n) are used as-is.
 	if w.maxWatches == 0 {
 		w.maxWatches = detectMaxWatches()
+		w.maxWatchesDetected = w.maxWatches
 		w.applyMaxWatchesFraction()
 	}
 
@@ -628,7 +632,8 @@ type Stats struct {
 	ErrorsDropped               uint64                    // Errors dropped because the error channel was full
 	WatchErrors                 uint64                    // Watch add failures (ENOSPC, permission denied, etc.)
 	Uptime                      time.Duration             // Time since watcher was started
-	WatchLimit                  int                       // System inotify limit (0 if unknown)
+	WatchLimit                  int                       // System inotify limit before safety fraction (0 if unknown or explicit)
+	WatchBudgetCap              int                       // Effective watch budget cap after safety fraction
 	WatchBudgetUsed             float64                   // Percentage of budget used (0.0-1.0)
 	CaseSensitivity             string                    // Resolved case-sensitivity mode ("case-sensitive", "case-insensitive", "auto")
 	CaseSensitivityMode         FilesystemCaseSensitivity // Resolved case-sensitivity mode (enum, type-safe)
@@ -662,7 +667,8 @@ func (w *Watcher) Stats() Stats {
 		ErrorsDropped:               w.errorsDropped.Load(),
 		WatchErrors:                 w.watchErrors.Load(),
 		Uptime:                      uptime,
-		WatchLimit:                  w.maxWatches,
+		WatchLimit:                  w.maxWatchesDetected,
+		WatchBudgetCap:              w.maxWatches,
 		WatchBudgetUsed:             budgetUsed,
 		CaseSensitivity:             w.effectiveCaseSensitivity.String(),
 		CaseSensitivityMode:         w.effectiveCaseSensitivity,
@@ -689,7 +695,12 @@ func (w *Watcher) EffectiveCaseSensitivity() FilesystemCaseSensitivity {
 // This method is safe for concurrent use with other methods.
 func (w *Watcher) Errors() <-chan error {
 	w.errorsOnce.Do(func() {
-		w.errorsCh = make(chan error, w.bufferSize)
+		size := w.errorBufferSize
+		if size <= 0 {
+			size = w.bufferSize
+		}
+
+		w.errorsCh = make(chan error, size)
 	})
 
 	return w.errorsCh
@@ -755,6 +766,7 @@ func (w *Watcher) Reset() error {
 	// Re-detect max watches from system (only when not explicitly configured)
 	if !w.maxWatchesExplicit {
 		w.maxWatches = detectMaxWatches()
+		w.maxWatchesDetected = w.maxWatches
 		w.applyMaxWatchesFraction()
 	}
 

@@ -15,20 +15,22 @@ func TestPrometheusCollector_CountersAndGauges(t *testing.T) {
 		callCount.Add(1)
 
 		return Stats{
-			WatchCount:                42,
-			IsWatching:                true,
-			IsClosed:                  false,
-			EventsProcessed:           100,
-			EventsFilteredOut:         10,
-			EventsDroppedByMiddleware: 5,
-			ErrorsEncountered:         2,
-			ErrorsDropped:             1,
-			WatchErrors:               0,
-			Uptime:                    5 * time.Second,
-			WatchLimit:                8192,
-			WatchBudgetUsed:           0.005,
-			CaseSensitivity:           "case-sensitive",
-			CaseSensitivityMode:       CaseSensitive,
+			WatchCount:                  42,
+			IsWatching:                  true,
+			IsClosed:                    false,
+			EventsProcessed:             100,
+			EventsFilteredOut:           10,
+			EventsDroppedByMiddleware:   5,
+			EventsDroppedByBackpressure: 3,
+			ErrorsEncountered:           2,
+			ErrorsDropped:               1,
+			WatchErrors:                 0,
+			Uptime:                      5 * time.Second,
+			WatchLimit:                  8192,
+			WatchBudgetCap:              6144,
+			WatchBudgetUsed:             0.005,
+			CaseSensitivity:             "case-sensitive",
+			CaseSensitivityMode:         CaseSensitive,
 		}
 	}
 
@@ -39,12 +41,13 @@ func TestPrometheusCollector_CountersAndGauges(t *testing.T) {
 	}
 
 	counters := collector.Counters()
-	assertLen(t, "counters", len(counters), 6)
+	assertLen(t, "counters", len(counters), 7)
 
 	// Verify specific counter values
 	wantCounters := map[string]uint64{
-		"filewatcher_events_processed_total":   100,
-		"filewatcher_errors_encountered_total": 2,
+		"filewatcher_events_processed_total":               100,
+		"filewatcher_events_dropped_by_backpressure_total": 3,
+		"filewatcher_errors_encountered_total":             2,
 	}
 
 	for _, counter := range counters {
@@ -54,7 +57,7 @@ func TestPrometheusCollector_CountersAndGauges(t *testing.T) {
 	}
 
 	gauges := collector.Gauges()
-	assertLen(t, "gauges", len(gauges), 7)
+	assertLen(t, "gauges", len(gauges), 8)
 
 	// Verify gauge values
 	for _, g := range gauges {
@@ -85,7 +88,7 @@ func TestPrometheusCollector_NilStatsFunc(t *testing.T) {
 	collector := NewPrometheusCollector(nil)
 
 	counters := collector.Counters()
-	assertLen(t, "counters (nil stats)", len(counters), 6)
+	assertLen(t, "counters (nil stats)", len(counters), 7)
 
 	for _, c := range counters {
 		if c.Value != 0 {

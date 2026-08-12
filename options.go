@@ -123,6 +123,17 @@ func WithBuffer(size int) Option {
 	}
 }
 
+// WithErrorBufferSize sets the buffer size for the error channel (Errors()).
+// This decouples the error channel capacity from the event channel, allowing
+// a larger error buffer under high error load (e.g., many ENOSPC errors
+// during a large tree walk). When not set or set to 0, the error channel
+// uses the same buffer size as the event channel (WithBuffer).
+func WithErrorBufferSize(size int) Option {
+	return func(w *Watcher) {
+		w.errorBufferSize = size
+	}
+}
+
 // WithOnAdd sets a callback that is invoked whenever a new path is added
 // to the watcher. This is useful for logging or tracking which directories
 // are being watched.
@@ -378,7 +389,8 @@ func WithMaxWatchesSafetyFraction(fraction float64) Option {
 // WithContentHashing enables SHA-256 content hashing of file events.
 // When enabled, Event.Hash is populated with the hex-encoded SHA-256 digest
 // of the file content for Create and Write events on regular files. Hashing
-// is skipped for directories, removed files, and files larger than 10 MiB.
+// is skipped for directories, removed files, and files larger than the max
+// size (default 10 MiB, configurable via WithContentHashMaxSize).
 //
 // Performance: each hashed event requires reading the entire file. This adds
 // filesystem I/O proportional to file size. Use this option when content
@@ -386,7 +398,21 @@ func WithMaxWatchesSafetyFraction(fraction float64) Option {
 // disable it for high-throughput scenarios.
 func WithContentHashing() Option {
 	return func(w *Watcher) {
-		w.contentHashing = true
+		if w.contentHashMaxSize == 0 {
+			w.contentHashMaxSize = defaultContentHashMaxSize
+		}
+	}
+}
+
+// WithContentHashMaxSize sets the maximum file size for content hashing.
+// Files larger than this are skipped to avoid blocking the event loop on I/O.
+// This option implicitly enables content hashing if not already enabled via
+// WithContentHashing. Set to 0 to disable content hashing entirely.
+//
+// Default is 10 MiB (10 * 1024 * 1024 bytes).
+func WithContentHashMaxSize(bytes int64) Option {
+	return func(w *Watcher) {
+		w.contentHashMaxSize = bytes
 	}
 }
 

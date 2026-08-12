@@ -74,7 +74,7 @@ func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
 // processEvent converts an fsnotify event, applies filters and debounce,
 // and emits it to the channel.
 func (w *Watcher) processEvent(ctx context.Context, fsEvent fsnotify.Event, eventCh chan<- Event) {
-	event := convertEvent(fsEvent, w.lazyIsDir, w.contentHashing)
+	event := convertEvent(fsEvent, w.lazyIsDir, w.contentHashMaxSize)
 	if event == nil {
 		w.debugLog(
 			"event ignored: unrecognized fsnotify operation",
@@ -128,11 +128,10 @@ func (w *Watcher) emitEvent(ctx context.Context, event Event, eventCh chan<- Eve
 		trackedEmit := func(e Event) {
 			emitted.Store(true)
 
-			w.incrementProcessedEvent()
-
 			if w.eventDropOnFull {
 				select {
 				case eventCh <- e:
+					w.incrementProcessedEvent()
 				case <-w.done:
 				case <-ctx.Done():
 				default:
@@ -146,6 +145,7 @@ func (w *Watcher) emitEvent(ctx context.Context, event Event, eventCh chan<- Eve
 
 			select {
 			case eventCh <- e:
+				w.incrementProcessedEvent()
 			case <-w.done:
 			case <-ctx.Done():
 			}
@@ -334,7 +334,7 @@ func (w *Watcher) handleError(ctx ErrorContext, err error) {
 // If computeHash is true and the event is a Create or Write for a regular file,
 // reads the file and computes a SHA-256 hex hash. Hash is empty for directories,
 // removed files, permission errors, or when lazyIsDir is true.
-func convertEvent(fsEvent fsnotify.Event, lazyIsDir, computeHash bool) *Event {
+func convertEvent(fsEvent fsnotify.Event, lazyIsDir bool, maxHashSize int64) *Event {
 	var op Op
 
 	switch {
@@ -370,8 +370,8 @@ func convertEvent(fsEvent fsnotify.Event, lazyIsDir, computeHash bool) *Event {
 
 	hash := ""
 
-	if computeHash && !isDir && (op == Create || op == Write) {
-		hash = hashFileContents(fsEvent.Name)
+	if maxHashSize > 0 && !isDir && (op == Create || op == Write) {
+		hash = hashFileContents(fsEvent.Name, maxHashSize)
 	}
 
 	return &Event{
@@ -387,7 +387,7 @@ func convertEvent(fsEvent fsnotify.Event, lazyIsDir, computeHash bool) *Event {
 
 // hashFileContents returns the hex-encoded SHA-256 hash of the file at path.
 // Returns empty string on any error (file missing, permission denied, etc.).
-// Hashing is bounded by maxHashFileSize to avoid reading huge files.
-func hashFileContents(path string) string {
-	return hashFile(path)
+// Hashing is bounded by maxSize to avoid reading huge files.
+func hashFileContents(path string, maxSize int64) string {
+	return hashFile(path, maxSize)
 }

@@ -18,7 +18,7 @@ func TestConvertEvent_LazyIsDir(t *testing.T) {
 		Op:   fsnotify.Create,
 	}
 
-	result := convertEvent(fsEvent, true, false)
+	result := convertEvent(fsEvent, true, 0)
 	if result == nil {
 		t.Fatal("expected non-nil event")
 	}
@@ -43,7 +43,7 @@ func TestConvertEvent_NormalIsDir(t *testing.T) {
 		Op:   fsnotify.Create,
 	}
 
-	result := convertEvent(fsEvent, false, false)
+	result := convertEvent(fsEvent, false, 0)
 	if result == nil {
 		t.Fatal("expected non-nil event")
 	}
@@ -61,7 +61,7 @@ func TestConvertEvent_ChmodIgnored(t *testing.T) {
 		Op:   fsnotify.Chmod,
 	}
 
-	result := convertEvent(fsEvent, false, false)
+	result := convertEvent(fsEvent, false, 0)
 	if result != nil {
 		t.Error("expected nil for Chmod event")
 	}
@@ -81,7 +81,7 @@ func TestConvertEvent_WithHash(t *testing.T) {
 
 	fsEvent := fsnotify.Event{Name: file, Op: fsnotify.Write}
 
-	result := convertEvent(fsEvent, false, true)
+	result := convertEvent(fsEvent, false, defaultContentHashMaxSize)
 	if result == nil {
 		t.Fatal("expected non-nil event")
 	}
@@ -107,7 +107,7 @@ func TestConvertEvent_WithoutHash(t *testing.T) {
 
 	fsEvent := fsnotify.Event{Name: file, Op: fsnotify.Write}
 
-	result := convertEvent(fsEvent, false, false)
+	result := convertEvent(fsEvent, false, 0)
 	if result == nil {
 		t.Fatal("expected non-nil event")
 	}
@@ -122,7 +122,7 @@ func TestConvertEvent_HashForDirectory(t *testing.T) {
 
 	fsEvent := fsnotify.Event{Name: dir, Op: fsnotify.Create}
 
-	result := convertEvent(fsEvent, false, true)
+	result := convertEvent(fsEvent, false, defaultContentHashMaxSize)
 	if result == nil {
 		t.Fatal("expected non-nil event")
 	}

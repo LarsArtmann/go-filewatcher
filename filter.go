@@ -439,7 +439,7 @@ func FilterContentHash(expectedHex string) Filter {
 			return true
 		}
 
-		actual := hashFile(event.Path)
+		actual := hashFile(event.Path, defaultContentHashMaxSize)
 		if actual == "" {
 			return false
 		}
@@ -448,14 +448,16 @@ func FilterContentHash(expectedHex string) Filter {
 	}
 }
 
+// defaultContentHashMaxSize is the default upper bound for content hashing.
+// Files larger than this are skipped to avoid blocking the event loop on disk I/O.
+const defaultContentHashMaxSize = 10 * 1024 * 1024 // 10 MiB
+
 // hashFile computes the hex-encoded SHA-256 hash of the file at path.
 // Returns empty string on any error (file missing, permission denied, etc.).
-// Files larger than maxHashFileSize are skipped to avoid reading huge files.
-func hashFile(path string) string {
-	const maxHashFileSize = 10 * 1024 * 1024 // 10 MiB cap
-
+// Files larger than maxSize are skipped to avoid reading huge files.
+func hashFile(path string, maxSize int64) string {
 	info, err := os.Stat(path)
-	if err != nil || info.IsDir() || info.Size() > maxHashFileSize {
+	if err != nil || info.IsDir() || info.Size() > maxSize {
 		return ""
 	}
 

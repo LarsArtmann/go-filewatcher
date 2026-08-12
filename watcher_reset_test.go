@@ -137,3 +137,89 @@ func TestWatcher_Reset_PreservesCaseSensitivity(t *testing.T) {
 		t.Errorf("post-reset effectiveCaseSensitivity = %v, want CaseInsensitive", watcher.effectiveCaseSensitivity)
 	}
 }
+
+func TestWatcher_Reset_PreservesNewConfigFields(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	watcher, err := New(
+		[]string{tmpDir},
+		WithMaxWatchesSafetyFraction(0.75),
+		WithEventChannelMode(EventChannelDropOnFull),
+		WithWatchFilteredDirectories(false),
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fraction := watcher.maxWatchesFraction
+	dropOnFull := watcher.eventDropOnFull
+	watchFiltered := watcher.watchFilteredDirs
+
+	closeErr := watcher.Close()
+	if closeErr != nil {
+		t.Fatal(closeErr)
+	}
+
+	resetErr := watcher.Reset()
+	if resetErr != nil {
+		t.Fatalf("Reset() failed: %v", resetErr)
+	}
+
+	if watcher.maxWatchesFraction != fraction {
+		t.Errorf("maxWatchesFraction not preserved: got %v, want %v", watcher.maxWatchesFraction, fraction)
+	}
+
+	if watcher.eventDropOnFull != dropOnFull {
+		t.Errorf("eventDropOnFull not preserved: got %v, want %v", watcher.eventDropOnFull, dropOnFull)
+	}
+
+	if watcher.watchFilteredDirs != watchFiltered {
+		t.Errorf("watchFilteredDirs not preserved: got %v, want %v", watcher.watchFilteredDirs, watchFiltered)
+	}
+}
+
+func TestWatcher_Reset_PreservesExplicitMaxWatches(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	const explicitLimit = 500
+
+	watcher, err := New(
+		[]string{tmpDir},
+		WithMaxWatches(explicitLimit),
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !watcher.maxWatchesExplicit {
+		t.Fatal("maxWatchesExplicit should be true after WithMaxWatches(n)")
+	}
+
+	if watcher.maxWatches != explicitLimit {
+		t.Fatalf("pre-reset maxWatches = %d, want %d", watcher.maxWatches, explicitLimit)
+	}
+
+	closeErr := watcher.Close()
+	if closeErr != nil {
+		t.Fatal(closeErr)
+	}
+
+	resetErr := watcher.Reset()
+	if resetErr != nil {
+		t.Fatalf("Reset() failed: %v", resetErr)
+	}
+
+	// After Reset(), explicit limit must be preserved — NOT re-detected from system.
+	if !watcher.maxWatchesExplicit {
+		t.Error("maxWatchesExplicit should still be true after Reset()")
+	}
+
+	if watcher.maxWatches != explicitLimit {
+		t.Errorf("post-reset maxWatches = %d, want %d (explicit limit must be preserved)",
+			watcher.maxWatches, explicitLimit)
+	}
+}

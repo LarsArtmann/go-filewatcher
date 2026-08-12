@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -1720,18 +1721,31 @@ func TestDropOnFull_DropsEventsAndCounts(t *testing.T) {
 	// should be dropped and counted.
 	_ = events
 
-	// Generate many files rapidly to overflow the buffer.
-	for range 20 {
-		testFile := filepath.Join(tmpDir, "drop_test_"+t.Name()+".go")
+	// Generate unique files to produce distinct events that cannot be
+	// collapsed by debouncing. Each file generates its own Create event.
+	for i := range 20 {
+		testFile := filepath.Join(tmpDir, "drop_test_"+strconv.Itoa(i)+".go")
 		if err := os.WriteFile(testFile, []byte("x"), 0o600); err != nil {
 			t.Fatal(err)
 		}
 	}
 
-	// Wait for the backpressure counter to increment.
+	// With buffer=1 and no consumer, the first event fills the channel
+	// and all subsequent events should be dropped.
 	waitForCondition(t, 5*time.Second, "expected EventsDroppedByBackpressure > 0", func() bool {
 		return watcher.Stats().EventsDroppedByBackpressure > 0
 	})
+
+	// EventsProcessed counts only events that actually entered the channel.
+	// With buffer=1 and no consumer, at most 1 event can be processed.
+	stats := watcher.Stats()
+	if stats.EventsProcessed > 1 {
+		t.Errorf("EventsProcessed = %d, want <= 1 (buffer=1, no consumer)", stats.EventsProcessed)
+	}
+
+	if stats.EventsDroppedByBackpressure == 0 {
+		t.Error("EventsDroppedByBackpressure = 0, want > 0")
+	}
 }
 
 func TestWatchFilteredDirectories_Disabled(t *testing.T) {

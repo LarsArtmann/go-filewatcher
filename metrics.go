@@ -51,6 +51,7 @@ func NewPrometheusCollector(stats StatsFunc) *PrometheusCollector {
 				WatchErrors:                 0,
 				Uptime:                      0,
 				WatchLimit:                  0,
+				WatchBudgetCap:              0,
 				WatchBudgetUsed:             0,
 				CaseSensitivity:             "",
 				CaseSensitivityMode:         CaseSensitivityAuto,
@@ -64,6 +65,7 @@ func NewPrometheusCollector(stats StatsFunc) *PrometheusCollector {
 			"Total events that reached the event channel",
 			"Events filtered out (dropped by filters)",
 			"Events dropped by middleware (rate limit, dedup, circuit breaker, etc.)",
+			"Events dropped because the event channel was full (DropOnFull mode)",
 			"Errors encountered during processing",
 			"Errors dropped because the error channel was full",
 			"Watch add failures (ENOSPC, permission denied, etc.)",
@@ -92,19 +94,21 @@ type GaugeMetric struct {
 // Metric name constants — used by Counters() and Gauges() to avoid goconst
 // violations when emitting the same metric name across calls.
 const (
-	metricEventsProcessed           = "filewatcher_events_processed_total"
-	metricEventsFilteredOut         = "filewatcher_events_filtered_out_total"
-	metricEventsDroppedByMiddleware = "filewatcher_events_dropped_by_middleware_total"
-	metricErrorsEncountered         = "filewatcher_errors_encountered_total"
-	metricErrorsDropped             = "filewatcher_errors_dropped_total"
-	metricWatchErrors               = "filewatcher_watch_errors_total"
-	metricWatchCount                = "filewatcher_watch_count"
-	metricIsWatching                = "filewatcher_is_watching"
-	metricIsClosed                  = "filewatcher_is_closed"
-	metricUptimeSeconds             = "filewatcher_uptime_seconds"
-	metricWatchLimit                = "filewatcher_watch_limit"
-	metricWatchBudgetUsed           = "filewatcher_watch_budget_used_ratio"
-	metricCaseSensitivity           = "filewatcher_case_sensitivity"
+	metricEventsProcessed             = "filewatcher_events_processed_total"
+	metricEventsFilteredOut           = "filewatcher_events_filtered_out_total"
+	metricEventsDroppedByMiddleware   = "filewatcher_events_dropped_by_middleware_total"
+	metricEventsDroppedByBackpressure = "filewatcher_events_dropped_by_backpressure_total"
+	metricErrorsEncountered           = "filewatcher_errors_encountered_total"
+	metricErrorsDropped               = "filewatcher_errors_dropped_total"
+	metricWatchErrors                 = "filewatcher_watch_errors_total"
+	metricWatchCount                  = "filewatcher_watch_count"
+	metricIsWatching                  = "filewatcher_is_watching"
+	metricIsClosed                    = "filewatcher_is_closed"
+	metricUptimeSeconds               = "filewatcher_uptime_seconds"
+	metricWatchLimit                  = "filewatcher_watch_limit"
+	metricWatchBudgetCap              = "filewatcher_watch_budget_cap"
+	metricWatchBudgetUsed             = "filewatcher_watch_budget_used_ratio"
+	metricCaseSensitivity             = "filewatcher_case_sensitivity"
 )
 
 // Counters returns the current counter values from the watcher stats.
@@ -129,18 +133,23 @@ func (c *PrometheusCollector) Counters() []CounterMetric {
 			Value: stats.EventsDroppedByMiddleware,
 		},
 		{
-			Name:  metricErrorsEncountered,
+			Name:  metricEventsDroppedByBackpressure,
 			Help:  c.describe[3],
+			Value: stats.EventsDroppedByBackpressure,
+		},
+		{
+			Name:  metricErrorsEncountered,
+			Help:  c.describe[4],
 			Value: stats.ErrorsEncountered,
 		},
 		{
 			Name:  metricErrorsDropped,
-			Help:  c.describe[4],
+			Help:  c.describe[5],
 			Value: stats.ErrorsDropped,
 		},
 		{
 			Name:  metricWatchErrors,
-			Help:  c.describe[5],
+			Help:  c.describe[6],
 			Value: stats.WatchErrors,
 		},
 	}
@@ -173,8 +182,13 @@ func (c *PrometheusCollector) Gauges() []GaugeMetric {
 		},
 		{
 			Name:  metricWatchLimit,
-			Help:  "System inotify watch limit (0 if unknown)",
+			Help:  "System inotify watch limit before safety fraction (0 if unknown)",
 			Value: float64(stats.WatchLimit),
+		},
+		{
+			Name:  metricWatchBudgetCap,
+			Help:  "Effective watch budget cap after safety fraction",
+			Value: float64(stats.WatchBudgetCap),
 		},
 		{
 			Name:  metricWatchBudgetUsed,

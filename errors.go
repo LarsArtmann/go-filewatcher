@@ -125,7 +125,9 @@ type WatcherError struct {
 	Category ErrorCategory
 
 	// Stack holds the goroutine stack trace captured at the time the error
-	// was created. This is populated automatically by NewWatcherError.
+	// was wrapped by NewWatcherError — not at the original failure site.
+	// This is useful for tracing the error-handling path. To capture the
+	// stack at the failure site instead, use NewWatcherErrorWithStack.
 	Stack []byte
 }
 
@@ -213,6 +215,21 @@ func NewWatcherError(op OpString, path string, err error) *WatcherError {
 		Err:      err,
 		Category: categorizeError(err),
 		Stack:    debug.Stack(),
+	}
+}
+
+// NewWatcherErrorWithStack creates a WatcherError using the provided stack
+// trace instead of capturing one at the wrapper site. Callers should capture
+// the stack at the original failure point using debug.Stack() and pass it here.
+// This is useful when the underlying error originates in a different goroutine
+// or deep in a syscall where NewWatcherError's stack would be misleading.
+func NewWatcherErrorWithStack(op OpString, path string, err error, stack []byte) *WatcherError {
+	return &WatcherError{
+		Op:       op,
+		Path:     path,
+		Err:      err,
+		Category: categorizeError(err),
+		Stack:    stack,
 	}
 }
 

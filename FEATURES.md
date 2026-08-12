@@ -1,6 +1,6 @@
 # Feature Inventory
 
-**Last Updated:** 2026-07-27 · **Version:** v2.3.0
+**Last Updated:** 2026-08-12 · **Version:** v2.4.0
 
 Honest status of every capability in go-filewatcher. Statuses:
 
@@ -43,6 +43,7 @@ Honest status of every capability in go-filewatcher. Statuses:
 | Filter combinators (AND/OR/NOT) | ✅     | `FilterAnd`, `FilterOr`, `FilterNot`                                                                                               |
 | Case-insensitive filter wrapper | ✅     | `FilterCaseInsensitive(inner)` — lowercases + NFC-normalizes the event path before delegating to the inner filter                  |
 | Case-sensitive filter wrapper   | ✅     | `FilterCaseSensitive(inner)` — NFC-normalizes without case-folding (useful on macOS NFD paths)                                     |
+| Case-insensitive dirs filter       | ✅     | `FilterIgnoreDirsCaseInsensitive(dirs...)` — matches dir names case-insensitively (NTFS, APFS)                                       |
 | Metadata-returning filters      | ✅     | `FilterWithMeta`, `MatchResult`, `FilterWithMetaAnd`/`FilterWithMetaOr`/`FilterWithMetaNot`, `FilterFromWithMeta`                  |
 
 ## Middleware
@@ -57,7 +58,8 @@ Honest status of every capability in go-filewatcher. Statuses:
 | Rate limiting (sliding) | ✅     | `MiddlewareSlidingWindowRateLimit(maxEvents, window)`                                                                       |
 | Throttle (token bucket) | ✅     | `MiddlewareThrottle(maxEvents, burst)` via `golang.org/x/time`                                                              |
 | Metrics counter         | ✅     | `MiddlewareMetrics(func(Op))`                                                                                               |
-| Deduplicate             | ✅     | `MiddlewareDeduplicate(window)`                                                                                             |
+| Deduplicate             | ✅     | `MiddlewareDeduplicate(window)` — NFC-normalized keys                                                                               |
+| Deduplicate (case-insensitive) | ✅     | `MiddlewareDeduplicateCaseInsensitive(window)` — lowercased + NFC keys for case-insensitive filesystems                             |
 | Batch                   | ✅     | `MiddlewareBatch(window, maxSize, flush)`                                                                                   |
 | Audit to file           | ✅     | `MiddlewareWriteFileLog(path)` or `NewFileLogMiddleware` (returns closer for fd cleanup via `WithCleanup`)                  |
 | Circuit breaker         | ✅     | `MiddlewareCircuitBreaker(maxFailures, resetTimeout)`; `CircuitState` enum: `CircuitClosed`→`CircuitOpen`→`CircuitHalfOpen` |
@@ -80,7 +82,10 @@ Honest status of every capability in go-filewatcher. Statuses:
 
 | Feature                          | Status | Notes                                                                             |
 | -------------------------------- | ------ | --------------------------------------------------------------------------------- |
-| `Stats()` struct                 | ✅     | Events, filters, errors, uptime, watch budget                                     |
+| `Stats()` struct                 | ✅     | Events, filters, middleware drops, backpressure drops, error drops, uptime, watch budget                                             |
+| Middleware drop counter          | ✅     | `Stats.EventsDroppedByMiddleware` — surfaces rate-limit/dedup/circuit-breaker drops                                                 |
+| Backpressure drop counter        | ✅     | `Stats.EventsDroppedByBackpressure` — events dropped in DropOnFull mode                                                             |
+| Error drop counter               | ✅     | `Stats.ErrorsDropped` — errors dropped when error channel is full                                                                   |
 | Structured debug logging         | ✅     | `WithDebug(*slog.Logger)`                                                         |
 | Prometheus collector             | ✅     | `PrometheusCollector` with `StatsFunc`, `CounterMetric`, `GaugeMetric` interfaces |
 | OpenTelemetry tracing middleware | ✅     | `OTelMiddleware` with `OTelSpan` interface (zero-dep)                             |
@@ -93,6 +98,14 @@ Honest status of every capability in go-filewatcher. Statuses:
 | Graceful ENOSPC handling                 | ✅     | Add errors logged, walk continues, `Stats.WatchErrors` tracks fails                                                                       |
 | Inotify budget awareness                 | ✅     | Auto-detected from `/proc/sys/fs/inotify/max_user_watches`                                                                                |
 | Watch limit override                     | ✅     | `WithMaxWatches(n)`                                                                                                                       |
+| Watch budget safety fraction             | ✅     | `WithMaxWatchesSafetyFraction(0.75)` — leaves headroom on shared machines; only affects auto-detected limits                              |
+| Slow-consumer backpressure (DropOnFull)  | ✅     | `WithEventChannelMode(EventChannelDropOnFull)` drops events when channel is full instead of blocking; counted in `Stats`                  |
+| Filtered directory watching control      | ✅     | `WithWatchFilteredDirectories(false)` prevents new dirs whose Create event was filtered from being watched                                |
+| Symlink cycle detection                  | ✅     | `WithFollowSymlinks(true)` detects and skips cycles via `symlinkVisited` map                                                              |
+| Path validation (fail-fast)              | ✅     | `Add`/`AddRecursive`/`Watch` return `ErrPathNotFound` immediately for non-existent paths                                                  |
+| Syscall error classification             | ✅     | `os.ErrPermission`/`os.ErrNotExist`/`syscall.ENOTDIR` → permanent; `ENOSPC` → transient; self-heal abandons permanent failures            |
+| Polling mode respects exclusions         | ✅     | `pollWalkDir` now applies `shouldExcludePath` and `.gitignore` matching (was only checking `shouldSkipDir`)                               |
+| Case-insensitive walk-time dir skipping  | ✅     | `shouldSkipDir` matches directory names case-insensitively on `CaseInsensitive` filesystems                                               |
 | Self-healing watches                     | ✅     | `WithSelfHeal(interval)` retries failed paths                                                                                             |
 | Batched watch registration               | ✅     | 1000 dirs/batch with `runtime.Gosched()` between batches                                                                                  |
 | Polling mode (NFS/FUSE)                  | ✅     | `WithPolling(true)` + `WithPollInterval(d)`                                                                                               |

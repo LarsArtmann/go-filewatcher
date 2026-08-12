@@ -64,16 +64,19 @@ Event priority when multiple ops coalesce: `Create > Write > Remove > Rename`.
 
 ```go
 type Stats struct {
-	WatchCount        int
-	IsWatching        bool
-	IsClosed          bool
-	EventsProcessed   uint64
-	EventsFilteredOut uint64
-	ErrorsEncountered uint64
-	WatchErrors       uint64
-	Uptime            time.Duration
-	WatchLimit        int
-	WatchBudgetUsed   float64
+	WatchCount                  int
+	IsWatching                  bool
+	IsClosed                    bool
+	EventsProcessed             uint64
+	EventsFilteredOut           uint64
+	EventsDroppedByMiddleware   uint64
+	EventsDroppedByBackpressure uint64
+	ErrorsEncountered           uint64
+	ErrorsDropped               uint64
+	WatchErrors                 uint64
+	Uptime                      time.Duration
+	WatchLimit                  int
+	WatchBudgetUsed             float64
 }
 ```
 
@@ -85,7 +88,7 @@ type Filter func(event Event) bool
 
 ### Built-in Filters
 
-`FilterExtensions`, `FilterIgnoreExtensions`, `FilterIgnoreDirs`, `FilterExcludePaths`, `FilterIgnoreHidden`, `FilterIgnoreGlobs`, `FilterOperations`, `FilterNotOperations`, `FilterGlob`, `FilterRegex`, `FilterMinSize`, `FilterMaxSize`, `FilterMinAge`, `FilterModifiedSince`, `FilterContentHash`, `FilterGitignore`, `FilterGeneratedCode`, `FilterGeneratedCodeFull`, `FilterGeneratedCodeWithFilter`
+`FilterExtensions`, `FilterIgnoreExtensions`, `FilterIgnoreDirs`, `FilterIgnoreDirsCaseInsensitive`, `FilterExcludePaths`, `FilterIgnoreHidden`, `FilterIgnoreGlobs`, `FilterOperations`, `FilterNotOperations`, `FilterGlob`, `FilterRegex`, `FilterMinSize`, `FilterMaxSize`, `FilterMinAge`, `FilterModifiedSince`, `FilterContentHash`, `FilterGitignore`, `FilterGeneratedCode`, `FilterGeneratedCodeFull`, `FilterGeneratedCodeWithFilter`
 
 ### Combinators
 
@@ -104,7 +107,7 @@ type Handler func(ctx context.Context, event Event) error
 
 ### Built-in Middleware
 
-`MiddlewareLogging`, `MiddlewareRecovery`, `MiddlewareFilter`, `MiddlewareOnError`, `MiddlewareSlidingWindowRateLimit`, `MiddlewareThrottle`, `MiddlewareMetrics`, `MiddlewareDeduplicate`, `MiddlewareBatch`, `MiddlewareWriteFileLog`, `MiddlewareCircuitBreaker`, `MiddlewareExponentialBackoff`, `MiddlewareErrorRateLimit`, `MiddlewareErrorRecovery`, `MiddlewareErrorCorrelation`, `MiddlewareErrorSanitization`, `MiddlewareErrorBatch`
+`MiddlewareLogging`, `MiddlewareRecovery`, `MiddlewareFilter`, `MiddlewareOnError`, `MiddlewareSlidingWindowRateLimit`, `MiddlewareThrottle`, `MiddlewareMetrics`, `MiddlewareDeduplicate`, `MiddlewareDeduplicateCaseInsensitive`, `MiddlewareBatch`, `MiddlewareWriteFileLog`, `MiddlewareCircuitBreaker`, `MiddlewareExponentialBackoff`, `MiddlewareErrorRateLimit`, `MiddlewareErrorRecovery`, `MiddlewareErrorCorrelation`, `MiddlewareErrorSanitization`, `MiddlewareErrorBatch`
 
 #### ⚠️ Deprecated Middleware
 
@@ -117,9 +120,9 @@ Will be removed in v3.
 
 ## Options
 
-23 functional options:
+26 functional options:
 
-`WithDebounce`, `WithPerPathDebounce`, `WithFilter`, `WithExtensions`, `WithIgnoreDirs`, `WithIgnoreHidden`, `WithIgnorePatterns`, `WithRecursive`, `WithMiddleware`, `WithErrorHandler`, `WithSkipDotDirs`, `WithBuffer`, `WithOnAdd`, `WithLazyIsDir`, `WithPolling`, `WithPollInterval`, `WithDebug`, `WithFollowSymlinks`, `WithGitignore`, `WithExcludePaths`, `WithMaxWatches`, `WithContentHashing`, `WithSelfHeal`
+`WithDebounce`, `WithPerPathDebounce`, `WithFilter`, `WithExtensions`, `WithIgnoreDirs`, `WithIgnoreHidden`, `WithIgnorePatterns`, `WithRecursive`, `WithMiddleware`, `WithErrorHandler`, `WithSkipDotDirs`, `WithBuffer`, `WithOnAdd`, `WithLazyIsDir`, `WithPolling`, `WithPollInterval`, `WithDebug`, `WithFollowSymlinks`, `WithGitignore`, `WithExcludePaths`, `WithMaxWatches`, `WithMaxWatchesSafetyFraction`, `WithWatchFilteredDirectories`, `WithEventChannelMode`, `WithContentHashing`, `WithSelfHeal`
 
 ### ⚠️ Deprecated Options
 

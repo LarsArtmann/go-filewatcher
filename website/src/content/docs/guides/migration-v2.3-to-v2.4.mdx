@@ -1,0 +1,124 @@
+---
+title: Migrating from v2.3 to v2.4
+description: Breaking behavioral changes and new features in v2.4.0.
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+v2.4.0 is a reliability and observability release. Most changes are additive
+(new options, new Stats fields, new middleware). Two behavioral changes may
+affect consumers — review them below.
+
+## Behavioral Changes
+
+### EventsProcessed Semantics
+
+The `Stats.EventsProcessed` counter now increments only when an event actually
+reaches the event channel. Previously it incremented before the send, counting
+events that were subsequently dropped.
+
+**Who is affected:** Consumers with dashboards or alerts keyed on
+`EventsProcessed` values. If you use rate-limiting, dedup, or DropOnFull
+middleware, `EventsProcessed` will be lower than before.
+
+**Action:** No code change needed. The new value is more accurate. If you need
+the old number, sum `EventsProcessed + EventsDroppedByMiddleware +
+EventsDroppedByBackpressure`.
+
+### WatchLimit vs WatchBudgetCap
+
+`Stats.WatchLimit` now shows the **raw system-detected inotify limit** (before
+the safety fraction). Previously it showed the effective limit after the
+fraction was applied.
+
+The new `Stats.WatchBudgetCap` field shows the **effective cap** (after the
+safety fraction).
+
+**Who is affected:** Consumers who read `WatchLimit` to check the effective
+cap.
+
+**Action:** Switch to `WatchBudgetCap` if you need the effective limit:
+
+```go
+stats := watcher.Stats()
+// Before v2.4: WatchLimit was the effective cap
+// After v2.4:  WatchBudgetCap is the effective cap
+fmt.Printf("budget: %d/%d\n", stats.WatchCount, stats.WatchBudgetCap)
+```
+
+### MiddlewareBatch No Longer Emits Duplicate on Full Batch
+
+When a batch reaches `maxSize`, the triggering event was previously emitted
+twice: once in the flushed batch and once individually. The individual emission
+has been removed.
+
+**Who is affected:** Consumers who relied on receiving the triggering event
+outside the batch flush.
+
+**Action:** No action needed. The batch flush callback already includes the
+triggering event.
+
+## New Options
+
+<CardGrid stagger>
+  <Card title="WithMaxWatchesSafetyFraction" icon="seti:go">
+    Apply a safety fraction (e.g. 0.75) to the auto-detected inotify limit.
+    Leaves headroom on shared machines. Only affects auto-detected limits.
+  </Card>
+  <Card title="WithEventChannelMode" icon="seti:go">
+    Choose `Blocking` (default) or `DropOnFull`. DropOnFull drops events when
+    the channel is full instead of blocking the watch loop.
+  </Card>
+  <Card title="WithWatchFilteredDirectories" icon="seti:go">
+    When `false`, newly created directories whose Create event was filtered out
+    are not watched. Saves inotify budget.
+  </Card>
+  <Card title="WithContentHashMaxSize" icon="seti:go">
+    Configurable max file size for content hashing (default 10 MiB). Files
+    larger than this are skipped.
+  </Card>
+  <Card title="WithErrorBufferSize" icon="seti:go">
+    Decouple the error channel capacity from the event channel. Use a larger
+    error buffer under high error load.
+  </Card>
+  <Card title="WithCaseSensitivity" icon="seti:go">
+    Explicitly set case-sensitive or case-insensitive path matching. Auto
+    detects per-platform by default.
+  </Card>
+</CardGrid>
+
+## New Stats Fields
+
+| Field | Description |
+| --- | --- |
+| `EventsDroppedByMiddleware` | Events dropped by rate-limit, dedup, circuit-breaker middleware |
+| `EventsDroppedByBackpressure` | Events dropped because the channel was full (DropOnFull mode) |
+| `ErrorsDropped` | Errors dropped because the error channel was full |
+| `WatchBudgetCap` | Effective watch budget cap after safety fraction |
+
+## New Prometheus Metrics
+
+| Metric | Type | Description |
+| --- | --- | --- |
+| `filewatcher_events_dropped_by_middleware_total` | Counter | Events dropped by middleware |
+| `filewatcher_events_dropped_by_backpressure_total` | Counter | Events dropped by backpressure |
+| `filewatcher_errors_dropped_total` | Counter | Errors dropped (channel full) |
+| `filewatcher_watch_budget_cap` | Gauge | Effective watch budget cap |
+
+## New Filters and Middleware
+
+- `FilterIgnoreDirsCaseInsensitive` — case-insensitive directory exclusion
+- `FilterCaseInsensitive(inner)` / `FilterCaseSensitive(inner)` — NFC-aware filter wrappers
+- `MiddlewareDeduplicateCaseInsensitive` — case-insensitive event deduplication
+- `NewWatcherErrorWithStack` — construct errors with caller-provided stack traces
+
+## Bug Fixes
+
+- `WithDebug(nil)` no longer panics
+- `MiddlewareBatch` no longer emits duplicate events on full batch
+- Polling mode now respects `WithExcludePaths` and `.gitignore`
+- `Add`/`AddRecursive`/`Watch` validate path existence (fail-fast)
+- Self-heal abandons permission-denied paths (classified as permanent)
+- Symlink cycles are detected and skipped
+- `applyMaxWatchesFraction` no longer applies to explicit `WithMaxWatches(n)` values
+- `Reset()` preserves explicit `WithMaxWatches(n)` configuration

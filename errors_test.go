@@ -539,3 +539,24 @@ func TestErrorCategory_String(t *testing.T) {
 		}
 	}
 }
+
+func TestNewWatcherErrorWithStack(t *testing.T) {
+	t.Parallel()
+
+	customStack := []byte("goroutine 1 [running]:\ncustom trace\n")
+	baseErr := errors.New("underlying failure")
+
+	err := NewWatcherErrorWithStack("custom_op", "/custom/path", baseErr, customStack)
+
+	if !bytes.Equal(err.Stack, customStack) {
+		t.Errorf("Stack = %q, want %q", err.Stack, customStack)
+	}
+
+	if err.Op != "custom_op" {
+		t.Errorf("Op = %q, want %q", err.Op, "custom_op")
+	}
+
+	if !errors.Is(err, baseErr) {
+		t.Error("errors.Is should find the underlying error")
+	}
+}

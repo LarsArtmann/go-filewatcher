@@ -305,7 +305,7 @@ filter := filewatcher.FilterCaseSensitive(filewatcher.FilterRegex(`^/Project/.*\
 ```go
 stats := watcher.Stats()
 fmt.Printf("watching %d/%d paths (%.1f%% budget), %d add failures\n",
-    stats.WatchCount, stats.WatchLimit,
+    stats.WatchCount, stats.WatchBudgetCap,
     stats.WatchBudgetUsed*100, stats.WatchErrors)
 ```
 

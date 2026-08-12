@@ -41,6 +41,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Symlink cycle detection** (`watcher_walk.go`) — `WithFollowSymlinks(true)` now tracks resolved symlink targets in a `symlinkVisited` map, preventing infinite recursion and duplicate watches when symlinks point to ancestors or already-watched directories.
 - **Content size cap for `FilterGeneratedCodeFull`** (`filter_gogen.go`) — files larger than 10 MiB (`defaultGogenMaxFileSize`) are skipped for content-based generated-code detection, preventing synchronous I/O stalls on large files.
 - **Troubleshooting guide sections** (`Troubleshooting.md`) — 5 new sections: Polling Mode Limitations, Slow Consumers and Event Loss, Middleware Drops Not Visible, Content Hashing Performance, Symlink Cycles.
+- **`Stats.WatchBudgetCap` field** (`watcher.go`) — shows the effective watch budget cap after the safety fraction is applied. `WatchLimit` now shows the raw system-detected limit before the fraction.
+- **`filewatcher_events_dropped_by_backpressure_total` + `filewatcher_watch_budget_cap` Prometheus metrics** (`metrics.go`) — the backpressure drop counter and budget cap gauge are now exposed by `PrometheusCollector`.
+- **`WithContentHashMaxSize(bytes int64)` option** (`options.go`) — configurable upper bound for content hashing. Files larger than this are skipped to avoid blocking the event loop. Default 10 MiB. Implicitly enables content hashing when set to a positive value.
+- **`WithErrorBufferSize(n int)` option** (`options.go`) — decouples the error channel capacity from the event channel (`WithBuffer`). When not set, the error channel uses the same buffer size as the event channel.
+- **`NewWatcherErrorWithStack` constructor** (`errors.go`) — creates a `WatcherError` with a caller-provided stack trace, useful when the underlying error originates in a different goroutine or deep in a syscall where `NewWatcherError`'s auto-captured stack would be misleading.
 
 ### Fixed
 
@@ -53,6 +58,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Syscall error classification** (`errors.go`) — `categorizeError` did not recognize `os.ErrPermission`, `os.ErrNotExist`, or `syscall.ENOTDIR` as permanent, causing self-heal to retry permission-denied paths forever. Now classifies these as permanent; `syscall.ENOSPC` as transient.
 - **Case-insensitive `shouldSkipDir`** (`watcher_walk.go`) — walk-time directory-name matching was always case-sensitive, so `BUILD` and `Node_Modules` were not skipped on case-insensitive filesystems. Now lowercases comparisons when `CaseInsensitive` mode is active.
 - **`applyMaxWatchesFraction` applied to explicit limits** (`watcher.go`) — the safety fraction was applied to all `maxWatches > 0`, including explicit `WithMaxWatches(n)` values, contradicting the documentation. Now only applies to auto-detected limits. `Reset()` also preserves explicit settings instead of always re-detecting.
+- **`EventsProcessed` counted dropped events** (`watcher_internal.go`) — the counter was incremented before the channel send, so events dropped by `DropOnFull` backpressure or aborted during shutdown were counted as "processed." Now only increments on successful send.
 
 ### Changed
 
@@ -62,6 +68,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **`Remove()` watchListKeys desync** (`watcher.go`) — `Remove()` only deleted the exact path key from `watchListKeys`, leaving subtree path keys orphaned. Now deletes each pruned subtree key incrementally (O(removed), not O(n) rebuild), guaranteeing the map stays in sync after bulk subtree removal.
 - **`normalizePath()` best-effort cleaning on `Abs` failure** (`filesystem.go`) — when `filepath.Abs` fails (e.g. unreadable cwd), the returned path is now still `filepath.Clean`'d so trailing slashes, `..`, and redundant separators are normalized. `FilterExcludePaths`/`WithExcludePaths` use the always-cleaned result instead of swallowing the error and falling back to the raw path.
 - **`golang.org/x/text` promoted to direct dependency** (`go.mod`) — was an indirect dependency; now explicitly required for `unicode/norm` NFC normalization in `pathKey()`.
+- **`WatchLimit` semantics** (`watcher.go`) — now shows the raw system-detected inotify limit before the safety fraction. The effective cap (after fraction) is exposed as the new `Stats.WatchBudgetCap` field. Consumers who previously read `WatchLimit` to see the effective cap should switch to `WatchBudgetCap`.
+- **`hashFile` accepts `maxSize` parameter** (`filter.go`) — the hardcoded 10 MiB cap is now a parameter. `convertEvent` receives `maxHashSize int64` instead of `computeHash bool`; when `maxHashSize > 0`, hashing is enabled with that cap.
 
 ### Changed
 

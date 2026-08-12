@@ -76,7 +76,10 @@ type Stats struct {
 	WatchErrors                 uint64
 	Uptime                      time.Duration
 	WatchLimit                  int
+	WatchBudgetCap              int
 	WatchBudgetUsed             float64
+	CaseSensitivity             string
+	CaseSensitivityMode         FilesystemCaseSensitivity
 }
 ```
 
@@ -88,7 +91,7 @@ type Filter func(event Event) bool
 
 ### Built-in Filters
 
-`FilterExtensions`, `FilterIgnoreExtensions`, `FilterIgnoreDirs`, `FilterIgnoreDirsCaseInsensitive`, `FilterExcludePaths`, `FilterIgnoreHidden`, `FilterIgnoreGlobs`, `FilterOperations`, `FilterNotOperations`, `FilterGlob`, `FilterRegex`, `FilterMinSize`, `FilterMaxSize`, `FilterMinAge`, `FilterModifiedSince`, `FilterContentHash`, `FilterGitignore`, `FilterGeneratedCode`, `FilterGeneratedCodeFull`, `FilterGeneratedCodeWithFilter`
+`FilterExtensions`, `FilterIgnoreExtensions`, `FilterIgnoreDirs`, `FilterIgnoreDirsCaseInsensitive`, `FilterExcludePaths`, `FilterIgnoreHidden`, `FilterIgnoreGlobs`, `FilterOperations`, `FilterNotOperations`, `FilterGlob`, `FilterRegex`, `FilterMinSize`, `FilterMaxSize`, `FilterMinAge`, `FilterModifiedSince`, `FilterContentHash`, `FilterGitignore`, `FilterGeneratedCode`, `FilterGeneratedCodeFull`, `FilterGeneratedCodeWithFilter`, `FilterCaseInsensitive`, `FilterCaseSensitive`
 
 ### Combinators
 
@@ -120,9 +123,9 @@ Will be removed in v3.
 
 ## Options
 
-26 functional options:
+28 functional options:
 
-`WithDebounce`, `WithPerPathDebounce`, `WithFilter`, `WithExtensions`, `WithIgnoreDirs`, `WithIgnoreHidden`, `WithIgnorePatterns`, `WithRecursive`, `WithMiddleware`, `WithErrorHandler`, `WithSkipDotDirs`, `WithBuffer`, `WithOnAdd`, `WithLazyIsDir`, `WithPolling`, `WithPollInterval`, `WithDebug`, `WithFollowSymlinks`, `WithGitignore`, `WithExcludePaths`, `WithMaxWatches`, `WithMaxWatchesSafetyFraction`, `WithWatchFilteredDirectories`, `WithEventChannelMode`, `WithContentHashing`, `WithSelfHeal`
+`WithDebounce`, `WithPerPathDebounce`, `WithFilter`, `WithExtensions`, `WithIgnoreDirs`, `WithIgnoreHidden`, `WithIgnorePatterns`, `WithRecursive`, `WithMiddleware`, `WithErrorHandler`, `WithSkipDotDirs`, `WithBuffer`, `WithErrorBufferSize`, `WithOnAdd`, `WithLazyIsDir`, `WithPolling`, `WithPollInterval`, `WithDebug`, `WithFollowSymlinks`, `WithGitignore`, `WithExcludePaths`, `WithMaxWatches`, `WithMaxWatchesSafetyFraction`, `WithWatchFilteredDirectories`, `WithEventChannelMode`, `WithContentHashing`, `WithContentHashMaxSize`, `WithSelfHeal`
 
 ### ⚠️ Deprecated Options
 

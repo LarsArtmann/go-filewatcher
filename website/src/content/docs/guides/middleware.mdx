@@ -119,6 +119,45 @@ watcher, _ := filewatcher.New(paths,
 )
 ```
 
+### Deduplication
+
+Drop duplicate events within a time window:
+
+```go
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithMiddleware(
+		// Drop events for the same path within 500ms
+		filewatcher.MiddlewareDeduplicate(500 * time.Millisecond),
+	),
+)
+```
+
+On case-insensitive filesystems (macOS, Windows), use the case-insensitive
+variant so `/File.go` and `/file.go` are treated as the same path:
+
+```go
+watcher, _ := filewatcher.New(paths,
+	filewatcher.WithMiddleware(
+		filewatcher.MiddlewareDeduplicateCaseInsensitive(500 * time.Millisecond),
+	),
+)
+```
+
+### Drop Observability
+
+Middleware that drops events (rate limit, dedup, circuit breaker) is now
+visible in `Stats`:
+
+```go
+stats := watcher.Stats()
+fmt.Printf("processed: %d, dropped by middleware: %d\n",
+	stats.EventsProcessed,
+	stats.EventsDroppedByMiddleware)
+```
+
+The Prometheus collector exposes this as
+`filewatcher_events_dropped_by_middleware_total`.
+
 ## Custom Middleware
 
 Write your own middleware by wrapping the handler:

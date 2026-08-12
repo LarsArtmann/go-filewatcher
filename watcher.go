@@ -79,6 +79,7 @@ type Watcher struct {
 	pollInterval             time.Duration             // polling interval for NFS/FUSE filesystems (0 = disabled)
 	polling                  bool                      // polling mode enabled (supplements fsnotify with periodic scans)
 	errorBufferSize          int                       // size of the error channel (0 = use bufferSize)
+	eventDropOnFull          bool                      // drop events when channel is full instead of blocking
 	debug                    bool                      // enable verbose debug logging
 	debugLogger              *slog.Logger              // logger for debug output
 	followSymlinks           bool                      // follow symbolic links during directory walking

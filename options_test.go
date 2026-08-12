@@ -291,3 +291,78 @@ func TestApplyMaxWatchesFraction_DoesNotAffectExplicitLimit(t *testing.T) {
 		t.Error("maxWatchesExplicit should be true when WithMaxWatches(n>0) is used")
 	}
 }
+
+func TestWithContentHashMaxSize(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	watcher, err := New([]string{tmpDir}, WithContentHashMaxSize(100))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	if watcher.contentHashMaxSize != 100 {
+		t.Errorf("contentHashMaxSize = %d, want 100", watcher.contentHashMaxSize)
+	}
+}
+
+func TestWithContentHashMaxSize_DefaultEnablesHashing(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	// WithContentHashing() alone should set the default max size
+	watcher, err := New([]string{tmpDir}, WithContentHashing())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	if watcher.contentHashMaxSize != defaultContentHashMaxSize {
+		t.Errorf("contentHashMaxSize = %d, want %d (default)",
+			watcher.contentHashMaxSize, defaultContentHashMaxSize)
+	}
+}
+
+func TestWithErrorBufferSize(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	watcher, err := New([]string{tmpDir},
+		WithBuffer(10),
+		WithErrorBufferSize(100),
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	errCh := watcher.Errors()
+	if cap(errCh) != 100 {
+		t.Errorf("error channel capacity = %d, want 100", cap(errCh))
+	}
+}
+
+func TestWithErrorBufferSize_DefaultsToBuffer(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	watcher, err := New([]string{tmpDir}, WithBuffer(50))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() { _ = watcher.Close() }()
+
+	errCh := watcher.Errors()
+	if cap(errCh) != 50 {
+		t.Errorf("error channel capacity = %d, want 50 (should default to bufferSize)", cap(errCh))
+	}
+}

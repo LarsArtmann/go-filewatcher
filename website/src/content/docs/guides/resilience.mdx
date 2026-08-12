@@ -31,7 +31,7 @@ watcher, _ := filewatcher.New(
 
 stats := watcher.Stats()
 fmt.Printf("watching %d/%d paths (%.1f%% budget)\n",
-	stats.WatchCount, stats.WatchLimit,
+	stats.WatchCount, stats.WatchBudgetCap,
 	stats.WatchBudgetUsed*100)
 ```
 
@@ -107,3 +107,74 @@ watcher, _ := filewatcher.New(paths,
 ## Batched Registration
 
 Directories are collected during the walk and added in batches of 1000, with `runtime.Gosched()` between batches. This reduces startup latency for large directory trees and yields to event processing.
+
+## Watch Budget Safety Fraction
+
+On shared or multi-tenant machines, the auto-detected inotify limit includes
+watches held by other processes. Use a safety fraction to leave headroom:
+
+```go
+watcher, _ := filewatcher.New(
+	[]string{"./large-monorepo"},
+	filewatcher.WithMaxWatchesSafetyFraction(0.75), // Use 75% of system limit
+)
+
+stats := watcher.Stats()
+fmt.Printf("system limit: %d, effective cap: %d\n",
+	stats.WatchLimit, stats.WatchBudgetCap)
+```
+
+The fraction only applies to auto-detected limits — explicit `WithMaxWatches(n)`
+values are used as-is. Default is 1.0 (no reduction).
+
+## Slow-Consumer Backpressure (DropOnFull)
+
+By default, a slow consumer blocks the watch loop when the event channel is
+full. This preserves all events but can cause kernel-level event loss if the
+consumer is consistently slow.
+
+Switch to drop-on-full mode to prioritize watcher liveness:
+
+```go
+watcher, _ := filewatcher.New(
+	[]string{"./src"},
+	filewatcher.WithBuffer(64),
+	filewatcher.WithEventChannelMode(filewatcher.EventChannelDropOnFull),
+)
+
+stats := watcher.Stats()
+if stats.EventsDroppedByBackpressure > 0 {
+	log.Warn("events dropped due to slow consumer",
+		"dropped", stats.EventsDroppedByBackpressure)
+}
+```
+
+## Error Channel Buffer
+
+The error channel uses the same buffer size as the event channel by default.
+Under high error load (e.g., many ENOSPC errors during a large tree walk),
+errors can be silently dropped. Decouple the buffer sizes:
+
+```go
+watcher, _ := filewatcher.New(
+	[]string{"./huge-tree"},
+	filewatcher.WithBuffer(64),               // event channel
+	filewatcher.WithErrorBufferSize(1024),     // error channel (larger)
+)
+
+stats := watcher.Stats()
+if stats.ErrorsDropped > 0 {
+	log.Warn("errors dropped", "count", stats.ErrorsDropped)
+}
+```
+
+## Error Classification
+
+The watcher classifies errors as transient or permanent. Self-heal abandons
+permanent errors immediately instead of retrying forever:
+
+- **Permanent:** `os.ErrPermission`, `os.ErrNotExist`, `syscall.ENOTDIR`
+- **Transient:** `syscall.ENOSPC` (may resolve when resources free up)
+
+This prevents self-heal from wasting cycles retrying paths that will never
+succeed.

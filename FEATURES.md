@@ -82,14 +82,15 @@ Honest status of every capability in go-filewatcher. Statuses:
 
 | Feature                          | Status | Notes                                                                             |
 | -------------------------------- | ------ | --------------------------------------------------------------------------------- |
-| `Stats()` struct                 | ✅     | Events, filters, middleware drops, backpressure drops, error drops, uptime, watch budget                                             |
+| `Stats()` struct                 | ✅     | Events, filters, middleware drops, backpressure drops, error drops, uptime, watch budget, budget cap                                     |
 | Middleware drop counter          | ✅     | `Stats.EventsDroppedByMiddleware` — surfaces rate-limit/dedup/circuit-breaker drops                                                 |
 | Backpressure drop counter        | ✅     | `Stats.EventsDroppedByBackpressure` — events dropped in DropOnFull mode                                                             |
 | Error drop counter               | ✅     | `Stats.ErrorsDropped` — errors dropped when error channel is full                                                                   |
+| Budget cap                       | ✅     | `Stats.WatchBudgetCap` — effective cap after safety fraction; `WatchLimit` shows raw system limit                                     |
 | Structured debug logging         | ✅     | `WithDebug(*slog.Logger)`                                                         |
-| Prometheus collector             | ✅     | `PrometheusCollector` with `StatsFunc`, `CounterMetric`, `GaugeMetric` interfaces |
+| Prometheus collector             | ✅     | `PrometheusCollector` with `StatsFunc`, `CounterMetric`, `GaugeMetric` interfaces (includes backpressure + budget cap metrics) |
 | OpenTelemetry tracing middleware | ✅     | `OTelMiddleware` with `OTelSpan` interface (zero-dep)                             |
-| Stack traces on errors           | ✅     | `WatcherError.Stack` via `debug.Stack()`                                          |
+| Stack traces on errors           | ✅     | `WatcherError.Stack` via `debug.Stack()`; `NewWatcherErrorWithStack` for caller-provided stacks      |
 
 ## Resilience & Scalability
 
@@ -106,6 +107,8 @@ Honest status of every capability in go-filewatcher. Statuses:
 | Syscall error classification             | ✅     | `os.ErrPermission`/`os.ErrNotExist`/`syscall.ENOTDIR` → permanent; `ENOSPC` → transient; self-heal abandons permanent failures            |
 | Polling mode respects exclusions         | ✅     | `pollWalkDir` now applies `shouldExcludePath` and `.gitignore` matching (was only checking `shouldSkipDir`)                               |
 | Case-insensitive walk-time dir skipping  | ✅     | `shouldSkipDir` matches directory names case-insensitively on `CaseInsensitive` filesystems                                               |
+| Configurable content hash size           | ✅     | `WithContentHashMaxSize(bytes)` — max file size for content hashing (default 10 MiB)                                                      |
+| Decoupled error channel buffer           | ✅     | `WithErrorBufferSize(n)` — independent error channel capacity from event channel                                                          |
 | Self-healing watches                     | ✅     | `WithSelfHeal(interval)` retries failed paths                                                                                             |
 | Batched watch registration               | ✅     | 1000 dirs/batch with `runtime.Gosched()` between batches                                                                                  |
 | Polling mode (NFS/FUSE)                  | ✅     | `WithPolling(true)` + `WithPollInterval(d)`                                                                                               |

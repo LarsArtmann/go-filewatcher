@@ -150,6 +150,25 @@ func TestFilterIgnoreDirs(t *testing.T) {
 }
 
 //nolint:tparallel // Subtests call t.Parallel() inside runFilterTests helper
+func TestFilterIgnoreDirsCaseInsensitive(t *testing.T) {
+	t.Parallel()
+	runFilterTests(
+		t,
+		"FilterIgnoreDirsCaseInsensitive",
+		FilterIgnoreDirsCaseInsensitive("vendor", "node_modules"),
+		filterTests{
+			{"main.go passes", testWriteEvent("/tmp/main.go"), true},
+			{"lowercase vendor dir", testWriteEvent("/tmp/vendor/pkg.go"), false},
+			{"uppercase VENDOR dir", testWriteEvent("/tmp/VENDOR/pkg.go"), false},
+			{"mixed case Vendor dir", testWriteEvent("/tmp/Vendor/pkg.go"), false},
+			{"uppercase NODE_MODULES", testWriteEvent("/tmp/NODE_MODULES/index.js"), false},
+			{"mixed case Node_Modules", testWriteEvent("/tmp/Node_Modules/index.js"), false},
+			{"non-matching dir passes", testWriteEvent("/tmp/src/main.go"), true},
+		},
+	)
+}
+
+//nolint:tparallel // Subtests call t.Parallel() inside runFilterTests helper
 func TestFilterIgnoreHidden(t *testing.T) {
 	t.Parallel()
 	runFilterTests(t, "FilterIgnoreHidden", FilterIgnoreHidden(), ignoreHiddenTestCases())

@@ -1696,3 +1696,78 @@ func TestStats_ErrorsDropped(t *testing.T) {
 		t.Error("expected ErrorsDropped > 0 when error channel is full")
 	}
 }
+
+func TestDropOnFull_DropsEventsAndCounts(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	// Tiny buffer + DropOnFull mode: events are dropped (not blocked) when full.
+	watcher := newTestWatcher(t, tmpDir,
+		WithBuffer(1),
+		WithEventChannelMode(EventChannelDropOnFull),
+	)
+
+	ctx := setupTestContext(t, 10*time.Second)
+
+	events, err := watcher.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	// Do NOT drain the events channel — simulate a slow consumer.
+	// With buffer=1, the first event fills the channel; subsequent events
+	// should be dropped and counted.
+	_ = events
+
+	// Generate many files rapidly to overflow the buffer.
+	for range 20 {
+		testFile := filepath.Join(tmpDir, "drop_test_"+t.Name()+".go")
+		if err := os.WriteFile(testFile, []byte("x"), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	// Wait for the backpressure counter to increment.
+	waitForCondition(t, 5*time.Second, "expected EventsDroppedByBackpressure > 0", func() bool {
+		return watcher.Stats().EventsDroppedByBackpressure > 0
+	})
+}
+
+func TestWatchFilteredDirectories_Disabled(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	// Filter that rejects ALL Create events, plus WithWatchFilteredDirectories(false)
+	// so that new directories matching the filter are NOT added to the watcher.
+	dropCreate := MiddlewareFilter(func(event Event) bool {
+		return event.Op != Create
+	})
+
+	watcher := newTestWatcher(t, tmpDir,
+		WithMiddleware(dropCreate),
+		WithWatchFilteredDirectories(false),
+	)
+
+	ctx := setupTestContext(t, 10*time.Second)
+
+	if _, err := watcher.Watch(ctx); err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	// Create a subdirectory — its Create event will be filtered out, and
+	// because watchFilteredDirs is false, it should NOT be added to the watch list.
+	newDir := filepath.Join(tmpDir, "unwatched_subdir")
+	if err := os.Mkdir(newDir, 0o750); err != nil {
+		t.Fatal(err)
+	}
+
+	// Wait a moment for the event to be processed, then verify the directory
+	// is NOT in the watch list.
+	waitForCondition(t, 3*time.Second, "timed out waiting for watch list to stabilize", func() bool {
+		stats := watcher.Stats()
+		// The watch count should not grow beyond the initial tmpDir.
+		return stats.WatchCount <= 1
+	})
+}

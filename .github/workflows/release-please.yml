@@ -13,7 +13,7 @@ jobs:
     name: Create Release PR
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@8b8fd2cc23b2e18957157a9d923d75aa0c6f6ad5 # v4
         with:
           release-type: go
           # Use plain v-prefixed tags (v2.3.0), not component-prefixed.

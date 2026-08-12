@@ -14,7 +14,7 @@ jobs:
     name: README vs API_STABILITY Drift Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Verify deprecated symbols are consistent
         run: |
           set -euo pipefail
@@ -78,8 +78,8 @@ jobs:
     name: Exported Symbols in Docs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: go.mod
       - name: Verify every exported symbol is mentioned in FEATURES.md or README.md

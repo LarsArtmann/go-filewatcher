@@ -344,6 +344,7 @@ func WithCaseSensitivity(mode FilesystemCaseSensitivity) Option {
 func WithMaxWatches(n int) Option {
 	return func(w *Watcher) {
 		w.maxWatches = n
+		w.maxWatchesExplicit = n > 0
 	}
 }
 

@@ -218,3 +218,76 @@ func TestWithWatchedIgnoreDirs(t *testing.T) {
 		t.Error("expected at least one filter to be added")
 	}
 }
+
+func TestWithMaxWatchesSafetyFraction_Clamping(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		input float64
+		want  float64
+	}{
+		{"valid 0.75", 0.75, 0.75},
+		{"valid 0.5", 0.5, 0.5},
+		{"valid 1.0", 1.0, 1.0},
+		{"zero clamped to 1.0", 0, 1.0},
+		{"negative clamped to 1.0", -0.5, 1.0},
+		{"above 1.0 clamped to 1.0", 1.5, 1.0},
+	}
+
+	for _, tc := range tests { //nolint:varnamelen // tc is conventional
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			dir := t.TempDir()
+			watcher := newTestWatcher(t, dir, WithMaxWatchesSafetyFraction(tc.input))
+
+			if watcher.maxWatchesFraction != tc.want {
+				t.Errorf("maxWatchesFraction = %v, want %v", watcher.maxWatchesFraction, tc.want)
+			}
+		})
+	}
+}
+
+func TestApplyMaxWatchesFraction_ReducesAutoDetectedLimit(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	watcher := newTestWatcher(t, dir, WithMaxWatchesSafetyFraction(0.75))
+
+	// Simulate a known auto-detected limit by setting it directly,
+	// then applying the fraction.
+	const simulatedLimit = 10000
+
+	watcher.maxWatches = simulatedLimit
+	watcher.maxWatchesExplicit = false
+	watcher.applyMaxWatchesFraction()
+
+	expected := int(float64(simulatedLimit) * 0.75) // 7500
+	if watcher.maxWatches != expected {
+		t.Errorf("maxWatches = %d, want %d (after 0.75 fraction of %d)",
+			watcher.maxWatches, expected, simulatedLimit)
+	}
+}
+
+func TestApplyMaxWatchesFraction_DoesNotAffectExplicitLimit(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+
+	const explicitLimit = 1000
+
+	watcher := newTestWatcher(t, dir,
+		WithMaxWatches(explicitLimit),
+		WithMaxWatchesSafetyFraction(0.75),
+	)
+
+	if watcher.maxWatches != explicitLimit {
+		t.Errorf("explicit maxWatches = %d, want %d (fraction must not apply to explicit limits)",
+			watcher.maxWatches, explicitLimit)
+	}
+
+	if !watcher.maxWatchesExplicit {
+		t.Error("maxWatchesExplicit should be true when WithMaxWatches(n>0) is used")
+	}
+}

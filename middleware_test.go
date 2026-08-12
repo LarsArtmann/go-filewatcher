@@ -773,6 +773,36 @@ func TestMiddlewareBatch_DefaultValues(t *testing.T) {
 	// Just verify no panic or error
 }
 
+func TestMiddlewareBatch_TimerFlushErrorReturnedOnNextEvent(t *testing.T) {
+	t.Parallel()
+
+	flushErr := errors.New("timer flush failed") //nolint:err113 // test-specific dynamic error
+
+	flushCh := make(chan struct{}, 1) // signals the timer flush has executed
+
+	flush := func(_ []Event) error {
+		flushCh <- struct{}{}
+
+		return flushErr
+	}
+
+	mw := MiddlewareBatch(50*time.Millisecond, 100, flush) // short window, large maxSize
+	handler := mw(noopHandler())
+
+	ctx := context.Background()
+
+	// Send 1 event (below maxSize → timer is set, event passes to next)
+	_ = handler(ctx, testEvent("/tmp/a.go", Write))
+
+	// Wait for the timer to fire and flush to fail
+	waitForChannel(t, flushCh, 2*time.Second, "timed out waiting for timer flush")
+
+	// The flush error is now stored in batchState.flushErr.
+	// The next event should return the stored error instead of processing normally.
+	err := handler(ctx, testEvent("/tmp/b.go", Write))
+	assertErrorIs(t, err, flushErr, "expected timer flush error to be returned on next event")
+}
+
 func TestMiddlewareChain(t *testing.T) {
 	t.Parallel()
 

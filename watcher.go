@@ -127,7 +127,8 @@ type Watcher struct {
 	watchErrors                 atomic.Uint64 // Watch add failures (ENOSPC, permission denied, etc.)
 	startTime                   time.Time     // When watcher was created/started
 	maxWatches                  int           // Maximum inotify watches allowed (0 = no limit)
-	maxWatchesFraction          float64       // Safety fraction applied to maxWatches (default 1.0)
+	maxWatchesExplicit          bool          // True when maxWatches was set via WithMaxWatches(n)
+	maxWatchesFraction          float64       // Safety fraction applied to auto-detected maxWatches (default 1.0)
 }
 
 // Compile-time interface check: Watcher implements io.Closer.
@@ -278,6 +279,7 @@ func New( //nolint:funlen // constructor with full field initialization
 		watchErrors:                 atomic.Uint64{},
 		startTime:                   time.Time{},
 		maxWatches:                  0,
+		maxWatchesExplicit:          false,
 		maxWatchesFraction:          1.0, // default: use full system limit (set WithMaxWatchesSafetyFraction for shared environments)
 		lazyIsDir:                   false,
 		pollInterval:                0,
@@ -335,13 +337,13 @@ func New( //nolint:funlen // constructor with full field initialization
 		w.gitignoreCache = nil
 	}
 
-	// Auto-detect max watches from system if not explicitly set
+	// Auto-detect max watches from system if not explicitly set.
+	// The safety fraction only applies to auto-detected limits — explicit
+	// limits from WithMaxWatches(n) are used as-is.
 	if w.maxWatches == 0 {
 		w.maxWatches = detectMaxWatches()
+		w.applyMaxWatchesFraction()
 	}
-
-	// Apply safety fraction (leaves headroom for other processes on shared machines).
-	w.applyMaxWatchesFraction()
 
 	return w, nil
 }
@@ -750,9 +752,11 @@ func (w *Watcher) Reset() error {
 		w.gitignoreCache = newGitignoreCache()
 	}
 
-	// Re-detect max watches from system
-	w.maxWatches = detectMaxWatches()
-	w.applyMaxWatchesFraction()
+	// Re-detect max watches from system (only when not explicitly configured)
+	if !w.maxWatchesExplicit {
+		w.maxWatches = detectMaxWatches()
+		w.applyMaxWatchesFraction()
+	}
 
 	return nil
 }

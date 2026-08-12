@@ -15,18 +15,20 @@ func TestPrometheusCollector_CountersAndGauges(t *testing.T) {
 		callCount.Add(1)
 
 		return Stats{
-			WatchCount:          42,
-			IsWatching:          true,
-			IsClosed:            false,
-			EventsProcessed:     100,
-			EventsFilteredOut:   10,
-			ErrorsEncountered:   2,
-			WatchErrors:         0,
-			Uptime:              5 * time.Second,
-			WatchLimit:          8192,
-			WatchBudgetUsed:     0.005,
-			CaseSensitivity:     "case-sensitive",
-			CaseSensitivityMode: CaseSensitive,
+			WatchCount:                42,
+			IsWatching:                true,
+			IsClosed:                  false,
+			EventsProcessed:           100,
+			EventsFilteredOut:         10,
+			EventsDroppedByMiddleware: 5,
+			ErrorsEncountered:         2,
+			ErrorsDropped:             1,
+			WatchErrors:               0,
+			Uptime:                    5 * time.Second,
+			WatchLimit:                8192,
+			WatchBudgetUsed:           0.005,
+			CaseSensitivity:           "case-sensitive",
+			CaseSensitivityMode:       CaseSensitive,
 		}
 	}
 
@@ -37,7 +39,7 @@ func TestPrometheusCollector_CountersAndGauges(t *testing.T) {
 	}
 
 	counters := collector.Counters()
-	assertLen(t, "counters", len(counters), 4)
+	assertLen(t, "counters", len(counters), 6)
 
 	// Verify specific counter values
 	wantCounters := map[string]uint64{
@@ -83,7 +85,7 @@ func TestPrometheusCollector_NilStatsFunc(t *testing.T) {
 	collector := NewPrometheusCollector(nil)
 
 	counters := collector.Counters()
-	assertLen(t, "counters (nil stats)", len(counters), 4)
+	assertLen(t, "counters (nil stats)", len(counters), 6)
 
 	for _, c := range counters {
 		if c.Value != 0 {

@@ -207,8 +207,13 @@ func WithPolling(fallback bool) Option {
 // logs detailed information about event processing, filter decisions,
 // debounce actions, and error handling.
 func WithDebug(logger *slog.Logger) Option {
-	return func(w *Watcher) {
+	return func(w *Watcher) { //nolint:varnamelen // idiomatic short name for Watcher
 		w.debug = true
+
+		if logger == nil {
+			logger = slog.Default()
+		}
+
 		w.debugLogger = logger
 	}
 }
@@ -230,11 +235,62 @@ func WithWatchedIgnoreDirs(dirs ...string) Option {
 // When enabled, symlinked directories are resolved to their targets and
 // added to the watcher. This allows monitoring directories accessed through
 // symlinks. Default is false (symlinks are not followed).
+//
+// Cycle detection is built-in: if a symlink target was already visited
+// (directly or via another symlink), it is skipped to prevent infinite recursion.
 func WithFollowSymlinks(follow bool) Option {
 	return func(w *Watcher) {
 		w.followSymlinks = follow
 	}
 }
+
+// WithWatchFilteredDirectories controls whether newly created directories
+// are added to the watcher even when their Create event was filtered out.
+//
+// When true (default), the watcher adds new directories to maintain a complete
+// watch tree, even if events for files within them are filtered. This ensures
+// that files created in those directories are still detected.
+//
+// When false, directories whose Create event was filtered out are NOT added,
+// saving inotify budget. Use this when you truly want to ignore certain
+// subtrees (e.g., build output directories filtered by name).
+func WithWatchFilteredDirectories(watch bool) Option {
+	return func(w *Watcher) {
+		w.watchFilteredDirs = watch
+	}
+}
+
+// WithEventChannelMode configures how the watcher behaves when the event
+// channel is full and the consumer is not reading fast enough.
+//
+//   - EventChannelBlocking (default): the watch loop blocks until the event
+//     can be sent. This preserves all events but can cause the kernel to drop
+//     fsnotify events if the consumer is consistently slow.
+//   - EventChannelDropOnFull: events are dropped (and counted in
+//     Stats.EventsDroppedByBackpressure) when the channel is full. This
+//     prevents the watch loop from blocking but loses events.
+//
+// Use DropOnFull when you prefer losing events over blocking the watcher
+// (e.g., in firehose scenarios where eventual consistency is acceptable).
+func WithEventChannelMode(mode EventChannelMode) Option {
+	return func(w *Watcher) {
+		w.eventDropOnFull = mode == EventChannelDropOnFull
+	}
+}
+
+// EventChannelMode controls the watcher's behavior when the event channel is full.
+type EventChannelMode int
+
+const (
+	// EventChannelBlocking blocks the watch loop until the event can be sent.
+	// This is the default and preserves all events at the cost of potential
+	// kernel-level event drops if the consumer is consistently slow.
+	EventChannelBlocking EventChannelMode = iota
+	// EventChannelDropOnFull drops events when the channel is full, incrementing
+	// Stats.EventsDroppedByBackpressure. Use this when you prefer losing events
+	// over blocking the watcher.
+	EventChannelDropOnFull
+)
 
 // WithExcludePaths excludes specific absolute paths (and their subtrees) from
 // being watched during directory walking. This is a walk-time exclusion — directories
@@ -288,6 +344,27 @@ func WithCaseSensitivity(mode FilesystemCaseSensitivity) Option {
 func WithMaxWatches(n int) Option {
 	return func(w *Watcher) {
 		w.maxWatches = n
+	}
+}
+
+// WithMaxWatchesSafetyFraction sets a safety fraction applied to the auto-detected
+// inotify watch limit. This leaves headroom for other processes on shared or
+// multi-tenant machines, preventing the watcher from exhausting the entire
+// system-wide budget.
+//
+// A value of 0.75 means the watcher uses at most 75% of the system limit.
+// Values <= 0 or > 1 are clamped to the default (1.0 = no reduction).
+// This only affects auto-detected limits (WithMaxWatches(0)); explicit limits
+// set via WithMaxWatches(n) are used as-is.
+//
+// Default: 1.0 (full system limit). Recommended for shared environments: 0.75.
+func WithMaxWatchesSafetyFraction(fraction float64) Option {
+	return func(w *Watcher) {
+		if fraction <= 0 || fraction > 1.0 {
+			fraction = 1.0
+		}
+
+		w.maxWatchesFraction = fraction
 	}
 }
 

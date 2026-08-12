@@ -14,6 +14,11 @@ Common issues and solutions when using go-filewatcher.
 - [Race Detector Warnings](#race-detector-warnings)
 - [Platform-Specific Issues](#platform-specific-issues)
 - [Filesystem Compatibility](#filesystem-compatibility)
+- [Polling Mode Limitations](#polling-mode-limitations)
+- [Slow Consumers and Event Loss](#slow-consumers-and-event-loss)
+- [Middleware Drops Not Visible](#middleware-drops-not-visible)
+- [Content Hashing Performance](#content-hashing-performance)
+- [Symlink Cycles](#symlink-cycles)
 
 ## No Events Received
 
@@ -275,3 +280,83 @@ Build
 
 The trailing-slash form still works for filtering _events_ from files inside the
 directory — it just doesn't prevent the directory itself from being watched.
+
+## Polling Mode Limitations
+
+**Polling is a fallback, not a duplicate-suppression layer.** When both
+`WithPolling(true)` and fsnotify are active, a single file change can produce
+two events: one from fsnotify and one from the poll loop. Use
+`MiddlewareDeduplicate` or rely on idempotent handling if this matters.
+
+As of v2.4.0, `WithExcludePaths` and `.gitignore` filtering now apply to the
+poll loop as well, consistent with the initial walk. Previously, the poll loop
+ignored exclusions and could emit events for gitignored or excluded subtrees.
+
+## Slow Consumers and Event Loss
+
+**Symptoms:** Under high event load, the consumer falls behind. The event
+channel fills and the watch loop blocks, which can cause the kernel to drop
+fsnotify events with no indication.
+
+**Default behavior:** The event channel uses blocking sends. This preserves
+backpressure but can stall the entire pipeline if the consumer is slow.
+
+**Solution — DropOnFull mode:** Prefer losing events over blocking:
+
+```go
+filewatcher.WithEventChannelMode(filewatcher.EventChannelDropOnFull),
+```
+
+Dropped events are counted in `Stats.EventsDroppedByBackpressure`. Check this
+counter to detect consumer overload:
+
+```go
+stats := watcher.Stats()
+if stats.EventsDroppedByBackpressure > 0 {
+    log.Warn("events dropped due to slow consumer", "count", stats.EventsDroppedByBackpressure)
+}
+```
+
+## Middleware Drops Not Visible
+
+**Symptoms:** `Stats.EventsProcessed` is higher than expected. Events dropped
+by rate limiting, deduplication, or circuit breaker middleware are not visible
+in any counter.
+
+**As of v2.4.0:** Middleware-dropped events are now counted separately in
+`Stats.EventsDroppedByMiddleware`. This counter tracks events that passed
+filters but were dropped by middleware (returned `nil` without forwarding).
+
+Similarly, errors dropped because the error channel (`Errors()`) was full are
+counted in `Stats.ErrorsDropped`. If this counter is non-zero, increase
+`WithBuffer(n)` or read errors more frequently.
+
+## Content Hashing Performance
+
+**Symptoms:** High I/O latency when `WithContentHashing()` or
+`FilterGeneratedCodeFull(ContentCheckEnabled)` is enabled, especially with
+large files.
+
+**Cause:** Both features read file content synchronously from the event loop.
+A burst of large file events can delay all subsequent events.
+
+**Mitigations:**
+
+1. Content hashing skips files larger than 10 MiB (returns empty hash).
+2. Generated code content detection also skips files larger than 10 MiB.
+3. For high-throughput scenarios, prefer filename-only detection
+   (`FilterGeneratedCode` or `ContentCheckDisabled`).
+4. Disable content hashing entirely if you don't need it.
+
+## Symlink Cycles
+
+**Symptoms:** `WithFollowSymlinks(true)` follows a symlink that points to an
+ancestor directory, causing an infinite walk.
+
+**As of v2.4.0:** Cycle detection is built-in. The walker tracks all resolved
+symlink targets and skips any target that was already visited (directly or via
+another symlink). A debug log message is emitted when a cycle is detected.
+
+You can safely use `WithFollowSymlinks(true)` without worrying about cycles.
+The walker also deduplicates watch-list entries for symlink targets that are
+already watched under their real path.

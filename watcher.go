@@ -78,9 +78,11 @@ type Watcher struct {
 	lazyIsDir                bool                      // skip os.Stat calls in convertEvent for performance
 	pollInterval             time.Duration             // polling interval for NFS/FUSE filesystems (0 = disabled)
 	polling                  bool                      // polling mode enabled (supplements fsnotify with periodic scans)
+	eventDropOnFull          bool                      // drop events when channel is full instead of blocking
 	debug                    bool                      // enable verbose debug logging
 	debugLogger              *slog.Logger              // logger for debug output
 	followSymlinks           bool                      // follow symbolic links during directory walking
+	watchFilteredDirs        bool                      // watch new directories even when the Create event was filtered out
 	gitignoreEnabled         bool                      // enable .gitignore-aware walk filtering
 	gitignoreCache           *gitignoreCache           // cache of compiled gitignore matchers
 	contentHashing           bool                      // compute SHA-256 hash of file content on events
@@ -92,12 +94,13 @@ type Watcher struct {
 	effectiveCaseSensitivity FilesystemCaseSensitivity // resolved (auto → concrete) for fast pathKey
 
 	// Internal state
-	mu            sync.RWMutex
-	state         WatcherStateFlags   // bit flags: closed, watching
-	watchList     []string            // tracked paths currently being watched
-	watchListKeys map[string]struct{} // pathKey(path) → present; O(1) watched check and dedup
-	walkBatch     []string            // batch accumulator for walkDirFunc (nil when not batching)
-	wg            sync.WaitGroup      // tracks watchLoop goroutine for clean shutdown
+	mu             sync.RWMutex
+	state          WatcherStateFlags   // bit flags: closed, watching
+	watchList      []string            // tracked paths currently being watched
+	watchListKeys  map[string]struct{} // pathKey(path) → present; O(1) watched check and dedup
+	walkBatch      []string            // batch accumulator for walkDirFunc (nil when not batching)
+	symlinkVisited map[string]struct{} // canonical paths already visited via symlink (nil when not walking)
+	wg             sync.WaitGroup      // tracks watchLoop goroutine for clean shutdown
 
 	// Event channel - stored so Close() can close it after stopping debouncer
 	// This prevents race between debouncer callbacks and channel close
@@ -115,12 +118,16 @@ type Watcher struct {
 	errorsOnce sync.Once
 
 	// Observability metrics (atomic counters for thread-safe access)
-	eventsProcessed   atomic.Uint64 // Total events that passed all filters
-	eventsFilteredOut atomic.Uint64 // Events filtered out (dropped by filters)
-	errorsEncountered atomic.Uint64 // Errors encountered during processing
-	watchErrors       atomic.Uint64 // Watch add failures (ENOSPC, permission denied, etc.)
-	startTime         time.Time     // When watcher was created/started
-	maxWatches        int           // Maximum inotify watches allowed (0 = no limit)
+	eventsProcessed             atomic.Uint64 // Total events that reached the event channel (passed all middleware)
+	eventsFilteredOut           atomic.Uint64 // Events filtered out (dropped by filters)
+	eventsDroppedByMiddleware   atomic.Uint64 // Events dropped by middleware (rate limit, dedup, circuit breaker, etc.)
+	eventsDroppedByBackpressure atomic.Uint64 // Events dropped because the event channel was full (DropOnFull mode)
+	errorsEncountered           atomic.Uint64 // Errors encountered during processing
+	errorsDropped               atomic.Uint64 // Errors dropped because the error channel was full
+	watchErrors                 atomic.Uint64 // Watch add failures (ENOSPC, permission denied, etc.)
+	startTime                   time.Time     // When watcher was created/started
+	maxWatches                  int           // Maximum inotify watches allowed (0 = no limit)
+	maxWatchesFraction          float64       // Safety fraction applied to maxWatches (default 1.0)
 }
 
 // Compile-time interface check: Watcher implements io.Closer.
@@ -160,6 +167,23 @@ func (w *Watcher) IsWatching() bool {
 func (w *Watcher) checkClosedOp(operation string) error {
 	if w.state&flagClosed != 0 {
 		return fmt.Errorf("%w: cannot %s on closed watcher", ErrWatcherClosed, operation)
+	}
+
+	return nil
+}
+
+// validateDirExists stats abs and returns a wrapped sentinel error if the
+// path is missing or not a directory. This prevents non-existent paths from
+// silently entering the self-heal retry loop and gives consumers a clear,
+// categorized error. abs must already be an absolute, cleaned path.
+func validateDirExists(abs string) error {
+	info, err := os.Stat(abs)
+	if err != nil {
+		return fmt.Errorf("%w: %s", ErrPathNotFound, abs)
+	}
+
+	if !info.IsDir() {
+		return fmt.Errorf("%w: %s", ErrPathNotDir, abs)
 	}
 
 	return nil
@@ -219,52 +243,59 @@ func New( //nolint:funlen // constructor with full field initialization
 	}
 
 	w := &Watcher{
-		fswatcher:                nil,
-		paths:                    normalizedPaths,
-		recursive:                true,
-		filters:                  nil,
-		middleware:               nil,
-		globalDebounce:           0,
-		perPathDebounce:          0,
-		errorHandler:             nil,
-		skipDotDirs:              true,
-		bufferSize:               defaultEventBufferSize,
-		onAdd:                    nil,
-		ignoreDirNames:           nil,
-		excludePaths:             make(map[string]struct{}),
-		mu:                       sync.RWMutex{},
-		state:                    0,
-		watchList:                make([]string, 0, len(paths)),
-		watchListKeys:            make(map[string]struct{}),
-		walkBatch:                nil,
-		wg:                       sync.WaitGroup{},
-		eventCh:                  nil,
-		closeEventChOnce:         sync.Once{},
-		debounceInterface:        nil,
-		errorsCh:                 nil,
-		errorsMu:                 sync.Mutex{},
-		errorsOnce:               sync.Once{},
-		eventsProcessed:          atomic.Uint64{},
-		eventsFilteredOut:        atomic.Uint64{},
-		errorsEncountered:        atomic.Uint64{},
-		watchErrors:              atomic.Uint64{},
-		startTime:                time.Time{},
-		maxWatches:               0,
-		lazyIsDir:                false,
-		pollInterval:             0,
-		polling:                  false,
-		debug:                    false,
-		debugLogger:              nil,
-		followSymlinks:           false,
-		gitignoreEnabled:         true,
-		gitignoreCache:           newGitignoreCache(),
-		contentHashing:           false,
-		selfHealInterval:         0,
-		failedPaths:              make(map[string]string),
-		done:                     make(chan struct{}),
-		cleanups:                 nil,
-		caseSensitivity:          CaseSensitivityAuto,
-		effectiveCaseSensitivity: CaseSensitive,
+		fswatcher:                   nil,
+		paths:                       normalizedPaths,
+		recursive:                   true,
+		filters:                     nil,
+		middleware:                  nil,
+		globalDebounce:              0,
+		perPathDebounce:             0,
+		errorHandler:                nil,
+		skipDotDirs:                 true,
+		bufferSize:                  defaultEventBufferSize,
+		onAdd:                       nil,
+		ignoreDirNames:              nil,
+		excludePaths:                make(map[string]struct{}),
+		mu:                          sync.RWMutex{},
+		state:                       0,
+		watchList:                   make([]string, 0, len(paths)),
+		watchListKeys:               make(map[string]struct{}),
+		walkBatch:                   nil,
+		symlinkVisited:              nil,
+		wg:                          sync.WaitGroup{},
+		eventCh:                     nil,
+		closeEventChOnce:            sync.Once{},
+		debounceInterface:           nil,
+		errorsCh:                    nil,
+		errorsMu:                    sync.Mutex{},
+		errorsOnce:                  sync.Once{},
+		eventsProcessed:             atomic.Uint64{},
+		eventsFilteredOut:           atomic.Uint64{},
+		eventsDroppedByMiddleware:   atomic.Uint64{},
+		eventsDroppedByBackpressure: atomic.Uint64{},
+		errorsEncountered:           atomic.Uint64{},
+		errorsDropped:               atomic.Uint64{},
+		watchErrors:                 atomic.Uint64{},
+		startTime:                   time.Time{},
+		maxWatches:                  0,
+		maxWatchesFraction:          1.0, // default: use full system limit (set WithMaxWatchesSafetyFraction for shared environments)
+		lazyIsDir:                   false,
+		pollInterval:                0,
+		polling:                     false,
+		eventDropOnFull:             false,
+		debug:                       false,
+		debugLogger:                 nil,
+		followSymlinks:              false,
+		watchFilteredDirs:           true, // default: keep watching new dirs even if Create event was filtered
+		gitignoreEnabled:            true,
+		gitignoreCache:              newGitignoreCache(),
+		contentHashing:              false,
+		selfHealInterval:            0,
+		failedPaths:                 make(map[string]string),
+		done:                        make(chan struct{}),
+		cleanups:                    nil,
+		caseSensitivity:             CaseSensitivityAuto,
+		effectiveCaseSensitivity:    CaseSensitive,
 	}
 
 	for _, opt := range opts {
@@ -309,6 +340,9 @@ func New( //nolint:funlen // constructor with full field initialization
 		w.maxWatches = detectMaxWatches()
 	}
 
+	// Apply safety fraction (leaves headroom for other processes on shared machines).
+	w.applyMaxWatchesFraction()
+
 	return w, nil
 }
 
@@ -332,6 +366,15 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 
 	if w.isWatching() {
 		return nil, fmt.Errorf("%w: watcher is already running", ErrWatcherRunning)
+	}
+
+	// Re-validate paths still exist before adding (they may have been deleted
+	// between New() and Watch()). This gives a clear error instead of a
+	// generic fsnotify failure or silent self-heal retry loop.
+	for _, p := range w.paths {
+		if err := validateDirExists(p); err != nil {
+			return nil, fmt.Errorf("Watch(): %w", err)
+		}
 	}
 
 	// Add initial paths to the fsnotify watcher
@@ -416,6 +459,10 @@ func (w *Watcher) WatchOnce(ctx context.Context) (Event, error) {
 // This method is safe for concurrent use with other methods.
 func (w *Watcher) Add(path string) error {
 	return w.withResolvedPath(path, "add path", "Add()", func(abs string) error {
+		if err := validateDirExists(abs); err != nil {
+			return err
+		}
+
 		pathErr := w.addPath(NewRootPath(abs))
 		if pathErr != nil {
 			return fmt.Errorf("adding resolved path %q to watcher: %w", abs, pathErr)
@@ -432,6 +479,10 @@ func (w *Watcher) Add(path string) error {
 // This method is safe for concurrent use with other methods.
 func (w *Watcher) AddRecursive(path string, maxDepth int) error {
 	err := w.withResolvedPath(path, "add recursive path", "AddRecursive()", func(abs string) error {
+		if err := validateDirExists(abs); err != nil {
+			return err
+		}
+
 		if maxDepth == 0 {
 			return w.addPath(NewRootPath(abs))
 		}
@@ -564,18 +615,21 @@ func (w *Watcher) WatchList() []string {
 
 // Stats provides observability metrics for the watcher.
 type Stats struct {
-	WatchCount          int
-	IsWatching          bool
-	IsClosed            bool
-	EventsProcessed     uint64                    // Total events that passed all filters
-	EventsFilteredOut   uint64                    // Events filtered out (dropped by filters)
-	ErrorsEncountered   uint64                    // Errors encountered during processing
-	WatchErrors         uint64                    // Watch add failures (ENOSPC, permission denied, etc.)
-	Uptime              time.Duration             // Time since watcher was started
-	WatchLimit          int                       // System inotify limit (0 if unknown)
-	WatchBudgetUsed     float64                   // Percentage of budget used (0.0-1.0)
-	CaseSensitivity     string                    // Resolved case-sensitivity mode ("case-sensitive", "case-insensitive", "auto")
-	CaseSensitivityMode FilesystemCaseSensitivity // Resolved case-sensitivity mode (enum, type-safe)
+	WatchCount                  int                       // Number of paths currently being watched
+	IsWatching                  bool                      // Whether the watcher is running
+	IsClosed                    bool                      // Whether the watcher is closed
+	EventsProcessed             uint64                    // Total events that reached the event channel
+	EventsFilteredOut           uint64                    // Events dropped by filters
+	EventsDroppedByMiddleware   uint64                    // Events dropped by middleware (rate limit, dedup, etc.)
+	EventsDroppedByBackpressure uint64                    // Events dropped because the event channel was full (DropOnFull mode)
+	ErrorsEncountered           uint64                    // Total errors encountered
+	ErrorsDropped               uint64                    // Errors dropped because the error channel was full
+	WatchErrors                 uint64                    // Watch add failures (ENOSPC, permission denied, etc.)
+	Uptime                      time.Duration             // Time since watcher was started
+	WatchLimit                  int                       // System inotify limit (0 if unknown)
+	WatchBudgetUsed             float64                   // Percentage of budget used (0.0-1.0)
+	CaseSensitivity             string                    // Resolved case-sensitivity mode ("case-sensitive", "case-insensitive", "auto")
+	CaseSensitivityMode         FilesystemCaseSensitivity // Resolved case-sensitivity mode (enum, type-safe)
 }
 
 // Stats returns current statistics about the watcher.
@@ -595,18 +649,21 @@ func (w *Watcher) Stats() Stats {
 	}
 
 	return Stats{
-		WatchCount:          len(w.watchList),
-		IsWatching:          w.state&flagWatching != 0,
-		IsClosed:            w.state&flagClosed != 0,
-		EventsProcessed:     w.eventsProcessed.Load(),
-		EventsFilteredOut:   w.eventsFilteredOut.Load(),
-		ErrorsEncountered:   w.errorsEncountered.Load(),
-		WatchErrors:         w.watchErrors.Load(),
-		Uptime:              uptime,
-		WatchLimit:          w.maxWatches,
-		WatchBudgetUsed:     budgetUsed,
-		CaseSensitivity:     w.effectiveCaseSensitivity.String(),
-		CaseSensitivityMode: w.effectiveCaseSensitivity,
+		WatchCount:                  len(w.watchList),
+		IsWatching:                  w.state&flagWatching != 0,
+		IsClosed:                    w.state&flagClosed != 0,
+		EventsProcessed:             w.eventsProcessed.Load(),
+		EventsFilteredOut:           w.eventsFilteredOut.Load(),
+		EventsDroppedByMiddleware:   w.eventsDroppedByMiddleware.Load(),
+		EventsDroppedByBackpressure: w.eventsDroppedByBackpressure.Load(),
+		ErrorsEncountered:           w.errorsEncountered.Load(),
+		ErrorsDropped:               w.errorsDropped.Load(),
+		WatchErrors:                 w.watchErrors.Load(),
+		Uptime:                      uptime,
+		WatchLimit:                  w.maxWatches,
+		WatchBudgetUsed:             budgetUsed,
+		CaseSensitivity:             w.effectiveCaseSensitivity.String(),
+		CaseSensitivityMode:         w.effectiveCaseSensitivity,
 	}
 }
 
@@ -678,7 +735,10 @@ func (w *Watcher) Reset() error {
 	// Reset metrics
 	w.eventsProcessed.Store(0)
 	w.eventsFilteredOut.Store(0)
+	w.eventsDroppedByMiddleware.Store(0)
+	w.eventsDroppedByBackpressure.Store(0)
 	w.errorsEncountered.Store(0)
+	w.errorsDropped.Store(0)
 	w.watchErrors.Store(0)
 	w.startTime = time.Time{}
 
@@ -692,8 +752,18 @@ func (w *Watcher) Reset() error {
 
 	// Re-detect max watches from system
 	w.maxWatches = detectMaxWatches()
+	w.applyMaxWatchesFraction()
 
 	return nil
+}
+
+// applyMaxWatchesFraction reduces the watch limit by the configured safety
+// fraction, leaving headroom for other processes on shared machines.
+// No-op when the fraction is 1.0 (default) or when maxWatches is 0/unlimited.
+func (w *Watcher) applyMaxWatchesFraction() {
+	if w.maxWatches > 0 && w.maxWatchesFraction > 0 && w.maxWatchesFraction < 1.0 {
+		w.maxWatches = int(float64(w.maxWatches) * w.maxWatchesFraction)
+	}
 }
 
 // Close stops the watcher and releases all resources.

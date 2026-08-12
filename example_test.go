@@ -338,7 +338,7 @@ func ExampleWatcher_Add() {
 	runExampleWatcher(func(watcher *filewatcher.Watcher) {
 		// Add a path to the existing watcher. Errors are returned for
 		// invalid paths, permission issues, or fsnotify resource limits.
-		addErr := watcher.Add("./internal")
+		addErr := watcher.Add("./examples")
 		fmt.Println(addErr == nil)
 	}, filewatcher.WithRecursive(false))
 	// Output: true

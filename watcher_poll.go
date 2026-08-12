@@ -64,8 +64,18 @@ func (w *Watcher) pollWalkDir(rootPath string, snapshot map[string]fileState) {
 			return nil
 		}
 
-		if d.IsDir() && w.shouldSkipDir(d.Name()) {
-			return filepath.SkipDir
+		if d.IsDir() {
+			if w.shouldSkipDir(d.Name()) ||
+				w.shouldExcludePath(path) {
+				return filepath.SkipDir
+			}
+
+			// Load .gitignore for this directory before checking, mirroring walkDirFunc.
+			w.loadGitignoreForDir(path)
+
+			if w.shouldSkipByGitignore(path) {
+				return filepath.SkipDir
+			}
 		}
 
 		info, statErr := d.Info()

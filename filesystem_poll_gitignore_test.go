@@ -366,3 +366,91 @@ func TestPollWalkDir_NormalizesUnicodeKeysAndPreservesOriginalPath(t *testing.T)
 		t.Errorf("pathKey(NFD) != pathKey(NFC): %q != %q", watcher.pathKey(nfdPath), nfcKey)
 	}
 }
+
+// TestPollWalkDir_RespectsExcludePaths verifies that pollWalkDir skips
+// directories matching WithExcludePaths, preventing duplicate events for
+// excluded subtrees when polling mode is enabled.
+func TestPollWalkDir_RespectsExcludePaths(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	excludedDir := filepath.Join(tmpDir, "excluded")
+	includedDir := filepath.Join(tmpDir, "included")
+
+	for _, dir := range []string{excludedDir, includedDir} {
+		if err := os.MkdirAll(dir, 0o750); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	excludedFile := filepath.Join(excludedDir, "secret.txt")
+	includedFile := filepath.Join(includedDir, "normal.txt")
+
+	if err := os.WriteFile(excludedFile, []byte("secret"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := os.WriteFile(includedFile, []byte("data"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	fb := newFakeBackend()
+	watcher := newTestWatcher(t, tmpDir, withBackend(fb), WithExcludePaths(excludedDir))
+
+	snapshot := make(map[string]fileState)
+	watcher.pollWalkDir(tmpDir, snapshot)
+
+	if _, found := snapshot[watcher.pathKey(excludedFile)]; found {
+		t.Errorf("excluded file %q should NOT appear in poll snapshot", excludedFile)
+	}
+
+	if _, found := snapshot[watcher.pathKey(includedFile)]; !found {
+		t.Errorf("included file %q should appear in poll snapshot", includedFile)
+	}
+}
+
+// TestPollWalkDir_RespectsGitignore verifies that pollWalkDir skips
+// directories matching .gitignore rules, keeping polling consistent with
+// the initial walk.
+func TestPollWalkDir_RespectsGitignore(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	if err := os.WriteFile(filepath.Join(tmpDir, ".gitignore"), []byte("ignored\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	ignoredDir := filepath.Join(tmpDir, "ignored")
+	watchedDir := filepath.Join(tmpDir, "watched")
+
+	for _, dir := range []string{ignoredDir, watchedDir} {
+		if err := os.MkdirAll(dir, 0o750); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	ignoredFile := filepath.Join(ignoredDir, "data.txt")
+	watchedFile := filepath.Join(watchedDir, "data.txt")
+
+	for _, f := range []string{ignoredFile, watchedFile} {
+		if err := os.WriteFile(f, []byte("x"), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	fb := newFakeBackend()
+	watcher := newTestWatcher(t, tmpDir, withBackend(fb))
+
+	snapshot := make(map[string]fileState)
+	watcher.pollWalkDir(tmpDir, snapshot)
+
+	if _, found := snapshot[watcher.pathKey(ignoredFile)]; found {
+		t.Errorf("gitignored file %q should NOT appear in poll snapshot", ignoredFile)
+	}
+
+	if _, found := snapshot[watcher.pathKey(watchedFile)]; !found {
+		t.Errorf("non-gitignored file %q should appear in poll snapshot", watchedFile)
+	}
+}

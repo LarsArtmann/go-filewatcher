@@ -39,18 +39,21 @@ func NewPrometheusCollector(stats StatsFunc) *PrometheusCollector {
 	if stats == nil {
 		stats = func() Stats {
 			return Stats{
-				WatchCount:          0,
-				IsWatching:          false,
-				IsClosed:            false,
-				EventsProcessed:     0,
-				EventsFilteredOut:   0,
-				ErrorsEncountered:   0,
-				WatchErrors:         0,
-				Uptime:              0,
-				WatchLimit:          0,
-				WatchBudgetUsed:     0,
-				CaseSensitivity:     "",
-				CaseSensitivityMode: CaseSensitivityAuto,
+				WatchCount:                  0,
+				IsWatching:                  false,
+				IsClosed:                    false,
+				EventsProcessed:             0,
+				EventsFilteredOut:           0,
+				EventsDroppedByMiddleware:   0,
+				EventsDroppedByBackpressure: 0,
+				ErrorsEncountered:           0,
+				ErrorsDropped:               0,
+				WatchErrors:                 0,
+				Uptime:                      0,
+				WatchLimit:                  0,
+				WatchBudgetUsed:             0,
+				CaseSensitivity:             "",
+				CaseSensitivityMode:         CaseSensitivityAuto,
 			}
 		}
 	}
@@ -58,9 +61,11 @@ func NewPrometheusCollector(stats StatsFunc) *PrometheusCollector {
 	return &PrometheusCollector{
 		stats: stats,
 		describe: []string{
-			"Total events that passed all filters",
+			"Total events that reached the event channel",
 			"Events filtered out (dropped by filters)",
+			"Events dropped by middleware (rate limit, dedup, circuit breaker, etc.)",
 			"Errors encountered during processing",
+			"Errors dropped because the error channel was full",
 			"Watch add failures (ENOSPC, permission denied, etc.)",
 		},
 	}
@@ -87,17 +92,19 @@ type GaugeMetric struct {
 // Metric name constants — used by Counters() and Gauges() to avoid goconst
 // violations when emitting the same metric name across calls.
 const (
-	metricEventsProcessed   = "filewatcher_events_processed_total"
-	metricEventsFilteredOut = "filewatcher_events_filtered_out_total"
-	metricErrorsEncountered = "filewatcher_errors_encountered_total"
-	metricWatchErrors       = "filewatcher_watch_errors_total"
-	metricWatchCount        = "filewatcher_watch_count"
-	metricIsWatching        = "filewatcher_is_watching"
-	metricIsClosed          = "filewatcher_is_closed"
-	metricUptimeSeconds     = "filewatcher_uptime_seconds"
-	metricWatchLimit        = "filewatcher_watch_limit"
-	metricWatchBudgetUsed   = "filewatcher_watch_budget_used_ratio"
-	metricCaseSensitivity   = "filewatcher_case_sensitivity"
+	metricEventsProcessed           = "filewatcher_events_processed_total"
+	metricEventsFilteredOut         = "filewatcher_events_filtered_out_total"
+	metricEventsDroppedByMiddleware = "filewatcher_events_dropped_by_middleware_total"
+	metricErrorsEncountered         = "filewatcher_errors_encountered_total"
+	metricErrorsDropped             = "filewatcher_errors_dropped_total"
+	metricWatchErrors               = "filewatcher_watch_errors_total"
+	metricWatchCount                = "filewatcher_watch_count"
+	metricIsWatching                = "filewatcher_is_watching"
+	metricIsClosed                  = "filewatcher_is_closed"
+	metricUptimeSeconds             = "filewatcher_uptime_seconds"
+	metricWatchLimit                = "filewatcher_watch_limit"
+	metricWatchBudgetUsed           = "filewatcher_watch_budget_used_ratio"
+	metricCaseSensitivity           = "filewatcher_case_sensitivity"
 )
 
 // Counters returns the current counter values from the watcher stats.
@@ -117,13 +124,23 @@ func (c *PrometheusCollector) Counters() []CounterMetric {
 			Value: stats.EventsFilteredOut,
 		},
 		{
-			Name:  metricErrorsEncountered,
+			Name:  metricEventsDroppedByMiddleware,
 			Help:  c.describe[2],
+			Value: stats.EventsDroppedByMiddleware,
+		},
+		{
+			Name:  metricErrorsEncountered,
+			Help:  c.describe[3],
 			Value: stats.ErrorsEncountered,
 		},
 		{
+			Name:  metricErrorsDropped,
+			Help:  c.describe[4],
+			Value: stats.ErrorsDropped,
+		},
+		{
 			Name:  metricWatchErrors,
-			Help:  c.describe[3],
+			Help:  c.describe[5],
 			Value: stats.WatchErrors,
 		},
 	}

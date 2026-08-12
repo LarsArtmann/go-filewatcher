@@ -3,7 +3,9 @@ package filewatcher
 import (
 	"errors"
 	"fmt"
+	"os"
 	"runtime/debug"
+	"syscall"
 )
 
 // Sentinel errors for common failure modes.
@@ -233,6 +235,15 @@ func categorizeError(err error) ErrorCategory {
 		return CategoryPermanent
 	}
 
+	// Syscall-level permanent errors: permission denied, file not found,
+	// or "not a directory". These will never resolve on retry, so self-heal
+	// should abandon them immediately.
+	if errors.Is(err, os.ErrPermission) ||
+		errors.Is(err, os.ErrNotExist) ||
+		errors.Is(err, syscall.ENOTDIR) {
+		return CategoryPermanent
+	}
+
 	// Transient errors - these might resolve on retry
 	if matchesAnyError(
 		err,
@@ -242,6 +253,12 @@ func categorizeError(err error) ErrorCategory {
 		ErrPathResolveFailed,
 		ErrMiddlewareFailed,
 	) {
+		return CategoryTransient
+	}
+
+	// ENOSPC (no space left on device / inotify watch limit exhausted) is
+	// transient: it may resolve when resources are freed or the limit is raised.
+	if errors.Is(err, syscall.ENOSPC) {
 		return CategoryTransient
 	}
 

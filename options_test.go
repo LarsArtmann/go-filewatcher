@@ -184,6 +184,26 @@ func TestWithDebug(t *testing.T) {
 	if !watcher.debug {
 		t.Error("expected debug to be true")
 	}
+
+	// WithDebug(nil) must use slog.Default(), not store nil.
+	if watcher.debugLogger == nil {
+		t.Fatal("expected debugLogger to be slog.Default() when nil is passed, got nil")
+	}
+
+	// Calling debugLog must not panic.
+	didPanic := true
+
+	func() {
+		defer func() { _ = recover() }()
+
+		watcher.debugLog("test debug message", "key", "value")
+
+		didPanic = false
+	}()
+
+	if didPanic {
+		t.Fatal("expected debugLog not to panic when logger was nil at construction")
+	}
 }
 
 func TestWithWatchedIgnoreDirs(t *testing.T) {

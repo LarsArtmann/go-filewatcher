@@ -3,6 +3,7 @@ package filewatcher
 
 import (
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -224,6 +225,74 @@ func TestFilterExcludePaths(t *testing.T) {
 				t.Errorf("FilterExcludePaths(%q) = %v, want %v", tc.path, got, tc.want)
 			}
 		})
+	}
+}
+
+func TestFilterExcludePaths_RelativePath(t *testing.T) {
+	t.Parallel()
+
+	// filepath.Abs resolves relative paths against CWD.
+	// Verify a relative input produces a filter that matches the
+	// corresponding absolute event path.
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	relPath := filepath.Join("subdir", "secret.go")
+	absPath := filepath.Join(cwd, relPath)
+
+	filter := FilterExcludePaths(relPath)
+
+	if filter(testWriteEvent(absPath)) {
+		t.Errorf("FilterExcludePaths with relative input %q should exclude absolute event %q", relPath, absPath)
+	}
+}
+
+func TestFilterGitignore_RelativeRepoRoot(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	if err := os.WriteFile(filepath.Join(tmpDir, ".gitignore"), []byte("ignored\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	ignoredDir := filepath.Join(tmpDir, "ignored")
+	if err := os.MkdirAll(ignoredDir, 0o750); err != nil {
+		t.Fatal(err)
+	}
+
+	ignoredFile := filepath.Join(ignoredDir, "data.txt")
+	if err := os.WriteFile(ignoredFile, []byte("x"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	normalFile := filepath.Join(tmpDir, "normal.go")
+	if err := os.WriteFile(normalFile, []byte("y"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	// Compute a relative path from CWD to tmpDir.
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	relRoot, err := filepath.Rel(cwd, tmpDir)
+	if err != nil {
+		t.Skipf("cannot compute relative path to tmpDir: %v", err)
+	}
+
+	// Pass a relative repoRoot — the filter must normalize it to absolute.
+	filter := FilterGitignore(relRoot)
+
+	if filter(testWriteEvent(ignoredFile)) {
+		t.Errorf("expected gitignored file %q to be filtered out", ignoredFile)
+	}
+
+	if !filter(testWriteEvent(normalFile)) {
+		t.Errorf("expected normal file %q to pass filter", normalFile)
 	}
 }
 

@@ -88,6 +88,31 @@ func FilterIgnoreDirs(dirs ...string) Filter {
 	}
 }
 
+// FilterIgnoreDirsCaseInsensitive is like [FilterIgnoreDirs] but compares
+// directory names case-insensitively. Use this on case-insensitive filesystems
+// (NTFS, APFS) where "BUILD" and "build" refer to the same directory.
+func FilterIgnoreDirsCaseInsensitive(dirs ...string) Filter {
+	dirSet := make(map[string]struct{}, len(dirs))
+	for _, dir := range dirs {
+		dirSet[strings.ToLower(dir)] = struct{}{}
+	}
+
+	return func(event Event) bool {
+		loweredPath := strings.ToLower(event.Path)
+
+		for part := range dirSet {
+			sep := string(filepath.Separator)
+			if strings.Contains(loweredPath, sep+part+sep) ||
+				strings.HasSuffix(loweredPath, sep+part) ||
+				strings.ToLower(filepath.Base(event.Path)) == part {
+				return false
+			}
+		}
+
+		return true
+	}
+}
+
 // FilterExcludePaths creates a filter that discards events for files
 // matching any of the given exact paths. Paths are matched after
 // normalization (absolute path conversion).
@@ -107,7 +132,17 @@ func FilterIgnoreDirs(dirs ...string) Filter {
 func FilterExcludePaths(paths ...string) Filter {
 	pathSet := make(map[string]struct{}, len(paths))
 	for _, path := range paths {
-		pathSet[cleanPath(path)] = struct{}{}
+		// Normalize to absolute so comparisons against event.Path (always
+		// absolute from the watcher) succeed even when the caller passes a
+		// relative path.
+		abs, err := filepath.Abs(path)
+		if err != nil {
+			abs = filepath.Clean(path) // fall back to best-effort canonical form
+		} else {
+			abs = filepath.Clean(abs)
+		}
+
+		pathSet[abs] = struct{}{}
 	}
 
 	return func(event Event) bool {
@@ -447,7 +482,16 @@ func hashFile(path string) string {
 // The .gitignore file is loaded from repoRoot at filter creation time.
 // If the .gitignore file cannot be loaded, all events pass through.
 func FilterGitignore(repoRoot string) Filter {
-	gitignorePath := filepath.Join(repoRoot, ".gitignore")
+	// Make repoRoot absolute so filepath.Rel against the always-absolute
+	// event.Path works regardless of the caller's CWD.
+	absRoot, err := filepath.Abs(repoRoot)
+	if err != nil {
+		absRoot = repoRoot // fall back to the original if Abs fails
+	}
+
+	absRoot = filepath.Clean(absRoot)
+
+	gitignorePath := filepath.Join(absRoot, ".gitignore")
 
 	ignoreMatcher, err := gitignore.CompileIgnoreFile(gitignorePath)
 	if err != nil {
@@ -455,7 +499,7 @@ func FilterGitignore(repoRoot string) Filter {
 	}
 
 	return func(event Event) bool {
-		relPath, relErr := filepath.Rel(repoRoot, event.Path)
+		relPath, relErr := filepath.Rel(absRoot, event.Path)
 		if relErr != nil {
 			return true
 		}

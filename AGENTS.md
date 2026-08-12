@@ -321,6 +321,53 @@ variance was CPU contention, not NFC overhead. Allocation data is always valid
 - O(1) duplicate detection in `tryAddPath` (was O(n) `slices.Contains`)
 - O(1) self-heal check in `isPathWatched` (was O(n) `slices.Contains`)
 
+### 20. Symlink Cycle Detection
+
+`WithFollowSymlinks(true)` now includes built-in cycle detection. The walker
+tracks resolved symlink targets in `symlinkVisited map[string]struct{}` and
+skips any target already visited. This prevents infinite recursion on cycles
+(e.g., `/a/b -> /a`). The map is initialized/cleared by `walkAndAddPaths` via
+a `topLevel` flag (so recursive calls from `handleFollowedSymlink` reuse the
+same set).
+
+### 21. Middleware Drop Tracking
+
+Middleware that drops events (rate limit, dedup, circuit breaker, etc.) is
+detected by wrapping the emit function with an `atomic.Bool` flag. If the
+middleware chain returns `nil` without calling emit, the event is counted in
+`Stats.EventsDroppedByMiddleware`. The `eventsProcessed` counter is now
+incremented only when the event actually reaches the event channel (not when
+the middleware chain returns nil).
+
+### 22. Path Validation in Add/AddRecursive/Watch
+
+`Add()`, `AddRecursive()`, and `Watch()` now `os.Stat` each path and return
+`ErrPathNotFound` or `ErrPathNotDir` immediately for invalid paths. This
+prevents non-existent paths from silently entering the self-heal retry loop.
+`Remove()` does NOT validate (it's best-effort and should work on already-
+deleted paths).
+
+### 23. Syscall Error Classification
+
+`categorizeError` recognizes `os.ErrPermission`, `os.ErrNotExist`, and
+`syscall.ENOTDIR` as permanent errors (self-heal abandons them). `syscall.ENOSPC`
+is classified as transient (resources may free up). This prevents self-heal
+from retrying permission-denied paths forever.
+
+### 24. Polling Mode Respects Exclusions
+
+`pollWalkDir` now applies `shouldSkipDir`, `shouldExcludePath`,
+`loadGitignoreForDir`, and `shouldSkipByGitignore` — the same skip logic as
+the initial walk. Previously, the poll loop only checked `shouldSkipDir` and
+ignored exclusions and gitignore rules.
+
+### 25. Event Channel DropOnFull Mode
+
+`WithEventChannelMode(EventChannelDropOnFull)` changes `buildEmitFunc` to use
+a non-blocking send with a `default` case that increments
+`eventsDroppedByBackpressure`. Default is `EventChannelBlocking` (blocking
+send, preserves backpressure).
+
 ---
 
 ## Key Patterns
@@ -336,6 +383,10 @@ variance was CPU contention, not NFC overhead. Allocation data is always valid
 | `newTestWatcher`     | `testing_helpers_test.go:432` — standard `New + cleanup` for all tests            |
 | Case-sensitivity     | `filesystem.go` — `pathKey()`, `resolveCaseSensitivity()`, `WithCaseSensitivity`  |
 | O(1) path lookup     | `watcher.go` — `watchListKeys` map alongside `watchList` for dedup + O(1) checks  |
+| Symlink cycle detect | `watcher_walk.go` — `handleFollowedSymlink()` + `symlinkVisited` map              |
+| Middleware drop track| `watcher_internal.go` — `emitEvent` wraps emit with `atomic.Bool` flag            |
+| Path validation      | `watcher.go` — `validateDirExists()` in Add/AddRecursive/Watch                    |
+| DropOnFull mode      | `watcher_internal.go` — `buildEmitFunc` non-blocking send when `eventDropOnFull`  |
 
 ### Default-guard convention
 

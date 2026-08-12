@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 )
 
 // findDirEntry scans entries for a directory with the given name.
@@ -299,6 +300,78 @@ func TestShouldSkipDir_DotDirs(t *testing.T) {
 
 		if got != tt.skip {
 			t.Errorf("shouldSkipDir(%q) = %v, want %v", tt.input, got, tt.skip)
+		}
+	}
+}
+
+func TestWalkAndAddPaths_SymlinkCycleDetection(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	// Create a directory structure with a symlink cycle:
+	// tmpDir/
+	//   real/          ← real directory
+	//   link → real    ← symlink to real (not a cycle yet)
+	//   real/back → ../link  ← symlink back to link → creates cycle
+	realDir := filepath.Join(tmpDir, "real")
+	if err := os.MkdirAll(realDir, 0o750); err != nil {
+		t.Fatal(err)
+	}
+
+	linkDir := filepath.Join(tmpDir, "link")
+	if err := os.Symlink(realDir, linkDir); err != nil {
+		t.Fatal(err)
+	}
+
+	// Create a symlink inside realDir pointing back to tmpDir (ancestor cycle).
+	backLink := filepath.Join(realDir, "back")
+	if err := os.Symlink(tmpDir, backLink); err != nil {
+		t.Fatal(err)
+	}
+
+	fb := newFakeBackend()
+	watcher := newTestWatcher(t, tmpDir, withBackend(fb), WithFollowSymlinks(true))
+
+	ctx := setupTestContext(t, 5*time.Second)
+	if _, err := watcher.Watch(ctx); err != nil {
+		t.Fatalf("Watch with symlink cycle should not fail or hang: %v", err)
+	}
+
+	// If cycle detection failed, the walk would have infinite-looped and
+	// the test would time out. Reaching this assertion means the cycle was
+	// detected and the walk completed.
+	watcher.mu.RLock()
+	defer watcher.mu.RUnlock()
+
+	if len(watcher.watchListKeys) == 0 {
+		t.Error("expected at least one path in watch list despite symlink cycle")
+	}
+}
+
+func TestShouldSkipDir_CaseInsensitive(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	fb := newFakeBackend()
+	watcher := newTestWatcher(t, tmpDir, withBackend(fb), WithCaseSensitivity(CaseInsensitive))
+
+	tests := []struct {
+		input string
+		skip  bool
+	}{
+		{"BUILD", true},        // matches "build" in DefaultIgnoreDirs
+		{"Build", true},        // matches "build"
+		{"Node_Modules", true}, // matches "node_modules"
+		{"NORMAL", false},      // not in ignore list
+		{".hidden", true},      // dot dir
+	}
+
+	for _, tt := range tests {
+		got := watcher.shouldSkipDir(tt.input)
+		if got != tt.skip {
+			t.Errorf("shouldSkipDir(%q) [case-insensitive] = %v, want %v", tt.input, got, tt.skip)
 		}
 	}
 }

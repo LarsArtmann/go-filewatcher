@@ -668,6 +668,94 @@ func TestWatcher_Add_TrailingSlashNormalized(t *testing.T) {
 	}
 }
 
+func TestWatcher_Add_NonExistentPath_ReturnsErrPathNotFound(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w := newTestWatcher(t, tmpDir)
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	if _, err := w.Watch(ctx); err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	err := w.Add(filepath.Join(tmpDir, "does-not-exist"))
+	if !errors.Is(err, ErrPathNotFound) {
+		t.Errorf("expected ErrPathNotFound for non-existent path, got %v", err)
+	}
+}
+
+func TestWatcher_Add_FileNotDir(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	filePath := filepath.Join(tmpDir, "notadir.txt")
+	if err := os.WriteFile(filePath, []byte("x"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	w := newTestWatcher(t, tmpDir)
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	if _, err := w.Watch(ctx); err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	err := w.Add(filePath)
+	if !errors.Is(err, ErrPathNotDir) {
+		t.Errorf("expected ErrPathNotDir for file path, got %v", err)
+	}
+}
+
+func TestWatcher_AddRecursive_NonExistentPath_ReturnsErrPathNotFound(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	w := newTestWatcher(t, tmpDir)
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	if _, err := w.Watch(ctx); err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	err := w.AddRecursive(filepath.Join(tmpDir, "nope"), -1)
+	if !errors.Is(err, ErrPathNotFound) {
+		t.Errorf("expected ErrPathNotFound for non-existent recursive path, got %v", err)
+	}
+}
+
+func TestWatch_DeletedPathBetweenNewAndWatch(t *testing.T) {
+	t.Parallel()
+
+	dir1 := t.TempDir()
+	dir2 := t.TempDir()
+
+	w, err := New([]string{dir1, dir2})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Cleanup(func() { _ = w.Close() })
+
+	// Delete dir2 after New() but before Watch().
+	if err := os.RemoveAll(dir2); err != nil {
+		t.Fatal(err)
+	}
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	_, err = w.Watch(ctx)
+	if !errors.Is(err, ErrPathNotFound) {
+		t.Errorf("expected ErrPathNotFound for deleted path, got %v", err)
+	}
+}
+
 // TestWatcher_Remove_DeeplyNestedUnicodeSubtree proves that Remove() cleans up
 // all subtree keys when removing a deeply nested Unicode directory tree (3+ levels).
 func TestWatcher_Remove_DeeplyNestedUnicodeSubtree(t *testing.T) {
@@ -1537,4 +1625,74 @@ func TestWatcher_WithFollowSymlinks(t *testing.T) {
 
 	// Should receive an event (either via symlink or target)
 	receiveEventOrTimeout(t, events, 3*time.Second)
+}
+
+func TestStats_EventsDroppedByMiddleware(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	// Middleware that drops ALL events.
+	dropAll := MiddlewareFilter(func(_ Event) bool { return false })
+
+	watcher := newTestWatcher(t, tmpDir, WithMiddleware(dropAll))
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	events, err := watcher.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	// Trigger an event.
+	testFile := filepath.Join(tmpDir, "test.go")
+	if err := os.WriteFile(testFile, []byte("x"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	// Wait for the middleware drop counter to increment.
+	waitForCondition(t, 3*time.Second, "expected EventsDroppedByMiddleware > 0", func() bool {
+		return watcher.Stats().EventsDroppedByMiddleware > 0
+	})
+
+	// Events channel should be empty (all dropped by middleware).
+	select {
+	case ev := <-events:
+		t.Errorf("expected no events (all dropped by middleware), got %v", ev)
+	default:
+		// Good — no events received.
+	}
+}
+
+func TestStats_ErrorsDropped(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	// Use a tiny buffer so the error channel fills quickly.
+	watcher := newTestWatcher(t, tmpDir, WithBuffer(1))
+
+	ctx := setupTestContext(t, 5*time.Second)
+
+	if _, err := watcher.Watch(ctx); err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	// Call Errors() to initialize the channel with buffer=1.
+	_ = watcher.Errors()
+
+	// Generate more errors than the buffer can hold.
+	// Each call to handleError with a full channel should increment ErrorsDropped.
+	for range 10 {
+		watcher.handleError(
+			ErrorContext{Operation: "test", Retryable: false},
+			errors.New("test error"), //nolint:err113 // test-specific
+		)
+	}
+
+	stats := watcher.Stats()
+
+	if stats.ErrorsDropped == 0 {
+		t.Error("expected ErrorsDropped > 0 when error channel is full")
+	}
 }

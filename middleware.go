@@ -7,9 +7,11 @@ import (
 	"os"
 	"runtime/debug"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
+	"golang.org/x/text/unicode/norm"
 	"golang.org/x/time/rate"
 )
 
@@ -191,13 +193,44 @@ type dedupeKey struct {
 	op   Op
 }
 
+// normalizeDedupePath returns a canonical key for deduplication.
+// Always applies NFC normalization so that NFD (macOS decomposed) and NFC
+// (composed) forms of the same path collide in the dedup map.
+func normalizeDedupePath(path string) string {
+	return norm.NFC.String(path)
+}
+
+// normalizeDedupePathCaseInsensitive lowercases in addition to NFC normalization,
+// for case-insensitive filesystems (NTFS, APFS).
+func normalizeDedupePathCaseInsensitive(path string) string {
+	return strings.ToLower(norm.NFC.String(path))
+}
+
 // MiddlewareDeduplicate returns a middleware that drops duplicate events
 // for the same file path and operation within a time window.
 // This is useful for reducing noise from rapid successive file operations.
 //
+// Path normalization: NFC Unicode normalization is applied so that NFD
+// (macOS decomposed) and NFC (composed) forms of the same path are treated
+// as duplicates. For case-insensitive deduplication, use
+// [MiddlewareDeduplicateCaseInsensitive].
+//
 // Example: A file saved twice in quick succession generates two events,
 // but only the first is processed.
 func MiddlewareDeduplicate(window time.Duration) Middleware {
+	return newDeduplicateMiddleware(window, normalizeDedupePath)
+}
+
+// MiddlewareDeduplicateCaseInsensitive is like [MiddlewareDeduplicate] but
+// also folds character case when comparing paths. Use this on case-insensitive
+// filesystems (NTFS, APFS) where File.txt and file.txt refer to the same file.
+func MiddlewareDeduplicateCaseInsensitive(window time.Duration) Middleware {
+	return newDeduplicateMiddleware(window, normalizeDedupePathCaseInsensitive)
+}
+
+// newDeduplicateMiddleware builds a dedup middleware with the given path
+// normalizer applied to the dedup key.
+func newDeduplicateMiddleware(window time.Duration, normalizePath func(string) string) Middleware {
 	if window <= 0 {
 		window = defaultDedupeWindow
 	}
@@ -214,7 +247,7 @@ func MiddlewareDeduplicate(window time.Duration) Middleware {
 
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			key := dedupeKey{path: event.Path, op: event.Op}
+			key := dedupeKey{path: normalizePath(event.Path), op: event.Op}
 
 			mu.Lock()
 			now := time.Now()
@@ -290,20 +323,32 @@ func MiddlewareBatch(window time.Duration, maxSize int, flush func([]Event) erro
 	window, maxSize = resolveBatchDefaults(window, maxSize)
 
 	type batchState struct {
-		mu     sync.Mutex
-		events []Event
-		timer  *time.Timer
+		mu       sync.Mutex
+		events   []Event
+		timer    *time.Timer
+		flushErr error // stores the last timer-flush error; returned on next event
 	}
 
 	state := &batchState{
-		events: make([]Event, 0, maxSize),
-		mu:     sync.Mutex{},
-		timer:  nil,
+		events:   make([]Event, 0, maxSize),
+		mu:       sync.Mutex{},
+		timer:    nil,
+		flushErr: nil,
 	}
 
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
 			state.mu.Lock()
+
+			// If a timer-flush error is pending, return it now so it routes
+			// through the watcher's error handler instead of being swallowed.
+			if state.flushErr != nil {
+				err := state.flushErr
+				state.flushErr = nil
+				state.mu.Unlock()
+
+				return err
+			}
 
 			state.events = append(state.events, event)
 
@@ -321,7 +366,10 @@ func MiddlewareBatch(window time.Duration, maxSize int, flush func([]Event) erro
 					return err
 				}
 
-				return next(ctx, event)
+				// The triggering event is already in the flushed batch — do not
+				// emit it individually. The timer-expiry branch already follows
+				// this pattern (flush only, no next call).
+				return nil
 			}
 
 			// Start or reset timer
@@ -336,10 +384,11 @@ func MiddlewareBatch(window time.Duration, maxSize int, flush func([]Event) erro
 					if len(events) > 0 {
 						err := flush(events)
 						if err != nil {
-							slog.Error(
-								"filewatcher: batch flush error",
-								slog.String("error", err.Error()),
-							)
+							// Store the error so the next event handler returns it,
+							// routing it through the watcher's handleError pipeline.
+							state.mu.Lock()
+							state.flushErr = err
+							state.mu.Unlock()
 						}
 					}
 				})

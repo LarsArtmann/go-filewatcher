@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"os"
 	"slices"
+	"sync/atomic"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
@@ -19,7 +20,7 @@ const operationFsnotify = "fsnotify"
 // Note: eventCh is closed by Close() after debouncer is stopped.
 // debugLog logs a debug message if debug mode is enabled.
 func (w *Watcher) debugLog(msg string, args ...any) {
-	if w.debug {
+	if w.debug && w.debugLogger != nil {
 		w.debugLogger.Debug(msg, args...)
 	}
 }
@@ -99,14 +100,17 @@ func (w *Watcher) processEvent(ctx context.Context, fsEvent fsnotify.Event, even
 }
 
 // handleFilteredEvent processes events that don't pass filters.
+// When watchFilteredDirs is disabled, filtered Create events for directories
+// are NOT added to the watcher — this lets consumers truly ignore subtrees
+// without spending inotify budget on them.
 func (w *Watcher) handleFilteredEvent(fsEvent fsnotify.Event, event Event) {
-	if event.Op == Create {
+	if event.Op == Create && w.watchFilteredDirs {
 		w.handleNewDirectory(fsEvent.Name)
 	}
 }
 
 // incrementProcessedEvent increments the eventsProcessed counter.
-// Called from emitEvent when an event successfully passes through.
+// Called from emitEvent when an event successfully reaches the event channel.
 func (w *Watcher) incrementProcessedEvent() {
 	w.eventsProcessed.Add(1)
 }
@@ -114,9 +118,36 @@ func (w *Watcher) incrementProcessedEvent() {
 // emitEvent handles the actual event emission with middleware and debouncing.
 func (w *Watcher) emitEvent(ctx context.Context, event Event, eventCh chan<- Event) {
 	execute := func() {
-		emit := w.buildEmitFunc(ctx, eventCh)
-		handler := w.buildMiddlewareHandler(emit)
-		w.executeHandler(ctx, event, handler)
+		var emitted atomic.Bool
+
+		baseEmit := w.buildEmitFunc(ctx, eventCh)
+
+		// Wrap emit to detect middleware drops: if the middleware chain
+		// returns nil without calling this function, the event was dropped
+		// (e.g., by rate limiting, dedup, or circuit breaker middleware).
+		trackedEmit := func(e Event) {
+			emitted.Store(true)
+
+			w.incrementProcessedEvent()
+
+			baseEmit(e)
+		}
+
+		handler := w.buildMiddlewareHandler(trackedEmit)
+
+		err := handler(ctx, event)
+		if err != nil {
+			w.handleError(
+				ErrorContext{Operation: "handler", Path: event.Path, Retryable: false},
+				fmt.Errorf("handler error: %w", err),
+			)
+
+			return
+		}
+
+		if !emitted.Load() {
+			w.eventsDroppedByMiddleware.Add(1)
+		}
 	}
 
 	if w.debounceInterface == nil {
@@ -132,8 +163,24 @@ func (w *Watcher) emitEvent(ctx context.Context, event Event, eventCh chan<- Eve
 }
 
 // buildEmitFunc creates the emit function for sending events.
+// In DropOnFull mode, events are dropped (and counted) when the channel is full
+// instead of blocking the watch loop.
 func (w *Watcher) buildEmitFunc(ctx context.Context, eventCh chan<- Event) func(Event) {
 	return func(e Event) {
+		if w.eventDropOnFull {
+			select {
+			case eventCh <- e:
+			case <-w.done:
+			case <-ctx.Done():
+			default:
+				w.eventsDroppedByBackpressure.Add(1)
+
+				w.debugLog("event dropped: channel full", slog.String("path", e.Path))
+			}
+
+			return
+		}
+
 		select {
 		case eventCh <- e:
 		case <-w.done:
@@ -196,22 +243,6 @@ func (w *Watcher) wrapWithMiddleware(
 			)
 		}
 	}
-}
-
-// executeHandler runs the handler.
-func (w *Watcher) executeHandler(ctx context.Context, event Event, handler Handler) {
-	err := handler(ctx, event)
-	if err != nil {
-		w.handleError(
-			ErrorContext{Operation: "handler", Path: event.Path, Retryable: false},
-			fmt.Errorf("handler error: %w", err),
-		)
-
-		return
-	}
-
-	// Event was successfully processed
-	w.incrementProcessedEvent()
 }
 
 func (w *Watcher) getDebounceKey(path string) DebounceKey {
@@ -281,6 +312,7 @@ func (w *Watcher) handleError(ctx ErrorContext, err error) {
 		case w.errorsCh <- err:
 		default:
 			// Channel is full or closed, drop the error
+			w.errorsDropped.Add(1)
 		}
 	}
 	w.errorsMu.Unlock()

@@ -9,6 +9,7 @@ import (
 	"os"
 	"strings"
 	"sync/atomic"
+	"syscall"
 	"testing"
 )
 
@@ -160,6 +161,11 @@ func TestCategorizeError(t *testing.T) {
 		{"event processing failed", ErrEventProcessingFailed, CategoryTransient},
 		{"wrapped permanent", fmt.Errorf("wrapped: %w", ErrWatcherClosed), CategoryPermanent},
 		{"wrapped transient", fmt.Errorf("wrapped: %w", ErrFsnotifyFailed), CategoryTransient},
+		{"permission denied (os.ErrPermission)", os.ErrPermission, CategoryPermanent},
+		{"not exist (os.ErrNotExist)", os.ErrNotExist, CategoryPermanent},
+		{"ENOTDIR", syscall.ENOTDIR, CategoryPermanent},
+		{"ENOSPC", syscall.ENOSPC, CategoryTransient},
+		{"wrapped permission", fmt.Errorf("accessing file: %w", os.ErrPermission), CategoryPermanent},
 	}
 
 	for _, tt := range tests {

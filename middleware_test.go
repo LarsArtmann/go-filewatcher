@@ -597,6 +597,60 @@ func TestMiddlewareDeduplicate(t *testing.T) {
 	}
 }
 
+func TestMiddlewareDeduplicate_NFCNormalization(t *testing.T) {
+	t.Parallel()
+
+	var callCount int
+
+	mw := MiddlewareDeduplicate(200 * time.Millisecond)
+	handler := mw(func(_ context.Context, _ Event) error {
+		callCount++
+
+		return nil
+	})
+
+	ctx := context.Background()
+
+	// NFC composed: café.txt (é = U+00E9)
+	nfcEvent := testWriteEvent("/tmp/caf\u00e9.txt")
+	// NFD decomposed: café.txt (e + U+0301 combining acute)
+	nfdEvent := testWriteEvent("/tmp/cafe\u0301.txt")
+
+	// Send NFC first, then NFD — both should dedupe to the same key.
+	_ = handler(ctx, nfcEvent)
+	_ = handler(ctx, nfdEvent)
+
+	if callCount != 1 {
+		t.Errorf("expected NFC and NFD variants to dedupe to 1 call, got %d", callCount)
+	}
+}
+
+func TestMiddlewareDeduplicateCaseInsensitive(t *testing.T) {
+	t.Parallel()
+
+	var callCount int
+
+	mw := MiddlewareDeduplicateCaseInsensitive(200 * time.Millisecond)
+	handler := mw(func(_ context.Context, _ Event) error {
+		callCount++
+
+		return nil
+	})
+
+	ctx := context.Background()
+
+	// Same path differing only in case.
+	upperEvent := testWriteEvent("/tmp/File.txt")
+	lowerEvent := testWriteEvent("/tmp/file.txt")
+
+	_ = handler(ctx, upperEvent)
+	_ = handler(ctx, lowerEvent)
+
+	if callCount != 1 {
+		t.Errorf("expected case-only variants to dedupe to 1 call, got %d", callCount)
+	}
+}
+
 func TestMiddlewareBatch_FullBatch(t *testing.T) {
 	t.Parallel()
 
@@ -618,6 +672,46 @@ func TestMiddlewareBatch_FullBatch(t *testing.T) {
 	}
 
 	assertBatchLen(t, batched, 3, "")
+}
+
+func TestMiddlewareBatch_FullBatchDoesNotCallNext(t *testing.T) {
+	t.Parallel()
+
+	var (
+		batched    []Event
+		nextCalled int
+		nextMu     sync.Mutex
+	)
+
+	flush := flushToSlice(&batched)
+
+	countingHandler := func(_ context.Context, _ Event) error {
+		nextMu.Lock()
+		nextCalled++
+		nextMu.Unlock()
+
+		return nil
+	}
+
+	mw := MiddlewareBatch(0, 2, flush) // maxSize=2
+	handler := mw(countingHandler)
+
+	ctx := context.Background()
+
+	_ = handler(ctx, testEvent("/tmp/a.go", Write)) // event 1 → batch, passes to next
+	_ = handler(ctx, testEvent("/tmp/b.go", Write)) // event 2 → batch full → flush only
+
+	// The batch should contain both events.
+	assertBatchLen(t, batched, 2, " from full-batch flush")
+
+	// The triggering event (2nd) must NOT be passed to next — it's already flushed.
+	// The 1st event passed to next because the batch wasn't full yet.
+	nextMu.Lock()
+	defer nextMu.Unlock()
+
+	if nextCalled != 1 {
+		t.Errorf("expected next handler called 1 time (only the non-full event), got %d", nextCalled)
+	}
 }
 
 func TestMiddlewareBatch_FlushError(t *testing.T) {

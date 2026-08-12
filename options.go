@@ -193,6 +193,12 @@ const defaultPollInterval = 2 * time.Second // Default polling interval for NFS/
 //
 // When fallback=false, polling is fully disabled (identical to not calling
 // this option).
+//
+// Limitation: when both backends are active, a single file change can produce
+// two events (one from fsnotify, one from the poll loop). Polling is a fallback,
+// not a duplicate-suppression layer. Consumers that need exactly-once semantics
+// should use [MiddlewareDeduplicate] or rely on idempotent event handling.
+// See the Troubleshooting guide for details.
 func WithPolling(fallback bool) Option {
 	return func(w *Watcher) {
 		w.polling = fallback

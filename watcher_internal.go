@@ -120,17 +120,35 @@ func (w *Watcher) emitEvent(ctx context.Context, event Event, eventCh chan<- Eve
 	execute := func() {
 		var emitted atomic.Bool
 
-		baseEmit := w.buildEmitFunc(ctx, eventCh)
-
-		// Wrap emit to detect middleware drops: if the middleware chain
-		// returns nil without calling this function, the event was dropped
-		// (e.g., by rate limiting, dedup, or circuit breaker middleware).
+		// trackedEmit combines middleware-drop tracking with the channel send
+		// logic (inlined from buildEmitFunc) in a single closure to avoid an
+		// extra heap allocation per event. If the middleware chain returns nil
+		// without calling this function, the event was dropped (e.g., by rate
+		// limiting, dedup, or circuit breaker middleware).
 		trackedEmit := func(e Event) {
 			emitted.Store(true)
 
 			w.incrementProcessedEvent()
 
-			baseEmit(e)
+			if w.eventDropOnFull {
+				select {
+				case eventCh <- e:
+				case <-w.done:
+				case <-ctx.Done():
+				default:
+					w.eventsDroppedByBackpressure.Add(1)
+
+					w.debugLog("event dropped: channel full", slog.String("path", e.Path))
+				}
+
+				return
+			}
+
+			select {
+			case eventCh <- e:
+			case <-w.done:
+			case <-ctx.Done():
+			}
 		}
 
 		handler := w.buildMiddlewareHandler(trackedEmit)
@@ -160,33 +178,6 @@ func (w *Watcher) emitEvent(ctx context.Context, event Event, eventCh chan<- Eve
 	key := w.getDebounceKey(event.Path)
 	w.debugLog("debouncing event", slog.String("path", event.Path), slog.String("key", string(key)))
 	w.debounceInterface.Debounce(key, execute)
-}
-
-// buildEmitFunc creates the emit function for sending events.
-// In DropOnFull mode, events are dropped (and counted) when the channel is full
-// instead of blocking the watch loop.
-func (w *Watcher) buildEmitFunc(ctx context.Context, eventCh chan<- Event) func(Event) {
-	return func(e Event) {
-		if w.eventDropOnFull {
-			select {
-			case eventCh <- e:
-			case <-w.done:
-			case <-ctx.Done():
-			default:
-				w.eventsDroppedByBackpressure.Add(1)
-
-				w.debugLog("event dropped: channel full", slog.String("path", e.Path))
-			}
-
-			return
-		}
-
-		select {
-		case eventCh <- e:
-		case <-w.done:
-		case <-ctx.Done():
-		}
-	}
 }
 
 // buildMiddlewareHandler creates the handler chain with all middleware applied.

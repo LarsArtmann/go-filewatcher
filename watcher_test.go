@@ -1739,14 +1739,14 @@ func TestWatchFilteredDirectories_Disabled(t *testing.T) {
 
 	tmpDir := t.TempDir()
 
-	// Filter that rejects ALL Create events, plus WithWatchFilteredDirectories(false)
-	// so that new directories matching the filter are NOT added to the watcher.
-	dropCreate := MiddlewareFilter(func(event Event) bool {
-		return event.Op != Create
-	})
+	// Filter that rejects ALL Create events at the filter layer (not middleware).
+	// WithWatchFilteredDirectories(false) gates handleFilteredEvent, which is
+	// called when a Filter rejects an event — so we must use a Filter, not
+	// MiddlewareFilter (middleware runs after handleNewDirectory in the pipeline).
+	dropCreate := FilterNotOperations(Create)
 
 	watcher := newTestWatcher(t, tmpDir,
-		WithMiddleware(dropCreate),
+		WithFilter(dropCreate),
 		WithWatchFilteredDirectories(false),
 	)
 

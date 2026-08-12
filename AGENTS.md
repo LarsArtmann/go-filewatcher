@@ -363,10 +363,21 @@ ignored exclusions and gitignore rules.
 
 ### 25. Event Channel DropOnFull Mode
 
-`WithEventChannelMode(EventChannelDropOnFull)` changes `buildEmitFunc` to use
-a non-blocking send with a `default` case that increments
+`WithEventChannelMode(EventChannelDropOnFull)` changes the channel send logic
+in `emitEvent` to use a non-blocking send with a `default` case that increments
 `eventsDroppedByBackpressure`. Default is `EventChannelBlocking` (blocking
-send, preserves backpressure).
+send, preserves backpressure). The send logic is inlined into `emitEvent`'s
+`trackedEmit` closure (not a separate `buildEmitFunc`) to avoid an extra heap
+allocation per event.
+
+### 26. Watch Budget Safety Fraction Only Affects Auto-Detected Limits
+
+`WithMaxWatchesSafetyFraction(0.75)` reduces the inotify watch limit to leave
+headroom on shared machines. It only applies to **auto-detected** limits
+(`WithMaxWatches(0)` / default). Explicit limits set via `WithMaxWatches(n)` are
+used as-is — the `maxWatchesExplicit` bool flag tracks this. `Reset()` also
+respects explicit settings instead of always re-detecting from
+`/proc/sys/fs/inotify/max_user_watches`.
 
 ---
 
@@ -386,7 +397,7 @@ send, preserves backpressure).
 | Symlink cycle detect | `watcher_walk.go` — `handleFollowedSymlink()` + `symlinkVisited` map              |
 | Middleware drop track| `watcher_internal.go` — `emitEvent` wraps emit with `atomic.Bool` flag            |
 | Path validation      | `watcher.go` — `validateDirExists()` in Add/AddRecursive/Watch                    |
-| DropOnFull mode      | `watcher_internal.go` — `buildEmitFunc` non-blocking send when `eventDropOnFull`  |
+| DropOnFull mode      | `watcher_internal.go` — non-blocking send in `emitEvent` when `eventDropOnFull` |
 
 ### Default-guard convention
 

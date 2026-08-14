@@ -24,7 +24,7 @@
 - **11 Starlight documentation pages**: Installation, Quick Start, Filtering, Middleware, Debouncing, Resilience, Observability, API Reference, Changelog, Contributing, Related Tools
 - **Design system**: Violet accent (#8b5cf6), eye/watch SVG logo, dark/light theme with FOUC-free init, radial-gradient dot background, IntersectionObserver scroll animations, full responsive nav with mobile hamburger
 - **Infrastructure**: Firebase Hosting config (multi-site target "filewatcher" in "lars-software" project), security headers (HSTS, CSP-adjacent, COOP/CORP), immutable asset caching, clean URLs, Nix flake with dev/build/preview/deploy apps, treefmt-nix integration
-- **Build verified**: `npm run build` produces 13 pages + sitemap + Pagefind search index in 1.36s. Zero errors.
+- **Build verified**: `pnpm run build` produces 13 pages + sitemap + Pagefind search index in 1.36s. Zero errors.
 
 ### GitHub Repo Metadata
 
@@ -35,7 +35,7 @@
 ### Verification
 
 - `go build ./...` passes (Go library unaffected)
-- `npm run build` passes (13 pages generated)
+- `pnpm run build` passes (13 pages generated)
 - `nix flake lock` generated successfully for website
 - Git status: 54 files changed, 11223 insertions, 578 deletions
 
@@ -97,7 +97,7 @@ Neither issue reached a commit.
 
 ### Critical Gaps
 
-1. **package-lock.json is 294 KB** — committed to the repo. This is standard for npm but bloats the diff. Some projects gitignore it and rely on `npm ci` reproducibility instead. Worth a conscious decision.
+1. **package-lock.json is 294 KB** — committed to the repo. This is standard for pnpm but bloats the diff. Some projects gitignore it and rely on `pnpm install --frozen-lockfile` reproducibility instead. Worth a conscious decision.
 
 2. **No `.nvmrc`/`.node-version` alignment with CI** — the `.node-version` says `24` but CI might use a different version. No CI for the website exists to enforce this.
 
@@ -115,7 +115,7 @@ Neither issue reached a commit.
 
 8. **Comparison matrix** has no "Dependencies" row showing count (go-atomic-write has this).
 
-9. **No typecheck verification** — `npm run typecheck` was never run. TypeScript strict mode might surface issues.
+9. **No typecheck verification** — `pnpm run typecheck` was never run. TypeScript strict mode might surface issues.
 
 10. **Footer date** — no copyright year or version reference in the footer.
 
@@ -169,7 +169,7 @@ Neither issue reached a commit.
 
 ### Code Quality
 
-29. Run `npm run typecheck` and fix any TypeScript strict errors
+29. Run `pnpm run typecheck` and fix any TypeScript strict errors
 30. Run `html-validate` and fix any HTML validation issues
 31. Add ESLint config for the website (Astro + TypeScript)
 32. Verify CSP headers work with the inline scripts (theme-init.js, header.js, etc.)
@@ -198,7 +198,7 @@ Neither issue reached a commit.
 
 ### Repo Hygiene
 
-49. Remove the `package-lock.json` from git if the project prefers not to track it (or add `npm ci` to CI)
+49. Remove the `package-lock.json` from git if the project prefers not to track it (or add `pnpm install --frozen-lockfile` to CI)
 50. Verify `.gitignore` in `website/` doesn't conflict with root `.gitignore`
 
 ---
@@ -211,7 +211,7 @@ I assumed this pattern based on `atomicwrite.lars.software` and `gogenfilter.lar
 
 ### 2. Should I commit the `package-lock.json`?
 
-The reference repos likely commit it (it's the npm standard). But the root go-filewatcher project doesn't have any npm lock files. Committing a 294 KB lock file changes the repo character. The alternative is gitignoring it and relying on `package-lock.json` being generated locally, but that reduces reproducibility. I need your preference on this before committing.
+The reference repos likely commit it (it's the pnpm standard). But the root go-filewatcher project doesn't have any pnpm lock files. Committing a 294 KB lock file changes the repo character. The alternative is gitignoring it and relying on `package-lock.json` being generated locally, but that reduces reproducibility. I need your preference on this before committing.
 
 ---
 

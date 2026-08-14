@@ -41,7 +41,7 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 - [ ] **Fix website dependabot alerts** — `fast-uri` (high, host confusion) and
       `astro` (medium, reflected XSS) in `website/package.json`. These are in
       the website toolchain (separate flake.nix), not the Go library. Update
-      website deps with `cd website && npm update`.
+      website deps with `cd website && pnpm update`.
       (`src: 2026-07-29_14-06 §Dependabot`)
 
 ## v3 Candidates

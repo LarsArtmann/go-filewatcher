@@ -103,12 +103,12 @@ values (e.g., `CaseSensitivityProbed` in v3) is backward-compatible.
 
 ## Dependabot Audit
 
-Both open alerts are in the **website toolchain** (npm), not the Go library:
+Both open alerts are in the **website toolchain** (pnpm), not the Go library:
 
 | Package    | Severity | Ecosystem | Issue                                            |
 | ---------- | -------- | --------- | ------------------------------------------------ |
-| `fast-uri` | High     | npm       | Host confusion via backslash authority delimiter |
-| `astro`    | Medium   | npm       | Reflected XSS via View Transition properties     |
+| `fast-uri` | High     | pnpm       | Host confusion via backslash authority delimiter |
+| `astro`    | Medium   | pnpm       | Reflected XSS via View Transition properties     |
 
 **Decision:** Website vulnerabilities do NOT block Go library releases. The
 website is a separate deployment (Firebase Hosting) with its own flake.nix and

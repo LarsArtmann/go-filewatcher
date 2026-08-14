@@ -33,7 +33,7 @@ inconsistency, dismissed statistically significant benchmark regressions as
   enum field agreement, and cleanPath normalization.
 - **Clean bench-diff** — zero allocation regression on ALL benchmarks. All
   `B/op` and `allocs/op` show `all samples are equal`. This is real.
-- **Dependabot audit** — both alerts (fast-uri high, astro medium) are npm/
+- **Dependabot audit** — both alerts (fast-uri high, astro medium) are pnpm/
   website toolchain, not Go library. Decision documented: non-blocking.
 - **Nolint audit** — 89 directives reviewed. All justified (varnamelen, gosec,
   err113, paralleltest, funlen, etc.).

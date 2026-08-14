@@ -112,7 +112,7 @@
 
 ### Website typecheck / html-validate
 
-- `npm run typecheck` never run
+- `pnpm run typecheck` never run
 - `html-validate` config exists but never executed against build output
 
 ---
@@ -140,7 +140,7 @@ Nothing is broken or corrupted. However:
 4. **Website content expansion** — Each guide page should have real walkthroughs, not just reformatted README tables.
 5. **Add OG image** — Create a 1200x630 image for social sharing.
 6. **Add favicon PNG variants** — Only SVG exists; need PNG fallbacks + apple-touch-icon.
-7. **Run typecheck** — `npm run typecheck` in the website to catch TypeScript issues.
+7. **Run typecheck** — `pnpm run typecheck` in the website to catch TypeScript issues.
 8. **Website CI/CD** — Auto-deploy on push to master.
 
 ---
@@ -191,7 +191,7 @@ Nothing is broken or corrupted. However:
 
 ### Code Quality
 
-31. Run `npm run typecheck` and fix any TypeScript strict errors
+31. Run `pnpm run typecheck` and fix any TypeScript strict errors
 32. Run html-validate against build output
 33. Add ESLint config for website (Astro + TypeScript)
 34. Test website in Firefox and Safari

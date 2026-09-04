@@ -140,50 +140,50 @@
 
 ### HIGH Priority
 
-| #   | Task                                          | Est. Effort |
-| --- | --------------------------------------------- | ----------- |
-| 1   | Tag v0.1.0 release (DONE — already tagged)    | -           |
-| 2   | Tag v2.0.0 release                            | 30min       |
-| 3   | CLI tool (standalone binary for non-Go users) | 6-8h        |
-| 4   | Troubleshooting.md                            | 2h          |
-| 5   | GoReleaser configuration                      | 2h          |
-| 6   | Dependabot / Renovate configuration           | 30min       |
-| 7   | CONTRIBUTING.md + CODEOWNERS                  | 2h          |
-| 8   | PR template                                   | 30min       |
-| 9   | CODE_OF_CONDUCT.md                            | 15min       |
+| # | Task                                          | Est. Effort |
+| - | --------------------------------------------- | ----------- |
+| 1 | Tag v0.1.0 release (DONE — already tagged)    | -           |
+| 2 | Tag v2.0.0 release                            | 30min       |
+| 3 | CLI tool (standalone binary for non-Go users) | 6-8h        |
+| 4 | Troubleshooting.md                            | 2h          |
+| 5 | GoReleaser configuration                      | 2h          |
+| 6 | Dependabot / Renovate configuration           | 30min       |
+| 7 | CONTRIBUTING.md + CODEOWNERS                  | 2h          |
+| 8 | PR template                                   | 30min       |
+| 9 | CODE_OF_CONDUCT.md                            | 15min       |
 
 ### MEDIUM Priority
 
-| #   | Task                                       | Est. Effort |
-| --- | ------------------------------------------ | ----------- |
-| 10  | `Watcher.WatchOnce()` one-shot mode        | 3h          |
-| 11  | Polling fallback for NFS/network mounts    | 8h          |
-| 12  | Symlink following support                  | 4h          |
-| 13  | `Event.ModTime()` field                    | 2h          |
-| 14  | `Event.Size` field                         | 2h          |
-| 15  | File content hashing option                | 4h          |
-| 16  | Prometheus metrics export                  | 3h          |
-| 17  | OpenTelemetry integration                  | 6h          |
-| 18  | Debug mode with verbose structured logging | 3h          |
-| 19  | Stack traces in WatcherError               | 1h          |
-| 20  | Error codes for programmatic handling      | 2h          |
-| 21  | `MiddlewareThrottle`                       | 2h          |
-| 22  | Circuit breaker middleware                 | 4h          |
-| 23  | Error rate limiting middleware             | 2h          |
-| 24  | Context propagation through pipeline       | 3h          |
-| 25  | Benchmark regression CI                    | 2h          |
-| 26  | Integration tests for recursive watching   | 3h          |
-| 27  | Fuzz testing                               | 4h          |
-| 28  | Windows-specific edge case tests           | 4h          |
+| #  | Task                                       | Est. Effort |
+| -- | ------------------------------------------ | ----------- |
+| 10 | `Watcher.WatchOnce()` one-shot mode        | 3h          |
+| 11 | Polling fallback for NFS/network mounts    | 8h          |
+| 12 | Symlink following support                  | 4h          |
+| 13 | `Event.ModTime()` field                    | 2h          |
+| 14 | `Event.Size` field                         | 2h          |
+| 15 | File content hashing option                | 4h          |
+| 16 | Prometheus metrics export                  | 3h          |
+| 17 | OpenTelemetry integration                  | 6h          |
+| 18 | Debug mode with verbose structured logging | 3h          |
+| 19 | Stack traces in WatcherError               | 1h          |
+| 20 | Error codes for programmatic handling      | 2h          |
+| 21 | `MiddlewareThrottle`                       | 2h          |
+| 22 | Circuit breaker middleware                 | 4h          |
+| 23 | Error rate limiting middleware             | 2h          |
+| 24 | Context propagation through pipeline       | 3h          |
+| 25 | Benchmark regression CI                    | 2h          |
+| 26 | Integration tests for recursive watching   | 3h          |
+| 27 | Fuzz testing                               | 4h          |
+| 28 | Windows-specific edge case tests           | 4h          |
 
 ### Integration Backlog
 
-| #   | Target Project         |
-| --- | ---------------------- |
-| 29  | file-and-image-renamer |
-| 30  | dynamic-markdown-site  |
-| 31  | auto-deduplicate       |
-| 32  | Cyberdom               |
+| #  | Target Project         |
+| -- | ---------------------- |
+| 29 | file-and-image-renamer |
+| 30 | dynamic-markdown-site  |
+| 31 | auto-deduplicate       |
+| 32 | Cyberdom               |
 
 ---
 

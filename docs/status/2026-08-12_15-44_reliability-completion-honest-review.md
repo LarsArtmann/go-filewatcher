@@ -25,15 +25,15 @@ But I made mistakes. Read on.
 
 ### 1. Coverage Gap Tests (5 gaps → 7 tests)
 
-| # | Gap | Test Added | File |
-|---|-----|-----------|------|
-| 1 | Batch timer flush error routing | `TestMiddlewareBatch_TimerFlushErrorReturnedOnNextEvent` | `middleware_test.go` |
-| 2 | `WithMaxWatchesSafetyFraction` clamping | `TestWithMaxWatchesSafetyFraction_Clamping` (6 subtests) | `options_test.go` |
-| 2b | Effective limit reduction | `TestApplyMaxWatchesFraction_ReducesAutoDetectedLimit` | `options_test.go` |
-| 2c | Explicit limits not affected | `TestApplyMaxWatchesFraction_DoesNotAffectExplicitLimit` | `options_test.go` |
-| 3 | DropOnFull mode drops + counts | `TestDropOnFull_DropsEventsAndCounts` | `watcher_test.go` |
-| 4 | `WithWatchFilteredDirectories(false)` | `TestWatchFilteredDirectories_Disabled` | `watcher_test.go` |
-| 5 | `FilterIgnoreDirsCaseInsensitive` | `TestFilterIgnoreDirsCaseInsensitive` (7 subtests) | `filter_test.go` |
+| #  | Gap                                     | Test Added                                               | File                 |
+| -- | --------------------------------------- | -------------------------------------------------------- | -------------------- |
+| 1  | Batch timer flush error routing         | `TestMiddlewareBatch_TimerFlushErrorReturnedOnNextEvent` | `middleware_test.go` |
+| 2  | `WithMaxWatchesSafetyFraction` clamping | `TestWithMaxWatchesSafetyFraction_Clamping` (6 subtests) | `options_test.go`    |
+| 2b | Effective limit reduction               | `TestApplyMaxWatchesFraction_ReducesAutoDetectedLimit`   | `options_test.go`    |
+| 2c | Explicit limits not affected            | `TestApplyMaxWatchesFraction_DoesNotAffectExplicitLimit` | `options_test.go`    |
+| 3  | DropOnFull mode drops + counts          | `TestDropOnFull_DropsEventsAndCounts`                    | `watcher_test.go`    |
+| 4  | `WithWatchFilteredDirectories(false)`   | `TestWatchFilteredDirectories_Disabled`                  | `watcher_test.go`    |
+| 5  | `FilterIgnoreDirsCaseInsensitive`       | `TestFilterIgnoreDirsCaseInsensitive` (7 subtests)       | `filter_test.go`     |
 
 All tests pass with `-race`. All use `t.Parallel()`.
 
@@ -69,6 +69,7 @@ The prior session's `emitEvent` refactor added +2 allocations per event (from
 Removed `buildEmitFunc` entirely.
 
 **Result (verified via `go test -bench`):**
+
 - `EmitEvent_NoDebounce`: 8 allocs → 7 allocs (-1)
 - `EmitEvent_WithMiddleware`: 14 allocs → 13 allocs (-1)
 - Remaining +1 alloc vs baseline is the `trackedEmit` closure itself (minimum
@@ -76,26 +77,27 @@ Removed `buildEmitFunc` entirely.
 
 ### 4. Documentation Updates
 
-| Document | What Changed |
-|----------|-------------|
-| `CHANGELOG.md` | Full v2.4.0 section: 13 Added, 9 Fixed, 2 Changed items with behavioral change callouts |
-| `API_STABILITY.md` | Added `WithMaxWatchesSafetyFraction`, `WithWatchFilteredDirectories`, `WithEventChannelMode` to Evolving Features; `FilterIgnoreDirsCaseInsensitive` to Evolving Filters; `MiddlewareDeduplicateCaseInsensitive` to Evolving Middleware; `EventChannelMode` to Evolving Types |
-| `FEATURES.md` | Version bumped to v2.4.0; 8 new feature rows across Filtering, Middleware, Observability, Resilience |
-| `website/api-reference.mdx` | Stats struct updated (3 new fields); options count 23→26; filters and middleware lists updated |
-| `AGENTS.md` | Gotcha #26 (safety fraction scope); `buildEmitFunc` references updated to reflect inlining; DropOnFull pattern updated |
-| `options.go` | `WithPolling` doc comment updated with dedup limitation cross-reference |
+| Document                    | What Changed                                                                                                                                                                                                                                                                  |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CHANGELOG.md`              | Full v2.4.0 section: 13 Added, 9 Fixed, 2 Changed items with behavioral change callouts                                                                                                                                                                                       |
+| `API_STABILITY.md`          | Added `WithMaxWatchesSafetyFraction`, `WithWatchFilteredDirectories`, `WithEventChannelMode` to Evolving Features; `FilterIgnoreDirsCaseInsensitive` to Evolving Filters; `MiddlewareDeduplicateCaseInsensitive` to Evolving Middleware; `EventChannelMode` to Evolving Types |
+| `FEATURES.md`               | Version bumped to v2.4.0; 8 new feature rows across Filtering, Middleware, Observability, Resilience                                                                                                                                                                          |
+| `website/api-reference.mdx` | Stats struct updated (3 new fields); options count 23→26; filters and middleware lists updated                                                                                                                                                                                |
+| `AGENTS.md`                 | Gotcha #26 (safety fraction scope); `buildEmitFunc` references updated to reflect inlining; DropOnFull pattern updated                                                                                                                                                        |
+| `options.go`                | `WithPolling` doc comment updated with dedup limitation cross-reference                                                                                                                                                                                                       |
 
 ### 5. Status Reports
 
-| Report | Location |
-|--------|---------|
+| Report        | Location                                                                               |
+| ------------- | -------------------------------------------------------------------------------------- |
 | Prior session | `docs/status/2026-08-12_14-39_reliability-edge-cases-implementation.md` (pre-existing) |
-| This session | `docs/status/2026-08-12_reliability-edge-cases-completion.md` (written earlier) |
-| This report | `docs/status/2026-08-12_15-44_reliability-completion-honest-review.md` |
+| This session  | `docs/status/2026-08-12_reliability-edge-cases-completion.md` (written earlier)        |
+| This report   | `docs/status/2026-08-12_15-44_reliability-completion-honest-review.md`                 |
 
 ### 6. Bench-Diff
 
 Ran `nix run .#bench-diff` against the July 29 baseline. Allocation data (deterministic):
+
 - **+1 alloc** on `EmitEvent_NoDebounce` and `EmitEvent_WithMiddleware` (trackedEmit closure)
 - **All other benchmarks**: zero allocation regression
 - ns/op data showed high variance (±49%) from CPU contention — unreliable for
@@ -109,6 +111,7 @@ Ran `nix run .#bench-diff` against the July 29 baseline. Allocation data (determ
 
 The test verifies `WatchCount <= 1` after creating a subdirectory with
 `WithWatchFilteredDirectories(false)`. This works but:
+
 - It depends on timing (uses `waitForCondition` with a 3s timeout)
 - It doesn't verify the directory was actually _attempted_ to be watched and
   rejected — it just checks the count didn't grow
@@ -146,37 +149,37 @@ changelog for migration concerns have to read every bullet. A "Breaking" or
 
 ### From the original feedback document (25 items):
 
-| # | Item | Status | Reason |
-|---|------|--------|--------|
-| 2 | Poll dedup heuristic (`WithPollDeduplicate`) | NOT STARTED | Large feature: per-path timestamp tracking with LRU. Documented as limitation. |
-| 3 | Poll loop rename detection (`WithPollDetectRenames`) | NOT STARTED | Large feature: platform-specific inode extraction. |
-| 20 | Runtime deprecation warning for `MiddlewareWriteFileLog` | NOT STARTED | Doc comment already warns. Runtime warning is v3 prep. |
-| 21 | `Reset()` and `failedPaths` retention | NOT STARTED | Feedback document itself concludes this is minor, not a real bug. |
-| 22 | `WatcherError.Stack` behavior | NOT STARTED | Feedback document offers "document current behavior" as valid fix. Not acted on. |
+| #  | Item                                                     | Status      | Reason                                                                           |
+| -- | -------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------- |
+| 2  | Poll dedup heuristic (`WithPollDeduplicate`)             | NOT STARTED | Large feature: per-path timestamp tracking with LRU. Documented as limitation.   |
+| 3  | Poll loop rename detection (`WithPollDetectRenames`)     | NOT STARTED | Large feature: platform-specific inode extraction.                               |
+| 20 | Runtime deprecation warning for `MiddlewareWriteFileLog` | NOT STARTED | Doc comment already warns. Runtime warning is v3 prep.                           |
+| 21 | `Reset()` and `failedPaths` retention                    | NOT STARTED | Feedback document itself concludes this is minor, not a real bug.                |
+| 22 | `WatcherError.Stack` behavior                            | NOT STARTED | Feedback document offers "document current behavior" as valid fix. Not acted on. |
 
 ### From the prior session's "should-do" list:
 
-| # | Item | Status |
-|---|------|--------|
-| - | macOS CI matrix | NOT STARTED |
-| - | Windows CI matrix | NOT STARTED |
-| - | `WithContentHashMaxSize(bytes)` configurable option | NOT STARTED (hardcoded 10 MiB cap exists) |
-| - | `WithErrorBufferSize(int)` to decouple error channel | NOT STARTED |
-| - | `MiddlewareDropCallback` API for explicit drop notification | NOT STARTED |
-| - | `Stats.WatchBudgetCap` field | NOT STARTED |
-| - | Fuzz testing on new filter/middleware functions | NOT STARTED |
-| - | `MiddlewareBatchFlushErrorHandler` callback | NOT STARTED |
+| # | Item                                                        | Status                                    |
+| - | ----------------------------------------------------------- | ----------------------------------------- |
+| - | macOS CI matrix                                             | NOT STARTED                               |
+| - | Windows CI matrix                                           | NOT STARTED                               |
+| - | `WithContentHashMaxSize(bytes)` configurable option         | NOT STARTED (hardcoded 10 MiB cap exists) |
+| - | `WithErrorBufferSize(int)` to decouple error channel        | NOT STARTED                               |
+| - | `MiddlewareDropCallback` API for explicit drop notification | NOT STARTED                               |
+| - | `Stats.WatchBudgetCap` field                                | NOT STARTED                               |
+| - | Fuzz testing on new filter/middleware functions             | NOT STARTED                               |
+| - | `MiddlewareBatchFlushErrorHandler` callback                 | NOT STARTED                               |
 
 ### From the prior session's polish list:
 
-| # | Item | Status |
-|---|------|--------|
+| # | Item                                                                         | Status                                                                                                                     |
+| - | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | - | Verify `Reset()` preserves `maxWatchesFraction` and `eventDropOnFull` config | NOT VERIFIED — I fixed Reset() for maxWatches but did not write a test that verifies ALL new config fields survive Reset() |
-| - | Add examples for new options | NOT STARTED |
-| - | Migration guide for v2.3 → v2.4 | NOT STARTED |
-| - | Archive feedback document to `docs/feedback/done/` | NOT STARTED |
-| - | Update `docs/guides/resilience.md` with new error classification | NOT STARTED |
-| - | Update `docs/guides/middleware.md` with new dedup variants | NOT STARTED |
+| - | Add examples for new options                                                 | NOT STARTED                                                                                                                |
+| - | Migration guide for v2.3 → v2.4                                              | NOT STARTED                                                                                                                |
+| - | Archive feedback document to `docs/feedback/done/`                           | NOT STARTED                                                                                                                |
+| - | Update `docs/guides/resilience.md` with new error classification             | NOT STARTED                                                                                                                |
+| - | Update `docs/guides/middleware.md` with new dedup variants                   | NOT STARTED                                                                                                                |
 
 ---
 
@@ -203,10 +206,12 @@ filter rejections took the same code path. They don't.
 
 When I added `maxWatchesExplicit` and `maxWatchesFraction` to the `Watcher`
 struct, my first edit produced misaligned fields:
+
 ```go
 maxWatches        int     // wrong alignment
 maxWatchesExplicit bool    // wrong alignment
 ```
+
 The `gofmt` step in CI caught and fixed it, but I should have matched the
 alignment from the start. I also initially forgot to add the new fields to the
 `New()` struct literal, which would have failed the `exhaustruct` linter.
@@ -405,16 +410,16 @@ new feedback doc for the deferred ones?
 
 ## Metrics Summary
 
-| Metric | Prior Session End | This Session End | Delta |
-|--------|-------------------|------------------|-------|
-| Coverage | 80.1% | 82.2% | +2.1% |
-| Tests added | 15+ | +7 | +7 |
-| Lint issues | 0 | 0 | — |
-| Test failures | 0 | 0 | — |
-| EmitEvent allocs (NoDebounce) | 8 | 7 | -1 |
-| Production bugs found | 0 | 2 | +2 (both fixed) |
-| CHANGELOG entries | 0 | 24 | +24 |
-| Uncommitted files | — | 4 modified + 1 new | — |
+| Metric                        | Prior Session End | This Session End   | Delta           |
+| ----------------------------- | ----------------- | ------------------ | --------------- |
+| Coverage                      | 80.1%             | 82.2%              | +2.1%           |
+| Tests added                   | 15+               | +7                 | +7              |
+| Lint issues                   | 0                 | 0                  | —               |
+| Test failures                 | 0                 | 0                  | —               |
+| EmitEvent allocs (NoDebounce) | 8                 | 7                  | -1              |
+| Production bugs found         | 0                 | 2                  | +2 (both fixed) |
+| CHANGELOG entries             | 0                 | 24                 | +24             |
+| Uncommitted files             | —                 | 4 modified + 1 new | —               |
 
 ---
 

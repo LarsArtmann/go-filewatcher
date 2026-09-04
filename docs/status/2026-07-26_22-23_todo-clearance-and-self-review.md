@@ -13,24 +13,24 @@ All 11 items from the session's TODO list are complete and committed (commits
 
 ### Code Changes
 
-| #   | Task                                                                                                                        | File(s)                                                   | Verification                                                             |
-| --- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------ |
-| 1   | **Compile-time interface checks** for `watchBackend` seam                                                                   | `backend.go`, `fake_backend_test.go`                      | Build fails on interface drift; `go build` passes                        |
-| 2   | **Fake-backend coverage gaps**: Add/Remove/Reset routing, circuit-breaker-in-pipeline, concurrent-burst goroutine-leak test | `fake_backend_coverage_test.go` (new, 319 lines, 5 tests) | All pass with `-race`; 1600 events across 8 goroutines, no leak detected |
-| 3   | **FilterAnd scale benchmark**: 10 filters, AllPass vs FirstRejects                                                          | `benchmark_test.go:227`                                   | Short-circuit proven: 23.8ns (reject) vs 34.7ns (all pass)               |
+| # | Task                                                                                                                        | File(s)                                                   | Verification                                                             |
+| - | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------ |
+| 1 | **Compile-time interface checks** for `watchBackend` seam                                                                   | `backend.go`, `fake_backend_test.go`                      | Build fails on interface drift; `go build` passes                        |
+| 2 | **Fake-backend coverage gaps**: Add/Remove/Reset routing, circuit-breaker-in-pipeline, concurrent-burst goroutine-leak test | `fake_backend_coverage_test.go` (new, 319 lines, 5 tests) | All pass with `-race`; 1600 events across 8 goroutines, no leak detected |
+| 3 | **FilterAnd scale benchmark**: 10 filters, AllPass vs FirstRejects                                                          | `benchmark_test.go:227`                                   | Short-circuit proven: 23.8ns (reject) vs 34.7ns (all pass)               |
 
 ### Documentation Changes
 
-| #   | Task                                                              | File(s)                                  |
-| --- | ----------------------------------------------------------------- | ---------------------------------------- |
-| 4   | **OTel end-to-end example** — span adapter + exporter setup       | `README.md`                              |
-| 5   | **Prometheus collector quickstart** — adapter pattern + tip       | `README.md`                              |
-| 6   | **Docs freshness CI gate** — exported-symbol coverage check       | `.github/workflows/docs-consistency.yml` |
-| 7   | **Link research docs** from ROADMAP                               | `ROADMAP.md`                             |
-| 8   | **Document MustWatch helper** + examples build note               | `examples/README.md`, `AGENTS.md`        |
-| 9   | **Bench baseline workflow** docs                                  | `CONTRIBUTING.md`                        |
-| 10  | **Audit MIGRATION_TO_NIX_FLAKES_PROPOSAL.md** — marked historical | `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md`    |
-| 11  | **docs/research/INDEX.md** — discoverability index                | `docs/research/INDEX.md` (new)           |
+| #  | Task                                                              | File(s)                                  |
+| -- | ----------------------------------------------------------------- | ---------------------------------------- |
+| 4  | **OTel end-to-end example** — span adapter + exporter setup       | `README.md`                              |
+| 5  | **Prometheus collector quickstart** — adapter pattern + tip       | `README.md`                              |
+| 6  | **Docs freshness CI gate** — exported-symbol coverage check       | `.github/workflows/docs-consistency.yml` |
+| 7  | **Link research docs** from ROADMAP                               | `ROADMAP.md`                             |
+| 8  | **Document MustWatch helper** + examples build note               | `examples/README.md`, `AGENTS.md`        |
+| 9  | **Bench baseline workflow** docs                                  | `CONTRIBUTING.md`                        |
+| 10 | **Audit MIGRATION_TO_NIX_FLAKES_PROPOSAL.md** — marked historical | `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md`    |
+| 11 | **docs/research/INDEX.md** — discoverability index                | `docs/research/INDEX.md` (new)           |
 
 ### Quality Gates (all green)
 

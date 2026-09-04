@@ -1,9 +1,9 @@
 # FULL COMPREHENSIVE STATUS REPORT — 2026-04-11 19:54
 
-**Date:** 2026-04-11 19:54:22  
-**Project:** `github.com/larsartmann/go-filewatcher`  
-**Go Version:** 1.26.1  
-**Branch:** `master` (clean, pushed to origin)  
+**Date:** 2026-04-11 19:54:22\
+**Project:** `github.com/larsartmann/go-filewatcher`\
+**Go Version:** 1.26.1\
+**Branch:** `master` (clean, pushed to origin)\
 **Last Commit:** `1ff27eb docs: add comprehensive status report for 2026-04-11`
 
 ---
@@ -218,32 +218,32 @@ This requires reading the depguard source code or documentation more carefully.
 
 ### 1. Phantom Types for Internal/Test Only
 
-**Decision:** Only apply phantom types to internal and test APIs, NOT public API.  
-**Rationale:** Changing `Event.Path` from `string` to `FilePath` would be a breaking change affecting every user of the library. The phantom types provide compile-time safety where it matters most (internal APIs, test code) without breaking existing users.  
+**Decision:** Only apply phantom types to internal and test APIs, NOT public API.\
+**Rationale:** Changing `Event.Path` from `string` to `FilePath` would be a breaking change affecting every user of the library. The phantom types provide compile-time safety where it matters most (internal APIs, test code) without breaking existing users.\
 **Tradeoff:** Users can't get compile-time safety when passing file paths from external sources. Mitigated by documentation.
 
 ### 2. Mixin Pattern for Debouncer
 
-**Decision:** Extract `fn` and `timer` fields into embedded `debounceMixin` struct.  
-**Rationale:** Both `debounceEntry` and `GlobalDebouncer` had the same two fields. The mixin reduces duplication and makes the code more maintainable.  
+**Decision:** Extract `fn` and `timer` fields into embedded `debounceMixin` struct.\
+**Rationale:** Both `debounceEntry` and `GlobalDebouncer` had the same two fields. The mixin reduces duplication and makes the code more maintainable.\
 **Tradeoff:** Minor cognitive overhead of understanding embedded structs.
 
 ### 3. Error Wrapping Without Breaking Type Assertions
 
-**Decision:** Use `fmt.Errorf("context: %w", err)` consistently.  
-**Rationale:** This preserves the original error type while adding context. Users can still use `errors.Is()` and `errors.As()` for type checking.  
+**Decision:** Use `fmt.Errorf("context: %w", err)` consistently.\
+**Rationale:** This preserves the original error type while adding context. Users can still use `errors.Is()` and `errors.As()` for type checking.\
 **Tradeoff:** Error messages are more verbose but more actionable.
 
 ### 4. Functional Options for Configuration
 
-**Decision:** Continue using functional options pattern (`WithFilter`, `WithDebounce`, etc.).  
-**Rationale:** This is the established pattern in Go for configurable APIs. It's familiar to Go developers and composable.  
+**Decision:** Continue using functional options pattern (`WithFilter`, `WithDebounce`, etc.).\
+**Rationale:** This is the established pattern in Go for configurable APIs. It's familiar to Go developers and composable.\
 **Tradeoff:** More verbose than struct literals, but more flexible.
 
 ### 5. Single Package Layout
 
-**Decision:** Keep all code in root package (`filewatcher`). No `internal/` or `pkg/` subdirectories.  
-**Rationale:** This is a small, focused library. Splitting it up would add complexity without benefit.  
+**Decision:** Keep all code in root package (`filewatcher`). No `internal/` or `pkg/` subdirectories.\
+**Rationale:** This is a small, focused library. Splitting it up would add complexity without benefit.\
 **Tradeoff:** Users import from `github.com/larsartmann/go-filewatcher` directly.
 
 ---
@@ -280,23 +280,23 @@ This requires reading the depguard source code or documentation more carefully.
 
 ### 1. Go Cache Corruption (SYSTEM)
 
-**Severity:** Low (affects build speed, not correctness)  
-**Issue:** `~/Library/Caches/go-build/` and `~/Library/Caches/golangci-lint/` have corrupted cache files that can't be deleted with `go clean -cache`.  
-**Impact:** Build commands may fail intermittently, golangci-lint may show stale results.  
-**Workaround:** `rm -rf ~/Library/Caches/go-build/ ~/Library/Caches/golangci-lint/` (requires elevated permissions or manual deletion).  
+**Severity:** Low (affects build speed, not correctness)\
+**Issue:** `~/Library/Caches/go-build/` and `~/Library/Caches/golangci-lint/` have corrupted cache files that can't be deleted with `go clean -cache`.\
+**Impact:** Build commands may fail intermittently, golangci-lint may show stale results.\
+**Workaround:** `rm -rf ~/Library/Caches/go-build/ ~/Library/Caches/golangci-lint/` (requires elevated permissions or manual deletion).\
 **Fix:** No programmatic fix — this is a system-level cache corruption.
 
 ### 2. Pre-Existing Race Condition (CODE)
 
-**Severity:** Low (may be false positive)  
-**Issue:** `go test -race` sometimes reports data races in `TestWatcher_Watch_WithDebounce` and related tests.  
-**Impact:** Tests may fail intermittently with race detector.  
-**Workaround:** Run tests without `-race` flag.  
+**Severity:** Low (may be false positive)\
+**Issue:** `go test -race` sometimes reports data races in `TestWatcher_Watch_WithDebounce` and related tests.\
+**Impact:** Tests may fail intermittently with race detector.\
+**Workaround:** Run tests without `-race` flag.\
 **Fix:** Needs investigation — run on base commit to confirm if real or false positive.
 
 ### 3. ~75 Remaining Lint Issues (STYLE)
 
-**Severity:** Very Low (style only, no correctness impact)  
+**Severity:** Very Low (style only, no correctness impact)\
 **Breakdown:**
 
 - `varnamelen` (~40): Short variable names like `d`, `w`, `f`, `tt`
@@ -304,8 +304,8 @@ This requires reading the depguard source code or documentation more carefully.
 - `noinlineerr` (~10): Inline error handling in test files
 - `depguard` (3): fsnotify imports in non-examples main packages
 
-**Impact:** None — these are style preferences only.  
-**Workaround:** Ignore for now, fix in future PRs.  
+**Impact:** None — these are style preferences only.\
+**Workaround:** Ignore for now, fix in future PRs.\
 **Fix:** Mechanical refactoring, tedious but not complex.
 
 ---
@@ -370,5 +370,5 @@ github.com/fsnotify/fsnotify v1.9.0  (only dependency)
 
 ---
 
-_Final status report generated: 2026-04-11 19:54:22_  
+_Final status report generated: 2026-04-11 19:54:22_\
 _All work committed and pushed to origin/master_

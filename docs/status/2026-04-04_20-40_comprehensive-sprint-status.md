@@ -1,8 +1,8 @@
 # Go-Filewatcher — Comprehensive Sprint Status Report
 
-**Date:** 2026-04-04 20:40  
-**Author:** Crush (AI Assistant)  
-**Session:** Improvement Sprint — Retrospective & Execution  
+**Date:** 2026-04-04 20:40\
+**Author:** Crush (AI Assistant)\
+**Session:** Improvement Sprint — Retrospective & Execution\
 **Branch:** `master` (7 commits ahead of `origin/master`)
 
 ---
@@ -17,15 +17,15 @@ The go-filewatcher library is a functional, well-structured utility built on fsn
 
 ## A) FULLY DONE ✅
 
-| #   | What                                               | Commit               | Impact                                     |
-| --- | -------------------------------------------------- | -------------------- | ------------------------------------------ |
-| 1   | **Fix go.mod version** (`1.26.1` → `1.26.0`)       | `4f663fd`            | 🔴 Critical — build was failing            |
-| 2   | **Remove `pkg/errors/apperrors.go`** template junk | `b14cef3`            | 🟡 Cleanup — 24 lines of dead code         |
-| 3   | **Pre-compile regex in `FilterRegex`**             | `d5f3a40`            | 🟢 Perf — was recompiling per-event        |
-| 4   | **Remove `FilterCustom` dead alias**               | `f21fc03`            | 🟡 Cleanup — unused function               |
-| 5   | **Fix justfile `GOWORK=off`** (14 recipes)         | `f21fc03`            | 🔴 Critical — all go commands were failing |
-| 6   | **Clean test dead code** (`_ = w`, orphan comment) | `f21fc03`            | 🟡 Cleanup                                 |
-| 7   | **Status reports** (3 documents)                   | `617678f`, `e721d6e` | 📝 Documentation                           |
+| # | What                                               | Commit               | Impact                                     |
+| - | -------------------------------------------------- | -------------------- | ------------------------------------------ |
+| 1 | **Fix go.mod version** (`1.26.1` → `1.26.0`)       | `4f663fd`            | 🔴 Critical — build was failing            |
+| 2 | **Remove `pkg/errors/apperrors.go`** template junk | `b14cef3`            | 🟡 Cleanup — 24 lines of dead code         |
+| 3 | **Pre-compile regex in `FilterRegex`**             | `d5f3a40`            | 🟢 Perf — was recompiling per-event        |
+| 4 | **Remove `FilterCustom` dead alias**               | `f21fc03`            | 🟡 Cleanup — unused function               |
+| 5 | **Fix justfile `GOWORK=off`** (14 recipes)         | `f21fc03`            | 🔴 Critical — all go commands were failing |
+| 6 | **Clean test dead code** (`_ = w`, orphan comment) | `f21fc03`            | 🟡 Cleanup                                 |
+| 7 | **Status reports** (3 documents)                   | `617678f`, `e721d6e` | 📝 Documentation                           |
 
 **Total committed this session:** 7 commits, 600 insertions, 61 deletions.
 
@@ -33,39 +33,39 @@ The go-filewatcher library is a functional, well-structured utility built on fsn
 
 ## B) PARTIALLY DONE 🔧
 
-| #   | What                                       | Status                                                                                                                                                                                                                                                  | Blocker                                                                                                             |
-| --- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Replace cockroachdb/errors with stdlib** | Analysis complete, not started. Recommendation: remove. Removes 6 transitive deps (sentry-go, gogo/protobuf, kr/pretty, kr/text, logtags, redact). Go-cqrs-lite uses cockroachdb/errors, so consistency argues either way.                              | **User decision pending** — but cockroachdb/errors is making the build cache issue WORSE (more packages to compile) |
-| 2   | **Fix handleNewDirectory race**            | Root cause identified at `watcher.go:474-493`. `addPath` → `walkDirFunc` appends to `watchList` without holding `mu`. The `mu.RLock()` only protects `closed` check.                                                                                    | **Blocked by Go cache**                                                                                             |
-| 3   | **Make shouldSkipDir respect user dirs**   | Root cause identified at `watcher.go:342-347`. `WithIgnoreDirs` only adds a filter (post-walk), but `shouldSkipDir` (pre-walk) only checks `DefaultIgnoreDirs`. Result: user-ignored dirs still get added to fsnotify, wasting kernel file descriptors. | **Blocked by Go cache**                                                                                             |
+| # | What                                       | Status                                                                                                                                                                                                                                                  | Blocker                                                                                                             |
+| - | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| 1 | **Replace cockroachdb/errors with stdlib** | Analysis complete, not started. Recommendation: remove. Removes 6 transitive deps (sentry-go, gogo/protobuf, kr/pretty, kr/text, logtags, redact). Go-cqrs-lite uses cockroachdb/errors, so consistency argues either way.                              | **User decision pending** — but cockroachdb/errors is making the build cache issue WORSE (more packages to compile) |
+| 2 | **Fix handleNewDirectory race**            | Root cause identified at `watcher.go:474-493`. `addPath` → `walkDirFunc` appends to `watchList` without holding `mu`. The `mu.RLock()` only protects `closed` check.                                                                                    | **Blocked by Go cache**                                                                                             |
+| 3 | **Make shouldSkipDir respect user dirs**   | Root cause identified at `watcher.go:342-347`. `WithIgnoreDirs` only adds a filter (post-walk), but `shouldSkipDir` (pre-walk) only checks `DefaultIgnoreDirs`. Result: user-ignored dirs still get added to fsnotify, wasting kernel file descriptors. | **Blocked by Go cache**                                                                                             |
 
 ---
 
 ## C) NOT STARTED 📋
 
-| #   | Improvement                                             | Priority  | Est. Work | Impact                                |
-| --- | ------------------------------------------------------- | --------- | --------- | ------------------------------------- |
-| 1   | Fix `handleNewDirectory` race condition                 | 🔴 High   | 30 min    | Data race → production crash          |
-| 2   | Make `shouldSkipDir` respect user ignore dirs           | 🔴 High   | 20 min    | Silent resource waste, user confusion |
-| 3   | Replace `cockroachdb/errors` with stdlib                | 🟡 Medium | 30 min    | 6 fewer transitive deps               |
-| 4   | Improve `Op` type: add `MarshalText`/`UnmarshalText`    | 🟡 Medium | 15 min    | JSON serialization for logging/audit  |
-| 5   | Add `Event` JSON tags and `MarshalJSON`                 | 🟡 Medium | 10 min    | Structured logging integration        |
-| 6   | Refactor `getDebounceKey` — remove type assertion       | 🟢 Low    | 10 min    | Code smell, add `IsPerPath() bool`    |
-| 7   | Replace `log.Logger` with `slog` in `MiddlewareLogging` | 🟡 Medium | 20 min    | Modern Go logging (1.21+)             |
-| 8   | Cache file handle in `MiddlewareWriteFileLog`           | 🔴 High   | 15 min    | Opens file per event → fd exhaustion  |
-| 9   | Split `watcher.go` (549 lines) into 3 files             | 🟢 Low    | 20 min    | Maintainability                       |
-| 10  | Raise test coverage to 90%+                             | 🟡 Medium | 2-3 hrs   | Confidence in correctness             |
-| 11  | Add `-race` to test commands                            | 🟡 Medium | 5 min     | Catch data races in CI                |
-| 12  | Integrate into `file-and-image-renamer`                 | 🟡 Medium | 1 hr      | Fixes confirmed debounce bug          |
-| 13  | Add `MiddlewareSlog` (new, alongside existing)          | 🟢 Low    | 15 min    | Modern alternative                    |
-| 14  | Add `Watcher.WatchList()` contains check test           | 🟢 Low    | 5 min     | Verify tracking works                 |
-| 15  | Add `Watcher.Remove()` subdirectory removal test        | 🟢 Low    | 10 min    | Untested edge case                    |
-| 16  | Fix `TestWatcher_Watch_Deletes` flakiness               | 🟡 Medium | 15 min    | Intermittent CI failures              |
-| 17  | Add `Example_new` / `Example_watch` to doc.go           | 🟢 Low    | 10 min    | godoc discoverability                 |
-| 18  | Add `.golangci.yml` lint config                         | 🟢 Low    | 15 min    | Consistent linting                    |
-| 19  | Add GitHub Actions CI workflow                          | 🟡 Medium | 30 min    | Automated testing                     |
-| 20  | Add `doc.go` benchmark tests                            | 🟢 Low    | 20 min    | Performance regression detection      |
-| 21  | Add CHANGELOG.md entries for this sprint                | 🟢 Low    | 5 min     | Release documentation                 |
+| #  | Improvement                                             | Priority  | Est. Work | Impact                                |
+| -- | ------------------------------------------------------- | --------- | --------- | ------------------------------------- |
+| 1  | Fix `handleNewDirectory` race condition                 | 🔴 High   | 30 min    | Data race → production crash          |
+| 2  | Make `shouldSkipDir` respect user ignore dirs           | 🔴 High   | 20 min    | Silent resource waste, user confusion |
+| 3  | Replace `cockroachdb/errors` with stdlib                | 🟡 Medium | 30 min    | 6 fewer transitive deps               |
+| 4  | Improve `Op` type: add `MarshalText`/`UnmarshalText`    | 🟡 Medium | 15 min    | JSON serialization for logging/audit  |
+| 5  | Add `Event` JSON tags and `MarshalJSON`                 | 🟡 Medium | 10 min    | Structured logging integration        |
+| 6  | Refactor `getDebounceKey` — remove type assertion       | 🟢 Low    | 10 min    | Code smell, add `IsPerPath() bool`    |
+| 7  | Replace `log.Logger` with `slog` in `MiddlewareLogging` | 🟡 Medium | 20 min    | Modern Go logging (1.21+)             |
+| 8  | Cache file handle in `MiddlewareWriteFileLog`           | 🔴 High   | 15 min    | Opens file per event → fd exhaustion  |
+| 9  | Split `watcher.go` (549 lines) into 3 files             | 🟢 Low    | 20 min    | Maintainability                       |
+| 10 | Raise test coverage to 90%+                             | 🟡 Medium | 2-3 hrs   | Confidence in correctness             |
+| 11 | Add `-race` to test commands                            | 🟡 Medium | 5 min     | Catch data races in CI                |
+| 12 | Integrate into `file-and-image-renamer`                 | 🟡 Medium | 1 hr      | Fixes confirmed debounce bug          |
+| 13 | Add `MiddlewareSlog` (new, alongside existing)          | 🟢 Low    | 15 min    | Modern alternative                    |
+| 14 | Add `Watcher.WatchList()` contains check test           | 🟢 Low    | 5 min     | Verify tracking works                 |
+| 15 | Add `Watcher.Remove()` subdirectory removal test        | 🟢 Low    | 10 min    | Untested edge case                    |
+| 16 | Fix `TestWatcher_Watch_Deletes` flakiness               | 🟡 Medium | 15 min    | Intermittent CI failures              |
+| 17 | Add `Example_new` / `Example_watch` to doc.go           | 🟢 Low    | 10 min    | godoc discoverability                 |
+| 18 | Add `.golangci.yml` lint config                         | 🟢 Low    | 15 min    | Consistent linting                    |
+| 19 | Add GitHub Actions CI workflow                          | 🟡 Medium | 30 min    | Automated testing                     |
+| 20 | Add `doc.go` benchmark tests                            | 🟢 Low    | 20 min    | Performance regression detection      |
+| 21 | Add CHANGELOG.md entries for this sprint                | 🟢 Low    | 5 min     | Release documentation                 |
 
 ---
 

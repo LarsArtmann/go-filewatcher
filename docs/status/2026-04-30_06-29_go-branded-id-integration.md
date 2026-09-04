@@ -1,7 +1,7 @@
 # Comprehensive Status Report: go-branded-id Integration
 
-**Date:** 2026-04-30 06:29  
-**Branch:** master  
+**Date:** 2026-04-30 06:29\
+**Branch:** master\
 **Commit base:** `0199ea7` (refactor(tests): extract shared test helper functions for DRY principle)
 
 ---
@@ -67,14 +67,14 @@ type RootPath struct { id id.ID[RootPathBrand, string] }
 
 ## c) NOT STARTED
 
-| #   | Item                                                                                                      | Impact | Effort |
-| --- | --------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 1   | Expose serialization methods (JSON/Text/Binary/SQL) on branded types                                      | High   | Low    |
-| 2   | Add `Or()` and `Reset()` to wrappers where useful                                                         | Medium | Low    |
-| 3   | Compile-time type safety tests (verify types can't be mixed)                                              | High   | Low    |
-| 4   | Fix the 2 pre-existing flaky tests                                                                        | High   | Medium |
-| 5   | Consider removing test-only brands (LogSubstring, TempDir) — they add complexity for marginal safety gain | Medium | Low    |
-| 6   | Evaluate if OpString wrapper adds value over plain string in WatcherError                                 | Low    | Low    |
+| # | Item                                                                                                      | Impact | Effort |
+| - | --------------------------------------------------------------------------------------------------------- | ------ | ------ |
+| 1 | Expose serialization methods (JSON/Text/Binary/SQL) on branded types                                      | High   | Low    |
+| 2 | Add `Or()` and `Reset()` to wrappers where useful                                                         | Medium | Low    |
+| 3 | Compile-time type safety tests (verify types can't be mixed)                                              | High   | Low    |
+| 4 | Fix the 2 pre-existing flaky tests                                                                        | High   | Medium |
+| 5 | Consider removing test-only brands (LogSubstring, TempDir) — they add complexity for marginal safety gain | Medium | Low    |
+| 6 | Evaluate if OpString wrapper adds value over plain string in WatcherError                                 | Low    | Low    |
 
 ---
 
@@ -125,33 +125,33 @@ Both confirmed to fail identically on `master` without our changes:
 
 Sorted by impact × effort (highest first):
 
-| #   | Task                                                                            | Impact | Effort | Category       |
-| --- | ------------------------------------------------------------------------------- | ------ | ------ | -------------- |
-| 1   | **Fix 2 flaky tests** (Stats_Metrics, WithMiddleware)                           | High   | Medium | Bug fix        |
-| 2   | **Revert LogSubstring/TempDir to simple type aliases**                          | Medium | Low    | Simplification |
-| 3   | **Add compile-time type safety test** (verify types can't mix)                  | High   | Low    | Testing        |
-| 4   | **Expose JSON/Text serialization on EventPath**                                 | High   | Low    | Feature        |
-| 5   | **Expose SQL Scan/Value on EventPath**                                          | High   | Low    | Feature        |
-| 6   | **Expose `Or()` on EventPath**                                                  | Medium | Low    | Feature        |
-| 7   | **Consider removing OpString wrapper** (use plain string)                       | Medium | Low    | Simplification |
-| 8   | **Update file organization table in AGENTS.md** to include `phantom_types.go`   | Low    | Low    | Docs           |
-| 9   | **Add `Compare()` to RootPath**                                                 | Low    | Low    | Feature        |
-| 10  | **Add `Compare()` to DebounceKey**                                              | Low    | Low    | Feature        |
-| 11  | **Evaluate: should DebounceKey just be EventPath?**                             | Medium | Low    | Architecture   |
-| 12  | **Evaluate: should Event.Path become EventPath?** (breaking)                    | High   | High   | Architecture   |
-| 13  | **Reduce phantom_types.go boilerplate** with generic helper                     | Medium | Medium | Refactor       |
-| 14  | **Expose `Reset()` on EventPath**                                               | Low    | Low    | Feature        |
-| 15  | **Expose `Ptr()`/`FromPtr()` on EventPath**                                     | Low    | Low    | Feature        |
-| 16  | **Add benchmarks for branded type operations**                                  | Low    | Low    | Testing        |
-| 17  | **Document the wrapper pattern in phantom_types.go**                            | Low    | Low    | Docs           |
-| 18  | **Consider exposing branded types to external consumers**                       | Medium | Medium | API            |
-| 19  | **Evaluate go-branded-id for use in other projects** (go-project-meta etc.)     | Medium | Low    | Cross-project  |
-| 20  | **Add example_test.go for branded types**                                       | Low    | Low    | Docs           |
-| 21  | **Expose Binary serialization on EventPath**                                    | Low    | Low    | Feature        |
-| 22  | **Add `IsZero()` check to Event.GetPath()** — return zero value for empty paths | Low    | Low    | Feature        |
-| 23  | **Investigate if `fmt.Stringer` interface is sufficient for all logging**       | Low    | Low    | Architecture   |
-| 24  | **Consider if filters should accept EventPath instead of string paths**         | Medium | High   | Architecture   |
-| 25  | **Add CHANGELOG.md entry for go-branded-id integration**                        | Low    | Low    | Docs           |
+| #  | Task                                                                            | Impact | Effort | Category       |
+| -- | ------------------------------------------------------------------------------- | ------ | ------ | -------------- |
+| 1  | **Fix 2 flaky tests** (Stats_Metrics, WithMiddleware)                           | High   | Medium | Bug fix        |
+| 2  | **Revert LogSubstring/TempDir to simple type aliases**                          | Medium | Low    | Simplification |
+| 3  | **Add compile-time type safety test** (verify types can't mix)                  | High   | Low    | Testing        |
+| 4  | **Expose JSON/Text serialization on EventPath**                                 | High   | Low    | Feature        |
+| 5  | **Expose SQL Scan/Value on EventPath**                                          | High   | Low    | Feature        |
+| 6  | **Expose `Or()` on EventPath**                                                  | Medium | Low    | Feature        |
+| 7  | **Consider removing OpString wrapper** (use plain string)                       | Medium | Low    | Simplification |
+| 8  | **Update file organization table in AGENTS.md** to include `phantom_types.go`   | Low    | Low    | Docs           |
+| 9  | **Add `Compare()` to RootPath**                                                 | Low    | Low    | Feature        |
+| 10 | **Add `Compare()` to DebounceKey**                                              | Low    | Low    | Feature        |
+| 11 | **Evaluate: should DebounceKey just be EventPath?**                             | Medium | Low    | Architecture   |
+| 12 | **Evaluate: should Event.Path become EventPath?** (breaking)                    | High   | High   | Architecture   |
+| 13 | **Reduce phantom_types.go boilerplate** with generic helper                     | Medium | Medium | Refactor       |
+| 14 | **Expose `Reset()` on EventPath**                                               | Low    | Low    | Feature        |
+| 15 | **Expose `Ptr()`/`FromPtr()` on EventPath**                                     | Low    | Low    | Feature        |
+| 16 | **Add benchmarks for branded type operations**                                  | Low    | Low    | Testing        |
+| 17 | **Document the wrapper pattern in phantom_types.go**                            | Low    | Low    | Docs           |
+| 18 | **Consider exposing branded types to external consumers**                       | Medium | Medium | API            |
+| 19 | **Evaluate go-branded-id for use in other projects** (go-project-meta etc.)     | Medium | Low    | Cross-project  |
+| 20 | **Add example_test.go for branded types**                                       | Low    | Low    | Docs           |
+| 21 | **Expose Binary serialization on EventPath**                                    | Low    | Low    | Feature        |
+| 22 | **Add `IsZero()` check to Event.GetPath()** — return zero value for empty paths | Low    | Low    | Feature        |
+| 23 | **Investigate if `fmt.Stringer` interface is sufficient for all logging**       | Low    | Low    | Architecture   |
+| 24 | **Consider if filters should accept EventPath instead of string paths**         | Medium | High   | Architecture   |
+| 25 | **Add CHANGELOG.md entry for go-branded-id integration**                        | Low    | Low    | Docs           |
 
 ---
 

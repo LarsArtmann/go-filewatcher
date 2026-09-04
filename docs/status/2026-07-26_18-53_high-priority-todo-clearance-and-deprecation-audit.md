@@ -230,7 +230,7 @@ subsequent 2026-07-26 sessions. Details in CHANGELOG `[Unreleased]`.
 | Report item                                                                | Resolution                                                                            |
 | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | §d1 — Split brain (WithOnError/MiddlewareRateLimit in Stable + Deprecated) | DONE: removed from Stable APIs table (`API_STABILITY.md`)                             |
-| §d2 — README docs drift (no deprecation markers)                           | DONE: ⚠️ markers added to README tables (`README.md:153,204`)                         |
+| §d2 — README docs drift (no deprecation markers)                           | DONE: ⚠️ markers added to README tables (`README.md:153,204`)                          |
 | §d3 — `nix run .#ci` tidy permission failure                               | DONE: ci/fmt/tidy apps now run from caller CWD, not read-only nix store (`flake.nix`) |
 | §f P0#3 — Mark deprecated in README                                        | DONE (same as §d2)                                                                    |
 | §f P0#4 — v2.3→v3 MIGRATION.md section                                     | DONE: `MIGRATION.md` "Migrating to v2.3+" with before/after snippets                  |

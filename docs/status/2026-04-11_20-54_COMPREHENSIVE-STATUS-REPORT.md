@@ -1,15 +1,15 @@
 # Comprehensive Status Report: go-filewatcher
 
-**Date:** 2026-04-11 20:54:04 CEST  
-**Branch:** master  
+**Date:** 2026-04-11 20:54:04 CEST\
+**Branch:** master\
 **Commit Base:** 60d3451 docs: add comprehensive status report for 2026-04-11 20:41
 
 ---
 
 ## Executive Summary
 
-**Current State:** ✅ Build passing, boolean blindness FIXED, but Go cache corruption blocking tests  
-**Quality Score:** 90.0/100 (Context), 92/100 (Composition), 0 bool violations  
+**Current State:** ✅ Build passing, boolean blindness FIXED, but Go cache corruption blocking tests\
+**Quality Score:** 90.0/100 (Context), 92/100 (Composition), 0 bool violations\
 **Risk Level:** MEDIUM - Cache issue prevents full verification
 
 ---
@@ -138,43 +138,43 @@
 
 ### P0: Critical (Blockers)
 
-| #   | Task                                   | File               | Effort |
-| --- | -------------------------------------- | ------------------ | ------ |
-| 1   | Fix Go build cache corruption          | -                  | 10 min |
-| 2   | Implement `OpString` phantom type      | errors.go:102      | 5 min  |
-| 3   | Implement `RootString` phantom type    | watcher_walk.go:23 | 5 min  |
-| 4   | Implement `RootString` phantom type    | watcher_walk.go:37 | 5 min  |
-| 5   | Run full test suite with race detector | -                  | 5 min  |
+| # | Task                                   | File               | Effort |
+| - | -------------------------------------- | ------------------ | ------ |
+| 1 | Fix Go build cache corruption          | -                  | 10 min |
+| 2 | Implement `OpString` phantom type      | errors.go:102      | 5 min  |
+| 3 | Implement `RootString` phantom type    | watcher_walk.go:23 | 5 min  |
+| 4 | Implement `RootString` phantom type    | watcher_walk.go:37 | 5 min  |
+| 5 | Run full test suite with race detector | -                  | 5 min  |
 
 ### P1: High Value
 
-| #   | Task                                     | Impact          | Effort |
-| --- | ---------------------------------------- | --------------- | ------ |
-| 6   | Add error context wrapping (10 issues)   | Debugging       | 20 min |
-| 7   | Add property-based tests (fuzzing)       | Reliability     | 30 min |
-| 8   | Create benchmark regression suite        | Performance     | 20 min |
-| 9   | Add integration tests with real fsnotify | Quality         | 45 min |
-| 10  | Document all phantom types               | Maintainability | 15 min |
-| 11  | Add `PathString` phantom type (breaking) | Type Safety     | 30 min |
-| 12  | Optimize `Watcher` struct (split)        | Memory          | 45 min |
-| 13  | Add pre-commit hooks                     | Quality Gates   | 15 min |
-| 14  | Create migration guide for v2.0          | Adoption        | 30 min |
-| 15  | Add debug logging middleware             | Debugging       | 20 min |
+| #  | Task                                     | Impact          | Effort |
+| -- | ---------------------------------------- | --------------- | ------ |
+| 6  | Add error context wrapping (10 issues)   | Debugging       | 20 min |
+| 7  | Add property-based tests (fuzzing)       | Reliability     | 30 min |
+| 8  | Create benchmark regression suite        | Performance     | 20 min |
+| 9  | Add integration tests with real fsnotify | Quality         | 45 min |
+| 10 | Document all phantom types               | Maintainability | 15 min |
+| 11 | Add `PathString` phantom type (breaking) | Type Safety     | 30 min |
+| 12 | Optimize `Watcher` struct (split)        | Memory          | 45 min |
+| 13 | Add pre-commit hooks                     | Quality Gates   | 15 min |
+| 14 | Create migration guide for v2.0          | Adoption        | 30 min |
+| 15 | Add debug logging middleware             | Debugging       | 20 min |
 
 ### P2: Medium Value
 
-| #   | Task                               | Impact        | Effort |
-| --- | ---------------------------------- | ------------- | ------ |
-| 16  | Add Prometheus metrics collection  | Observability | 45 min |
-| 17  | Implement circuit breaker pattern  | Resilience    | 30 min |
-| 18  | Add more complex usage examples    | Documentation | 30 min |
-| 19  | Optimize filter composition        | Performance   | 20 min |
-| 20  | Add `BufferSize` phantom type      | Type Safety   | 10 min |
-| 21  | Add custom filesystem abstraction  | Testability   | 45 min |
-| 22  | Create event coalescing strategies | Performance   | 40 min |
-| 23  | Add symlink following support      | Features      | 30 min |
-| 24  | Optimize `DebouncerMixin` further  | Memory        | 15 min |
-| 25  | Add structured logging             | Observability | 30 min |
+| #  | Task                               | Impact        | Effort |
+| -- | ---------------------------------- | ------------- | ------ |
+| 16 | Add Prometheus metrics collection  | Observability | 45 min |
+| 17 | Implement circuit breaker pattern  | Resilience    | 30 min |
+| 18 | Add more complex usage examples    | Documentation | 30 min |
+| 19 | Optimize filter composition        | Performance   | 20 min |
+| 20 | Add `BufferSize` phantom type      | Type Safety   | 10 min |
+| 21 | Add custom filesystem abstraction  | Testability   | 45 min |
+| 22 | Create event coalescing strategies | Performance   | 40 min |
+| 23 | Add symlink following support      | Features      | 30 min |
+| 24 | Optimize `DebouncerMixin` further  | Memory        | 15 min |
+| 25 | Add structured logging             | Observability | 30 min |
 
 ---
 
@@ -244,5 +244,5 @@
 
 ---
 
-_Generated: 2026-04-11 20:54:04 CEST_  
+_Generated: 2026-04-11 20:54:04 CEST_\
 _Status: PARTIAL - Build passing, tests blocked by cache_

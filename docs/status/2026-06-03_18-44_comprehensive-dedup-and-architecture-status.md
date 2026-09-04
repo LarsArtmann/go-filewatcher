@@ -180,7 +180,7 @@ This session focused on a deep deduplication sprint and architecture cleanup —
 ### Self-Critique of This Session
 
 1. **Amend commit lost test helper commit** — When fixing a lint issue in `hashFile`, I used `git commit --amend` which replaced the `testWatcherError` commit with a wrong message. I had to fix the message again. Should have used a separate commit for the lint fix.
-2. **Edit tool typo** — Used `new_string ` (trailing space) as a key in multiedit, which silently failed for the first edit and broke `watcher_test.go`. Required manual recovery.
+2. **Edit tool typo** — Used `new_string` (trailing space) as a key in multiedit, which silently failed for the first edit and broke `watcher_test.go`. Required manual recovery.
 3. **Initial dedup was shallow** — First pass at threshold 15 only found surface-level clones. The real value came from deep codebase analysis (hash duplication, lock naming bug, rate limiter consolidation).
 
 ---
@@ -219,33 +219,33 @@ This session focused on a deep deduplication sprint and architecture cleanup —
 
 Sorted by **impact × effort** (highest first):
 
-| #   | Item                                                                                    | Impact   | Effort  | Category     |
-| --- | --------------------------------------------------------------------------------------- | -------- | ------- | ------------ |
-| 1   | Fix ENOSPC CI reliability (increase inotify limits in CI or mock fsnotify)              | Critical | Medium  | CI/Testing   |
-| 2   | Create FEATURES.md (auto-generated feature inventory with honest status)                | High     | Low     | Docs         |
-| 3   | Replace `watchList []string` with `map[string]struct{}` for O(1) lookups                | High     | Low     | Perf         |
-| 4   | Split `Watcher` into config+state structs for cache-friendly layout                     | Medium   | Medium  | Architecture |
-| 5   | Fix error channel + handler dual dispatch semantics (document or make configurable)     | Medium   | Low     | Correctness  |
-| 6   | Remove deprecated `WithWatchedIgnoreDirs` for v3 planning                               | Medium   | Trivial | Cleanup      |
-| 7   | Add `WithMiddlewareChain()` that applies in written order                               | Medium   | Low     | DX           |
-| 8   | Fix pre-commit BuildFlow TODO check (ignore NOTE comments)                              | Medium   | Low     | DX           |
-| 9   | Wire Goreleaser configuration end-to-end (verify release workflow)                      | Medium   | Medium  | Release      |
-| 10  | Add `Watcher.AddedPaths()` method to return paths successfully added                    | Medium   | Low     | API          |
-| 11  | Integrate into one downstream project (e.g., auto-deduplicate) as real-world validation | High     | High    | Validation   |
-| 12  | Add table-driven benchmark suite for filter performance                                 | Medium   | Low     | Perf         |
-| 13  | Document error handler dual dispatch behavior in godoc                                  | Medium   | Trivial | Docs         |
-| 14  | Add `FilterRegexCompiled(re *regexp.Regexp)` for pre-validated regexes                  | Medium   | Low     | API          |
-| 15  | Consider `errors.Join` for multi-error accumulation in batch middleware                 | Low      | Low     | Go 1.20+     |
-| 16  | Add macOS CI runner (GitHub Actions)                                                    | Medium   | Medium  | CI           |
-| 17  | Generate phantom type boilerplate (stringer-like tool)                                  | Low      | Medium  | Codegen      |
-| 18  | Shared gitignore matcher interface (walk-time + filter-time)                            | Low      | Medium  | Architecture |
-| 19  | Expand fuzz corpus with adversarial inputs                                              | Low      | Low     | Testing      |
-| 20  | Add `WithMiddlewarePosition(name string, mw Middleware)` for explicit ordering          | Low      | Medium  | DX           |
-| 21  | Localizable error messages (fmt.Sprintf + message IDs)                                  | Low      | Medium  | i18n         |
-| 22  | Add `Watcher.WatchChanges(ctx, targetState)` for idempotent sync                        | Low      | Medium  | API          |
-| 23  | Windows-specific edge case tests                                                        | Low      | High    | Platform     |
-| 24  | Extract shared test utilities to testutil sub-package                                   | Low      | Medium  | Testing      |
-| 25  | Semantic release automation                                                             | Low      | Medium  | Release      |
+| #  | Item                                                                                    | Impact   | Effort  | Category     |
+| -- | --------------------------------------------------------------------------------------- | -------- | ------- | ------------ |
+| 1  | Fix ENOSPC CI reliability (increase inotify limits in CI or mock fsnotify)              | Critical | Medium  | CI/Testing   |
+| 2  | Create FEATURES.md (auto-generated feature inventory with honest status)                | High     | Low     | Docs         |
+| 3  | Replace `watchList []string` with `map[string]struct{}` for O(1) lookups                | High     | Low     | Perf         |
+| 4  | Split `Watcher` into config+state structs for cache-friendly layout                     | Medium   | Medium  | Architecture |
+| 5  | Fix error channel + handler dual dispatch semantics (document or make configurable)     | Medium   | Low     | Correctness  |
+| 6  | Remove deprecated `WithWatchedIgnoreDirs` for v3 planning                               | Medium   | Trivial | Cleanup      |
+| 7  | Add `WithMiddlewareChain()` that applies in written order                               | Medium   | Low     | DX           |
+| 8  | Fix pre-commit BuildFlow TODO check (ignore NOTE comments)                              | Medium   | Low     | DX           |
+| 9  | Wire Goreleaser configuration end-to-end (verify release workflow)                      | Medium   | Medium  | Release      |
+| 10 | Add `Watcher.AddedPaths()` method to return paths successfully added                    | Medium   | Low     | API          |
+| 11 | Integrate into one downstream project (e.g., auto-deduplicate) as real-world validation | High     | High    | Validation   |
+| 12 | Add table-driven benchmark suite for filter performance                                 | Medium   | Low     | Perf         |
+| 13 | Document error handler dual dispatch behavior in godoc                                  | Medium   | Trivial | Docs         |
+| 14 | Add `FilterRegexCompiled(re *regexp.Regexp)` for pre-validated regexes                  | Medium   | Low     | API          |
+| 15 | Consider `errors.Join` for multi-error accumulation in batch middleware                 | Low      | Low     | Go 1.20+     |
+| 16 | Add macOS CI runner (GitHub Actions)                                                    | Medium   | Medium  | CI           |
+| 17 | Generate phantom type boilerplate (stringer-like tool)                                  | Low      | Medium  | Codegen      |
+| 18 | Shared gitignore matcher interface (walk-time + filter-time)                            | Low      | Medium  | Architecture |
+| 19 | Expand fuzz corpus with adversarial inputs                                              | Low      | Low     | Testing      |
+| 20 | Add `WithMiddlewarePosition(name string, mw Middleware)` for explicit ordering          | Low      | Medium  | DX           |
+| 21 | Localizable error messages (fmt.Sprintf + message IDs)                                  | Low      | Medium  | i18n         |
+| 22 | Add `Watcher.WatchChanges(ctx, targetState)` for idempotent sync                        | Low      | Medium  | API          |
+| 23 | Windows-specific edge case tests                                                        | Low      | High    | Platform     |
+| 24 | Extract shared test utilities to testutil sub-package                                   | Low      | Medium  | Testing      |
+| 25 | Semantic release automation                                                             | Low      | Medium  | Release      |
 
 ---
 

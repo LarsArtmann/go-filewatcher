@@ -383,21 +383,21 @@ respects explicit settings instead of always re-detecting from
 
 ## Key Patterns
 
-| Pattern              | Where                                                                             |
-| -------------------- | --------------------------------------------------------------------------------- |
-| Functional Options   | `options.go` — `type Option func(*Watcher)`                                       |
-| Middleware Chain     | `middleware.go` — applied in **reverse** order                                    |
-| Filter Composition   | `filter.go` — `FilterAnd()`, `FilterOr()`                                         |
-| `resolve*Defaults`   | `middleware.go` — see [Default-guard convention](#default-guard-convention) below |
-| `baseDebouncer.stop` | `debouncer.go` — lock/markStopped/cleanup/unlock/wait in one place                |
-| Backend Abstraction  | `backend.go` — `watchBackend` interface; `withBackend()` injects fakes            |
-| `newTestWatcher`     | `testing_helpers_test.go:432` — standard `New + cleanup` for all tests            |
-| Case-sensitivity     | `filesystem.go` — `pathKey()`, `resolveCaseSensitivity()`, `WithCaseSensitivity`  |
-| O(1) path lookup     | `watcher.go` — `watchListKeys` map alongside `watchList` for dedup + O(1) checks  |
-| Symlink cycle detect | `watcher_walk.go` — `handleFollowedSymlink()` + `symlinkVisited` map              |
-| Middleware drop track| `watcher_internal.go` — `emitEvent` wraps emit with `atomic.Bool` flag            |
-| Path validation      | `watcher.go` — `validateDirExists()` in Add/AddRecursive/Watch                    |
-| DropOnFull mode      | `watcher_internal.go` — non-blocking send in `emitEvent` when `eventDropOnFull` |
+| Pattern               | Where                                                                             |
+| --------------------- | --------------------------------------------------------------------------------- |
+| Functional Options    | `options.go` — `type Option func(*Watcher)`                                       |
+| Middleware Chain      | `middleware.go` — applied in **reverse** order                                    |
+| Filter Composition    | `filter.go` — `FilterAnd()`, `FilterOr()`                                         |
+| `resolve*Defaults`    | `middleware.go` — see [Default-guard convention](#default-guard-convention) below |
+| `baseDebouncer.stop`  | `debouncer.go` — lock/markStopped/cleanup/unlock/wait in one place                |
+| Backend Abstraction   | `backend.go` — `watchBackend` interface; `withBackend()` injects fakes            |
+| `newTestWatcher`      | `testing_helpers_test.go:432` — standard `New + cleanup` for all tests            |
+| Case-sensitivity      | `filesystem.go` — `pathKey()`, `resolveCaseSensitivity()`, `WithCaseSensitivity`  |
+| O(1) path lookup      | `watcher.go` — `watchListKeys` map alongside `watchList` for dedup + O(1) checks  |
+| Symlink cycle detect  | `watcher_walk.go` — `handleFollowedSymlink()` + `symlinkVisited` map              |
+| Middleware drop track | `watcher_internal.go` — `emitEvent` wraps emit with `atomic.Bool` flag            |
+| Path validation       | `watcher.go` — `validateDirExists()` in Add/AddRecursive/Watch                    |
+| DropOnFull mode       | `watcher_internal.go` — non-blocking send in `emitEvent` when `eventDropOnFull`   |
 
 ### Default-guard convention
 

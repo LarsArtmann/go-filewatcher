@@ -1,8 +1,8 @@
 # Comprehensive Status Report: go-filewatcher
 
-**Date:** 2026-04-11 20:40 UTC  
-**Branch:** master  
-**Go Version:** 1.26.1 darwin/arm64  
+**Date:** 2026-04-11 20:40 UTC\
+**Branch:** master\
+**Go Version:** 1.26.1 darwin/arm64\
 **Commits Ahead of Origin:** 3
 
 ---
@@ -66,8 +66,8 @@ The go-filewatcher project is in a **PRODUCTION-READY** state with a minor test 
 
 **Issue:** Recent error handling refactoring changed `handleError` signature from `(error)` to `(ErrorContext, error)`.
 
-| File                  | Status    | Issue                             |
-| --------------------- | --------- | --------------------------------- |
+| File                  | Status   | Issue                             |
+| --------------------- | -------- | --------------------------------- |
 | `errors_test.go:294`  | ⚠️ Broken | Too many arguments to handleError |
 | `errors_test.go:325`  | ⚠️ Broken | Too many arguments to handleError |
 | `errors_test.go:364`  | ⚠️ Broken | Too many arguments to handleError |

@@ -145,43 +145,43 @@ Nothing. The upgrade went cleanly. One notable issue:
 
 ### High Impact (P0-P1)
 
-| #   | Task                                                                  | Impact                  | Effort  |
-| --- | --------------------------------------------------------------------- | ----------------------- | ------- |
-| 1   | Fix gogenfilter module path (`/v3`) and remove replace directive      | Unblocks publishing     | Medium  |
-| 2   | Add `filter-generated` (and similar example binaries) to `.gitignore` | Prevents binary commits | Trivial |
-| 3   | Update README.md with v3 API examples                                 | User-facing docs        | Low     |
-| 4   | Fix unused `modernize` nolint in `watcher_coverage_test.go`           | Linter hygiene          | Trivial |
-| 5   | Create CHANGELOG.md and record v3 upgrade                             | Project history         | Low     |
+| # | Task                                                                  | Impact                  | Effort  |
+| - | --------------------------------------------------------------------- | ----------------------- | ------- |
+| 1 | Fix gogenfilter module path (`/v3`) and remove replace directive      | Unblocks publishing     | Medium  |
+| 2 | Add `filter-generated` (and similar example binaries) to `.gitignore` | Prevents binary commits | Trivial |
+| 3 | Update README.md with v3 API examples                                 | User-facing docs        | Low     |
+| 4 | Fix unused `modernize` nolint in `watcher_coverage_test.go`           | Linter hygiene          | Trivial |
+| 5 | Create CHANGELOG.md and record v3 upgrade                             | Project history         | Low     |
 
 ### Medium Impact (P2)
 
-| #   | Task                                                                          | Impact               | Effort  |
-| --- | ----------------------------------------------------------------------------- | -------------------- | ------- |
-| 6   | Update example comments to mention new generators (Oapi, Deepcopy, Wire, Moq) | Discoverability      | Trivial |
-| 7   | Fix flaky `TestWatcher_Stats_Metrics` test                                    | CI reliability       | Medium  |
-| 8   | Fix flaky `TestWatcher_Watch_WithMiddleware` test                             | CI reliability       | Medium  |
-| 9   | Leverage `DetectReasonReader` in `FilterGeneratedCodeFull`                    | Memory efficiency    | Low     |
-| 10  | Expose `FilterStats.FilteredFiles()` through our API                          | Richer introspection | Low     |
-| 11  | Add integration test for all v3 generators (including new ones)               | Test coverage        | Medium  |
-| 12  | Document contributor setup (local gogenfilter checkout needed)                | Onboarding           | Low     |
-| 13  | Consider go.work for multi-module local development                           | DX improvement       | Medium  |
+| #  | Task                                                                          | Impact               | Effort  |
+| -- | ----------------------------------------------------------------------------- | -------------------- | ------- |
+| 6  | Update example comments to mention new generators (Oapi, Deepcopy, Wire, Moq) | Discoverability      | Trivial |
+| 7  | Fix flaky `TestWatcher_Stats_Metrics` test                                    | CI reliability       | Medium  |
+| 8  | Fix flaky `TestWatcher_Watch_WithMiddleware` test                             | CI reliability       | Medium  |
+| 9  | Leverage `DetectReasonReader` in `FilterGeneratedCodeFull`                    | Memory efficiency    | Low     |
+| 10 | Expose `FilterStats.FilteredFiles()` through our API                          | Richer introspection | Low     |
+| 11 | Add integration test for all v3 generators (including new ones)               | Test coverage        | Medium  |
+| 12 | Document contributor setup (local gogenfilter checkout needed)                | Onboarding           | Low     |
+| 13 | Consider go.work for multi-module local development                           | DX improvement       | Medium  |
 
 ### Lower Impact (P3-P4)
 
-| #   | Task                                                                              | Impact                 | Effort  |
-| --- | --------------------------------------------------------------------------------- | ---------------------- | ------- |
-| 14  | Review `buildGogenFilterOptions` — is it still needed at all?                     | Simplification         | Trivial |
-| 15  | Add example for `FilterGeneratedCodeWithFilter` with v3 patterns                  | Documentation          | Low     |
-| 16  | Clean up old status reports in `docs/status/` (41 files)                          | Housekeeping           | Trivial |
-| 17  | Add `.editorconfig` or formatting consistency check                               | Code style             | Trivial |
-| 18  | Review if `ContentCheckMode` type could use v3's `fs.FS` abstraction              | API consistency        | Medium  |
-| 19  | Audit all nolint directives for continued necessity                               | Linter hygiene         | Low     |
-| 20  | Add benchmark tests for v3 detection performance                                  | Performance validation | Medium  |
-| 21  | Review `depguard` rules — gogenfilter still uses old path (no `/v3`)              | Config accuracy        | Trivial |
-| 22  | Add version compatibility test matrix                                             | Future-proofing        | Medium  |
-| 23  | Consider error wrapping in `FilterGeneratedCodeWithFilter` when `Filter()` errors | Error handling         | Trivial |
-| 24  | Update `docs/adr/` if architecture decisions exist                                | Documentation          | Low     |
-| 25  | Verify all examples compile and run with v3                                       | Correctness            | Trivial |
+| #  | Task                                                                              | Impact                 | Effort  |
+| -- | --------------------------------------------------------------------------------- | ---------------------- | ------- |
+| 14 | Review `buildGogenFilterOptions` — is it still needed at all?                     | Simplification         | Trivial |
+| 15 | Add example for `FilterGeneratedCodeWithFilter` with v3 patterns                  | Documentation          | Low     |
+| 16 | Clean up old status reports in `docs/status/` (41 files)                          | Housekeeping           | Trivial |
+| 17 | Add `.editorconfig` or formatting consistency check                               | Code style             | Trivial |
+| 18 | Review if `ContentCheckMode` type could use v3's `fs.FS` abstraction              | API consistency        | Medium  |
+| 19 | Audit all nolint directives for continued necessity                               | Linter hygiene         | Low     |
+| 20 | Add benchmark tests for v3 detection performance                                  | Performance validation | Medium  |
+| 21 | Review `depguard` rules — gogenfilter still uses old path (no `/v3`)              | Config accuracy        | Trivial |
+| 22 | Add version compatibility test matrix                                             | Future-proofing        | Medium  |
+| 23 | Consider error wrapping in `FilterGeneratedCodeWithFilter` when `Filter()` errors | Error handling         | Trivial |
+| 24 | Update `docs/adr/` if architecture decisions exist                                | Documentation          | Low     |
+| 25 | Verify all examples compile and run with v3                                       | Correctness            | Trivial |
 
 ---
 
@@ -204,13 +204,13 @@ The fix is straightforward: change `go.mod` to `module github.com/LarsArtmann/go
 ## File Change Summary
 
 ```
- .golangci.yml        |  4 ++++
- AGENTS.md            | 17 +++++++++++++++--
- filter_gogen.go      | 30 ++++++--------------------------
- filter_gogen_test.go | 13 +++++++++----
- go.mod               |  2 ++
- go.sum               | 28 ++++++++++++++++++++++++++--
- 6 files changed, 62 insertions(+), 32 deletions(-)
+.golangci.yml        |  4 ++++
+AGENTS.md            | 17 +++++++++++++++--
+filter_gogen.go      | 30 ++++++--------------------------
+filter_gogen_test.go | 13 +++++++++----
+go.mod               |  2 ++
+go.sum               | 28 ++++++++++++++++++++++++++--
+6 files changed, 62 insertions(+), 32 deletions(-)
 ```
 
 ## Test Results

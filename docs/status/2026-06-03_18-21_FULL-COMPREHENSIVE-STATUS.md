@@ -213,33 +213,33 @@ All four are out-of-repo work, dependent on consumers:
 
 **Prioritized by impact × effort (Pareto principle):**
 
-| #   | Task                                                                             | Impact   | Effort   | Category     |
-| --- | -------------------------------------------------------------------------------- | -------- | -------- | ------------ |
-| 1   | **Fix system inotify exhaustion** (increase limit or reduce kitty usage)         | CRITICAL | 5min     | Environment  |
-| 2   | **Fix buildflow `todo-check` pre-commit hook** (exclude NOTE: comments)          | HIGH     | 10min    | DX           |
-| 3   | **Tag v2.2.0 release** with all new features                                     | HIGH     | 5min     | Release      |
-| 4   | **Generate FEATURES.md** via features-audit skill                                | MED      | 15min    | Docs         |
-| 5   | **Add `tryAddPath` unit tests** (budget, ENOSPC, onAdd paths)                    | MED      | 15min    | Testing      |
-| 6   | **Validate `.goreleaser.yml`** with `goreleaser check`                           | MED      | 10min    | Release      |
-| 7   | **Document buildflow `--no-verify` gotcha** in AGENTS.md                         | MED      | 2min     | Docs         |
-| 8   | **Add middleware selection guide** to docs (which middleware for which use case) | MED      | 20min    | Docs         |
-| 9   | **Add self-heal goroutine lifecycle test** (confirm stop on Close)               | MED      | 10min    | Testing      |
-| 10  | **Write example adapters** for Prometheus/OTel interfaces                        | MED      | 20min    | DX           |
-| 11  | **Set up semantic-release or release-please** for automated changelog + tags     | MED      | 30min    | Release      |
-| 12  | **Add CI release workflow** (tag-triggered goreleaser)                           | MED      | 20min    | Release      |
-| 13  | **Audit error wrapping** for wrapcheck consistency                               | LOW      | 15min    | Quality      |
-| 14  | **Expand fuzz tests** with corpus seeds, more targets                            | LOW      | 20min    | Testing      |
-| 15  | **Add Windows CI runner** for platform-specific tests                            | LOW      | 30min    | CI           |
-| 16  | **Decompose `watcher_internal.go`** (extract processEvent, pollLoop)             | LOW      | 30min    | Architecture |
-| 17  | **Add `WithContentHashing` documentation** (performance tradeoff, 10MiB cap)     | LOW      | 10min    | Docs         |
-| 18  | **Extract `drainEvents` to testutil package**                                    | LOW      | 10min    | Testing      |
-| 19  | **Implement DebounceEntry Mixin phantom type**                                   | LOW      | 15min    | Types        |
-| 20  | **Integrate into file-and-image-renamer** (external)                             | MED      | EXTERNAL | Adoption     |
-| 21  | **Integrate into dynamic-markdown-site** (external)                              | MED      | EXTERNAL | Adoption     |
-| 22  | **Explore fsnotify v2 API changes** (prepare for migration)                      | LOW      | 30min    | Future       |
-| 23  | **Design `WatchChanges(ctx, targetState)` API** for idempotent sync              | LOW      | 60min    | Feature      |
-| 24  | **Localizable error messages** (i18n key architecture)                           | LOW      | 60min    | Feature      |
-| 25  | **Error simulation testing** (fault injection framework)                         | LOW      | 60min    | QA           |
+| #  | Task                                                                             | Impact   | Effort   | Category     |
+| -- | -------------------------------------------------------------------------------- | -------- | -------- | ------------ |
+| 1  | **Fix system inotify exhaustion** (increase limit or reduce kitty usage)         | CRITICAL | 5min     | Environment  |
+| 2  | **Fix buildflow `todo-check` pre-commit hook** (exclude NOTE: comments)          | HIGH     | 10min    | DX           |
+| 3  | **Tag v2.2.0 release** with all new features                                     | HIGH     | 5min     | Release      |
+| 4  | **Generate FEATURES.md** via features-audit skill                                | MED      | 15min    | Docs         |
+| 5  | **Add `tryAddPath` unit tests** (budget, ENOSPC, onAdd paths)                    | MED      | 15min    | Testing      |
+| 6  | **Validate `.goreleaser.yml`** with `goreleaser check`                           | MED      | 10min    | Release      |
+| 7  | **Document buildflow `--no-verify` gotcha** in AGENTS.md                         | MED      | 2min     | Docs         |
+| 8  | **Add middleware selection guide** to docs (which middleware for which use case) | MED      | 20min    | Docs         |
+| 9  | **Add self-heal goroutine lifecycle test** (confirm stop on Close)               | MED      | 10min    | Testing      |
+| 10 | **Write example adapters** for Prometheus/OTel interfaces                        | MED      | 20min    | DX           |
+| 11 | **Set up semantic-release or release-please** for automated changelog + tags     | MED      | 30min    | Release      |
+| 12 | **Add CI release workflow** (tag-triggered goreleaser)                           | MED      | 20min    | Release      |
+| 13 | **Audit error wrapping** for wrapcheck consistency                               | LOW      | 15min    | Quality      |
+| 14 | **Expand fuzz tests** with corpus seeds, more targets                            | LOW      | 20min    | Testing      |
+| 15 | **Add Windows CI runner** for platform-specific tests                            | LOW      | 30min    | CI           |
+| 16 | **Decompose `watcher_internal.go`** (extract processEvent, pollLoop)             | LOW      | 30min    | Architecture |
+| 17 | **Add `WithContentHashing` documentation** (performance tradeoff, 10MiB cap)     | LOW      | 10min    | Docs         |
+| 18 | **Extract `drainEvents` to testutil package**                                    | LOW      | 10min    | Testing      |
+| 19 | **Implement DebounceEntry Mixin phantom type**                                   | LOW      | 15min    | Types        |
+| 20 | **Integrate into file-and-image-renamer** (external)                             | MED      | EXTERNAL | Adoption     |
+| 21 | **Integrate into dynamic-markdown-site** (external)                              | MED      | EXTERNAL | Adoption     |
+| 22 | **Explore fsnotify v2 API changes** (prepare for migration)                      | LOW      | 30min    | Future       |
+| 23 | **Design `WatchChanges(ctx, targetState)` API** for idempotent sync              | LOW      | 60min    | Feature      |
+| 24 | **Localizable error messages** (i18n key architecture)                           | LOW      | 60min    | Feature      |
+| 25 | **Error simulation testing** (fault injection framework)                         | LOW      | 60min    | QA           |
 
 ---
 

@@ -1,7 +1,7 @@
 # Branching-Flow Analysis: Comprehensive Improvement Plan
 
-**Date**: 2026-04-10 06:33 CEST  
-**Analysis Tool**: branching-flow all . --verbose  
+**Date**: 2026-04-10 06:33 CEST\
+**Analysis Tool**: branching-flow all . --verbose\
 **Project**: go-filewatcher
 
 ---
@@ -35,13 +35,13 @@ The branching-flow multi-linter analysis identified **6 core issues** across 8 l
 
 **Files**: `debouncer.go`, `testing_helpers.go`, `watcher_walk.go`
 
-| #   | Violation              | Current                                 | New Type                   |
-| --- | ---------------------- | --------------------------------------- | -------------------------- |
-| 1   | debouncer.go:115       | `Debounce(key string, ...)`             | `type DebounceKey string`  |
-| 2   | testing_helpers.go:73  | `assertLogContains(..., substr string)` | `type LogSubstring string` |
-| 3   | testing_helpers.go:144 | `createTestFile(..., tmpDir string)`    | `type TempDir string`      |
-| 4   | watcher_walk.go:22     | `addPath(root string)`                  | `type RootPath string`     |
-| 5   | watcher_walk.go:34     | `walkAndAddPaths(root string)`          | `type RootPath string`     |
+| # | Violation              | Current                                 | New Type                   |
+| - | ---------------------- | --------------------------------------- | -------------------------- |
+| 1 | debouncer.go:115       | `Debounce(key string, ...)`             | `type DebounceKey string`  |
+| 2 | testing_helpers.go:73  | `assertLogContains(..., substr string)` | `type LogSubstring string` |
+| 3 | testing_helpers.go:144 | `createTestFile(..., tmpDir string)`    | `type TempDir string`      |
+| 4 | watcher_walk.go:22     | `addPath(root string)`                  | `type RootPath string`     |
+| 5 | watcher_walk.go:34     | `walkAndAddPaths(root string)`          | `type RootPath string`     |
 
 **Rationale**: Prevents passing wrong string arguments at compile time.
 
@@ -55,7 +55,7 @@ The branching-flow multi-linter analysis identified **6 core issues** across 8 l
 | ---------- | -------- | ---------------------- |
 | Event.Path | `string` | `type FilePath string` |
 
-**Breaking Change**: YES - Public API change  
+**Breaking Change**: YES - Public API change\
 **Mitigation**: Add `String() string` method for easy conversion
 
 **Rationale**: Core API type safety - prevents mixing path types with arbitrary strings.

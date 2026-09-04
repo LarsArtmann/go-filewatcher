@@ -73,7 +73,7 @@ Replace internal event processing pipelines with ro's operator chains.
 
 | Argument                                                          | Why it matters |
 | ----------------------------------------------------------------- | -------------- |
-| Could simplify internal debounce/filter/middleware implementation |
+| Could simplify internal debounce/filter/middleware implementation |                |
 
 ### CONTRA
 

@@ -12,6 +12,7 @@
 go-filewatcher is already a sophisticated, well-tested library. The code paths that are exercised daily (filters, debounce, batched walk, ENOSPC self-heal, case-insensitive/NFC keys) are solid. The gaps that remain are mostly in **less-common but high-impact combinations**: polling mode with exclusions, symlink cycles, slow-consumer backpressure, middleware drop observability, and a few small bugs that can panic or silently misbehave. This document lists concrete, actionable fixes.
 
 Each item includes:
+
 - the consumer-visible symptom,
 - the root cause,
 - the suggested change with file references,
@@ -363,6 +364,7 @@ return fn(abs)
 **Root cause:** `hashFile` (`filter.go:419-442`) and `FilterGeneratedCodeFull` content mode (`filter_gogen.go:75-82`) call `os.Open`/`os.ReadFile` synchronously from the `watchLoop` goroutine. There is no size pre-check in `FilterGeneratedCodeFull` (unlike `hashFile`'s 10 MiB cap) and no async I/O.
 
 **Suggested fix:**
+
 1. Add a `WithContentHashMaxSize(bytes int64)` option and use it in `convertEvent`/`hashFileContents`. Default to 10 MiB (current behavior) to preserve compatibility.
 2. For `FilterGeneratedCodeFull` with `ContentCheckEnabled`, add a similar max-size cap and skip content checks for files larger than the cap.
 3. Consider adding a warning in the docs: content hashing and content-based detection are not suitable for high-throughput or large-file scenarios. For large files, use filename-only detection.
@@ -441,40 +443,44 @@ Actually, I'll remove it to avoid overloading. There are plenty of other items.
 
 The following scenarios are either not tested or only tested on Linux. Closing them would catch regressions in the items above:
 
-| Scenario | Where to add | Priority |
-| --- | --- | --- |
-| Polling loop with `WithExcludePaths` | `watcher_poll_test.go` (new) | High |
-| Polling loop double-event with native fsnotify | `watcher_poll_test.go` | Medium |
-| Symlink cycle in `WithFollowSymlinks` | `watcher_walk_test.go` | High |
-| Symlink to already-watched real path | `watcher_walk_test.go` | Medium |
-| `WithDebug(nil)` does not panic | `options_test.go` | High |
-| `MiddlewareBatch` does not emit individual event on full batch | `middleware_test.go` | High |
-| `MiddlewareDeduplicate` with NFD/NFC paths | `middleware_test.go` | Medium |
-| `Errors()` channel drops counted in `Stats` | `watcher_internal_test.go` | Medium |
-| `FilterGitignore` with relative `repoRoot` | `filter_test.go` | Medium |
-| `Add`/`AddRecursive` with non-existent path | `watcher_test.go` | High |
-| Case-insensitive `WithIgnoreDirs` walk-time skip | `watcher_walk_test.go` | Medium |
-| `selfHeal` abandons permission-denied paths | `watcher_selfheal_test.go` | High |
-| macOS CI matrix for case/NFC behavior | `.github/workflows/ci.yml` | High (per `TODO_LIST.md`) |
-| Windows CI matrix | `.github/workflows/ci.yml` | Medium (per `TODO_LIST.md`) |
+| Scenario                                                       | Where to add                 | Priority                    |
+| -------------------------------------------------------------- | ---------------------------- | --------------------------- |
+| Polling loop with `WithExcludePaths`                           | `watcher_poll_test.go` (new) | High                        |
+| Polling loop double-event with native fsnotify                 | `watcher_poll_test.go`       | Medium                      |
+| Symlink cycle in `WithFollowSymlinks`                          | `watcher_walk_test.go`       | High                        |
+| Symlink to already-watched real path                           | `watcher_walk_test.go`       | Medium                      |
+| `WithDebug(nil)` does not panic                                | `options_test.go`            | High                        |
+| `MiddlewareBatch` does not emit individual event on full batch | `middleware_test.go`         | High                        |
+| `MiddlewareDeduplicate` with NFD/NFC paths                     | `middleware_test.go`         | Medium                      |
+| `Errors()` channel drops counted in `Stats`                    | `watcher_internal_test.go`   | Medium                      |
+| `FilterGitignore` with relative `repoRoot`                     | `filter_test.go`             | Medium                      |
+| `Add`/`AddRecursive` with non-existent path                    | `watcher_test.go`            | High                        |
+| Case-insensitive `WithIgnoreDirs` walk-time skip               | `watcher_walk_test.go`       | Medium                      |
+| `selfHeal` abandons permission-denied paths                    | `watcher_selfheal_test.go`   | High                        |
+| macOS CI matrix for case/NFC behavior                          | `.github/workflows/ci.yml`   | High (per `TODO_LIST.md`)   |
+| Windows CI matrix                                              | `.github/workflows/ci.yml`   | Medium (per `TODO_LIST.md`) |
 
 ---
 
 ## Suggested Sequencing
 
 **Phase 1 — correctness fixes (patch release):**
+
 - Items 1, 4, 6, 11, 12, 16, 23.
 - Add tests for each.
 
 **Phase 2 — observability improvements (minor release):**
+
 - Items 5, 8, 15 (with default 1.0 for safety).
 - Add `Stats` fields and update `PrometheusCollector`/`metrics.go`.
 
 **Phase 3 — advanced edge cases (minor release):**
+
 - Items 2, 3, 9, 10, 13, 17, 18, 19.
 - These require new options or more invasive changes; implement with opt-in defaults.
 
 **Phase 4 — docs and CI:**
+
 - Items 24, 25.
 
 ---

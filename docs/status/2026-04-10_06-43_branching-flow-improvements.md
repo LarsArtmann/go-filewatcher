@@ -1,7 +1,7 @@
 # Branching-Flow Analysis: Code Quality Improvements
 
-**Date**: 2026-04-10 06:43 CEST  
-**Analysis Tool**: branching-flow v1.x  
+**Date**: 2026-04-10 06:43 CEST\
+**Analysis Tool**: branching-flow v1.x\
 **Commit Base**: b94ee64 feat(example): add example binaries and improve example tests
 
 ---

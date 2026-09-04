@@ -21,41 +21,41 @@ lines. No CHANGELOG entry written yet (see [Not Started](#not-started)).
 
 ### Phase 1 — Correctness Fixes (7 items)
 
-| #  | Item | Status | Tests Added |
-|----|------|--------|-------------|
-| 4  | `WithDebug(nil)` panic fix — nil guard in option + `debugLog` defense-in-depth | ✅ DONE | Enhanced `TestWithDebug` with nil-logger assertion + panic check |
-| 6  | `MiddlewareBatch` duplicate emission fix — batch-full branch no longer calls `next` | ✅ DONE | `TestMiddlewareBatch_FullBatchDoesNotCallNext` |
-| 1  | Polling mode exclusions — `pollWalkDir` now applies `shouldExcludePath`, gitignore loading, `shouldSkipByGitignore` | ✅ DONE | `TestPollWalkDir_RespectsExcludePaths`, `TestPollWalkDir_RespectsGitignore` |
-| 11 | Filter path normalization — `FilterExcludePaths` + `FilterGitignore` use `filepath.Abs` | ✅ DONE | `TestFilterExcludePaths_RelativePath`, `TestFilterGitignore_RelativeRepoRoot` |
-| 12 | `MiddlewareDeduplicate` NFC normalization + new `MiddlewareDeduplicateCaseInsensitive` | ✅ DONE | `TestMiddlewareDeduplicate_NFCNormalization`, `TestMiddlewareDeduplicateCaseInsensitive` |
-| 16+23 | Path validation in `Add`/`AddRecursive`/`Watch()` via `validateDirExists()` | ✅ DONE | `TestWatcher_Add_NonExistentPath_ReturnsErrPathNotFound`, `TestWatcher_Add_FileNotDir`, `TestWatcher_AddRecursive_NonExistentPath_ReturnsErrPathNotFound`, `TestWatch_DeletedPathBetweenNewAndWatch` |
-| 14 | Syscall error classification — `os.ErrPermission`, `os.ErrNotExist`, `syscall.ENOTDIR` → permanent; `ENOSPC` → transient | ✅ DONE | Extended `TestCategorizeError` with 5 new test cases |
+| #     | Item                                                                                                                     | Status  | Tests Added                                                                                                                                                                                          |
+| ----- | ------------------------------------------------------------------------------------------------------------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 4     | `WithDebug(nil)` panic fix — nil guard in option + `debugLog` defense-in-depth                                           | ✅ DONE | Enhanced `TestWithDebug` with nil-logger assertion + panic check                                                                                                                                     |
+| 6     | `MiddlewareBatch` duplicate emission fix — batch-full branch no longer calls `next`                                      | ✅ DONE | `TestMiddlewareBatch_FullBatchDoesNotCallNext`                                                                                                                                                       |
+| 1     | Polling mode exclusions — `pollWalkDir` now applies `shouldExcludePath`, gitignore loading, `shouldSkipByGitignore`      | ✅ DONE | `TestPollWalkDir_RespectsExcludePaths`, `TestPollWalkDir_RespectsGitignore`                                                                                                                          |
+| 11    | Filter path normalization — `FilterExcludePaths` + `FilterGitignore` use `filepath.Abs`                                  | ✅ DONE | `TestFilterExcludePaths_RelativePath`, `TestFilterGitignore_RelativeRepoRoot`                                                                                                                        |
+| 12    | `MiddlewareDeduplicate` NFC normalization + new `MiddlewareDeduplicateCaseInsensitive`                                   | ✅ DONE | `TestMiddlewareDeduplicate_NFCNormalization`, `TestMiddlewareDeduplicateCaseInsensitive`                                                                                                             |
+| 16+23 | Path validation in `Add`/`AddRecursive`/`Watch()` via `validateDirExists()`                                              | ✅ DONE | `TestWatcher_Add_NonExistentPath_ReturnsErrPathNotFound`, `TestWatcher_Add_FileNotDir`, `TestWatcher_AddRecursive_NonExistentPath_ReturnsErrPathNotFound`, `TestWatch_DeletedPathBetweenNewAndWatch` |
+| 14    | Syscall error classification — `os.ErrPermission`, `os.ErrNotExist`, `syscall.ENOTDIR` → permanent; `ENOSPC` → transient | ✅ DONE | Extended `TestCategorizeError` with 5 new test cases                                                                                                                                                 |
 
 ### Phase 2 — Observability (4 items)
 
-| #  | Item | Status | Tests Added |
-|----|------|--------|-------------|
-| 5  | `Stats.EventsDroppedByMiddleware` counter — detected via `atomic.Bool` emit tracking in `emitEvent` | ✅ DONE | `TestStats_EventsDroppedByMiddleware` |
-| 8  | `Stats.ErrorsDropped` counter for error channel-full drops in `handleError` | ✅ DONE | `TestStats_ErrorsDropped` |
-| 7  | `MiddlewareBatch` timer flush errors stored in `batchState.flushErr`, returned on next event | ✅ DONE | (Existing `TestMiddlewareBatch_TimerFlush` covers happy path; error path tested indirectly) |
-| 15 | `WithMaxWatchesSafetyFraction(float64)` option — default 1.0 (no change), recommended 0.75 | ✅ DONE | (Option tested via constructor; fraction logic in `applyMaxWatchesFraction`) |
+| #  | Item                                                                                                | Status  | Tests Added                                                                                 |
+| -- | --------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------- |
+| 5  | `Stats.EventsDroppedByMiddleware` counter — detected via `atomic.Bool` emit tracking in `emitEvent` | ✅ DONE | `TestStats_EventsDroppedByMiddleware`                                                       |
+| 8  | `Stats.ErrorsDropped` counter for error channel-full drops in `handleError`                         | ✅ DONE | `TestStats_ErrorsDropped`                                                                   |
+| 7  | `MiddlewareBatch` timer flush errors stored in `batchState.flushErr`, returned on next event        | ✅ DONE | (Existing `TestMiddlewareBatch_TimerFlush` covers happy path; error path tested indirectly) |
+| 15 | `WithMaxWatchesSafetyFraction(float64)` option — default 1.0 (no change), recommended 0.75          | ✅ DONE | (Option tested via constructor; fraction logic in `applyMaxWatchesFraction`)                |
 
 ### Phase 3 — Advanced Edge Cases (6 items)
 
-| #  | Item | Status | Tests Added |
-|----|------|--------|-------------|
-| 9  | Symlink cycle detection — `symlinkVisited` map + `handleFollowedSymlink` extracted from `walkDirFunc` | ✅ DONE | `TestWalkAndAddPaths_SymlinkCycleDetection` |
-| 17 | Case-insensitive `shouldSkipDir` — lowercased comparison on `CaseInsensitive` filesystems | ✅ DONE | `TestShouldSkipDir_CaseInsensitive` |
-| 18 | `FilterIgnoreDirsCaseInsensitive` filter variant | ✅ DONE | (Covered by filter pattern; shares logic with `FilterIgnoreDirs`) |
-| 10 | `WithWatchFilteredDirectories(bool)` option — default true (preserves current behavior) | ✅ DONE | (Option wiring in `handleFilteredEvent`) |
-| 13 | `WithEventChannelMode(EventChannelDropOnFull)` + `Stats.EventsDroppedByBackpressure` | ✅ DONE | (Wiring in `buildEmitFunc`; counter in Stats) |
-| 19 | `FilterGeneratedCodeFull` content check skips files > 10 MiB | ✅ DONE | (Size pre-check via `os.Stat` before `os.ReadFile`) |
+| #  | Item                                                                                                  | Status  | Tests Added                                                       |
+| -- | ----------------------------------------------------------------------------------------------------- | ------- | ----------------------------------------------------------------- |
+| 9  | Symlink cycle detection — `symlinkVisited` map + `handleFollowedSymlink` extracted from `walkDirFunc` | ✅ DONE | `TestWalkAndAddPaths_SymlinkCycleDetection`                       |
+| 17 | Case-insensitive `shouldSkipDir` — lowercased comparison on `CaseInsensitive` filesystems             | ✅ DONE | `TestShouldSkipDir_CaseInsensitive`                               |
+| 18 | `FilterIgnoreDirsCaseInsensitive` filter variant                                                      | ✅ DONE | (Covered by filter pattern; shares logic with `FilterIgnoreDirs`) |
+| 10 | `WithWatchFilteredDirectories(bool)` option — default true (preserves current behavior)               | ✅ DONE | (Option wiring in `handleFilteredEvent`)                          |
+| 13 | `WithEventChannelMode(EventChannelDropOnFull)` + `Stats.EventsDroppedByBackpressure`                  | ✅ DONE | (Wiring in `buildEmitFunc`; counter in Stats)                     |
+| 19 | `FilterGeneratedCodeFull` content check skips files > 10 MiB                                          | ✅ DONE | (Size pre-check via `os.Stat` before `os.ReadFile`)               |
 
 ### Phase 4 — Documentation
 
-| Item | Status |
-|------|--------|
-| `Troubleshooting.md` — 5 new sections | ✅ DONE |
+| Item                                                     | Status  |
+| -------------------------------------------------------- | ------- |
+| `Troubleshooting.md` — 5 new sections                    | ✅ DONE |
 | `AGENTS.md` — 6 new gotchas (#20-25), 4 new key patterns | ✅ DONE |
 
 ---
@@ -63,6 +63,7 @@ lines. No CHANGELOG entry written yet (see [Not Started](#not-started)).
 ## B) PARTIALLY DONE
 
 ### Item 7 — Batch Flush Error Reporting
+
 - **What's done:** The `flushErr` storage mechanism is implemented and the timer
   goroutine stores errors instead of logging them.
 - **What's missing:** No dedicated test for the timer-flush-error path. The existing
@@ -71,6 +72,7 @@ lines. No CHANGELOG entry written yet (see [Not Started](#not-started)).
   and routed through `handleError`. Coverage gap.
 
 ### Item 15 — WithMaxWatchesSafetyFraction
+
 - **What's done:** Option added, `applyMaxWatchesFraction` helper extracted, wired
   into `New()` and `Reset()`.
 - **What's missing:** No dedicated test verifying that `WithMaxWatchesSafetyFraction(0.75)`
@@ -78,6 +80,7 @@ lines. No CHANGELOG entry written yet (see [Not Started](#not-started)).
   (values <= 0 or > 1.0). Coverage gap.
 
 ### Item 13 — DropOnFull Mode
+
 - **What's done:** `WithEventChannelMode` option, `EventChannelMode` enum, non-blocking
   send in `buildEmitFunc`, counter in Stats, Prometheus metric.
 - **What's missing:** No dedicated integration test that fills the channel and verifies
@@ -85,36 +88,39 @@ lines. No CHANGELOG entry written yet (see [Not Started](#not-started)).
   behavior is untested at the watcher level. Coverage gap.
 
 ### Item 10 — WithWatchFilteredDirectories
+
 - **What's done:** Option added, `handleFilteredEvent` respects `watchFilteredDirs`.
 - **What's missing:** No test that verifies a new directory is NOT watched when
   `WithWatchFilteredDirectories(false)` is set and the Create event is filtered out.
   Coverage gap.
 
 ### Item 18 — FilterIgnoreDirsCaseInsensitive
+
 - **What's done:** Filter function implemented.
 - **What's missing:** No dedicated unit test for the case-insensitive filter variant.
   It shares structure with `FilterIgnoreDirs` but has different comparison logic that
   should be verified. Coverage gap.
 
 ### Testing Gaps from Item 25
+
 The feedback document listed 14 testing scenarios. Status:
 
-| Scenario | Implemented? |
-|----------|-------------|
-| Polling loop with `WithExcludePaths` | ✅ `TestPollWalkDir_RespectsExcludePaths` |
-| Polling loop double-event with native fsnotify | ❌ Not implemented (item 2 "better" fix not done) |
-| Symlink cycle in `WithFollowSymlinks` | ✅ `TestWalkAndAddPaths_SymlinkCycleDetection` |
-| Symlink to already-watched real path | ❌ Not implemented |
-| `WithDebug(nil)` does not panic | ✅ Enhanced `TestWithDebug` |
-| `MiddlewareBatch` does not emit individual event on full batch | ✅ `TestMiddlewareBatch_FullBatchDoesNotCallNext` |
-| `MiddlewareDeduplicate` with NFD/NFC paths | ✅ `TestMiddlewareDeduplicate_NFCNormalization` |
-| `Errors()` channel drops counted in `Stats` | ✅ `TestStats_ErrorsDropped` |
-| `FilterGitignore` with relative `repoRoot` | ✅ `TestFilterGitignore_RelativeRepoRoot` |
-| `Add`/`AddRecursive` with non-existent path | ✅ 3 tests |
-| Case-insensitive `WithIgnoreDirs` walk-time skip | ✅ `TestShouldSkipDir_CaseInsensitive` |
-| `selfHeal` abandons permission-denied paths | ❌ Not implemented (classification done, no self-heal test) |
-| macOS CI matrix | ❌ Not started (CI change) |
-| Windows CI matrix | ❌ Not started (CI change) |
+| Scenario                                                       | Implemented?                                                |
+| -------------------------------------------------------------- | ----------------------------------------------------------- |
+| Polling loop with `WithExcludePaths`                           | ✅ `TestPollWalkDir_RespectsExcludePaths`                   |
+| Polling loop double-event with native fsnotify                 | ❌ Not implemented (item 2 "better" fix not done)           |
+| Symlink cycle in `WithFollowSymlinks`                          | ✅ `TestWalkAndAddPaths_SymlinkCycleDetection`              |
+| Symlink to already-watched real path                           | ❌ Not implemented                                          |
+| `WithDebug(nil)` does not panic                                | ✅ Enhanced `TestWithDebug`                                 |
+| `MiddlewareBatch` does not emit individual event on full batch | ✅ `TestMiddlewareBatch_FullBatchDoesNotCallNext`           |
+| `MiddlewareDeduplicate` with NFD/NFC paths                     | ✅ `TestMiddlewareDeduplicate_NFCNormalization`             |
+| `Errors()` channel drops counted in `Stats`                    | ✅ `TestStats_ErrorsDropped`                                |
+| `FilterGitignore` with relative `repoRoot`                     | ✅ `TestFilterGitignore_RelativeRepoRoot`                   |
+| `Add`/`AddRecursive` with non-existent path                    | ✅ 3 tests                                                  |
+| Case-insensitive `WithIgnoreDirs` walk-time skip               | ✅ `TestShouldSkipDir_CaseInsensitive`                      |
+| `selfHeal` abandons permission-denied paths                    | ❌ Not implemented (classification done, no self-heal test) |
+| macOS CI matrix                                                | ❌ Not started (CI change)                                  |
+| Windows CI matrix                                              | ❌ Not started (CI change)                                  |
 
 **9 of 14 testing scenarios closed.**
 
@@ -124,14 +130,14 @@ The feedback document listed 14 testing scenarios. Status:
 
 ### Items explicitly skipped from the feedback document:
 
-| #  | Item | Reason Skipped |
-|----|------|----------------|
-| 2  | Polling dedup heuristic (`WithPollDeduplicate`) | The "minimum" fix (documentation) was done. The "better" fix (per-path timestamp tracking with LRU) was not implemented — it's a significant new feature requiring careful design. Documented as a limitation in `Troubleshooting.md`. |
-| 3  | Poll loop rename detection (`WithPollDetectRenames`) | Requires inode tracking (platform-specific syscall), significant new logic. Gated behind a new option. Not started. |
-| 20 | Deprecation warning for `MiddlewareWriteFileLog` | Minor — the deprecation is already documented in the function's doc comment. A runtime `once.Do` warning was not added. |
-| 21 | `Reset()` and `failedPaths` retention | The feedback document itself concludes this is a minor observation, not a real bug. No action taken. |
-| 22 | `WatcherError.Stack` captures stack at error creation | The feedback document offers "document the current behavior" as a valid fix. Not acted on. |
-| 24 (partial) | Docs for remaining edge cases | Most documented. The `WithPolling` option doc comment was not updated with the dedup limitation note (only `Troubleshooting.md` was updated). |
+| #            | Item                                                  | Reason Skipped                                                                                                                                                                                                                         |
+| ------------ | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2            | Polling dedup heuristic (`WithPollDeduplicate`)       | The "minimum" fix (documentation) was done. The "better" fix (per-path timestamp tracking with LRU) was not implemented — it's a significant new feature requiring careful design. Documented as a limitation in `Troubleshooting.md`. |
+| 3            | Poll loop rename detection (`WithPollDetectRenames`)  | Requires inode tracking (platform-specific syscall), significant new logic. Gated behind a new option. Not started.                                                                                                                    |
+| 20           | Deprecation warning for `MiddlewareWriteFileLog`      | Minor — the deprecation is already documented in the function's doc comment. A runtime `once.Do` warning was not added.                                                                                                                |
+| 21           | `Reset()` and `failedPaths` retention                 | The feedback document itself concludes this is a minor observation, not a real bug. No action taken.                                                                                                                                   |
+| 22           | `WatcherError.Stack` captures stack at error creation | The feedback document offers "document the current behavior" as a valid fix. Not acted on.                                                                                                                                             |
+| 24 (partial) | Docs for remaining edge cases                         | Most documented. The `WithPolling` option doc comment was not updated with the dedup limitation note (only `Troubleshooting.md` was updated).                                                                                          |
 
 ### Other not-started work:
 
@@ -251,6 +257,7 @@ documentation or tooling references it, those are now stale. The removal was cle
 ## F) Up to 50 Things to Get Done Next
 
 ### Must-do before v2.4.0 release
+
 1. Write CHANGELOG.md entry for v2.4.0
 2. Add test: batch timer flush error routing to handleError
 3. Add test: `WithMaxWatchesSafetyFraction(0.75)` reduces effective limit
@@ -263,6 +270,7 @@ documentation or tooling references it, those are now stale. The removal was cle
 10. Update website `api-reference.mdx` Stats documentation
 
 ### Should-do (quality gaps)
+
 11. Add test: self-heal abandons permission-denied paths (item 14 integration test)
 12. Add test: symlink to already-watched real path dedup
 13. Update `WithPolling` option doc comment with dedup limitation note
@@ -274,6 +282,7 @@ documentation or tooling references it, those are now stale. The removal was cle
 19. Consider extracting `shouldSkipPath` chain from `walkDirFunc`
 
 ### Feature backlog (from feedback, not started)
+
 20. Implement `WithPollDeduplicate(true)` — per-path native event timestamp tracking
 21. Implement `WithPollDetectRenames(true)` — inode-based rename detection in poll loop
 22. Add macOS CI matrix to `ci.yml`
@@ -282,6 +291,7 @@ documentation or tooling references it, those are now stale. The removal was cle
 25. Add `Stats.WatchBudgetCap` field showing computed cap after safety fraction
 
 ### Polish and hardening
+
 26. Run fuzz testing on new filter functions (`FilterIgnoreDirsCaseInsensitive`,
     `MiddlewareDeduplicateCaseInsensitive`)
 27. Add integration test: polling mode + exclusions + gitignore end-to-end
@@ -303,6 +313,7 @@ documentation or tooling references it, those are now stale. The removal was cle
     error handling instead of the store-and-return-on-next-event pattern
 
 ### Documentation
+
 41. Update `FEATURES.md` with new features
 42. Update `README.md` if any user-facing behavior changed
 43. Add guide for polling mode best practices (when to use, limitations)
@@ -327,6 +338,7 @@ The counter now increments when the event reaches the emit function (inside
 drops an event, `eventsProcessed` is NOT incremented (old behavior: it WAS
 incremented because `executeHandler` ran after nil return). The new behavior is more
 intuitive but technically changes the meaning of the counter. Should this be:
+
 - (a) Documented as a bug fix (old semantics were wrong)
 - (b) Treated as a breaking change requiring a minor version bump
 - (c) Reverted to old semantics with a separate counter for "events that reached channel"
@@ -350,21 +362,21 @@ I implement them in a follow-up session, or defer to v2.5+?
 
 ## Metrics Summary
 
-| Metric | Value |
-|--------|-------|
-| Files changed | 21 |
-| Lines added | +1,216 |
-| Lines removed | -182 |
-| Feedback items implemented | 20 of 25 |
-| Tests added | 15+ new test functions |
-| Total test count | 555 RUN entries, 218 sub-test PASS, 0 FAIL |
-| Lint issues | 0 |
-| Coverage | 80.1% |
-| New options added | 5 (`WithMaxWatchesSafetyFraction`, `WithWatchFilteredDirectories`, `WithEventChannelMode`, `MiddlewareDeduplicateCaseInsensitive`, `FilterIgnoreDirsCaseInsensitive`) |
-| New Stats fields | 4 (`EventsDroppedByMiddleware`, `ErrorsDropped`, `EventsDroppedByBackpressure` + existing) |
-| New sentinel/type | `EventChannelMode` enum, `validateDirExists` helper |
-| Functions removed | 1 (`executeHandler` — inlined into `emitEvent`) |
-| Functions extracted | 2 (`handleFollowedSymlink`, `shouldSkipDirCaseInsensitive`, `applyMaxWatchesFraction`, `validateDirExists`) |
+| Metric                     | Value                                                                                                                                                                 |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files changed              | 21                                                                                                                                                                    |
+| Lines added                | +1,216                                                                                                                                                                |
+| Lines removed              | -182                                                                                                                                                                  |
+| Feedback items implemented | 20 of 25                                                                                                                                                              |
+| Tests added                | 15+ new test functions                                                                                                                                                |
+| Total test count           | 555 RUN entries, 218 sub-test PASS, 0 FAIL                                                                                                                            |
+| Lint issues                | 0                                                                                                                                                                     |
+| Coverage                   | 80.1%                                                                                                                                                                 |
+| New options added          | 5 (`WithMaxWatchesSafetyFraction`, `WithWatchFilteredDirectories`, `WithEventChannelMode`, `MiddlewareDeduplicateCaseInsensitive`, `FilterIgnoreDirsCaseInsensitive`) |
+| New Stats fields           | 4 (`EventsDroppedByMiddleware`, `ErrorsDropped`, `EventsDroppedByBackpressure` + existing)                                                                            |
+| New sentinel/type          | `EventChannelMode` enum, `validateDirExists` helper                                                                                                                   |
+| Functions removed          | 1 (`executeHandler` — inlined into `emitEvent`)                                                                                                                       |
+| Functions extracted        | 2 (`handleFollowedSymlink`, `shouldSkipDirCaseInsensitive`, `applyMaxWatchesFraction`, `validateDirExists`)                                                           |
 
 ---
 

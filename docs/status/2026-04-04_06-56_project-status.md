@@ -1,8 +1,8 @@
 # Project Status Report
 
-**Date:** 2026-04-04 16:15 (Updated)  
-**Project:** go-filewatcher  
-**Branch:** master  
+**Date:** 2026-04-04 16:15 (Updated)\
+**Project:** go-filewatcher\
+**Branch:** master\
 **Last Commit:** 5b41bcb (refactor: integrate per-path debouncing into executeHandler)
 
 ---

@@ -318,7 +318,7 @@ func stopAndClearTimer(t **time.Timer) {
 // If it returns an error, the error is passed to the next handler.
 // If it returns nil, processing continues normally.
 //
-//nolint:funlen // Complex middleware requiring inline logic
+
 func MiddlewareBatch(window time.Duration, maxSize int, flush func([]Event) error) Middleware {
 	window, maxSize = resolveBatchDefaults(window, maxSize)
 
@@ -435,7 +435,7 @@ func (c *fileLogCache) write(filePath string, event Event) error {
 	var writeErr error
 
 	if c.f == nil {
-		c.f, writeErr = os.OpenFile( //nolint:gosec // file path from user config is intentional
+		c.f, writeErr = os.OpenFile(
 			filePath,
 			os.O_CREATE|os.O_WRONLY|os.O_APPEND,
 			logFilePermission,
@@ -598,7 +598,7 @@ func resolveMaxFailures(maxFailures int) int {
 // enters half-open state and allows one event through. If it succeeds, the circuit closes;
 // if it fails, the circuit opens again.
 //
-//nolint:funlen // Complex state machine requiring inline logic
+
 func MiddlewareCircuitBreaker(maxFailures int, resetTimeout time.Duration) Middleware {
 	maxFailures = resolveMaxFailures(maxFailures)
 
@@ -880,7 +880,7 @@ const defaultExponentialBackoffMax = 30 * time.Second
 // the drop window simply grows. Use MiddlewareCircuitBreaker for strict
 // open/closed/half-open semantics.
 //
-//nolint:funlen // Exponential backoff state machine with inline mutex locking
+
 func MiddlewareExponentialBackoff(maxFailures int, initialBackoff, maxBackoff time.Duration) Middleware {
 	maxFailures = resolveMaxFailures(maxFailures)
 

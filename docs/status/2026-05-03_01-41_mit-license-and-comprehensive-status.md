@@ -118,33 +118,33 @@ go-filewatcher is a **production-ready, high-performance file system watcher** f
 
 ## f) Top #25 Things to Do Next (Priority Order)
 
-| #   | Item                                                   | Impact           | Effort |
-| --- | ------------------------------------------------------ | ---------------- | ------ |
-| 1   | Commit MIT license change                              | 🔴 Critical      | 1 min  |
-| 2   | Fix `Add()` double-append bug in `watchList`           | 🔴 Bug fix       | 15 min |
-| 3   | Align flake.nix Go version to 1.26                     | 🔴 Toolchain     | 5 min  |
-| 4   | Cut v0.3.0 release (tag + CHANGELOG)                   | 🔴 Release       | 20 min |
-| 5   | Move `testing_helpers.go` to test package or build-tag | 🟡 Ship quality  | 15 min |
-| 6   | Fix `MiddlewareBatch` timer error swallowing           | 🟡 Robustness    | 10 min |
-| 7   | Fix `handleNewDirectory` error swallowing              | 🟡 Robustness    | 10 min |
-| 8   | Add rename event integration test                      | 🟡 Coverage      | 15 min |
-| 9   | Add multi-directory initialization test                | 🟡 Coverage      | 10 min |
-| 10  | Close coverage gaps in `addPath`/`walkDirFunc`         | 🟡 Quality       | 20 min |
-| 11  | Replace hand-rolled `Op.MarshalJSON`                   | 🟢 Robustness    | 5 min  |
-| 12  | Protect `DefaultIgnoreDirs` from mutation              | 🟢 Safety        | 5 min  |
-| 13  | Populate CHANGELOG for v0.1.0 and v0.2.0               | 🟢 Docs          | 15 min |
-| 14  | Add `nix run .#test` and `nix run .#lint` to flake.nix | 🟢 DX            | 20 min |
-| 15  | Add `CONTRIBUTING.md` (now MIT-licensed)               | 🟢 Community     | 20 min |
-| 16  | Ring buffer for `SlidingWindowRateLimit`               | 🟢 Perf          | 20 min |
-| 17  | Add buffer overflow / backpressure test                | 🟡 Coverage      | 15 min |
-| 18  | Add concurrent Add/Remove during watching test         | 🟡 Coverage      | 15 min |
-| 19  | Implement `WatchOnce()`                                | 🔵 Feature       | 1 hr   |
-| 20  | Implement symlink following support                    | 🔵 Feature       | 2 hr   |
-| 21  | Implement polling fallback for NFS                     | 🔵 Feature       | 3 hr   |
-| 22  | Add `Event.Size` / `Event.ModTime()` fields            | 🔵 Feature       | 1 hr   |
-| 23  | Implement `MiddlewareThrottle`                         | 🔵 Feature       | 1 hr   |
-| 24  | Set up GoReleaser pipeline                             | 🔵 Infra         | 1 hr   |
-| 25  | OpenTelemetry integration                              | 🔵 Observability | 2 hr   |
+| #  | Item                                                   | Impact           | Effort |
+| -- | ------------------------------------------------------ | ---------------- | ------ |
+| 1  | Commit MIT license change                              | 🔴 Critical      | 1 min  |
+| 2  | Fix `Add()` double-append bug in `watchList`           | 🔴 Bug fix       | 15 min |
+| 3  | Align flake.nix Go version to 1.26                     | 🔴 Toolchain     | 5 min  |
+| 4  | Cut v0.3.0 release (tag + CHANGELOG)                   | 🔴 Release       | 20 min |
+| 5  | Move `testing_helpers.go` to test package or build-tag | 🟡 Ship quality  | 15 min |
+| 6  | Fix `MiddlewareBatch` timer error swallowing           | 🟡 Robustness    | 10 min |
+| 7  | Fix `handleNewDirectory` error swallowing              | 🟡 Robustness    | 10 min |
+| 8  | Add rename event integration test                      | 🟡 Coverage      | 15 min |
+| 9  | Add multi-directory initialization test                | 🟡 Coverage      | 10 min |
+| 10 | Close coverage gaps in `addPath`/`walkDirFunc`         | 🟡 Quality       | 20 min |
+| 11 | Replace hand-rolled `Op.MarshalJSON`                   | 🟢 Robustness    | 5 min  |
+| 12 | Protect `DefaultIgnoreDirs` from mutation              | 🟢 Safety        | 5 min  |
+| 13 | Populate CHANGELOG for v0.1.0 and v0.2.0               | 🟢 Docs          | 15 min |
+| 14 | Add `nix run .#test` and `nix run .#lint` to flake.nix | 🟢 DX            | 20 min |
+| 15 | Add `CONTRIBUTING.md` (now MIT-licensed)               | 🟢 Community     | 20 min |
+| 16 | Ring buffer for `SlidingWindowRateLimit`               | 🟢 Perf          | 20 min |
+| 17 | Add buffer overflow / backpressure test                | 🟡 Coverage      | 15 min |
+| 18 | Add concurrent Add/Remove during watching test         | 🟡 Coverage      | 15 min |
+| 19 | Implement `WatchOnce()`                                | 🔵 Feature       | 1 hr   |
+| 20 | Implement symlink following support                    | 🔵 Feature       | 2 hr   |
+| 21 | Implement polling fallback for NFS                     | 🔵 Feature       | 3 hr   |
+| 22 | Add `Event.Size` / `Event.ModTime()` fields            | 🔵 Feature       | 1 hr   |
+| 23 | Implement `MiddlewareThrottle`                         | 🔵 Feature       | 1 hr   |
+| 24 | Set up GoReleaser pipeline                             | 🔵 Infra         | 1 hr   |
+| 25 | OpenTelemetry integration                              | 🔵 Observability | 2 hr   |
 
 ---
 

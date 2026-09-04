@@ -461,7 +461,7 @@ func hashFile(path string, maxSize int64) string {
 		return ""
 	}
 
-	file, err := os.Open(path) //nolint:gosec // path comes from fsnotify event, not user input
+	file, err := os.Open(path)
 	if err != nil {
 		return ""
 	}

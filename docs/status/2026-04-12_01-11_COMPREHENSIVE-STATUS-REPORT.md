@@ -1,16 +1,16 @@
 # Comprehensive Status Report: go-filewatcher
 
-**Date:** 2026-04-12 01:11:03 CEST  
-**Branch:** master  
+**Date:** 2026-04-12 01:11:03 CEST\
+**Branch:** master\
 **Commit Base:** ecc507d9b97edc2f7ccd04418911e1863fde800e
 
 ---
 
 ## Executive Summary
 
-**Current State:** 🟡 Functional with known race condition in tests  
-**Quality Scores:** Context 90.0/100, Composition 92/100, BoolBlind 0 violations  
-**Test Status:** ❌ Failing (race condition in TestWatcher_Watch_WithDebounce)  
+**Current State:** 🟡 Functional with known race condition in tests\
+**Quality Scores:** Context 90.0/100, Composition 92/100, BoolBlind 0 violations\
+**Test Status:** ❌ Failing (race condition in TestWatcher_Watch_WithDebounce)\
 **Build Status:** ✅ Passing
 
 ---
@@ -200,33 +200,33 @@ Previous write at 0x00c0004aa008 by goroutine 266:
 
 ## F) Top #25 Things To Get Done Next 🎯
 
-| #   | Task                                            | Priority | Effort | Impact          |
-| --- | ----------------------------------------------- | -------- | ------ | --------------- |
-| 1   | Fix `TestWatcher_Watch_WithDebounce` race       | P0       | 2h     | Unblock CI      |
-| 2   | Create `OpString` phantom type                  | P0       | 15m    | -1 critical     |
-| 3   | Create `RootString` phantom type                | P0       | 20m    | -2 critical     |
-| 4   | Fix `handleNewDirectory` race (production)      | P0       | 1h     | Fix bug         |
-| 5   | Fix `shouldSkipDir` to respect `WithIgnoreDirs` | P1       | 30m    | Bug fix         |
-| 6   | Error context wrapping (10 locations)           | P1       | 1h     | DX              |
-| 7   | Add `Event.Path` phantom type                   | P1       | 2h     | Type safety     |
-| 8   | Integration tests (Watch→Event→Close)           | P1       | 4h     | Quality         |
-| 9   | Property-based tests (fuzzing)                  | P1       | 3h     | Reliability     |
-| 10  | Split Watcher struct                            | P1       | 3h     | Maintainability |
-| 11  | Add `IsClosed()` public method                  | P1       | 15m    | API             |
-| 12  | Fix `TestWatcher_Watch_Deletes` flakiness       | P1       | 1h     | CI stability    |
-| 13  | Implement `Watcher.WatchOnce()`                 | P2       | 2h     | Feature         |
-| 14  | Add `WithPolling()` for network mounts          | P2       | 3h     | Feature         |
-| 15  | Add symlink following                           | P2       | 2h     | Feature         |
-| 16  | Add `Event.ModTime()`                           | P2       | 1h     | Feature         |
-| 17  | Create standalone CLI tool                      | P2       | 4h     | Usability       |
-| 18  | Add Prometheus metrics                          | P2       | 3h     | Observability   |
-| 19  | Circuit breaker middleware                      | P2       | 3h     | Resilience      |
-| 20  | `MiddlewareBatch()` for event batching          | P2       | 3h     | Performance     |
-| 21  | OpenTelemetry integration                       | P2       | 4h     | Observability   |
-| 22  | Documentation overhaul                          | P2       | 4h     | Adoption        |
-| 23  | Test coverage 77% → 90%+                        | P2       | 6h     | Quality         |
-| 24  | Goreleaser + semantic-release                   | P3       | 2h     | Automation      |
-| 25  | v2.0 Release planning                           | P3       | 8h     | Major version   |
+| #  | Task                                            | Priority | Effort | Impact          |
+| -- | ----------------------------------------------- | -------- | ------ | --------------- |
+| 1  | Fix `TestWatcher_Watch_WithDebounce` race       | P0       | 2h     | Unblock CI      |
+| 2  | Create `OpString` phantom type                  | P0       | 15m    | -1 critical     |
+| 3  | Create `RootString` phantom type                | P0       | 20m    | -2 critical     |
+| 4  | Fix `handleNewDirectory` race (production)      | P0       | 1h     | Fix bug         |
+| 5  | Fix `shouldSkipDir` to respect `WithIgnoreDirs` | P1       | 30m    | Bug fix         |
+| 6  | Error context wrapping (10 locations)           | P1       | 1h     | DX              |
+| 7  | Add `Event.Path` phantom type                   | P1       | 2h     | Type safety     |
+| 8  | Integration tests (Watch→Event→Close)           | P1       | 4h     | Quality         |
+| 9  | Property-based tests (fuzzing)                  | P1       | 3h     | Reliability     |
+| 10 | Split Watcher struct                            | P1       | 3h     | Maintainability |
+| 11 | Add `IsClosed()` public method                  | P1       | 15m    | API             |
+| 12 | Fix `TestWatcher_Watch_Deletes` flakiness       | P1       | 1h     | CI stability    |
+| 13 | Implement `Watcher.WatchOnce()`                 | P2       | 2h     | Feature         |
+| 14 | Add `WithPolling()` for network mounts          | P2       | 3h     | Feature         |
+| 15 | Add symlink following                           | P2       | 2h     | Feature         |
+| 16 | Add `Event.ModTime()`                           | P2       | 1h     | Feature         |
+| 17 | Create standalone CLI tool                      | P2       | 4h     | Usability       |
+| 18 | Add Prometheus metrics                          | P2       | 3h     | Observability   |
+| 19 | Circuit breaker middleware                      | P2       | 3h     | Resilience      |
+| 20 | `MiddlewareBatch()` for event batching          | P2       | 3h     | Performance     |
+| 21 | OpenTelemetry integration                       | P2       | 4h     | Observability   |
+| 22 | Documentation overhaul                          | P2       | 4h     | Adoption        |
+| 23 | Test coverage 77% → 90%+                        | P2       | 6h     | Quality         |
+| 24 | Goreleaser + semantic-release                   | P3       | 2h     | Automation      |
+| 25 | v2.0 Release planning                           | P3       | 8h     | Major version   |
 
 ---
 
@@ -322,5 +322,5 @@ Decision on priority. My recommendation is to fix the race first because:
 
 ---
 
-_Generated: 2026-04-12 01:11:03 CEST_  
+_Generated: 2026-04-12 01:11:03 CEST_\
 _Status: READY FOR INSTRUCTIONS_

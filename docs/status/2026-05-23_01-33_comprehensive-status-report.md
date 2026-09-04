@@ -70,8 +70,8 @@ The project is in **excellent shape** — production-ready library with comprehe
 
 ### Nix Flakes Phase 3 — CI Migration (Deferred per Decision)
 
-| Item                     | Status      | Notes                                          |
-| ------------------------ | ----------- | ---------------------------------------------- |
+| Item                     | Status     | Notes                                          |
+| ------------------------ | ---------- | ---------------------------------------------- |
 | `ci.yml` migrated to Nix | ⏸️ DEFERRED | Still uses `setup-go` + `golangci-lint-action` |
 | Cachix binary caching    | ⏸️ DEFERRED | Per proposal decision D4                       |
 
@@ -79,17 +79,17 @@ The project is in **excellent shape** — production-ready library with comprehe
 
 ### Coverage Tool
 
-| Item                 | Status   | Notes                                             |
-| -------------------- | -------- | ------------------------------------------------- |
+| Item                 | Status  | Notes                                             |
+| -------------------- | ------- | ------------------------------------------------- |
 | `nix run .#coverage` | ⚠️ ISSUE | Fails with "read-only file system" in nix sandbox |
 
 The coverage app writes to `coverage.out` which is not writable in the nix sandbox. Needs fix to write to `$TMPDIR` instead.
 
 ### Examples Directory
 
-| Item                            | Status           | Notes                                                                      |
-| ------------------------------- | ---------------- | -------------------------------------------------------------------------- |
-| Examples linting                | ✅ CONFIGURED    | `forbidigo` exclusions in `.golangci.yml` for `examples/`                  |
+| Item                            | Status          | Notes                                                                      |
+| ------------------------------- | --------------- | -------------------------------------------------------------------------- |
+| Examples linting                | ✅ CONFIGURED   | `forbidigo` exclusions in `.golangci.yml` for `examples/`                  |
 | Examples as standalone programs | ⚠️ ARCHITECTURAL | Examples are `package main` in separate dirs — not idiomatic for a library |
 
 ---
@@ -184,33 +184,33 @@ The coverage app writes to `coverage.out` which is not writable in the nix sandb
 
 ## F) TOP #25 THINGS WE SHOULD GET DONE NEXT
 
-| #   | Item                                                       | Priority | Effort | Category      |
-| --- | ---------------------------------------------------------- | -------- | ------ | ------------- |
-| 1   | **Fix `nix run .#coverage`** — write to `$TMPDIR`          | CRITICAL | 15min  | Nix           |
-| 2   | **Fix pre-commit hook timeout** — increase timeout or skip | HIGH     | 15min  | DevEx         |
-| 3   | **Tag v2.0.0 release**                                     | HIGH     | 30min  | Release       |
-| 4   | **Update TODO_LIST.md** — check off done items             | HIGH     | 15min  | Docs          |
-| 5   | **Add meta to nix apps** — silence warnings                | MEDIUM   | 15min  | Nix           |
-| 6   | **Add `//nolint:forbidigo` to examples**                   | MEDIUM   | 15min  | Quality       |
-| 7   | **Document vendorHash update procedure**                   | MEDIUM   | 15min  | Docs          |
-| 8   | **Add Cachix for binary caching**                          | MEDIUM   | 30min  | CI/CD         |
-| 9   | **Fix flaky tests** (TestWatcher_Stats_Metrics)            | MEDIUM   | 1-2h   | Quality       |
-| 10  | **Add issue/PR templates** (.github/)                      | MEDIUM   | 30min  | Community     |
-| 11  | **Add Godoc examples** (Example\* functions)               | MEDIUM   | 2-3h   | Docs          |
-| 12  | **Add `Event.ModTime()` field**                            | MEDIUM   | 30min  | Feature       |
-| 13  | **Add `WithPolling(fallback bool)`**                       | MEDIUM   | 2-4h   | Feature       |
-| 14  | **Recursive directory integration test**                   | MEDIUM   | 1h     | Testing       |
-| 15  | **Benchmark regression tests**                             | MEDIUM   | 2h     | Testing       |
-| 16  | **Integration into file-and-image-renamer**                | MEDIUM   | 4-8h   | Integration   |
-| 17  | **Standalone CLI tool**                                    | MEDIUM   | 4-8h   | Feature       |
-| 18  | **Troubleshooting.md**                                     | MEDIUM   | 1h     | Docs          |
-| 19  | **Goreleaser config**                                      | MEDIUM   | 2-3h   | Release       |
-| 20  | **Self-healing watcher**                                   | MEDIUM   | 2-4h   | Feature       |
-| 21  | **Circuit breaker middleware**                             | MEDIUM   | 1-2h   | Feature       |
-| 22  | **OpenTelemetry integration**                              | LOW      | 3-4h   | Observability |
-| 23  | **Race safety review for parallel tests**                  | LOW      | 2h     | Quality       |
-| 24  | **Fuzz testing**                                           | LOW      | 2-3h   | Testing       |
-| 25  | **Windows CI + tests**                                     | LOW      | 2-3h   | Testing       |
+| #  | Item                                                       | Priority | Effort | Category      |
+| -- | ---------------------------------------------------------- | -------- | ------ | ------------- |
+| 1  | **Fix `nix run .#coverage`** — write to `$TMPDIR`          | CRITICAL | 15min  | Nix           |
+| 2  | **Fix pre-commit hook timeout** — increase timeout or skip | HIGH     | 15min  | DevEx         |
+| 3  | **Tag v2.0.0 release**                                     | HIGH     | 30min  | Release       |
+| 4  | **Update TODO_LIST.md** — check off done items             | HIGH     | 15min  | Docs          |
+| 5  | **Add meta to nix apps** — silence warnings                | MEDIUM   | 15min  | Nix           |
+| 6  | **Add `//nolint:forbidigo` to examples**                   | MEDIUM   | 15min  | Quality       |
+| 7  | **Document vendorHash update procedure**                   | MEDIUM   | 15min  | Docs          |
+| 8  | **Add Cachix for binary caching**                          | MEDIUM   | 30min  | CI/CD         |
+| 9  | **Fix flaky tests** (TestWatcher_Stats_Metrics)            | MEDIUM   | 1-2h   | Quality       |
+| 10 | **Add issue/PR templates** (.github/)                      | MEDIUM   | 30min  | Community     |
+| 11 | **Add Godoc examples** (Example\* functions)               | MEDIUM   | 2-3h   | Docs          |
+| 12 | **Add `Event.ModTime()` field**                            | MEDIUM   | 30min  | Feature       |
+| 13 | **Add `WithPolling(fallback bool)`**                       | MEDIUM   | 2-4h   | Feature       |
+| 14 | **Recursive directory integration test**                   | MEDIUM   | 1h     | Testing       |
+| 15 | **Benchmark regression tests**                             | MEDIUM   | 2h     | Testing       |
+| 16 | **Integration into file-and-image-renamer**                | MEDIUM   | 4-8h   | Integration   |
+| 17 | **Standalone CLI tool**                                    | MEDIUM   | 4-8h   | Feature       |
+| 18 | **Troubleshooting.md**                                     | MEDIUM   | 1h     | Docs          |
+| 19 | **Goreleaser config**                                      | MEDIUM   | 2-3h   | Release       |
+| 20 | **Self-healing watcher**                                   | MEDIUM   | 2-4h   | Feature       |
+| 21 | **Circuit breaker middleware**                             | MEDIUM   | 1-2h   | Feature       |
+| 22 | **OpenTelemetry integration**                              | LOW      | 3-4h   | Observability |
+| 23 | **Race safety review for parallel tests**                  | LOW      | 2h     | Quality       |
+| 24 | **Fuzz testing**                                           | LOW      | 2-3h   | Testing       |
+| 25 | **Windows CI + tests**                                     | LOW      | 2-3h   | Testing       |
 
 ---
 

@@ -1,8 +1,8 @@
 # Comprehensive Status Report — 2026-04-11
 
-**Date:** 2026-04-11 19:52  
-**Project:** `github.com/larsartmann/go-filewatcher`  
-**Branch:** `master`  
+**Date:** 2026-04-11 19:52\
+**Project:** `github.com/larsartmann/go-filewatcher`\
+**Branch:** `master`\
 **Ahead of origin:** 3 commits (c651c0c, 58d9b9f, ccaf0a8)
 
 ---

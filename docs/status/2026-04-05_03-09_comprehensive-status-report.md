@@ -1,9 +1,9 @@
 # go-filewatcher — Comprehensive Status Report
 
-**Date:** 2026-04-05 03:09  
-**Branch:** `master` (1 commit ahead of origin)  
-**Go:** 1.26.0 (Nix) | **Total LOC:** 3,047 (17 files)  
-**Coverage:** 78.9% | **Tests:** 50+ (all pass without `-race`)  
+**Date:** 2026-04-05 03:09\
+**Branch:** `master` (1 commit ahead of origin)\
+**Go:** 1.26.0 (Nix) | **Total LOC:** 3,047 (17 files)\
+**Coverage:** 78.9% | **Tests:** 50+ (all pass without `-race`)\
 **Linters:** 57 enabled + 4 formatters
 
 ---
@@ -162,33 +162,33 @@ Including `sentry-go`, `gogo/protobuf`, `kr/pretty`, `kr/text`, `logtags`, `reda
 
 ## F) TOP 25 THINGS TO DO NEXT (Prioritized)
 
-| #   | Task                                                                      | Priority    | Effort   | Blocked By |
-| --- | ------------------------------------------------------------------------- | ----------- | -------- | ---------- |
-| 1   | Fix race condition in `walkAndAddPaths` (`watcher.go:312`)                | 🔴 Critical | Small    | Nothing    |
-| 2   | Fix `Op` mixed receivers (`event.go`) — use all value receivers           | 🔴 Critical | Trivial  | Nothing    |
-| 3   | Fix 10 exhaustruct issues in `filter_test.go` — add `IsDir: false`        | High        | Trivial  | Nothing    |
-| 4   | Fix 5 gocritic `exitAfterDefer` issues                                    | High        | Small    | Nothing    |
-| 5   | Fix 1 golines issue (line too long)                                       | High        | Trivial  | Nothing    |
-| 6   | Run `go test -race ./...` and confirm 0 failures                          | 🔴 Critical | —        | #1         |
-| 7   | Decide: remove `cockroachdb/errors` or keep?                              | High        | Decision | User input |
-| 8   | Remove `cockroachdb/errors` (if decided) — replace with stdlib            | High        | Medium   | #7         |
-| 9   | Tag v0.1.0 release                                                        | High        | Trivial  | #1-6       |
-| 10  | GitHub Actions CI pipeline (`just ci` + `go test -race`)                  | High        | Medium   | Nothing    |
-| 11  | Push to origin                                                            | Medium      | Trivial  | Nothing    |
-| 12  | Fix `TestWatcher_Watch_Deletes` flakiness                                 | Medium      | Medium   | Nothing    |
-| 13  | Raise test coverage to 85%+                                               | Medium      | Medium   | #1         |
-| 14  | Add benchmarks (debouncer, filters, middleware)                           | Medium      | Medium   | Nothing    |
-| 15  | Add stress tests (10k+ files)                                             | Medium      | Medium   | #1         |
-| 16  | Extract `fsnotify.Watcher` behind interface                               | Medium      | Medium   | Nothing    |
-| 17  | Fix `convertEvent` combined ops (emit multiple or bitmask)                | Medium      | Small    | Nothing    |
-| 18  | Fix `shouldSkipDir` to respect `WithIgnoreDirs` during walking            | Medium      | Small    | Nothing    |
-| 19  | Split `watcher.go` into focused files                                     | Medium      | Small    | #1         |
-| 20  | Add CONTRIBUTING.md + CODEOWNERS                                          | Low         | Small    | Nothing    |
-| 21  | Goreleaser configuration                                                  | Low         | Medium   | #9         |
-| 22  | Replace `log.Logger` with `log/slog`                                      | Low         | Medium   | Nothing    |
-| 23  | Cache file handle in `MiddlewareWriteFileLog`                             | Low         | Small    | Nothing    |
-| 24  | Add `Errors() <-chan error` method                                        | Low         | Small    | Nothing    |
-| 25  | Validate in real projects (file-and-image-renamer, dynamic-markdown-site) | Low         | Medium   | #1, #9     |
+| #  | Task                                                                      | Priority    | Effort   | Blocked By |
+| -- | ------------------------------------------------------------------------- | ----------- | -------- | ---------- |
+| 1  | Fix race condition in `walkAndAddPaths` (`watcher.go:312`)                | 🔴 Critical | Small    | Nothing    |
+| 2  | Fix `Op` mixed receivers (`event.go`) — use all value receivers           | 🔴 Critical | Trivial  | Nothing    |
+| 3  | Fix 10 exhaustruct issues in `filter_test.go` — add `IsDir: false`        | High        | Trivial  | Nothing    |
+| 4  | Fix 5 gocritic `exitAfterDefer` issues                                    | High        | Small    | Nothing    |
+| 5  | Fix 1 golines issue (line too long)                                       | High        | Trivial  | Nothing    |
+| 6  | Run `go test -race ./...` and confirm 0 failures                          | 🔴 Critical | —        | #1         |
+| 7  | Decide: remove `cockroachdb/errors` or keep?                              | High        | Decision | User input |
+| 8  | Remove `cockroachdb/errors` (if decided) — replace with stdlib            | High        | Medium   | #7         |
+| 9  | Tag v0.1.0 release                                                        | High        | Trivial  | #1-6       |
+| 10 | GitHub Actions CI pipeline (`just ci` + `go test -race`)                  | High        | Medium   | Nothing    |
+| 11 | Push to origin                                                            | Medium      | Trivial  | Nothing    |
+| 12 | Fix `TestWatcher_Watch_Deletes` flakiness                                 | Medium      | Medium   | Nothing    |
+| 13 | Raise test coverage to 85%+                                               | Medium      | Medium   | #1         |
+| 14 | Add benchmarks (debouncer, filters, middleware)                           | Medium      | Medium   | Nothing    |
+| 15 | Add stress tests (10k+ files)                                             | Medium      | Medium   | #1         |
+| 16 | Extract `fsnotify.Watcher` behind interface                               | Medium      | Medium   | Nothing    |
+| 17 | Fix `convertEvent` combined ops (emit multiple or bitmask)                | Medium      | Small    | Nothing    |
+| 18 | Fix `shouldSkipDir` to respect `WithIgnoreDirs` during walking            | Medium      | Small    | Nothing    |
+| 19 | Split `watcher.go` into focused files                                     | Medium      | Small    | #1         |
+| 20 | Add CONTRIBUTING.md + CODEOWNERS                                          | Low         | Small    | Nothing    |
+| 21 | Goreleaser configuration                                                  | Low         | Medium   | #9         |
+| 22 | Replace `log.Logger` with `log/slog`                                      | Low         | Medium   | Nothing    |
+| 23 | Cache file handle in `MiddlewareWriteFileLog`                             | Low         | Small    | Nothing    |
+| 24 | Add `Errors() <-chan error` method                                        | Low         | Small    | Nothing    |
+| 25 | Validate in real projects (file-and-image-renamer, dynamic-markdown-site) | Low         | Medium   | #1, #9     |
 
 ---
 

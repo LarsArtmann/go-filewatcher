@@ -26,7 +26,9 @@
       }
 
       body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+          sans-serif;
         background: var(--bg);
         color: var(--text);
         line-height: 1.6;
@@ -354,7 +356,8 @@
   <body>
     <h1>go-filewatcher Improvement Plan</h1>
     <p class="subtitle">
-      Addressing the inotify scalability wall &amp; production readiness for v0.4.0
+      Addressing the inotify scalability wall &amp; production readiness for
+      v0.4.0
     </p>
 
     <div class="meta">
@@ -370,12 +373,13 @@
 
     <p>
       The <code>projects-management-automation</code> service watches
-      <code>/home/lars/projects</code> (113k+ directories, 278 git repos) through
-      <code>go-filewatcher</code>. Despite ignore patterns filtering <code>.git</code>,
-      <code>node_modules</code>, <code>vendor</code> etc.,
-      <strong>~76k directories survive</strong> the filter and require individual inotify watches.
-      This causes <code>ENOSPC</code> ("no space left on device") — a misleading kernel error
-      meaning the <code>max_user_watches</code> limit is exhausted.
+      <code>/home/lars/projects</code> (113k+ directories, 278 git repos)
+      through <code>go-filewatcher</code>. Despite ignore patterns filtering
+      <code>.git</code>, <code>node_modules</code>, <code>vendor</code> etc.,
+      <strong>~76k directories survive</strong> the filter and require
+      individual inotify watches. This causes <code>ENOSPC</code> ("no space
+      left on device") — a misleading kernel error meaning the
+      <code>max_user_watches</code> limit is exhausted.
     </p>
     <p>
       This plan addresses the root causes across three dimensions:
@@ -447,34 +451,37 @@
     </table>
 
     <div class="problem-box">
-      <strong>Problem 1: No <code>.gitignore</code> awareness.</strong> The library has hardcoded
-      <code>DefaultIgnoreDirs</code> and user-configured <code>WithIgnoreDirs</code>, but never
-      reads <code>.gitignore</code> files. Build artifacts, generated code, IDE configs, and
-      project-specific exclusions are all watched needlessly.
+      <strong>Problem 1: No <code>.gitignore</code> awareness.</strong> The
+      library has hardcoded <code>DefaultIgnoreDirs</code> and user-configured
+      <code>WithIgnoreDirs</code>, but never reads
+      <code>.gitignore</code> files. Build artifacts, generated code, IDE
+      configs, and project-specific exclusions are all watched needlessly.
     </div>
 
     <div class="problem-box">
       <strong>Problem 2: Eager, synchronous, all-at-once watching.</strong>
-      <code>Watch()</code> calls <code>addPath()</code> for every path, which calls
-      <code>walkAndAddPaths()</code>, which calls <code>filepath.WalkDir()</code> synchronously —
-      adding every directory to inotify before returning. No batching, no lazy loading, no
-      backpressure.
+      <code>Watch()</code> calls <code>addPath()</code> for every path, which
+      calls <code>walkAndAddPaths()</code>, which calls
+      <code>filepath.WalkDir()</code> synchronously — adding every directory to
+      inotify before returning. No batching, no lazy loading, no backpressure.
     </div>
 
     <div class="problem-box">
       <strong
-        >Problem 3: <code>shouldSkipDir</code> only matches directory <em>names</em>, not
-        paths.</strong
+        >Problem 3: <code>shouldSkipDir</code> only matches directory
+        <em>names</em>, not paths.</strong
       >
-      You cannot exclude <code>forks/</code> or <code>archived/</code> at the top level without also
-      excluding any directory named "forks" or "archived" anywhere in the tree.
+      You cannot exclude <code>forks/</code> or <code>archived/</code> at the
+      top level without also excluding any directory named "forks" or "archived"
+      anywhere in the tree.
     </div>
 
     <div class="problem-box">
-      <strong>Problem 4: No graceful degradation.</strong> When <code>fswatcher.Add()</code> fails
-      with <code>ENOSPC</code>, <code>walkDirFunc</code> returns the error, which stops the entire
-      <code>filepath.WalkDir</code> traversal — the watcher fails to start at all. It should log a
-      warning and continue.
+      <strong>Problem 4: No graceful degradation.</strong> When
+      <code>fswatcher.Add()</code> fails with <code>ENOSPC</code>,
+      <code>walkDirFunc</code> returns the error, which stops the entire
+      <code>filepath.WalkDir</code> traversal — the watcher fails to start at
+      all. It should log a warning and continue.
     </div>
 
     <!-- ================================================================== -->
@@ -484,19 +491,20 @@
     <h3>Current Pipeline</h3>
     <div class="arch-diagram">
       Watch() └─ for each path: <span class="highlight">addPath(root)</span> └─
-      <span class="warning">walkAndAddPaths(root)</span> ← synchronous, blocking └─
-      filepath.WalkDir() └─ walkDirFunc() ├─ shouldSkipDir(name) ← name-only, no .gitignore └─
-      <span class="warning">fswatcher.Add(path)</span> ← one inotify watch per dir ← ENOSPC kills
-      entire walk
+      <span class="warning">walkAndAddPaths(root)</span> ← synchronous, blocking
+      └─ filepath.WalkDir() └─ walkDirFunc() ├─ shouldSkipDir(name) ← name-only,
+      no .gitignore └─ <span class="warning">fswatcher.Add(path)</span> ← one
+      inotify watch per dir ← ENOSPC kills entire walk
     </div>
 
     <h3>Proposed Pipeline</h3>
     <div class="arch-diagram">
       Watch() └─ for each path: <span class="new">addPath(root)</span> ├─
-      <span class="new">loadGitignore(root)</span> ← read .gitignore at repo root └─
-      walkAndAddPaths(root) └─ filepath.WalkDir() └─ walkDirFunc() ├─
-      <span class="new">shouldSkipDir(name)</span> ← enriched with gitignore match ├─
-      <span class="new">skipPath(path)</span> ← path-level exclusions └─ fswatcher.Add(path) ←
+      <span class="new">loadGitignore(root)</span> ← read .gitignore at repo
+      root └─ walkAndAddPaths(root) └─ filepath.WalkDir() └─ walkDirFunc() ├─
+      <span class="new">shouldSkipDir(name)</span> ← enriched with gitignore
+      match ├─ <span class="new">skipPath(path)</span> ← path-level exclusions
+      └─ fswatcher.Add(path) ←
       <span class="new">continues on ENOSPC</span>
 
       <span class="new">// Lazy loading (optional)</span>
@@ -510,22 +518,26 @@
 
     <!-- ITEM 1 -->
     <h3>
-      <span class="badge badge-critical">Critical</span> W1: Add <code>.gitignore</code>-aware walk
-      filtering
+      <span class="badge badge-critical">Critical</span> W1: Add
+      <code>.gitignore</code>-aware walk filtering
     </h3>
 
     <div class="section-card">
       <p>
-        <strong>Problem:</strong> 76k directories watched when ~8k would suffice. Each
-        <code>.gitignore</code> excludes build dirs, generated code, and project-specific artifacts
-        that <code>DefaultIgnoreDirs</code> doesn't cover.
+        <strong>Problem:</strong> 76k directories watched when ~8k would
+        suffice. Each <code>.gitignore</code> excludes build dirs, generated
+        code, and project-specific artifacts that
+        <code>DefaultIgnoreDirs</code> doesn't cover.
       </p>
 
       <p>
         <strong>Solution:</strong> During <code>walkDirFunc</code>, detect
-        <code>.gitignore</code> files (by checking if a <code>.git</code> parent exists) and apply
-        their rules to skip directories. Use composition with a gitignore library as documented in
-        the <a href="https://github.com/LarsArtmann/gogenfilter">gogenfilter gitignore guide</a>.
+        <code>.gitignore</code> files (by checking if a <code>.git</code> parent
+        exists) and apply their rules to skip directories. Use composition with
+        a gitignore library as documented in the
+        <a href="https://github.com/LarsArtmann/gogenfilter"
+          >gogenfilter gitignore guide</a
+        >.
       </p>
 
       <h4>Implementation</h4>
@@ -535,28 +547,35 @@
           <code>map[string]*gitignore.GitIgnore</code> keyed by repo root
         </li>
         <li>
-          During <code>walkDirFunc</code>: if <code>.gitignore</code> file exists in current dir,
-          load and cache it
+          During <code>walkDirFunc</code>: if <code>.gitignore</code> file
+          exists in current dir, load and cache it
         </li>
         <li>
-          Check directory path against all applicable gitignore rules before calling
+          Check directory path against all applicable gitignore rules before
+          calling
           <code>fswatcher.Add()</code>
         </li>
-        <li>New option: <code>WithGitignore(enabled bool)</code> (default: <code>true</code>)</li>
+        <li>
+          New option: <code>WithGitignore(enabled bool)</code> (default:
+          <code>true</code>)
+        </li>
       </ul>
 
       <h4>Dependency</h4>
       <p>
-        Add <code>github.com/go-git/go-git/v6/plumbing/format/gitignore</code> (full git spec
-        compliance) — or keep it lighter with <code>github.com/sabhiram/go-gitignore</code> (zero
-        transitive deps). The gogenfilter docs already evaluate both.
+        Add
+        <code>github.com/go-git/go-git/v6/plumbing/format/gitignore</code> (full
+        git spec compliance) — or keep it lighter with
+        <code>github.com/sabhiram/go-gitignore</code> (zero transitive deps).
+        The gogenfilter docs already evaluate both.
       </p>
 
       <h4>Estimated impact</h4>
       <div class="impact-box">
-        <strong>~50-70% reduction in inotify watches.</strong> Most Go projects have
-        <code>bin/</code>, <code>tmp/</code>, <code>coverage/</code>, <code>*.egg-info/</code>,
-        <code>.tox/</code>, <code>.venv/</code> etc. in their <code>.gitignore</code> that aren't in
+        <strong>~50-70% reduction in inotify watches.</strong> Most Go projects
+        have <code>bin/</code>, <code>tmp/</code>, <code>coverage/</code>,
+        <code>*.egg-info/</code>, <code>.tox/</code>, <code>.venv/</code> etc.
+        in their <code>.gitignore</code> that aren't in
         <code>DefaultIgnoreDirs</code>.
       </div>
 
@@ -564,7 +583,10 @@
       <table>
         <tr>
           <td><code>watcher_walk.go</code></td>
-          <td>Load gitignore in <code>walkDirFunc</code>, check before <code>Add()</code></td>
+          <td>
+            Load gitignore in <code>walkDirFunc</code>, check before
+            <code>Add()</code>
+          </td>
         </tr>
         <tr>
           <td><code>options.go</code></td>
@@ -587,23 +609,25 @@
 
     <!-- ITEM 2 -->
     <h3>
-      <span class="badge badge-critical">Critical</span> W2: Graceful ENOSPC handling — continue on
-      watch failure
+      <span class="badge badge-critical">Critical</span> W2: Graceful ENOSPC
+      handling — continue on watch failure
     </h3>
 
     <div class="section-card">
       <p>
-        <strong>Problem:</strong> In <code>walkDirFunc</code> (<code>watcher_walk.go:90-93</code>),
-        if <code>fswatcher.Add()</code> returns <code>ENOSPC</code>, the error propagates up through
-        <code>filepath.WalkDir</code> and <code>Watch()</code> returns an error — the watcher fails
-        to start entirely.
+        <strong>Problem:</strong> In
+        <code>walkDirFunc</code> (<code>watcher_walk.go:90-93</code>), if
+        <code>fswatcher.Add()</code> returns <code>ENOSPC</code>, the error
+        propagates up through <code>filepath.WalkDir</code> and
+        <code>Watch()</code> returns an error — the watcher fails to start
+        entirely.
       </p>
 
       <p>
         <strong>Solution:</strong> On <code>ENOSPC</code> (or any
-        <code>fswatcher.Add()</code> error), log a warning and <strong>continue</strong> walking.
-        The watcher starts in a degraded state — watching what it can — rather than failing
-        entirely.
+        <code>fswatcher.Add()</code> error), log a warning and
+        <strong>continue</strong> walking. The watcher starts in a degraded
+        state — watching what it can — rather than failing entirely.
       </p>
 
       <h4>Implementation</h4>
@@ -626,48 +650,54 @@ if addErr != nil {
 }</code></pre>
 
       <p>
-        Also add a <code>watchErrors</code> atomic counter to <code>Stats</code> so consumers can
-        detect degraded mode and alert.
+        Also add a <code>watchErrors</code> atomic counter to
+        <code>Stats</code> so consumers can detect degraded mode and alert.
       </p>
 
       <div class="impact-box">
-        <strong>Zero breaking changes.</strong> Watcher becomes resilient to inotify limits instead
-        of failing hard. PMA can continue watching active repos even when
-        <code>forks/</code> exhausts the budget.
+        <strong>Zero breaking changes.</strong> Watcher becomes resilient to
+        inotify limits instead of failing hard. PMA can continue watching active
+        repos even when <code>forks/</code> exhausts the budget.
       </div>
     </div>
 
     <!-- ITEM 3 -->
     <h3>
-      <span class="badge badge-high">High</span> W3: Path-level exclusion patterns
-      (<code>WithExcludePaths</code>)
+      <span class="badge badge-high">High</span> W3: Path-level exclusion
+      patterns (<code>WithExcludePaths</code>)
     </h3>
 
     <div class="section-card">
       <p>
-        <strong>Problem:</strong> <code>shouldSkipDir</code> matches directory <em>names</em> only.
-        You cannot exclude <code>/home/lars/projects/forks</code> without also excluding any
-        directory named "forks" anywhere. <code>FilterExcludePaths</code> exists for events but not
-        for walk-time filtering.
+        <strong>Problem:</strong> <code>shouldSkipDir</code> matches directory
+        <em>names</em> only. You cannot exclude
+        <code>/home/lars/projects/forks</code> without also excluding any
+        directory named "forks" anywhere. <code>FilterExcludePaths</code> exists
+        for events but not for walk-time filtering.
       </p>
 
       <p>
-        <strong>Solution:</strong> Add walk-time path-level exclusion. A new option
-        <code>WithExcludePaths(paths ...string)</code> that stores absolute paths and skips them
-        during <code>walkDirFunc</code> — before calling <code>fswatcher.Add()</code>.
+        <strong>Solution:</strong> Add walk-time path-level exclusion. A new
+        option <code>WithExcludePaths(paths ...string)</code> that stores
+        absolute paths and skips them during <code>walkDirFunc</code> — before
+        calling <code>fswatcher.Add()</code>.
       </p>
 
       <h4>Implementation</h4>
       <ul>
         <li>
-          Add <code>excludePaths map[string]struct{}</code> to <code>Watcher</code> (populated from
-          option, normalized to absolute paths)
+          Add <code>excludePaths map[string]struct{}</code> to
+          <code>Watcher</code> (populated from option, normalized to absolute
+          paths)
         </li>
         <li>
-          In <code>walkDirFunc</code>, check if the current path is a prefix of any excluded path
-          (or exact match)
+          In <code>walkDirFunc</code>, check if the current path is a prefix of
+          any excluded path (or exact match)
         </li>
-        <li>Use <code>filepath.Rel()</code> or prefix matching for efficient checks</li>
+        <li>
+          Use <code>filepath.Rel()</code> or prefix matching for efficient
+          checks
+        </li>
       </ul>
 
       <pre><code>// options.go
@@ -687,36 +717,46 @@ if w.shouldExcludePath(path) {
 
       <div class="impact-box">
         <strong>Immediate fix for PMA:</strong> Add
-        <code>WithExcludePaths("/home/lars/projects/forks", "/home/lars/projects/archived")</code>
+        <code
+          >WithExcludePaths("/home/lars/projects/forks",
+          "/home/lars/projects/archived")</code
+        >
         and cut ~30k watches.
       </div>
     </div>
 
     <!-- ITEM 4 -->
-    <h3><span class="badge badge-high">High</span> W4: Batched / lazy watch registration</h3>
+    <h3>
+      <span class="badge badge-high">High</span> W4: Batched / lazy watch
+      registration
+    </h3>
 
     <div class="section-card">
       <p>
-        <strong>Problem:</strong> <code>Watch()</code> blocks until <em>every</em> directory is
-        added to inotify. For 76k directories, this means a multi-second startup where
-        <code>Watch()</code> doesn't return. No events can be processed during this time.
+        <strong>Problem:</strong> <code>Watch()</code> blocks until
+        <em>every</em> directory is added to inotify. For 76k directories, this
+        means a multi-second startup where <code>Watch()</code> doesn't return.
+        No events can be processed during this time.
       </p>
 
       <p><strong>Solution:</strong> Two complementary approaches:</p>
 
       <h4>Option A: Batched registration (simpler)</h4>
       <p>
-        Walk the tree, collect directories into batches, add watches in chunks with
-        <code>runtime.Gosched()</code> between batches. <code>Watch()</code> returns immediately, a
-        background goroutine adds watches progressively.
+        Walk the tree, collect directories into batches, add watches in chunks
+        with
+        <code>runtime.Gosched()</code> between batches.
+        <code>Watch()</code> returns immediately, a background goroutine adds
+        watches progressively.
       </p>
 
       <h4>Option B: Lazy loading (more efficient)</h4>
       <p>
-        Only watch top-level directories initially. When a <code>Create</code> event fires in a
-        subdirectory, add watches for its children on demand. Requires <code>fsnotify</code> to
-        detect new dirs in unwatched subtrees — may miss events in deeply nested directories created
-        between scans.
+        Only watch top-level directories initially. When a
+        <code>Create</code> event fires in a subdirectory, add watches for its
+        children on demand. Requires <code>fsnotify</code> to detect new dirs in
+        unwatched subtrees — may miss events in deeply nested directories
+        created between scans.
       </p>
 
       <h4>Recommendation</h4>
@@ -725,8 +765,9 @@ if w.shouldExcludePath(path) {
         <dd>Option A (batched) for v0.4.0. Option B (lazy) as future work.</dd>
         <dt>Rationale</dt>
         <dd>
-          Batched is simpler, doesn't miss events, and solves the startup latency. Lazy loading has
-          edge cases with deeply nested new directories.
+          Batched is simpler, doesn't miss events, and solves the startup
+          latency. Lazy loading has edge cases with deeply nested new
+          directories.
         </dd>
       </dl>
 
@@ -768,34 +809,42 @@ func (w *Watcher) addBatch(paths []string) {
     </div>
 
     <!-- ITEM 5 -->
-    <h3><span class="badge badge-medium">Medium</span> W5: Inotify budget awareness</h3>
+    <h3>
+      <span class="badge badge-medium">Medium</span> W5: Inotify budget
+      awareness
+    </h3>
 
     <div class="section-card">
       <p>
-        <strong>Problem:</strong> The library has no awareness of system inotify limits. It blindly
-        adds watches until the kernel returns <code>ENOSPC</code>.
+        <strong>Problem:</strong> The library has no awareness of system inotify
+        limits. It blindly adds watches until the kernel returns
+        <code>ENOSPC</code>.
       </p>
 
       <p>
-        <strong>Solution:</strong> Read <code>/proc/sys/fs/inotify/max_user_watches</code> at
-        startup and track watches against the budget. When approaching the limit (e.g., 90%), stop
+        <strong>Solution:</strong> Read
+        <code>/proc/sys/fs/inotify/max_user_watches</code> at startup and track
+        watches against the budget. When approaching the limit (e.g., 90%), stop
         adding watches and log a warning with actionable advice.
       </p>
 
       <h4>Implementation</h4>
       <ul>
         <li>
-          New <code>Stats</code> field: <code>WatchLimit int</code> (populated from
-          <code>/proc/sys/fs/inotify/max_user_watches</code> on Linux)
-        </li>
-        <li>New <code>Stats</code> field: <code>WatchBudgetUsed float64</code> (percentage)</li>
-        <li>
-          Option: <code>WithMaxWatches(n int)</code> to override the system limit (for testing or
-          conservative usage)
+          New <code>Stats</code> field: <code>WatchLimit int</code> (populated
+          from <code>/proc/sys/fs/inotify/max_user_watches</code> on Linux)
         </li>
         <li>
-          In <code>walkDirFunc</code>: check <code>len(w.watchList) >= w.maxWatches</code> before
-          adding
+          New <code>Stats</code> field:
+          <code>WatchBudgetUsed float64</code> (percentage)
+        </li>
+        <li>
+          Option: <code>WithMaxWatches(n int)</code> to override the system
+          limit (for testing or conservative usage)
+        </li>
+        <li>
+          In <code>walkDirFunc</code>: check
+          <code>len(w.watchList) >= w.maxWatches</code> before adding
         </li>
       </ul>
 
@@ -812,29 +861,31 @@ if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
 }</code></pre>
 
       <div class="impact-box">
-        <strong>Deterministic behavior.</strong> Instead of random ENOSPC failures, the library
-        respects a budget and degrades gracefully. Consumers get early warnings via stats.
+        <strong>Deterministic behavior.</strong> Instead of random ENOSPC
+        failures, the library respects a budget and degrades gracefully.
+        Consumers get early warnings via stats.
       </div>
     </div>
 
     <!-- ITEM 6 -->
     <h3>
-      <span class="badge badge-medium">Medium</span> W6: <code>Remove()</code> doesn't remove
-      subdirectory watches
+      <span class="badge badge-medium">Medium</span> W6:
+      <code>Remove()</code> doesn't remove subdirectory watches
     </h3>
 
     <div class class="section-card">
       <p>
         <strong>Problem:</strong>
-        <code>Watcher.Remove(path)</code> (<code>watcher.go:453-482</code>) calls
-        <code>w.fswatcher.Remove(abs)</code> for the top-level path only. When
-        <code>Add()</code> added 500 subdirectories recursively, <code>Remove()</code> only removes
-        the root — the 500 subdirectory watches leak until <code>Close()</code>.
+        <code>Watcher.Remove(path)</code> (<code>watcher.go:453-482</code>)
+        calls <code>w.fswatcher.Remove(abs)</code> for the top-level path only.
+        When <code>Add()</code> added 500 subdirectories recursively,
+        <code>Remove()</code> only removes the root — the 500 subdirectory
+        watches leak until <code>Close()</code>.
       </p>
 
       <p>
-        <strong>Solution:</strong> When removing a path that was added recursively, also remove all
-        subdirectory watches under that path.
+        <strong>Solution:</strong> When removing a path that was added
+        recursively, also remove all subdirectory watches under that path.
       </p>
 
       <h4>Implementation</h4>
@@ -864,21 +915,22 @@ if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
 
     <!-- ITEM 7 -->
     <h3>
-      <span class="badge badge-low">Low</span> W7: Watch restart / reset without re-creating the
-      watcher
+      <span class="badge badge-low">Low</span> W7: Watch restart / reset without
+      re-creating the watcher
     </h3>
 
     <div class="section-card">
       <p>
-        <strong>Problem:</strong> Once a watcher is closed, it cannot be restarted — you must call
-        <code>New()</code> + <code>Watch()</code> again. The TODO list already notes "Can be done
-        via Close + New + Watch" but that loses all configuration.
+        <strong>Problem:</strong> Once a watcher is closed, it cannot be
+        restarted — you must call <code>New()</code> +
+        <code>Watch()</code> again. The TODO list already notes "Can be done via
+        Close + New + Watch" but that loses all configuration.
       </p>
 
       <p>
-        <strong>Solution:</strong> Add <code>Reset()</code> method that clears state but preserves
-        configuration, allowing <code>Watch()</code> to be called again after a
-        <code>Close()</code>.
+        <strong>Solution:</strong> Add <code>Reset()</code> method that clears
+        state but preserves configuration, allowing <code>Watch()</code> to be
+        called again after a <code>Close()</code>.
       </p>
 
       <ul>
@@ -886,14 +938,14 @@ if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
         <li>Re-create the internal <code>fsnotify.Watcher</code></li>
         <li>Clear <code>watchList</code>, reset counters</li>
         <li>
-          Preserve: <code>paths</code>, <code>filters</code>, <code>middleware</code>,
-          <code>debounce</code>, all options
+          Preserve: <code>paths</code>, <code>filters</code>,
+          <code>middleware</code>, <code>debounce</code>, all options
         </li>
       </ul>
 
       <div class="impact-box">
-        <strong>Consumer ergonomics.</strong> PMA can reset the watcher on config reload without
-        rebuilding from scratch.
+        <strong>Consumer ergonomics.</strong> PMA can reset the watcher on
+        config reload without rebuilding from scratch.
       </div>
     </div>
 
@@ -982,15 +1034,18 @@ if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
         <span class="time">~3 hours total</span>
         <ul>
           <li>
-            <strong>W2</strong> — Graceful ENOSPC (1h): Make <code>walkDirFunc</code> continue on
-            <code>fswatcher.Add()</code> errors instead of aborting. Add <code>WatchErrors</code> to
-            <code>Stats</code>.
+            <strong>W2</strong> — Graceful ENOSPC (1h): Make
+            <code>walkDirFunc</code> continue on
+            <code>fswatcher.Add()</code> errors instead of aborting. Add
+            <code>WatchErrors</code> to <code>Stats</code>.
           </li>
           <li>
-            <strong>W3</strong> — Path exclusions (2h): Add <code>WithExcludePaths()</code> option
-            with walk-time prefix matching. PMA can immediately add
+            <strong>W3</strong> — Path exclusions (2h): Add
+            <code>WithExcludePaths()</code> option with walk-time prefix
+            matching. PMA can immediately add
             <code
-              >WithExcludePaths("/home/lars/projects/forks", "/home/lars/projects/archived")</code
+              >WithExcludePaths("/home/lars/projects/forks",
+              "/home/lars/projects/archived")</code
             >.
           </li>
         </ul>
@@ -1001,13 +1056,14 @@ if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
         <span class="time">~7 hours total</span>
         <ul>
           <li>
-            <strong>W1</strong> — Gitignore-aware walking (4h): Add gitignore cache, load during
-            walk, check directories against rules. New <code>WithGitignore(bool)</code> option.
+            <strong>W1</strong> — Gitignore-aware walking (4h): Add gitignore
+            cache, load during walk, check directories against rules. New
+            <code>WithGitignore(bool)</code> option.
           </li>
           <li>
-            <strong>W4</strong> — Batched registration (3h): Break walk into batches, yield between
-            batches. <code>Watch()</code> returns immediately, background goroutine completes
-            registration.
+            <strong>W4</strong> — Batched registration (3h): Break walk into
+            batches, yield between batches. <code>Watch()</code> returns
+            immediately, background goroutine completes registration.
           </li>
         </ul>
       </div>
@@ -1022,12 +1078,12 @@ if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
             <code>WithMaxWatches(n)</code>.
           </li>
           <li>
-            <strong>W6</strong> — Remove subdirectories (1h): Clean up recursive watches on
-            <code>Remove()</code>.
+            <strong>W6</strong> — Remove subdirectories (1h): Clean up recursive
+            watches on <code>Remove()</code>.
           </li>
           <li>
-            <strong>W7</strong> — Reset method (2h): Preserve config, reset state for
-            re-<code>Watch()</code>.
+            <strong>W7</strong> — Reset method (2h): Preserve config, reset
+            state for re-<code>Watch()</code>.
           </li>
         </ul>
       </div>
@@ -1066,9 +1122,10 @@ func (w *Watcher) Reset() error</code></pre>
 
     <h3>Breaking Changes</h3>
     <p>
-      <strong>None.</strong> All changes are additive. Default behavior is preserved —
-      <code>WithGitignore(true)</code> is the only default that changes, but it's a strict
-      improvement (fewer false positives, no false negatives).
+      <strong>None.</strong> All changes are additive. Default behavior is
+      preserved — <code>WithGitignore(true)</code> is the only default that
+      changes, but it's a strict improvement (fewer false positives, no false
+      negatives).
     </p>
 
     <!-- ================================================================== -->
@@ -1087,13 +1144,17 @@ func (w *Watcher) Reset() error</code></pre>
         <tr>
           <td>Gitignore library</td>
           <td>Start with <code>sabhiram/go-gitignore</code> (zero deps)</td>
-          <td><code>go-git/plumbing/format/gitignore</code> (alpha, heavy transitive deps)</td>
+          <td>
+            <code>go-git/plumbing/format/gitignore</code> (alpha, heavy
+            transitive deps)
+          </td>
         </tr>
         <tr>
           <td>Gitignore loading timing</td>
           <td>Load during walk (<code>walkDirFunc</code>)</td>
           <td>
-            Pre-scan all <code>.gitignore</code> files before walk (slower startup, more accurate)
+            Pre-scan all <code>.gitignore</code> files before walk (slower
+            startup, more accurate)
           </td>
         </tr>
         <tr>
@@ -1108,7 +1169,10 @@ func (w *Watcher) Reset() error</code></pre>
         </tr>
         <tr>
           <td>Inotify limit source</td>
-          <td>Read from <code>/proc/sys/fs/inotify/max_user_watches</code> on Linux</td>
+          <td>
+            Read from <code>/proc/sys/fs/inotify/max_user_watches</code> on
+            Linux
+          </td>
           <td>Require user to pass it, auto-detect via syscall</td>
         </tr>
         <tr>
@@ -1125,25 +1189,30 @@ func (w *Watcher) Reset() error</code></pre>
 
     <ol>
       <li>
-        <strong>Gitignore default:</strong> Should <code>WithGitignore(true)</code> be the default?
-        It changes behavior for existing consumers. <em>Recommendation: yes, with release note.</em>
+        <strong>Gitignore default:</strong> Should
+        <code>WithGitignore(true)</code> be the default? It changes behavior for
+        existing consumers. <em>Recommendation: yes, with release note.</em>
       </li>
       <li>
-        <strong>Windows support:</strong> The inotify budget (W5) is Linux-specific. Should we use
-        <code>ReadDirectoryChangesW</code> limits on Windows?
-        <em>Recommendation: Linux-only for v0.4.0, add Windows/macOS in v0.5.0.</em>
+        <strong>Windows support:</strong> The inotify budget (W5) is
+        Linux-specific. Should we use <code>ReadDirectoryChangesW</code> limits
+        on Windows?
+        <em
+          >Recommendation: Linux-only for v0.4.0, add Windows/macOS in
+          v0.5.0.</em
+        >
       </li>
       <li>
-        <strong>Gitignore performance:</strong> Loading + matching gitignore rules per directory has
-        cost. Should we benchmark the overhead?
+        <strong>Gitignore performance:</strong> Loading + matching gitignore
+        rules per directory has cost. Should we benchmark the overhead?
         <em>Recommendation: yes, add a benchmark with 1000+ directories.</em>
       </li>
       <li>
-        <strong>Batched registration ordering:</strong> Should higher-priority paths (closer to
-        root) be watched first?
+        <strong>Batched registration ordering:</strong> Should higher-priority
+        paths (closer to root) be watched first?
         <em
-          >Recommendation: yes, walk order is already depth-first which naturally prioritizes
-          shallow paths.</em
+          >Recommendation: yes, walk order is already depth-first which
+          naturally prioritizes shallow paths.</em
         >
       </li>
     </ol>
@@ -1165,10 +1234,13 @@ func (w *Watcher) Reset() error</code></pre>
           <td>
             <ul>
               <li>
-                Directory with <code>.gitignore</code> excluding <code>build/</code> →
-                <code>build/</code> not watched
+                Directory with <code>.gitignore</code> excluding
+                <code>build/</code> → <code>build/</code> not watched
               </li>
-              <li>Nested <code>.gitignore</code> in subdirectory → rules apply only to subtree</li>
+              <li>
+                Nested <code>.gitignore</code> in subdirectory → rules apply
+                only to subtree
+              </li>
               <li>No <code>.gitignore</code> → no change in behavior</li>
               <li>Invalid <code>.gitignore</code> → graceful fallback</li>
               <li>Benchmark: overhead of gitignore matching per directory</li>
@@ -1179,7 +1251,10 @@ func (w *Watcher) Reset() error</code></pre>
           <td>W2: ENOSPC</td>
           <td>
             <ul>
-              <li>Mock <code>fswatcher.Add()</code> returning ENOSPC → walk continues</li>
+              <li>
+                Mock <code>fswatcher.Add()</code> returning ENOSPC → walk
+                continues
+              </li>
               <li>Stats.WatchErrors increments on failure</li>
               <li>Partial watch: some dirs watched, others skipped</li>
             </ul>
@@ -1268,8 +1343,9 @@ func (w *Watcher) Reset() error</code></pre>
           <td>Low</td>
           <td>Low</td>
           <td>
-            Events for already-watched dirs are processed immediately. Only newly-added dirs during
-            the batch window could miss events — acceptable for PMA's use case.
+            Events for already-watched dirs are processed immediately. Only
+            newly-added dirs during the batch window could miss events —
+            acceptable for PMA's use case.
           </td>
         </tr>
         <tr>
@@ -1277,8 +1353,8 @@ func (w *Watcher) Reset() error</code></pre>
           <td>Low</td>
           <td>Medium</td>
           <td>
-            Cache parsed gitignore objects. Benchmark before/after. Skip gitignore on systems where
-            inotify is unlimited.
+            Cache parsed gitignore objects. Benchmark before/after. Skip
+            gitignore on systems where inotify is unlimited.
           </td>
         </tr>
         <tr>
@@ -1286,8 +1362,8 @@ func (w *Watcher) Reset() error</code></pre>
           <td>Low</td>
           <td>High</td>
           <td>
-            Consider <code>WithGitignore(false)</code> as default for v0.4.0, flip to
-            <code>true</code> in v0.5.0. Document in CHANGELOG.
+            Consider <code>WithGitignore(false)</code> as default for v0.4.0,
+            flip to <code>true</code> in v0.5.0. Document in CHANGELOG.
           </td>
         </tr>
       </tbody>
@@ -1343,7 +1419,8 @@ func (w *Watcher) Reset() error</code></pre>
         font-size: 0.8rem;
       "
     >
-      Generated 2026-06-03 &mdash; go-filewatcher v0.4.0 planning &mdash; LarsArtmann
+      Generated 2026-06-03 &mdash; go-filewatcher v0.4.0 planning &mdash;
+      LarsArtmann
     </footer>
   </body>
 </html>

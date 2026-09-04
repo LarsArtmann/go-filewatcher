@@ -232,7 +232,7 @@ var (
 // At least one path must be provided. Paths are validated to exist.
 //
 // The watcher is not started until Watch() is called.
-func New( //nolint:funlen // constructor with full field initialization
+func New(
 	paths []string,
 	opts ...Option,
 ) (*Watcher, error) {

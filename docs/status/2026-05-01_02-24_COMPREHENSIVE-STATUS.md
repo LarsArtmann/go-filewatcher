@@ -1,8 +1,8 @@
 # Comprehensive Status Report
 
-**Date:** 2026-05-01 02:24:18 AM CEST  
-**Project:** go-filewatcher  
-**Branch:** master  
+**Date:** 2026-05-01 02:24:18 AM CEST\
+**Project:** go-filewatcher\
+**Branch:** master\
 **Last Commit:** 4deaf4c fix(tests): make fsnotify assertions tolerant of duplicate events
 
 ---

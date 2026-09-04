@@ -383,7 +383,7 @@ func TestMiddlewareWriteFileLog(t *testing.T) {
 		t.Errorf("expected no error, got %v", err)
 	}
 
-	data, err := os.ReadFile(tmpFile) //nolint:gosec // test file from TempDir
+	data, err := os.ReadFile(tmpFile)
 	if err != nil {
 		t.Fatalf("failed to read log file: %v", err)
 	}
@@ -404,7 +404,7 @@ func TestMiddlewareWriteFileLog_Appends(t *testing.T) {
 	_ = handler(context.Background(), testWriteEvent("a.go"))
 	_ = handler(context.Background(), testEvent("b.go", Create))
 
-	data, err := os.ReadFile(tmpFile) //nolint:gosec // test file from TempDir
+	data, err := os.ReadFile(tmpFile)
 	if err != nil {
 		t.Fatalf("failed to read log file: %v", err)
 	}
@@ -451,7 +451,7 @@ func TestNewFileLogMiddleware_CloserReleasesFileHandle(t *testing.T) {
 
 	_ = closer2()
 
-	data, err := os.ReadFile(tmpFile) //nolint:gosec // test file from TempDir
+	data, err := os.ReadFile(tmpFile)
 	if err != nil {
 		t.Fatalf("failed to read log file: %v", err)
 	}
@@ -545,7 +545,7 @@ func TestWithCleanup_RunsForFileLogMiddleware(t *testing.T) {
 		t.Errorf("second closer call after Close should be idempotent, got: %v", err)
 	}
 
-	data, err := os.ReadFile(logFile) //nolint:gosec // test file from TempDir
+	data, err := os.ReadFile(logFile)
 	if err != nil {
 		t.Fatalf("failed to read audit log: %v", err)
 	}
@@ -1077,7 +1077,7 @@ func TestMiddlewareErrorBatch(t *testing.T) {
 		batches = append(batches, errors)
 		mu.Unlock()
 
-		collected.Add(int32(len(errors))) //nolint:gosec
+		collected.Add(int32(len(errors)))
 	}
 
 	mw := MiddlewareErrorBatch(100*time.Millisecond, 3, flush)

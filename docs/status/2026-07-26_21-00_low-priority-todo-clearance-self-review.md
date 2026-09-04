@@ -8,16 +8,16 @@
 
 ## a) FULLY DONE (verified)
 
-| #   | Item                                | Deliverable                                                                                                              | Verification                                         |
-| --- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- |
-| 1   | Benchmark baseline                  | `nix run .#bench-baseline` → gitignored `bench-baseline.txt` (37 KB); `nix run .#bench-diff` runs `benchstat` against it | File exists, gitignored, benchmark lines present     |
-| 2   | `GOTMPDIR`                          | devShell `shellHook` exports disk-backed `${XDG_CACHE_HOME:-$HOME/.cache}/go-filewatcher/gotmp`                          | `nix develop` confirms dir created + env set         |
-| 3   | gocritic `exitAfterDefer` exclusion | path+text rule in `.golangci.yml` for `examples/`                                                                        | Synthetic test: fires without it, suppressed with it |
-| 4   | Default-const usage guard           | `TestMiddlewareDefaultConsts_AllUsed` (AST-based) in `middleware_test.go`                                                | Tested both drift directions fail correctly          |
-| 5   | Default-guard docs                  | "Default-guard convention" worked example in `AGENTS.md`                                                                 | Renders, lint clean                                  |
-| 6   | `FilterAnd` short-circuit           | Already short-circuits; added regression test `TestFilterAndShortCircuitsOnFirstFalse`                                   | Test passes; catches eager evaluation                |
-| 7   | `WatchChanges` contract             | `docs/research/watchchanges-contract.md` (types + semantics + open Qs)                                                   | Written                                              |
-| 8   | Semantic-release eval               | `docs/research/semantic-release-evaluation.md` (recommends release-please)                                               | Written                                              |
+| # | Item                                | Deliverable                                                                                                              | Verification                                         |
+| - | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- |
+| 1 | Benchmark baseline                  | `nix run .#bench-baseline` → gitignored `bench-baseline.txt` (37 KB); `nix run .#bench-diff` runs `benchstat` against it | File exists, gitignored, benchmark lines present     |
+| 2 | `GOTMPDIR`                          | devShell `shellHook` exports disk-backed `${XDG_CACHE_HOME:-$HOME/.cache}/go-filewatcher/gotmp`                          | `nix develop` confirms dir created + env set         |
+| 3 | gocritic `exitAfterDefer` exclusion | path+text rule in `.golangci.yml` for `examples/`                                                                        | Synthetic test: fires without it, suppressed with it |
+| 4 | Default-const usage guard           | `TestMiddlewareDefaultConsts_AllUsed` (AST-based) in `middleware_test.go`                                                | Tested both drift directions fail correctly          |
+| 5 | Default-guard docs                  | "Default-guard convention" worked example in `AGENTS.md`                                                                 | Renders, lint clean                                  |
+| 6 | `FilterAnd` short-circuit           | Already short-circuits; added regression test `TestFilterAndShortCircuitsOnFirstFalse`                                   | Test passes; catches eager evaluation                |
+| 7 | `WatchChanges` contract             | `docs/research/watchchanges-contract.md` (types + semantics + open Qs)                                                   | Written                                              |
+| 8 | Semantic-release eval               | `docs/research/semantic-release-evaluation.md` (recommends release-please)                                               | Written                                              |
 
 **Docs:** `TODO_LIST.md` (8→0 LOW), `CHANGELOG.md` ([Unreleased] → Added), `.gitignore`, `flake.nix`.
 

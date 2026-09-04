@@ -67,20 +67,20 @@
 
 ### Features (from TODO_LIST.md)
 
-| #   | Task                                             | Effort |
-| --- | ------------------------------------------------ | ------ |
-| 42  | Exponential backoff middleware                   | 20min  |
-| 45  | Filter func return match metadata                | 20min  |
-| 48  | `WatchChanges(ctx, targetState)` idempotent sync | 25min  |
-| 49  | Prometheus metrics export                        | 30min  |
-| 60  | Dead letter queue middleware                     | 30min  |
-| 61  | Self-healing watcher                             | 45min  |
-| 62  | OpenTelemetry integration                        | 45min  |
-| 63  | Error analytics                                  | 30min  |
-| 66  | Standalone CLI tool                              | 60min  |
-| 67  | Localizable error messages                       | 20min  |
-| 68  | Explore fsnotify v2 API changes                  | 30min  |
-| 69  | DebounceEntry Mixin phantom type                 | 15min  |
+| #  | Task                                             | Effort |
+| -- | ------------------------------------------------ | ------ |
+| 42 | Exponential backoff middleware                   | 20min  |
+| 45 | Filter func return match metadata                | 20min  |
+| 48 | `WatchChanges(ctx, targetState)` idempotent sync | 25min  |
+| 49 | Prometheus metrics export                        | 30min  |
+| 60 | Dead letter queue middleware                     | 30min  |
+| 61 | Self-healing watcher                             | 45min  |
+| 62 | OpenTelemetry integration                        | 45min  |
+| 63 | Error analytics                                  | 30min  |
+| 66 | Standalone CLI tool                              | 60min  |
+| 67 | Localizable error messages                       | 20min  |
+| 68 | Explore fsnotify v2 API changes                  | 30min  |
+| 69 | DebounceEntry Mixin phantom type                 | 15min  |
 
 ### Infrastructure
 
@@ -169,33 +169,33 @@
 
 Sorted by **Pareto: highest impact × lowest effort**.
 
-| #   | Task                                                                      | Effort | Impact | Rationale                                                             |
-| --- | ------------------------------------------------------------------------- | ------ | ------ | --------------------------------------------------------------------- |
-| 1   | **Add `MiddlewareRateLimit` default-value tests** (75%→100%)              | 5min   | HIGH   | Easy: test `maxEvents ≤ 0` defaults to 100                            |
-| 2   | **Add `MiddlewareSlidingWindowRateLimit` default-value tests** (71%→100%) | 5min   | HIGH   | Same pattern as above                                                 |
-| 3   | **Add `AddRecursive` depth=0 test** (61.9%→higher)                        | 10min  | HIGH   | Edge case: immediate children only                                    |
-| 4   | **Add `pollEmitEvent` integration test** (0%→higher)                      | 15min  | HIGH   | Biggest single-function gap — create file via poll path, verify event |
-| 5   | **Add `walkDirFunc` symlink error branch test** (52.2%→higher)            | 10min  | MEDIUM | Symlink resolution error path                                         |
-| 6   | **Implement exponential backoff middleware (#42)**                        | 20min  | HIGH   | Natural pairing with circuit breaker                                  |
-| 7   | **Consolidate `MiddlewareBatch`/`MiddlewareErrorBatch`** generic batcher  | 25min  | MEDIUM | ~142 lines of duplication                                             |
-| 8   | **Configure semantic-release (#65)**                                      | 20min  | MEDIUM | Goreleaser alone doesn't handle versioning                            |
-| 9   | **Test `examples/` in CI (#74)**                                          | 15min  | MEDIUM | `go build ./examples/...`                                             |
-| 10  | **Remove unused `testpackage` nolint directives** (9 files)               | 10min  | LOW    | Clean linter output                                                   |
-| 11  | **Extract `filepath.Abs` helper**                                         | 10min  | LOW    | DRY in Add/AddRecursive/Remove/New                                    |
-| 12  | **Make `NewWatcherError` stack capture opt-in**                           | 10min  | MEDIUM | Performance: expensive default                                        |
-| 13  | **Consolidate error code mapping**                                        | 15min  | MEDIUM | 3 locations → 1 registration table                                    |
-| 14  | **Dead letter queue middleware (#60)**                                    | 30min  | MEDIUM | Pairs with circuit breaker                                            |
-| 15  | **Filter func return match metadata (#45)**                               | 20min  | MEDIUM | Richer filter semantics                                               |
-| 16  | **Remove duplicate filter test runners**                                  | 15min  | LOW    | 3 variants → 1                                                        |
-| 17  | **Remove stale `result` binary**                                          | 5min   | LOW    | `git rm`, add to `.gitignore`                                         |
-| 18  | **Windows edge case tests (#72)**                                         | 30min  | MEDIUM | Cross-platform goal                                                   |
-| 19  | **Extract `drainEvents` to testutil (#71)**                               | 20min  | LOW    | Test consolidation                                                    |
-| 20  | **Prometheus metrics export (#49)**                                       | 30min  | MEDIUM | Observability integration                                             |
-| 21  | **Consolidate `docs/status/`**                                            | 15min  | LOW    | 30+ files, most stale                                                 |
-| 22  | **`filterFileStat` named result struct**                                  | 10min  | LOW    | Prevent bool mixups                                                   |
-| 23  | **`FilterGeneratedCodeFull` coverage** (64.3%→higher)                     | 15min  | LOW    | Gogenfilter integration paths                                         |
-| 24  | **WatchChanges idempotent sync (#48)**                                    | 25min  | MEDIUM | Sync API                                                              |
-| 25  | **Self-healing watcher (#61)**                                            | 45min  | MEDIUM | Auto-retry failed operations                                          |
+| #  | Task                                                                      | Effort | Impact | Rationale                                                             |
+| -- | ------------------------------------------------------------------------- | ------ | ------ | --------------------------------------------------------------------- |
+| 1  | **Add `MiddlewareRateLimit` default-value tests** (75%→100%)              | 5min   | HIGH   | Easy: test `maxEvents ≤ 0` defaults to 100                            |
+| 2  | **Add `MiddlewareSlidingWindowRateLimit` default-value tests** (71%→100%) | 5min   | HIGH   | Same pattern as above                                                 |
+| 3  | **Add `AddRecursive` depth=0 test** (61.9%→higher)                        | 10min  | HIGH   | Edge case: immediate children only                                    |
+| 4  | **Add `pollEmitEvent` integration test** (0%→higher)                      | 15min  | HIGH   | Biggest single-function gap — create file via poll path, verify event |
+| 5  | **Add `walkDirFunc` symlink error branch test** (52.2%→higher)            | 10min  | MEDIUM | Symlink resolution error path                                         |
+| 6  | **Implement exponential backoff middleware (#42)**                        | 20min  | HIGH   | Natural pairing with circuit breaker                                  |
+| 7  | **Consolidate `MiddlewareBatch`/`MiddlewareErrorBatch`** generic batcher  | 25min  | MEDIUM | ~142 lines of duplication                                             |
+| 8  | **Configure semantic-release (#65)**                                      | 20min  | MEDIUM | Goreleaser alone doesn't handle versioning                            |
+| 9  | **Test `examples/` in CI (#74)**                                          | 15min  | MEDIUM | `go build ./examples/...`                                             |
+| 10 | **Remove unused `testpackage` nolint directives** (9 files)               | 10min  | LOW    | Clean linter output                                                   |
+| 11 | **Extract `filepath.Abs` helper**                                         | 10min  | LOW    | DRY in Add/AddRecursive/Remove/New                                    |
+| 12 | **Make `NewWatcherError` stack capture opt-in**                           | 10min  | MEDIUM | Performance: expensive default                                        |
+| 13 | **Consolidate error code mapping**                                        | 15min  | MEDIUM | 3 locations → 1 registration table                                    |
+| 14 | **Dead letter queue middleware (#60)**                                    | 30min  | MEDIUM | Pairs with circuit breaker                                            |
+| 15 | **Filter func return match metadata (#45)**                               | 20min  | MEDIUM | Richer filter semantics                                               |
+| 16 | **Remove duplicate filter test runners**                                  | 15min  | LOW    | 3 variants → 1                                                        |
+| 17 | **Remove stale `result` binary**                                          | 5min   | LOW    | `git rm`, add to `.gitignore`                                         |
+| 18 | **Windows edge case tests (#72)**                                         | 30min  | MEDIUM | Cross-platform goal                                                   |
+| 19 | **Extract `drainEvents` to testutil (#71)**                               | 20min  | LOW    | Test consolidation                                                    |
+| 20 | **Prometheus metrics export (#49)**                                       | 30min  | MEDIUM | Observability integration                                             |
+| 21 | **Consolidate `docs/status/`**                                            | 15min  | LOW    | 30+ files, most stale                                                 |
+| 22 | **`filterFileStat` named result struct**                                  | 10min  | LOW    | Prevent bool mixups                                                   |
+| 23 | **`FilterGeneratedCodeFull` coverage** (64.3%→higher)                     | 15min  | LOW    | Gogenfilter integration paths                                         |
+| 24 | **WatchChanges idempotent sync (#48)**                                    | 25min  | MEDIUM | Sync API                                                              |
+| 25 | **Self-healing watcher (#61)**                                            | 45min  | MEDIUM | Auto-retry failed operations                                          |
 
 ---
 

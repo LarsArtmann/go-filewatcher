@@ -145,33 +145,33 @@ This is cosmetic, not functional.
 
 ## F) Top 25 Things to Do Next
 
-| #   | Task                                                             | Priority | Effort |
-| --- | ---------------------------------------------------------------- | -------- | ------ |
-| 1   | Write README.md with installation, quickstart, API reference     | P0       | 30min  |
-| 2   | Add LICENSE file (matching go-cqrs-lite)                         | P0       | 2min   |
-| 3   | Add `Example*` test functions for godoc                          | P0       | 20min  |
-| 4   | Raise coverage to 90%+ (cover middleware, error paths)           | P0       | 30min  |
-| 5   | Extract `debounceInterface` to named interface                   | P1       | 10min  |
-| 6   | Add `WithBuffer(size int)` option                                | P1       | 5min   |
-| 7   | Add `FilterRegex(pattern string)`                                | P1       | 10min  |
-| 8   | Add benchmark tests for Debouncer                                | P1       | 20min  |
-| 9   | Add golangci-lint config                                         | P1       | 15min  |
-| 10  | Create Makefile or justfile                                      | P1       | 10min  |
-| 11  | Set up GitHub Actions CI                                         | P1       | 20min  |
-| 12  | Integrate in `hierarchical-errors` (replace hand-rolled watcher) | P2       | 1hr    |
-| 13  | Integrate in `todo-list-ai-go` (replace scanner fsnotify code)   | P2       | 1hr    |
-| 14  | Integrate in `Kernovia` (replace hotreload watcher + Debouncer)  | P2       | 1hr    |
-| 15  | Add CHANGELOG.md                                                 | P2       | 5min   |
-| 16  | Add CONTRIBUTING.md                                              | P2       | 10min  |
-| 17  | Add `Watcher.Stats()` method                                     | P2       | 20min  |
-| 18  | Stress test with 10k+ files                                      | P2       | 30min  |
-| 19  | Add `examples/` directory with standalone programs               | P2       | 30min  |
-| 20  | Add `FilterCustom(fn func(path string) bool)`                    | P3       | 5min   |
-| 21  | Formalize `io.Closer` interface compliance                       | P3       | 2min   |
-| 22  | Add `WithOnAdd(fn)` callback option                              | P3       | 10min  |
-| 23  | Add `FilterMinSize(size int64)` filter                           | P3       | 10min  |
-| 24  | Tag v0.1.0 after integrations pass                               | P3       | 2min   |
-| 25  | Write blog post / announce                                       | P4       | 1hr    |
+| #  | Task                                                             | Priority | Effort |
+| -- | ---------------------------------------------------------------- | -------- | ------ |
+| 1  | Write README.md with installation, quickstart, API reference     | P0       | 30min  |
+| 2  | Add LICENSE file (matching go-cqrs-lite)                         | P0       | 2min   |
+| 3  | Add `Example*` test functions for godoc                          | P0       | 20min  |
+| 4  | Raise coverage to 90%+ (cover middleware, error paths)           | P0       | 30min  |
+| 5  | Extract `debounceInterface` to named interface                   | P1       | 10min  |
+| 6  | Add `WithBuffer(size int)` option                                | P1       | 5min   |
+| 7  | Add `FilterRegex(pattern string)`                                | P1       | 10min  |
+| 8  | Add benchmark tests for Debouncer                                | P1       | 20min  |
+| 9  | Add golangci-lint config                                         | P1       | 15min  |
+| 10 | Create Makefile or justfile                                      | P1       | 10min  |
+| 11 | Set up GitHub Actions CI                                         | P1       | 20min  |
+| 12 | Integrate in `hierarchical-errors` (replace hand-rolled watcher) | P2       | 1hr    |
+| 13 | Integrate in `todo-list-ai-go` (replace scanner fsnotify code)   | P2       | 1hr    |
+| 14 | Integrate in `Kernovia` (replace hotreload watcher + Debouncer)  | P2       | 1hr    |
+| 15 | Add CHANGELOG.md                                                 | P2       | 5min   |
+| 16 | Add CONTRIBUTING.md                                              | P2       | 10min  |
+| 17 | Add `Watcher.Stats()` method                                     | P2       | 20min  |
+| 18 | Stress test with 10k+ files                                      | P2       | 30min  |
+| 19 | Add `examples/` directory with standalone programs               | P2       | 30min  |
+| 20 | Add `FilterCustom(fn func(path string) bool)`                    | P3       | 5min   |
+| 21 | Formalize `io.Closer` interface compliance                       | P3       | 2min   |
+| 22 | Add `WithOnAdd(fn)` callback option                              | P3       | 10min  |
+| 23 | Add `FilterMinSize(size int64)` filter                           | P3       | 10min  |
+| 24 | Tag v0.1.0 after integrations pass                               | P3       | 2min   |
+| 25 | Write blog post / announce                                       | P4       | 1hr    |
 
 ---
 

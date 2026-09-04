@@ -278,7 +278,7 @@ Full details in CHANGELOG `[Unreleased]`.
 
 | Report item                                 | Resolution                                                                                   |
 | ------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| §C#1 — README deprecation markers           | DONE: ⚠️ callouts on `WithOnError` + `MiddlewareRateLimit` rows                              |
+| §C#1 — README deprecation markers           | DONE: ⚠️ callouts on `WithOnError` + `MiddlewareRateLimit` rows                               |
 | §C#2 — MIGRATION.md v2.3 section            | DONE: "Migrating to v2.3+" with before/after code snippets                                   |
 | §C#3 — Website deprecation badges           | DONE: `:::caution[Deprecated]` blocks in `api-reference.mdx`                                 |
 | §C#4 — `nix run .#ci` tidy failure          | DONE: write-modifying apps run from caller CWD now                                           |

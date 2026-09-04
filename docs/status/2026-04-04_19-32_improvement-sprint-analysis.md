@@ -10,15 +10,15 @@
 
 ## a) FULLY DONE
 
-| #   | What                                                      | Commit             |
-| --- | --------------------------------------------------------- | ------------------ |
-| 1   | Fix go.mod version 1.26.1→1.26.0                          | `4f663fd`          |
-| 2   | Remove pkg/errors/ template junk                          | `b14cef3`          |
-| 3   | Pre-compile regex in FilterRegex                          | `d5f3a40`          |
-| 4   | Remove FilterCustom dead alias                            | `f21fc03`          |
-| 5   | Fix justfile GOWORK=off everywhere                        | `f21fc03`          |
-| 6   | Clean test dead code (\_ = w)                             | `f21fc03`          |
-| 7   | All prior implementation (8 source files, 50 tests, docs) | `ac0d50b..617678f` |
+| # | What                                                      | Commit             |
+| - | --------------------------------------------------------- | ------------------ |
+| 1 | Fix go.mod version 1.26.1→1.26.0                          | `4f663fd`          |
+| 2 | Remove pkg/errors/ template junk                          | `b14cef3`          |
+| 3 | Pre-compile regex in FilterRegex                          | `d5f3a40`          |
+| 4 | Remove FilterCustom dead alias                            | `f21fc03`          |
+| 5 | Fix justfile GOWORK=off everywhere                        | `f21fc03`          |
+| 6 | Clean test dead code (\_ = w)                             | `f21fc03`          |
+| 7 | All prior implementation (8 source files, 50 tests, docs) | `ac0d50b..617678f` |
 
 ---
 
@@ -32,33 +32,33 @@
 
 ## c) NOT STARTED
 
-| #   | What                                                                        | Impact | Work | Priority |
-| --- | --------------------------------------------------------------------------- | ------ | ---- | -------- |
-| 1   | Fix handleNewDirectory race (writes watchList without lock)                 | HIGH   | LOW  | 🔴       |
-| 2   | Make shouldSkipDir respect user WithIgnoreDirs                              | HIGH   | LOW  | 🔴       |
-| 3   | Replace cockroachdb/errors with stdlib errors                               | HIGH   | MED  | 🟠       |
-| 4   | Split watcher.go (549 lines) into watcher.go + lifecycle.go + internal.go   | MED    | LOW  | 🟡       |
-| 5   | Add Op.MarshalText/UnmarshalText for JSON                                   | MED    | LOW  | 🟡       |
-| 6   | Add slog support to MiddlewareLogging                                       | MED    | LOW  | 🟡       |
-| 7   | Fix MiddlewareWriteFileLog (opens file on every event)                      | MED    | LOW  | 🟡       |
-| 8   | Raise test coverage from 77% → 90%+                                         | HIGH   | MED  | 🔴       |
-| 9   | Fix getDebounceKey type assertion smell                                     | LOW    | LOW  | 🟢       |
-| 10  | Remove report/ directory (jscpd-report.json)                                | LOW    | LOW  | 🟢       |
-| 11  | Integrate into file-and-image-renamer                                       | HIGH   | MED  | 🔴       |
-| 12  | Integrate into dynamic-markdown-site                                        | MED    | LOW  | 🟡       |
-| 13  | Integrate into auto-deduplicate                                             | MED    | LOW  | 🟡       |
-| 14  | Integrate into Cyberdom                                                     | MED    | LOW  | 🟡       |
-| 15  | Tag v0.1.0                                                                  | MED    | LOW  | 🟢       |
-| 16  | Update README/CHANGELOG with all changes                                    | MED    | LOW  | 🟡       |
-| 17  | Add WithWatchedIgnoreDirs option (separate filter vs. walk skip)            | HIGH   | MED  | 🔴       |
-| 18  | Remove `nolint:unparam` from getDebounceKey                                 | LOW    | LOW  | 🟢       |
-| 19  | Add `Pending()` to DebouncerInterface                                       | LOW    | LOW  | 🟢       |
-| 20  | Validate debounce durations (cap at reasonable max)                         | LOW    | LOW  | 🟢       |
-| 21  | Add Example_FilterRegex test (currently has no Output comment)              | LOW    | LOW  | 🟢       |
-| 22  | Consider removing cockroachdb/errors entirely (2 deps → 0)                  | MED    | MED  | 🟠       |
-| 23  | Add `Errors() <-chan error` method as alternative to error handler callback | MED    | MED  | 🟡       |
-| 24  | Check if examples/ directory is worth keeping vs. just example_test.go      | LOW    | LOW  | 🟢       |
-| 25  | Ensure FilterRegex compiles are validated in constructor, not at runtime    | LOW    | LOW  | 🟢       |
+| #  | What                                                                        | Impact | Work | Priority |
+| -- | --------------------------------------------------------------------------- | ------ | ---- | -------- |
+| 1  | Fix handleNewDirectory race (writes watchList without lock)                 | HIGH   | LOW  | 🔴       |
+| 2  | Make shouldSkipDir respect user WithIgnoreDirs                              | HIGH   | LOW  | 🔴       |
+| 3  | Replace cockroachdb/errors with stdlib errors                               | HIGH   | MED  | 🟠       |
+| 4  | Split watcher.go (549 lines) into watcher.go + lifecycle.go + internal.go   | MED    | LOW  | 🟡       |
+| 5  | Add Op.MarshalText/UnmarshalText for JSON                                   | MED    | LOW  | 🟡       |
+| 6  | Add slog support to MiddlewareLogging                                       | MED    | LOW  | 🟡       |
+| 7  | Fix MiddlewareWriteFileLog (opens file on every event)                      | MED    | LOW  | 🟡       |
+| 8  | Raise test coverage from 77% → 90%+                                         | HIGH   | MED  | 🔴       |
+| 9  | Fix getDebounceKey type assertion smell                                     | LOW    | LOW  | 🟢       |
+| 10 | Remove report/ directory (jscpd-report.json)                                | LOW    | LOW  | 🟢       |
+| 11 | Integrate into file-and-image-renamer                                       | HIGH   | MED  | 🔴       |
+| 12 | Integrate into dynamic-markdown-site                                        | MED    | LOW  | 🟡       |
+| 13 | Integrate into auto-deduplicate                                             | MED    | LOW  | 🟡       |
+| 14 | Integrate into Cyberdom                                                     | MED    | LOW  | 🟡       |
+| 15 | Tag v0.1.0                                                                  | MED    | LOW  | 🟢       |
+| 16 | Update README/CHANGELOG with all changes                                    | MED    | LOW  | 🟡       |
+| 17 | Add WithWatchedIgnoreDirs option (separate filter vs. walk skip)            | HIGH   | MED  | 🔴       |
+| 18 | Remove `nolint:unparam` from getDebounceKey                                 | LOW    | LOW  | 🟢       |
+| 19 | Add `Pending()` to DebouncerInterface                                       | LOW    | LOW  | 🟢       |
+| 20 | Validate debounce durations (cap at reasonable max)                         | LOW    | LOW  | 🟢       |
+| 21 | Add Example_FilterRegex test (currently has no Output comment)              | LOW    | LOW  | 🟢       |
+| 22 | Consider removing cockroachdb/errors entirely (2 deps → 0)                  | MED    | MED  | 🟠       |
+| 23 | Add `Errors() <-chan error` method as alternative to error handler callback | MED    | MED  | 🟡       |
+| 24 | Check if examples/ directory is worth keeping vs. just example_test.go      | LOW    | LOW  | 🟢       |
+| 25 | Ensure FilterRegex compiles are validated in constructor, not at runtime    | LOW    | LOW  | 🟢       |
 
 ---
 

@@ -1,7 +1,7 @@
 # ADR: Integrating `samber/do/v2`
 
-**Date:** 2026-04-04  
-**Status:** Evaluated — Recommendation: **Do not integrate**  
+**Date:** 2026-04-04\
+**Status:** Evaluated — Recommendation: **Do not integrate**\
 **Revised:** 2026-04-04 (added gaps from reflection)
 
 ---
@@ -63,30 +63,30 @@ The DI version adds 4 lines of boilerplate and requires understanding `samber/do
 
 ## PRO
 
-| #   | Argument                       | Detail                                                                                                                                                                            |
-| --- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Testability via injection**  | Could inject a mock `fsnotify.Watcher` instead of relying on real filesystem events in tests. Currently, the watch loop is tested with real I/O (`watcher_test.go:107-251`).      |
-| 2   | **Lifecycle management**       | `Watcher` already implements `io.Closer` (`watcher.go:71`). Adding `Shutdowner`/`Healthchecker` from `samber/do` would give automatic shutdown ordering in DI-aware applications. |
-| 3   | **Scoped debounce instances**  | `do.Scope` could model per-tenant watcher instances with parent-child isolation for multi-tenant scenarios.                                                                       |
-| 4   | **Named service registration** | Multiple watchers with different configs: `do.ProvideNamed(injector, "config-watcher", ...)`.                                                                                     |
-| 5   | **Framework alignment**        | If `go-cqrs-lite` ecosystem adopts `samber/do`, alignment reduces friction.                                                                                                       |
+| # | Argument                       | Detail                                                                                                                                                                            |
+| - | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | **Testability via injection**  | Could inject a mock `fsnotify.Watcher` instead of relying on real filesystem events in tests. Currently, the watch loop is tested with real I/O (`watcher_test.go:107-251`).      |
+| 2 | **Lifecycle management**       | `Watcher` already implements `io.Closer` (`watcher.go:71`). Adding `Shutdowner`/`Healthchecker` from `samber/do` would give automatic shutdown ordering in DI-aware applications. |
+| 3 | **Scoped debounce instances**  | `do.Scope` could model per-tenant watcher instances with parent-child isolation for multi-tenant scenarios.                                                                       |
+| 4 | **Named service registration** | Multiple watchers with different configs: `do.ProvideNamed(injector, "config-watcher", ...)`.                                                                                     |
+| 5 | **Framework alignment**        | If `go-cqrs-lite` ecosystem adopts `samber/do`, alignment reduces friction.                                                                                                       |
 
 ---
 
 ## CONTRA
 
-| #   | Argument                                  | Detail                                                                                                                                                                                                                      |
-| --- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Library vs Application mismatch**       | DI solves wiring in **applications**. `go-filewatcher` is a **library**. DI containers belong at the composition root — the consumer's `main()`. Adding DI _inside_ a library imposes a framework choice on every consumer. |
-| 2   | **Violates "minimal deps" principle**     | `AGENTS.md`: _"Keep it minimal — no other deps."_ `samber/do` adds transitive dependencies and increases binary size.                                                                                                       |
-| 3   | **Functional options already solve this** | `WithDebounce()`, `WithFilter()`, `WithMiddleware()` provide clean composable configuration. DI adds indirection without capability.                                                                                        |
-| 4   | **No complex dependency graph**           | 1 real dependency (`fsnotify.Watcher`) and 3 pluggable interfaces (`DebouncerInterface`, `Filter`, `Middleware`). DI shines with 10-50+ services.                                                                           |
-| 5   | **Breaks the public API**                 | `filewatcher.New(paths, opts...)` → `Injector` + `Provide` + `Invoke`. Worse DX for the 95% use case.                                                                                                                       |
-| 6   | **Exhaustruct linter conflict**           | Project enforces `exhaustruct` (`.golangci.yml:28`). Lazy instantiation in provider closures makes field auditing harder.                                                                                                   |
-| 7   | **Consumer already can use DI**           | `do.Provide(injector, func(i do.Injector) (*filewatcher.Watcher, error) { return filewatcher.New(...) })`. Library doesn't need to _depend on_ `samber/do` to _work with_ it.                                               |
-| 8   | **No behavioral gain**                    | No bug, feature gap, or architectural pain is solved. Middleware chains, filter composition, and debounce strategies already work correctly.                                                                                |
-| 9   | **Go ecosystem convention**               | Go favors explicit dependency passing over DI containers. Standard library (`http.Handler`, `io.Reader`) uses interfaces + functions, not containers.                                                                       |
-| 10  | **Testing already works**                 | `watcher_test.go` achieves ~90% coverage with real filesystem. The marginal testability gain from DI doesn't justify the architectural cost.                                                                                |
+| #  | Argument                                  | Detail                                                                                                                                                                                                                      |
+| -- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1  | **Library vs Application mismatch**       | DI solves wiring in **applications**. `go-filewatcher` is a **library**. DI containers belong at the composition root — the consumer's `main()`. Adding DI _inside_ a library imposes a framework choice on every consumer. |
+| 2  | **Violates "minimal deps" principle**     | `AGENTS.md`: _"Keep it minimal — no other deps."_ `samber/do` adds transitive dependencies and increases binary size.                                                                                                       |
+| 3  | **Functional options already solve this** | `WithDebounce()`, `WithFilter()`, `WithMiddleware()` provide clean composable configuration. DI adds indirection without capability.                                                                                        |
+| 4  | **No complex dependency graph**           | 1 real dependency (`fsnotify.Watcher`) and 3 pluggable interfaces (`DebouncerInterface`, `Filter`, `Middleware`). DI shines with 10-50+ services.                                                                           |
+| 5  | **Breaks the public API**                 | `filewatcher.New(paths, opts...)` → `Injector` + `Provide` + `Invoke`. Worse DX for the 95% use case.                                                                                                                       |
+| 6  | **Exhaustruct linter conflict**           | Project enforces `exhaustruct` (`.golangci.yml:28`). Lazy instantiation in provider closures makes field auditing harder.                                                                                                   |
+| 7  | **Consumer already can use DI**           | `do.Provide(injector, func(i do.Injector) (*filewatcher.Watcher, error) { return filewatcher.New(...) })`. Library doesn't need to _depend on_ `samber/do` to _work with_ it.                                               |
+| 8  | **No behavioral gain**                    | No bug, feature gap, or architectural pain is solved. Middleware chains, filter composition, and debounce strategies already work correctly.                                                                                |
+| 9  | **Go ecosystem convention**               | Go favors explicit dependency passing over DI containers. Standard library (`http.Handler`, `io.Reader`) uses interfaces + functions, not containers.                                                                       |
+| 10 | **Testing already works**                 | `watcher_test.go` achieves ~90% coverage with real filesystem. The marginal testability gain from DI doesn't justify the architectural cost.                                                                                |
 
 ---
 
@@ -131,25 +131,25 @@ These improvements address the legitimate needs that motivated the DI evaluation
 
 ### High impact, low work
 
-| #   | Improvement                                              | Work  | Impact                                                             |
-| --- | -------------------------------------------------------- | ----- | ------------------------------------------------------------------ |
-| 1   | **Extract `fsnotify.Watcher` behind internal interface** | Small | High — enables mock-based watch loop testing without real I/O      |
-| 2   | **Add `HealthCheck() error` to `Watcher`**               | Small | Medium — consumers using DI can wrap it at their level             |
-| 3   | **Document DI integration pattern** in README            | Tiny  | Medium — shows consumers how to use with `samber/do`, `wire`, `fx` |
+| # | Improvement                                              | Work  | Impact                                                             |
+| - | -------------------------------------------------------- | ----- | ------------------------------------------------------------------ |
+| 1 | **Extract `fsnotify.Watcher` behind internal interface** | Small | High — enables mock-based watch loop testing without real I/O      |
+| 2 | **Add `HealthCheck() error` to `Watcher`**               | Small | Medium — consumers using DI can wrap it at their level             |
+| 3 | **Document DI integration pattern** in README            | Tiny  | Medium — shows consumers how to use with `samber/do`, `wire`, `fx` |
 
 ### Medium impact, medium work
 
-| #   | Improvement                                             | Work   | Impact                                                              |
-| --- | ------------------------------------------------------- | ------ | ------------------------------------------------------------------- |
-| 4   | **Use `log/slog` in middleware** (stdlib since Go 1.21) | Medium | Medium — structured logging instead of `log.Logger`                 |
-| 5   | **Add `Event` batch accumulation**                      | Medium | Medium — useful for consumers who want to process events in batches |
+| # | Improvement                                             | Work   | Impact                                                              |
+| - | ------------------------------------------------------- | ------ | ------------------------------------------------------------------- |
+| 4 | **Use `log/slog` in middleware** (stdlib since Go 1.21) | Medium | Medium — structured logging instead of `log.Logger`                 |
+| 5 | **Add `Event` batch accumulation**                      | Medium | Medium — useful for consumers who want to process events in batches |
 
 ### Already done (this session)
 
-| #   | Improvement                                                          | Commit    |
-| --- | -------------------------------------------------------------------- | --------- |
-| ✅  | Remove unused nolint directive                                       | `3eaf3e4` |
-| ✅  | Replace custom `contains()` with `strings.Contains`                  | `de57c1e` |
-| ✅  | Fix stale `pkg/errors/` reference in AGENTS.md                       | `83d08ad` |
-| ✅  | Add `Pending()` to `GlobalDebouncer` for API consistency             | `813328a` |
-| ✅  | Add `TextMarshaler`/`TextUnmarshaler` to `Op` + json tags to `Event` | `6d934dc` |
+| #  | Improvement                                                          | Commit    |
+| -- | -------------------------------------------------------------------- | --------- |
+| ✅ | Remove unused nolint directive                                       | `3eaf3e4` |
+| ✅ | Replace custom `contains()` with `strings.Contains`                  | `de57c1e` |
+| ✅ | Fix stale `pkg/errors/` reference in AGENTS.md                       | `83d08ad` |
+| ✅ | Add `Pending()` to `GlobalDebouncer` for API consistency             | `813328a` |
+| ✅ | Add `TextMarshaler`/`TextUnmarshaler` to `Op` + json tags to `Event` | `6d934dc` |

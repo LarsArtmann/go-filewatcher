@@ -279,8 +279,8 @@ copy + delete, producing different event sequences.
 | Filesystem                        | `rename()` Atomic? | Event Sequence                                                |
 | --------------------------------- | ------------------ | ------------------------------------------------------------- |
 | ext4, XFS, Btrfs, ZFS, APFS, NTFS | ✅ Atomic          | Clean Rename event                                            |
-| NFS                               | ⚠️ Not guaranteed  | May appear as CREATE + DELETE, especially after reconnection  |
-| SMB / CIFS                        | ⚠️ Not guaranteed  | Often CREATE + DELETE, especially cross-directory             |
+| NFS                               | ⚠️ Not guaranteed   | May appear as CREATE + DELETE, especially after reconnection  |
+| SMB / CIFS                        | ⚠️ Not guaranteed   | Often CREATE + DELETE, especially cross-directory             |
 | FAT / exFAT                       | ❌ Not atomic      | Always copy + delete semantics                                |
 | Cross-filesystem (any → any)      | ❌ Never atomic    | POSIX `rename` fails `EXDEV`; apps fall back to copy + delete |
 
@@ -843,13 +843,13 @@ properties:
 | XFS            | Sensitive           | Raw bytes     | 1ns              | Yes           | inotify ✅           | Advisory         |
 | Btrfs          | Sensitive           | Raw bytes     | 1ns              | Yes           | inotify ✅           | Advisory         |
 | ZFS            | Sensitive           | Raw bytes     | 1ns              | Yes           | inotify ✅           | Advisory         |
-| APFS (default) | **Insensitive**     | **NFD**       | 1ns              | Yes           | FSEvents ⚠️          | Advisory         |
-| HFS+ (default) | **Insensitive**     | **HFS+ NFD**  | 1s               | Yes           | FSEvents ⚠️          | Advisory         |
+| APFS (default) | **Insensitive**     | **NFD**       | 1ns              | Yes           | FSEvents ⚠️           | Advisory         |
+| HFS+ (default) | **Insensitive**     | **HFS+ NFD**  | 1s               | Yes           | FSEvents ⚠️           | Advisory         |
 | NTFS           | **Insensitive**     | None (UTF-16) | 100ns            | Yes           | ReadDirChangesW ✅   | **Mandatory**    |
 | FAT32          | **Insensitive**     | None          | **2s**           | **No**        | ReadDirChangesW ✅   | None             |
 | exFAT          | **Insensitive**     | None          | 10ms             | **No**        | ReadDirChangesW ✅   | None             |
-| NFS v3         | Follows server      | Raw bytes     | **1s**           | ⚠️ Unreliable | **None** ⛔          | NLM (unreliable) |
-| SMB/CIFS       | Usually insensitive | None          | Variable         | ⚠️ Unreliable | **None** ⛔          | Mandatory        |
+| NFS v3         | Follows server      | Raw bytes     | **1s**           | ⚠️ Unreliable  | **None** ⛔          | NLM (unreliable) |
+| SMB/CIFS       | Usually insensitive | None          | Variable         | ⚠️ Unreliable  | **None** ⛔          | Mandatory        |
 | OverlayFS      | Sensitive           | Raw bytes     | 1ns              | Yes (upper)   | inotify (upper only) | Advisory         |
 | tmpfs          | Sensitive           | Raw bytes     | 1ns              | Yes           | inotify ✅           | Advisory         |
 

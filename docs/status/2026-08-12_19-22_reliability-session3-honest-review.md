@@ -5,6 +5,7 @@
 **Commits this session:** Auto-git committed as `0b60c58` (feat), `722b9e6` (docs), `972b49b` (ci)
 **Working tree:** Clean
 **Prior session reports:**
+
 - `docs/status/2026-08-12_14-39_reliability-edge-cases-implementation.md` (session 1)
 - `docs/status/2026-08-12_reliability-edge-cases-completion.md` (session 2, premature)
 - `docs/status/2026-08-12_15-44_reliability-completion-honest-review.md` (session 2, honest)
@@ -114,16 +115,16 @@ from the system.
 
 ### 5. Documentation
 
-| Document | What Changed |
-|----------|-------------|
-| `CHANGELOG.md` | 6 new entries: WatchBudgetCap, backpressure+budget metrics, WithContentHashMaxSize, WithErrorBufferSize, NewWatcherErrorWithStack, EventsProcessed fix, WatchLimit semantics, hashFile signature |
-| `API_STABILITY.md` | Added `WithContentHashMaxSize`, `WithErrorBufferSize`, `NewWatcherErrorWithStack` to Evolving |
-| `FEATURES.md` | Added budget cap, configurable hash size, decoupled error buffer rows; updated Stats/Prometheus/stack-trace descriptions |
-| `website/api-reference.mdx` | Stats struct: added `WatchBudgetCap`, `CaseSensitivity`, `CaseSensitivityMode`; options count 26→28; filters: added `FilterCaseInsensitive`, `FilterCaseSensitive` |
-| `website/guides/migration-v2.3-to-v2.4.mdx` | **New file:** full migration guide with behavioral changes, new options, new Stats fields, new metrics, bug fixes |
-| `website/guides/resilience.mdx` | 4 new sections: Watch Budget Safety Fraction, Slow-Consumer Backpressure, Error Channel Buffer, Error Classification. Updated budget example to use `WatchBudgetCap` |
-| `website/guides/middleware.mdx` | 2 new sections: Deduplication (case-sensitive + insensitive), Drop Observability |
-| `README.md` | Updated stats example: `WatchLimit` → `WatchBudgetCap` |
+| Document                                    | What Changed                                                                                                                                                                                     |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CHANGELOG.md`                              | 6 new entries: WatchBudgetCap, backpressure+budget metrics, WithContentHashMaxSize, WithErrorBufferSize, NewWatcherErrorWithStack, EventsProcessed fix, WatchLimit semantics, hashFile signature |
+| `API_STABILITY.md`                          | Added `WithContentHashMaxSize`, `WithErrorBufferSize`, `NewWatcherErrorWithStack` to Evolving                                                                                                    |
+| `FEATURES.md`                               | Added budget cap, configurable hash size, decoupled error buffer rows; updated Stats/Prometheus/stack-trace descriptions                                                                         |
+| `website/api-reference.mdx`                 | Stats struct: added `WatchBudgetCap`, `CaseSensitivity`, `CaseSensitivityMode`; options count 26→28; filters: added `FilterCaseInsensitive`, `FilterCaseSensitive`                               |
+| `website/guides/migration-v2.3-to-v2.4.mdx` | **New file:** full migration guide with behavioral changes, new options, new Stats fields, new metrics, bug fixes                                                                                |
+| `website/guides/resilience.mdx`             | 4 new sections: Watch Budget Safety Fraction, Slow-Consumer Backpressure, Error Channel Buffer, Error Classification. Updated budget example to use `WatchBudgetCap`                             |
+| `website/guides/middleware.mdx`             | 2 new sections: Deduplication (case-sensitive + insensitive), Drop Observability                                                                                                                 |
+| `README.md`                                 | Updated stats example: `WatchLimit` → `WatchBudgetCap`                                                                                                                                           |
 
 ### 6. Infrastructure
 
@@ -150,6 +151,7 @@ use `withBackend()` and inject synthetic events into the channel.
 ### 2. `WithContentHashing()` + `WithContentHashMaxSize(0)` interaction is ambiguous
 
 The backward-compat logic in `WithContentHashing()` is:
+
 ```go
 if w.contentHashMaxSize == 0 {
     w.contentHashMaxSize = defaultContentHashMaxSize
@@ -185,27 +187,27 @@ preserved but don't check the `maxWatchesDetected` value for auto-detected limit
 
 ### From the original feedback document (25 items):
 
-| # | Item | Status | Reason |
-|---|------|--------|--------|
-| 2 | Poll dedup heuristic (`WithPollDeduplicate`) | NOT STARTED | Large feature: per-path timestamp tracking with LRU. Documented as limitation in `WithPolling` doc + Troubleshooting.md. |
-| 3 | Poll loop rename detection (`WithPollDetectRenames`) | NOT STARTED | Large feature: platform-specific inode extraction. |
-| 20 | Runtime deprecation warning for `MiddlewareWriteFileLog` | NOT STARTED | Doc comment warns. Runtime `log.Warn` is v3 prep. |
-| 21 | `Reset()` and `failedPaths` retention | NOT STARTED | Feedback author self-dismissed: "I'll remove this item." |
-| 22 | `WatcherError.Stack` behavior | DONE via doc comment + `NewWatcherErrorWithStack` | Documented current behavior. Added caller-provided stack constructor. |
+| #  | Item                                                     | Status                                            | Reason                                                                                                                   |
+| -- | -------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 2  | Poll dedup heuristic (`WithPollDeduplicate`)             | NOT STARTED                                       | Large feature: per-path timestamp tracking with LRU. Documented as limitation in `WithPolling` doc + Troubleshooting.md. |
+| 3  | Poll loop rename detection (`WithPollDetectRenames`)     | NOT STARTED                                       | Large feature: platform-specific inode extraction.                                                                       |
+| 20 | Runtime deprecation warning for `MiddlewareWriteFileLog` | NOT STARTED                                       | Doc comment warns. Runtime `log.Warn` is v3 prep.                                                                        |
+| 21 | `Reset()` and `failedPaths` retention                    | NOT STARTED                                       | Feedback author self-dismissed: "I'll remove this item."                                                                 |
+| 22 | `WatcherError.Stack` behavior                            | DONE via doc comment + `NewWatcherErrorWithStack` | Documented current behavior. Added caller-provided stack constructor.                                                    |
 
 ### From prior sessions' should-do lists:
 
-| # | Item | Status |
-|---|------|--------|
-| - | macOS CI matrix | NOT STARTED |
-| - | Windows CI matrix | NOT STARTED |
-| - | `MiddlewareDropCallback` API | NOT STARTED (atomic.Bool heuristic remains) |
-| - | Fuzz testing on new filter/middleware | NOT STARTED |
-| - | Split `maxWatches` into configured + effective | NOT STARTED (v3 candidate) |
-| - | Split `Stats` struct into sub-structs | NOT STARTED (v3 candidate) |
-| - | Self-heal abandons permission-denied paths integration test | NOT STARTED |
-| - | Symlink to already-watched real path dedup test | NOT STARTED |
-| - | `channelSender` type extraction from `emitEvent` | NOT STARTED (v3 refactor candidate) |
+| # | Item                                                        | Status                                      |
+| - | ----------------------------------------------------------- | ------------------------------------------- |
+| - | macOS CI matrix                                             | NOT STARTED                                 |
+| - | Windows CI matrix                                           | NOT STARTED                                 |
+| - | `MiddlewareDropCallback` API                                | NOT STARTED (atomic.Bool heuristic remains) |
+| - | Fuzz testing on new filter/middleware                       | NOT STARTED                                 |
+| - | Split `maxWatches` into configured + effective              | NOT STARTED (v3 candidate)                  |
+| - | Split `Stats` struct into sub-structs                       | NOT STARTED (v3 candidate)                  |
+| - | Self-heal abandons permission-denied paths integration test | NOT STARTED                                 |
+| - | Symlink to already-watched real path dedup test             | NOT STARTED                                 |
+| - | `channelSender` type extraction from `emitEvent`            | NOT STARTED (v3 refactor candidate)         |
 
 ---
 
@@ -405,6 +407,7 @@ and sets the default. This means `WithContentHashMaxSize(0)` followed by
 disable is silently overridden.
 
 Options:
+
 - **A)** Keep current behavior (last option wins, `WithContentHashing` always enables)
 - **B)** `WithContentHashing()` should be a no-op if `contentHashMaxSize` is
   already set (even to 0), treating 0 as an explicit "disabled" signal
@@ -431,19 +434,19 @@ is that handled by a separate release process?
 
 ## Metrics Summary
 
-| Metric | Session 2 End | Session 3 End | Delta |
-|--------|---------------|---------------|-------|
-| Coverage | 82.2% | 82.3% | +0.1% |
-| Tests added | +7 | +7 (4 options + 2 reset + 1 error) | +7 |
-| Lint issues | 0 | 0 | — |
-| Test failures | 0 | 0 | — |
-| Production bugs fixed | 2 (session 2's) | 1 (session 2's EventsProcessed) | +1 |
-| New options | 0 | 3 (ContentHashMaxSize, ErrorBufferSize, NewWatcherErrorWithStack) | +3 |
-| New Stats fields | 0 | 1 (WatchBudgetCap) | +1 |
-| New Prometheus metrics | 0 | 2 (backpressure counter, budget cap gauge) | +2 |
-| `nix flake check` | not run | all 8 checks passed | ✅ |
-| Bench baseline | July 29 (stale) | Fresh from HEAD | ✅ |
-| CHANGELOG entries | 24 | +6 | +6 |
+| Metric                 | Session 2 End   | Session 3 End                                                     | Delta |
+| ---------------------- | --------------- | ----------------------------------------------------------------- | ----- |
+| Coverage               | 82.2%           | 82.3%                                                             | +0.1% |
+| Tests added            | +7              | +7 (4 options + 2 reset + 1 error)                                | +7    |
+| Lint issues            | 0               | 0                                                                 | —     |
+| Test failures          | 0               | 0                                                                 | —     |
+| Production bugs fixed  | 2 (session 2's) | 1 (session 2's EventsProcessed)                                   | +1    |
+| New options            | 0               | 3 (ContentHashMaxSize, ErrorBufferSize, NewWatcherErrorWithStack) | +3    |
+| New Stats fields       | 0               | 1 (WatchBudgetCap)                                                | +1    |
+| New Prometheus metrics | 0               | 2 (backpressure counter, budget cap gauge)                        | +2    |
+| `nix flake check`      | not run         | all 8 checks passed                                               | ✅    |
+| Bench baseline         | July 29 (stale) | Fresh from HEAD                                                   | ✅    |
+| CHANGELOG entries      | 24              | +6                                                                | +6    |
 
 ---
 

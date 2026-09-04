@@ -9,90 +9,90 @@
 
 ## 📋 MASTER TASK TABLE (Sorted by Priority → Impact → Effort)
 
-| #   | Task                                                                   | Category       | Priority | Effort | Impact | Customer Value |
-| --- | ---------------------------------------------------------------------- | -------------- | -------- | ------ | ------ | -------------- |
-| 1   | Fix `nix run .#coverage` to write to `$TMPDIR`                         | Nix            | CRITICAL | 5min   | HIGH   | DevEx          |
-| 2   | Fix pre-commit hook timeout (increase or skip golangci-auto-configure) | DevEx          | CRITICAL | 5min   | HIGH   | DevEx          |
-| 3   | Update TODO_LIST.md - check off ALL done items                         | Docs           | HIGH     | 10min  | MEDIUM | Maintenance    |
-| 4   | Add meta attributes to all nix apps (silence warnings)                 | Nix            | HIGH     | 5min   | LOW    | DevEx          |
-| 5   | Tag v2.0.0 release (update CHANGELOG, git tag, GitHub release)         | Release        | HIGH     | 10min  | HIGH   | Users          |
-| 6   | Add `//nolint:forbidigo` to examples/main.go files                     | Quality        | HIGH     | 5min   | MEDIUM | CI             |
-| 7   | Document vendorHash update procedure in AGENTS.md                      | Docs           | HIGH     | 5min   | MEDIUM | DevEx          |
-| 8   | Add issue templates (.github/ISSUE_TEMPLATE/)                          | Community      | HIGH     | 5min   | HIGH   | Community      |
-| 9   | Add PR template (.github/PULL_REQUEST_TEMPLATE.md)                     | Community      | HIGH     | 5min   | HIGH   | Community      |
-| 10  | Add CODE_OF_CONDUCT.md                                                 | Community      | HIGH     | 5min   | MEDIUM | Community      |
-| 11  | Fix flaky TestWatcher_Stats_Metrics                                    | Quality        | HIGH     | 15min  | MEDIUM | Reliability    |
-| 12  | Fix flaky TestWatcher_Watch_WithMiddleware                             | Quality        | HIGH     | 15min  | MEDIUM | Reliability    |
-| 13  | Add test for `handleError()` stderr path                               | Testing        | MEDIUM   | 10min  | MEDIUM | Coverage       |
-| 14  | Add test for `GlobalDebouncer.Flush()`                                 | Testing        | MEDIUM   | 10min  | MEDIUM | Coverage       |
-| 15  | Add test for `handleError` with ErrorContext                           | Testing        | MEDIUM   | 10min  | MEDIUM | Coverage       |
-| 16  | Add Example_FilterRegex test                                           | Testing        | MEDIUM   | 10min  | MEDIUM | Docs           |
-| 17  | Validate FilterRegex compiles in constructor                           | Quality        | MEDIUM   | 10min  | MEDIUM | Robustness     |
-| 18  | Remove unused `nolint:unparam` from getDebounceKey                     | Quality        | MEDIUM   | 5min   | LOW    | Clean Code     |
-| 19  | Add context cancellation integration test                              | Testing        | MEDIUM   | 10min  | MEDIUM | Coverage       |
-| 20  | Add `-race` to benchmark CI step                                       | CI             | MEDIUM   | 5min   | HIGH   | Quality        |
-| 21  | Add benchmark regression detection in CI                               | CI             | MEDIUM   | 10min  | HIGH   | Quality        |
-| 22  | Raise test coverage from 77% → 80% (target 90%)                        | Testing        | MEDIUM   | 30min  | HIGH   | Quality        |
-| 23  | Add test for `FilterMinSize()` filter                                  | Testing        | MEDIUM   | 10min  | MEDIUM | Coverage       |
-| 24  | Add test for `MiddlewareWriteFileLog()`                                | Testing        | MEDIUM   | 10min  | MEDIUM | Coverage       |
-| 25  | Consolidate doc.go (add package docs)                                  | Docs           | MEDIUM   | 10min  | MEDIUM | DX             |
-| 26  | Add structured logging example                                         | Docs           | MEDIUM   | 10min  | HIGH   | DX             |
-| 27  | Write Troubleshooting.md                                               | Docs           | MEDIUM   | 15min  | HIGH   | Users          |
-| 28  | Write migration guide for ErrorHandler signature change                | Docs           | MEDIUM   | 15min  | HIGH   | Users          |
-| 29  | Add `Event.ModTime()` field to Event struct                            | Feature        | MEDIUM   | 10min  | HIGH   | Users          |
-| 30  | Add `Event.Size` field to Event struct                                 | Feature        | MEDIUM   | 10min  | MEDIUM | Users          |
-| 31  | Add `WithPollInterval` fallback for polling                            | Feature        | MEDIUM   | 15min  | HIGH   | Users          |
-| 32  | Add `WithPolling(fallback bool)` for NFS/network                       | Feature        | MEDIUM   | 30min  | HIGH   | Users          |
-| 33  | Add `Filter func type could return match metadata`                     | Feature        | MEDIUM   | 20min  | MEDIUM | DX             |
-| 34  | Add `WithWatchedIgnoreDirs` option (separate filter vs walk)           | Feature        | MEDIUM   | 15min  | MEDIUM | Users          |
-| 35  | Add `Watcher.AddRecursive(path)` for partial recursion                 | Feature        | MEDIUM   | 20min  | MEDIUM | Users          |
-| 36  | Implement `Watch.WatchChanges(ctx, targetState)` idempotent sync       | Feature        | MEDIUM   | 30min  | MEDIUM | Users          |
-| 37  | Implement exponential backoff for errors                               | Feature        | MEDIUM   | 20min  | MEDIUM | Robustness     |
-| 38  | Add symlink following support                                          | Feature        | MEDIUM   | 30min  | MEDIUM | Users          |
-| 39  | Add file content hashing option                                        | Feature        | MEDIUM   | 20min  | MEDIUM | Users          |
-| 40  | Add recursive directory integration test                               | Testing        | MEDIUM   | 15min  | MEDIUM | Coverage       |
-| 41  | Add per-path debounce correctness integration test                     | Testing        | MEDIUM   | 15min  | MEDIUM | Coverage       |
-| 42  | Add benchmark regression tests                                         | Testing        | MEDIUM   | 30min  | HIGH   | Quality        |
-| 43  | Document DI integration patterns in README                             | Docs           | MEDIUM   | 15min  | MEDIUM | DX             |
-| 44  | Add Godoc examples (Example\* functions)                               | Docs           | MEDIUM   | 30min  | HIGH   | DX             |
-| 45  | Add Prometheus metrics export                                          | Feature        | MEDIUM   | 30min  | MEDIUM | Observability  |
-| 46  | Create debug mode with verbose structured logging                      | Feature        | MEDIUM   | 20min  | MEDIUM | DX             |
-| 47  | Configure Goreleaser                                                   | Release        | MEDIUM   | 20min  | MEDIUM | Release        |
-| 48  | Configure semantic-release                                             | Release        | MEDIUM   | 20min  | MEDIUM | Release        |
-| 49  | Add stack traces to WatcherError                                       | Feature        | MEDIUM   | 15min  | MEDIUM | Debugging      |
-| 50  | Add Error rate limiting middleware                                     | Feature        | MEDIUM   | 20min  | MEDIUM | Robustness     |
-| 51  | Add Circuit breaker middleware                                         | Feature        | MEDIUM   | 30min  | MEDIUM | Robustness     |
-| 52  | Add Context propagation through pipeline                               | Feature        | MEDIUM   | 20min  | MEDIUM | DX             |
-| 53  | Add Error recovery strategies                                          | Feature        | MEDIUM   | 20min  | MEDIUM | Robustness     |
-| 54  | Add Batch error handling                                               | Feature        | MEDIUM   | 15min  | MEDIUM | Robustness     |
-| 55  | Add Error correlation IDs                                              | Feature        | MEDIUM   | 15min  | MEDIUM | Observability  |
-| 56  | Add Error sanitization                                                 | Feature        | MEDIUM   | 15min  | MEDIUM | Security       |
-| 57  | Add Error code constants                                               | Feature        | MEDIUM   | 15min  | MEDIUM | DX             |
-| 58  | Add Dead letter queue                                                  | Feature        | MEDIUM   | 30min  | MEDIUM | Robustness     |
-| 59  | Add OpenTelemetry integration                                          | Feature        | MEDIUM   | 45min  | MEDIUM | Observability  |
-| 60  | Add Error analytics                                                    | Feature        | MEDIUM   | 30min  | LOW    | Observability  |
-| 61  | Add Localizable error messages                                         | Feature        | MEDIUM   | 30min  | LOW    | i18n           |
-| 62  | Implement Self-healing watcher                                         | Feature        | MEDIUM   | 45min  | MEDIUM | Robustness     |
-| 63  | Review all parallel tests for race safety                              | Quality        | LOW      | 30min  | MEDIUM | Safety         |
-| 64  | Explore fsnotify v2 API changes                                        | Research       | LOW      | 20min  | LOW    | Future         |
-| 65  | Implement DebounceEntry Mixin phantom type                             | Refactor       | LOW      | 15min  | LOW    | Clean Code     |
-| 66  | Review Remaining uint conversions                                      | Quality        | LOW      | 15min  | LOW    | Clean Code     |
-| 67  | Add Windows-specific edge case tests                                   | Testing        | LOW      | 30min  | LOW    | Coverage       |
-| 68  | Add Fuzz testing                                                       | Testing        | LOW      | 45min  | MEDIUM | Quality        |
-| 69  | Extract drainEvents to testutil package                                | Refactor       | LOW      | 20min  | LOW    | Clean Code     |
-| 70  | Test examples/ in CI pipeline                                          | CI             | LOW      | 15min  | LOW    | CI             |
-| 71  | Error simulation testing                                               | Testing        | LOW      | 20min  | MEDIUM | Coverage       |
-| 72  | Check if examples/ directory worth keeping vs example_test.go          | Architecture   | LOW      | 15min  | LOW    | Architecture   |
-| 73  | Add API stability doc                                                  | Docs           | LOW      | 15min  | MEDIUM | Users          |
-| 74  | Create standalone CLI tool                                             | Feature        | LOW      | 60min  | MEDIUM | Users          |
-| 75  | Integrate into file-and-image-renamer                                  | Integration    | LOW      | 60min  | MEDIUM | Validation     |
-| 76  | Integrate into dynamic-markdown-site                                   | Integration    | LOW      | 60min  | MEDIUM | Validation     |
-| 77  | Integrate into auto-deduplicate                                        | Integration    | LOW      | 60min  | MEDIUM | Validation     |
-| 78  | Integrate into Cyberdom                                                | Integration    | LOW      | 60min  | MEDIUM | Validation     |
-| 79  | Migrate CI to Nix (Phase 3 of proposal)                                | CI             | DEFERRED | 60min  | HIGH   | DevEx          |
-| 80  | Add Cachix for binary caching                                          | CI             | DEFERRED | 30min  | MEDIUM | CI             |
-| 81  | Check Free disk space handling (100% full)                             | Infrastructure | BACKLOG  | 15min  | LOW    | Robustness     |
-| 82  | Clear LSP diagnostic cache docs                                        | DevEx          | BACKLOG  | 5min   | LOW    | DevEx          |
+| #  | Task                                                                   | Category       | Priority | Effort | Impact | Customer Value |
+| -- | ---------------------------------------------------------------------- | -------------- | -------- | ------ | ------ | -------------- |
+| 1  | Fix `nix run .#coverage` to write to `$TMPDIR`                         | Nix            | CRITICAL | 5min   | HIGH   | DevEx          |
+| 2  | Fix pre-commit hook timeout (increase or skip golangci-auto-configure) | DevEx          | CRITICAL | 5min   | HIGH   | DevEx          |
+| 3  | Update TODO_LIST.md - check off ALL done items                         | Docs           | HIGH     | 10min  | MEDIUM | Maintenance    |
+| 4  | Add meta attributes to all nix apps (silence warnings)                 | Nix            | HIGH     | 5min   | LOW    | DevEx          |
+| 5  | Tag v2.0.0 release (update CHANGELOG, git tag, GitHub release)         | Release        | HIGH     | 10min  | HIGH   | Users          |
+| 6  | Add `//nolint:forbidigo` to examples/main.go files                     | Quality        | HIGH     | 5min   | MEDIUM | CI             |
+| 7  | Document vendorHash update procedure in AGENTS.md                      | Docs           | HIGH     | 5min   | MEDIUM | DevEx          |
+| 8  | Add issue templates (.github/ISSUE_TEMPLATE/)                          | Community      | HIGH     | 5min   | HIGH   | Community      |
+| 9  | Add PR template (.github/PULL_REQUEST_TEMPLATE.md)                     | Community      | HIGH     | 5min   | HIGH   | Community      |
+| 10 | Add CODE_OF_CONDUCT.md                                                 | Community      | HIGH     | 5min   | MEDIUM | Community      |
+| 11 | Fix flaky TestWatcher_Stats_Metrics                                    | Quality        | HIGH     | 15min  | MEDIUM | Reliability    |
+| 12 | Fix flaky TestWatcher_Watch_WithMiddleware                             | Quality        | HIGH     | 15min  | MEDIUM | Reliability    |
+| 13 | Add test for `handleError()` stderr path                               | Testing        | MEDIUM   | 10min  | MEDIUM | Coverage       |
+| 14 | Add test for `GlobalDebouncer.Flush()`                                 | Testing        | MEDIUM   | 10min  | MEDIUM | Coverage       |
+| 15 | Add test for `handleError` with ErrorContext                           | Testing        | MEDIUM   | 10min  | MEDIUM | Coverage       |
+| 16 | Add Example_FilterRegex test                                           | Testing        | MEDIUM   | 10min  | MEDIUM | Docs           |
+| 17 | Validate FilterRegex compiles in constructor                           | Quality        | MEDIUM   | 10min  | MEDIUM | Robustness     |
+| 18 | Remove unused `nolint:unparam` from getDebounceKey                     | Quality        | MEDIUM   | 5min   | LOW    | Clean Code     |
+| 19 | Add context cancellation integration test                              | Testing        | MEDIUM   | 10min  | MEDIUM | Coverage       |
+| 20 | Add `-race` to benchmark CI step                                       | CI             | MEDIUM   | 5min   | HIGH   | Quality        |
+| 21 | Add benchmark regression detection in CI                               | CI             | MEDIUM   | 10min  | HIGH   | Quality        |
+| 22 | Raise test coverage from 77% → 80% (target 90%)                        | Testing        | MEDIUM   | 30min  | HIGH   | Quality        |
+| 23 | Add test for `FilterMinSize()` filter                                  | Testing        | MEDIUM   | 10min  | MEDIUM | Coverage       |
+| 24 | Add test for `MiddlewareWriteFileLog()`                                | Testing        | MEDIUM   | 10min  | MEDIUM | Coverage       |
+| 25 | Consolidate doc.go (add package docs)                                  | Docs           | MEDIUM   | 10min  | MEDIUM | DX             |
+| 26 | Add structured logging example                                         | Docs           | MEDIUM   | 10min  | HIGH   | DX             |
+| 27 | Write Troubleshooting.md                                               | Docs           | MEDIUM   | 15min  | HIGH   | Users          |
+| 28 | Write migration guide for ErrorHandler signature change                | Docs           | MEDIUM   | 15min  | HIGH   | Users          |
+| 29 | Add `Event.ModTime()` field to Event struct                            | Feature        | MEDIUM   | 10min  | HIGH   | Users          |
+| 30 | Add `Event.Size` field to Event struct                                 | Feature        | MEDIUM   | 10min  | MEDIUM | Users          |
+| 31 | Add `WithPollInterval` fallback for polling                            | Feature        | MEDIUM   | 15min  | HIGH   | Users          |
+| 32 | Add `WithPolling(fallback bool)` for NFS/network                       | Feature        | MEDIUM   | 30min  | HIGH   | Users          |
+| 33 | Add `Filter func type could return match metadata`                     | Feature        | MEDIUM   | 20min  | MEDIUM | DX             |
+| 34 | Add `WithWatchedIgnoreDirs` option (separate filter vs walk)           | Feature        | MEDIUM   | 15min  | MEDIUM | Users          |
+| 35 | Add `Watcher.AddRecursive(path)` for partial recursion                 | Feature        | MEDIUM   | 20min  | MEDIUM | Users          |
+| 36 | Implement `Watch.WatchChanges(ctx, targetState)` idempotent sync       | Feature        | MEDIUM   | 30min  | MEDIUM | Users          |
+| 37 | Implement exponential backoff for errors                               | Feature        | MEDIUM   | 20min  | MEDIUM | Robustness     |
+| 38 | Add symlink following support                                          | Feature        | MEDIUM   | 30min  | MEDIUM | Users          |
+| 39 | Add file content hashing option                                        | Feature        | MEDIUM   | 20min  | MEDIUM | Users          |
+| 40 | Add recursive directory integration test                               | Testing        | MEDIUM   | 15min  | MEDIUM | Coverage       |
+| 41 | Add per-path debounce correctness integration test                     | Testing        | MEDIUM   | 15min  | MEDIUM | Coverage       |
+| 42 | Add benchmark regression tests                                         | Testing        | MEDIUM   | 30min  | HIGH   | Quality        |
+| 43 | Document DI integration patterns in README                             | Docs           | MEDIUM   | 15min  | MEDIUM | DX             |
+| 44 | Add Godoc examples (Example\* functions)                               | Docs           | MEDIUM   | 30min  | HIGH   | DX             |
+| 45 | Add Prometheus metrics export                                          | Feature        | MEDIUM   | 30min  | MEDIUM | Observability  |
+| 46 | Create debug mode with verbose structured logging                      | Feature        | MEDIUM   | 20min  | MEDIUM | DX             |
+| 47 | Configure Goreleaser                                                   | Release        | MEDIUM   | 20min  | MEDIUM | Release        |
+| 48 | Configure semantic-release                                             | Release        | MEDIUM   | 20min  | MEDIUM | Release        |
+| 49 | Add stack traces to WatcherError                                       | Feature        | MEDIUM   | 15min  | MEDIUM | Debugging      |
+| 50 | Add Error rate limiting middleware                                     | Feature        | MEDIUM   | 20min  | MEDIUM | Robustness     |
+| 51 | Add Circuit breaker middleware                                         | Feature        | MEDIUM   | 30min  | MEDIUM | Robustness     |
+| 52 | Add Context propagation through pipeline                               | Feature        | MEDIUM   | 20min  | MEDIUM | DX             |
+| 53 | Add Error recovery strategies                                          | Feature        | MEDIUM   | 20min  | MEDIUM | Robustness     |
+| 54 | Add Batch error handling                                               | Feature        | MEDIUM   | 15min  | MEDIUM | Robustness     |
+| 55 | Add Error correlation IDs                                              | Feature        | MEDIUM   | 15min  | MEDIUM | Observability  |
+| 56 | Add Error sanitization                                                 | Feature        | MEDIUM   | 15min  | MEDIUM | Security       |
+| 57 | Add Error code constants                                               | Feature        | MEDIUM   | 15min  | MEDIUM | DX             |
+| 58 | Add Dead letter queue                                                  | Feature        | MEDIUM   | 30min  | MEDIUM | Robustness     |
+| 59 | Add OpenTelemetry integration                                          | Feature        | MEDIUM   | 45min  | MEDIUM | Observability  |
+| 60 | Add Error analytics                                                    | Feature        | MEDIUM   | 30min  | LOW    | Observability  |
+| 61 | Add Localizable error messages                                         | Feature        | MEDIUM   | 30min  | LOW    | i18n           |
+| 62 | Implement Self-healing watcher                                         | Feature        | MEDIUM   | 45min  | MEDIUM | Robustness     |
+| 63 | Review all parallel tests for race safety                              | Quality        | LOW      | 30min  | MEDIUM | Safety         |
+| 64 | Explore fsnotify v2 API changes                                        | Research       | LOW      | 20min  | LOW    | Future         |
+| 65 | Implement DebounceEntry Mixin phantom type                             | Refactor       | LOW      | 15min  | LOW    | Clean Code     |
+| 66 | Review Remaining uint conversions                                      | Quality        | LOW      | 15min  | LOW    | Clean Code     |
+| 67 | Add Windows-specific edge case tests                                   | Testing        | LOW      | 30min  | LOW    | Coverage       |
+| 68 | Add Fuzz testing                                                       | Testing        | LOW      | 45min  | MEDIUM | Quality        |
+| 69 | Extract drainEvents to testutil package                                | Refactor       | LOW      | 20min  | LOW    | Clean Code     |
+| 70 | Test examples/ in CI pipeline                                          | CI             | LOW      | 15min  | LOW    | CI             |
+| 71 | Error simulation testing                                               | Testing        | LOW      | 20min  | MEDIUM | Coverage       |
+| 72 | Check if examples/ directory worth keeping vs example_test.go          | Architecture   | LOW      | 15min  | LOW    | Architecture   |
+| 73 | Add API stability doc                                                  | Docs           | LOW      | 15min  | MEDIUM | Users          |
+| 74 | Create standalone CLI tool                                             | Feature        | LOW      | 60min  | MEDIUM | Users          |
+| 75 | Integrate into file-and-image-renamer                                  | Integration    | LOW      | 60min  | MEDIUM | Validation     |
+| 76 | Integrate into dynamic-markdown-site                                   | Integration    | LOW      | 60min  | MEDIUM | Validation     |
+| 77 | Integrate into auto-deduplicate                                        | Integration    | LOW      | 60min  | MEDIUM | Validation     |
+| 78 | Integrate into Cyberdom                                                | Integration    | LOW      | 60min  | MEDIUM | Validation     |
+| 79 | Migrate CI to Nix (Phase 3 of proposal)                                | CI             | DEFERRED | 60min  | HIGH   | DevEx          |
+| 80 | Add Cachix for binary caching                                          | CI             | DEFERRED | 30min  | MEDIUM | CI             |
+| 81 | Check Free disk space handling (100% full)                             | Infrastructure | BACKLOG  | 15min  | LOW    | Robustness     |
+| 82 | Clear LSP diagnostic cache docs                                        | DevEx          | BACKLOG  | 5min   | LOW    | DevEx          |
 
 ---
 
@@ -239,14 +239,14 @@
 
 ## ⚪ BACKLOG / DEFERRED
 
-| #   | Task                            | Status   | Notes                        |
-| --- | ------------------------------- | -------- | ---------------------------- |
-| 78  | Migrate CI to Nix (Phase 3)     | DEFERRED | Wait until after v2.0 stable |
-| 79  | Add Cachix for binary caching   | DEFERRED | Wait until CI migration      |
-| 80  | Integrate into auto-deduplicate | BACKLOG  | After v2.0                   |
-| 81  | Integrate into Cyberdom         | BACKLOG  | After v2.0                   |
-| 82  | Free disk space handling        | BACKLOG  | Infrastructure               |
-| 83  | Clear LSP diagnostic cache docs | BACKLOG  | DevEx                        |
+| #  | Task                            | Status   | Notes                        |
+| -- | ------------------------------- | -------- | ---------------------------- |
+| 78 | Migrate CI to Nix (Phase 3)     | DEFERRED | Wait until after v2.0 stable |
+| 79 | Add Cachix for binary caching   | DEFERRED | Wait until CI migration      |
+| 80 | Integrate into auto-deduplicate | BACKLOG  | After v2.0                   |
+| 81 | Integrate into Cyberdom         | BACKLOG  | After v2.0                   |
+| 82 | Free disk space handling        | BACKLOG  | Infrastructure               |
+| 83 | Clear LSP diagnostic cache docs | BACKLOG  | DevEx                        |
 
 ---
 

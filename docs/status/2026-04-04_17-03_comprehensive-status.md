@@ -1,9 +1,9 @@
 # Project Status Report
 
-**Date:** 2026-04-04 17:03  
-**Project:** go-filewatcher  
-**Branch:** master  
-**Last Commit:** a784213 (docs: update status report with completed tasks)  
+**Date:** 2026-04-04 17:03\
+**Project:** go-filewatcher\
+**Branch:** master\
+**Last Commit:** a784213 (docs: update status report with completed tasks)\
 **Module:** `github.com/larsartmann/go-filewatcher`
 
 ---
@@ -157,33 +157,33 @@
 
 ## 📋 TOP 25 THINGS TO DO NEXT
 
-| #   | Priority    | Task                                       | Status |
-| --- | ----------- | ------------------------------------------ | ------ |
-| 1   | 🔴 CRITICAL | Free disk space (100% full)                | ❌     |
-| 2   | 🔴 CRITICAL | Fix flaky TestWatcher_Watch_WithMiddleware | ❌     |
-| 3   | 🟡 HIGH     | Set up GitHub Actions CI                   | ❌     |
-| 4   | 🟡 HIGH     | Configure semantic-release                 | ❌     |
-| 5   | 🟡 HIGH     | Add goreleaser configuration               | ❌     |
-| 6   | 🟡 HIGH     | Create CONTRIBUTING.md                     | ❌     |
-| 7   | 🟡 HIGH     | Add CODEOWNERS file                        | ❌     |
-| 8   | 🟢 MEDIUM   | Write integration tests                    | ❌     |
-| 9   | 🟢 MEDIUM   | Add benchmarks                             | ❌     |
-| 10  | 🟢 MEDIUM   | Create API documentation site              | ❌     |
-| 11  | 🟢 MEDIUM   | Add issue templates                        | ❌     |
-| 12  | 🟢 MEDIUM   | Add PR templates                           | ❌     |
-| 13  | 🟢 MEDIUM   | Add security policy                        | ❌     |
-| 14  | 🔵 LOW      | Add rate limit as option                   | ❌     |
-| 15  | 🔵 LOW      | Add max-depth option                       | ❌     |
-| 16  | 🔵 LOW      | Add symlink following option               | ❌     |
-| 17  | 🔵 LOW      | Add file size filters                      | ❌     |
-| 18  | 🔵 LOW      | Add OpenTelemetry tracing                  | ❌     |
-| 19  | 🔵 LOW      | Create migration guide                     | ❌     |
-| 20  | 🔵 LOW      | Add coverage badges                        | ❌     |
-| 21  | 🔵 LOW      | Add Go version badge                       | ❌     |
-| 22  | 🔵 LOW      | Create benchmarks dashboard                | ❌     |
-| 23  | 🔵 LOW      | Add performance tests                      | ❌     |
-| 24  | 🔵 LOW      | Document internal architecture             | ❌     |
-| 25  | 🔵 LOW      | Create architecture diagrams               | ❌     |
+| #  | Priority    | Task                                       | Status |
+| -- | ----------- | ------------------------------------------ | ------ |
+| 1  | 🔴 CRITICAL | Free disk space (100% full)                | ❌     |
+| 2  | 🔴 CRITICAL | Fix flaky TestWatcher_Watch_WithMiddleware | ❌     |
+| 3  | 🟡 HIGH     | Set up GitHub Actions CI                   | ❌     |
+| 4  | 🟡 HIGH     | Configure semantic-release                 | ❌     |
+| 5  | 🟡 HIGH     | Add goreleaser configuration               | ❌     |
+| 6  | 🟡 HIGH     | Create CONTRIBUTING.md                     | ❌     |
+| 7  | 🟡 HIGH     | Add CODEOWNERS file                        | ❌     |
+| 8  | 🟢 MEDIUM   | Write integration tests                    | ❌     |
+| 9  | 🟢 MEDIUM   | Add benchmarks                             | ❌     |
+| 10 | 🟢 MEDIUM   | Create API documentation site              | ❌     |
+| 11 | 🟢 MEDIUM   | Add issue templates                        | ❌     |
+| 12 | 🟢 MEDIUM   | Add PR templates                           | ❌     |
+| 13 | 🟢 MEDIUM   | Add security policy                        | ❌     |
+| 14 | 🔵 LOW      | Add rate limit as option                   | ❌     |
+| 15 | 🔵 LOW      | Add max-depth option                       | ❌     |
+| 16 | 🔵 LOW      | Add symlink following option               | ❌     |
+| 17 | 🔵 LOW      | Add file size filters                      | ❌     |
+| 18 | 🔵 LOW      | Add OpenTelemetry tracing                  | ❌     |
+| 19 | 🔵 LOW      | Create migration guide                     | ❌     |
+| 20 | 🔵 LOW      | Add coverage badges                        | ❌     |
+| 21 | 🔵 LOW      | Add Go version badge                       | ❌     |
+| 22 | 🔵 LOW      | Create benchmarks dashboard                | ❌     |
+| 23 | 🔵 LOW      | Add performance tests                      | ❌     |
+| 24 | 🔵 LOW      | Document internal architecture             | ❌     |
+| 25 | 🔵 LOW      | Create architecture diagrams               | ❌     |
 
 ---
 
@@ -259,12 +259,12 @@ os.WriteFile("test.txt", []byte("content"), 0o600)
 
 **Latest Run:** 2026-04-04 17:03
 
-| Suite         | Status   | Details                 |
-| ------------- | -------- | ----------------------- |
+| Suite         | Status  | Details                 |
+| ------------- | ------- | ----------------------- |
 | Unit Tests    | ⚠️ FLAKY | 52/52 pass individually |
-| Example Tests | ✅ PASS  | 14/14 pass              |
-| Build         | ✅ PASS  | No errors               |
-| go vet        | ✅ PASS  | No warnings             |
+| Example Tests | ✅ PASS | 14/14 pass              |
+| Build         | ✅ PASS | No errors               |
+| go vet        | ✅ PASS | No warnings             |
 
 **Intermittent Failure:** `TestWatcher_WWatch_WithMiddleware` - 1-2 events issue
 

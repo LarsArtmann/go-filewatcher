@@ -21,15 +21,15 @@ documentation (CHANGELOG, API_STABILITY, FEATURES, website, AGENTS.md).
 
 ## A) Coverage Gaps Closed (5/5)
 
-| # | Gap | Test Added | File |
-|---|-----|-----------|------|
-| 1 | Batch timer flush error routing | `TestMiddlewareBatch_TimerFlushErrorReturnedOnNextEvent` | `middleware_test.go` |
-| 2 | `WithMaxWatchesSafetyFraction` clamping | `TestWithMaxWatchesSafetyFraction_Clamping` | `options_test.go` |
-| 2b | `applyMaxWatchesFraction` effective limit | `TestApplyMaxWatchesFraction_ReducesAutoDetectedLimit` | `options_test.go` |
-| 2c | Explicit limits not affected | `TestApplyMaxWatchesFraction_DoesNotAffectExplicitLimit` | `options_test.go` |
-| 3 | DropOnFull mode drops + counts | `TestDropOnFull_DropsEventsAndCounts` | `watcher_test.go` |
-| 4 | `WithWatchFilteredDirectories(false)` | `TestWatchFilteredDirectories_Disabled` | `watcher_test.go` |
-| 5 | `FilterIgnoreDirsCaseInsensitive` | `TestFilterIgnoreDirsCaseInsensitive` | `filter_test.go` |
+| #  | Gap                                       | Test Added                                               | File                 |
+| -- | ----------------------------------------- | -------------------------------------------------------- | -------------------- |
+| 1  | Batch timer flush error routing           | `TestMiddlewareBatch_TimerFlushErrorReturnedOnNextEvent` | `middleware_test.go` |
+| 2  | `WithMaxWatchesSafetyFraction` clamping   | `TestWithMaxWatchesSafetyFraction_Clamping`              | `options_test.go`    |
+| 2b | `applyMaxWatchesFraction` effective limit | `TestApplyMaxWatchesFraction_ReducesAutoDetectedLimit`   | `options_test.go`    |
+| 2c | Explicit limits not affected              | `TestApplyMaxWatchesFraction_DoesNotAffectExplicitLimit` | `options_test.go`    |
+| 3  | DropOnFull mode drops + counts            | `TestDropOnFull_DropsEventsAndCounts`                    | `watcher_test.go`    |
+| 4  | `WithWatchFilteredDirectories(false)`     | `TestWatchFilteredDirectories_Disabled`                  | `watcher_test.go`    |
+| 5  | `FilterIgnoreDirsCaseInsensitive`         | `TestFilterIgnoreDirsCaseInsensitive`                    | `filter_test.go`     |
 
 ### Key discovery: WithWatchFilteredDirectories test needed Filter, not Middleware
 
@@ -81,6 +81,7 @@ The prior session's `emitEvent` refactor added +2 allocations per event (from
 closure allocation. Removed `buildEmitFunc` entirely.
 
 **Result (from `go test -bench`):**
+
 - `EmitEvent_NoDebounce`: 8 allocs → 7 allocs (-1)
 - `EmitEvent_WithMiddleware`: 14 allocs → 13 allocs (-1)
 - All other benchmarks: 0 allocation change
@@ -92,6 +93,7 @@ the minimum cost of middleware drop tracking via `atomic.Bool`.
 
 The bench-diff showed high ns/op variance (±49% on some benchmarks) due to CPU
 contention. Allocation data is deterministic and reliable:
+
 - **+1 alloc** on `EmitEvent_NoDebounce` and `EmitEvent_WithMiddleware` (the
   `trackedEmit` closure — cost of middleware drop tracking)
 - **+32 B/op** on `EmitEvent_NoDebounce` (closure capture)
@@ -102,14 +104,14 @@ contention. Allocation data is deterministic and reliable:
 
 ## D) Documentation Updates
 
-| Document | Changes |
-|----------|---------|
-| `CHANGELOG.md` | Full v2.4.0 entry: 13 Added items, 9 Fixed items, 2 Changed items |
-| `API_STABILITY.md` | 3 new options, 1 new filter, 1 new middleware, 1 new type added to Evolving |
-| `FEATURES.md` | Version bumped to v2.4.0; 8 new feature rows added across Filtering, Middleware, Observability, Resilience sections |
-| `website/src/content/docs/api-reference.mdx` | Stats struct updated with 3 new fields; options count updated (23→26); filters and middleware lists updated |
-| `AGENTS.md` | Gotcha #26 added (safety fraction only affects auto-detected limits); `buildEmitFunc` references updated to reflect inlining |
-| `options.go` | `WithPolling` doc comment updated with dedup limitation note |
+| Document                                     | Changes                                                                                                                      |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `CHANGELOG.md`                               | Full v2.4.0 entry: 13 Added items, 9 Fixed items, 2 Changed items                                                            |
+| `API_STABILITY.md`                           | 3 new options, 1 new filter, 1 new middleware, 1 new type added to Evolving                                                  |
+| `FEATURES.md`                                | Version bumped to v2.4.0; 8 new feature rows added across Filtering, Middleware, Observability, Resilience sections          |
+| `website/src/content/docs/api-reference.mdx` | Stats struct updated with 3 new fields; options count updated (23→26); filters and middleware lists updated                  |
+| `AGENTS.md`                                  | Gotcha #26 added (safety fraction only affects auto-detected limits); `buildEmitFunc` references updated to reflect inlining |
+| `options.go`                                 | `WithPolling` doc comment updated with dedup limitation note                                                                 |
 
 ---
 
@@ -134,28 +136,28 @@ The prior session posed 3 questions. Decisions:
 
 ## F) What Remains (Not Started — Deferred to Future Work)
 
-| Item | Reason |
-|------|--------|
-| Items 2+3: Poll dedup + rename detection | Large features requiring new design (LRU timestamp tracking, inode extraction) |
-| macOS/Windows CI matrix | CI infrastructure change, requires cross-platform testing strategy |
-| `WithContentHashMaxSize` configurable option | The hardcoded 10 MiB cap works; configurable option is polish |
-| `WithErrorBufferSize` option | Error channel decoupling is a nice-to-have, not urgent |
-| Runtime deprecation warning for `MiddlewareWriteFileLog` | Doc comment already warns; runtime warning is v3 prep |
-| `MiddlewareDropCallback` API | Would be more accurate than `atomic.Bool` heuristic but requires API change |
+| Item                                                     | Reason                                                                         |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Items 2+3: Poll dedup + rename detection                 | Large features requiring new design (LRU timestamp tracking, inode extraction) |
+| macOS/Windows CI matrix                                  | CI infrastructure change, requires cross-platform testing strategy             |
+| `WithContentHashMaxSize` configurable option             | The hardcoded 10 MiB cap works; configurable option is polish                  |
+| `WithErrorBufferSize` option                             | Error channel decoupling is a nice-to-have, not urgent                         |
+| Runtime deprecation warning for `MiddlewareWriteFileLog` | Doc comment already warns; runtime warning is v3 prep                          |
+| `MiddlewareDropCallback` API                             | Would be more accurate than `atomic.Bool` heuristic but requires API change    |
 
 ---
 
 ## Metrics Summary
 
-| Metric | Prior Session | This Session | Delta |
-|--------|--------------|-------------|-------|
-| Coverage | 80.1% | 82.2% | +2.1% |
-| Tests added | 15+ | 7 | +7 |
-| Lint issues | 0 | 0 | — |
-| Test failures | 0 | 0 | — |
-| EmitEvent allocs (NoDebounce) | 8 | 7 | -1 |
-| Bugs found | 0 | 2 | +2 fixed |
-| Docs updated | Troubleshooting + AGENTS | CHANGELOG + API_STABILITY + FEATURES + website + AGENTS + options.go | — |
+| Metric                        | Prior Session            | This Session                                                         | Delta    |
+| ----------------------------- | ------------------------ | -------------------------------------------------------------------- | -------- |
+| Coverage                      | 80.1%                    | 82.2%                                                                | +2.1%    |
+| Tests added                   | 15+                      | 7                                                                    | +7       |
+| Lint issues                   | 0                        | 0                                                                    | —        |
+| Test failures                 | 0                        | 0                                                                    | —        |
+| EmitEvent allocs (NoDebounce) | 8                        | 7                                                                    | -1       |
+| Bugs found                    | 0                        | 2                                                                    | +2 fixed |
+| Docs updated                  | Troubleshooting + AGENTS | CHANGELOG + API_STABILITY + FEATURES + website + AGENTS + options.go | —        |
 
 ---
 

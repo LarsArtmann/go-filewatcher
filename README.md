@@ -7,6 +7,7 @@
 <a href="https://github.com/larsartmann/go-filewatcher/actions/workflows/ci.yml"><img src="https://github.com/larsartmann/go-filewatcher/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+
 </p>
 
 <p align="center">
@@ -150,7 +151,7 @@ Detects sqlc, protobuf, templ, mockgen, stringer, and 13 more generators.
 | `WithRecursive(b)`            | Enable/disable recursive directory watching                                 | `true`                    |
 | `WithMiddleware(m...)`        | Add middleware to the event processing pipeline                             | —                         |
 | `WithErrorHandler(fn)`        | Set custom error handler for watcher errors                                 | `stderr` logging          |
-| `WithOnError(fn)` ⚠️          | **Deprecated.** Use `WithErrorHandler`. Simplified callback (`func(error)`) | —                         |
+| `WithOnError(fn)` ⚠️           | **Deprecated.** Use `WithErrorHandler`. Simplified callback (`func(error)`) | —                         |
 | `WithSkipDotDirs(skip)`       | Skip directories starting with a dot during walking                         | `true`                    |
 | `WithBuffer(size)`            | Event channel buffer size for handling bursts                               | `64`                      |
 | `WithOnAdd(fn)`               | Callback invoked when a new path is added to the watcher                    | —                         |
@@ -201,7 +202,7 @@ Middleware wraps event handlers for cross-cutting concerns. Applied in **reverse
 | `MiddlewareRecovery()`                          | Recover from panics, log stack trace                                   |
 | `MiddlewareFilter(filter)`                      | Filter events (same as WithFilter)                                     |
 | `MiddlewareOnError(handler)`                    | Handle errors from downstream handlers                                 |
-| `MiddlewareRateLimit(maxEvents)` ⚠️             | **Deprecated.** Use `MiddlewareThrottle(maxEvents, maxEvents)` instead |
+| `MiddlewareRateLimit(maxEvents)` ⚠️              | **Deprecated.** Use `MiddlewareThrottle(maxEvents, maxEvents)` instead |
 | `MiddlewareSlidingWindowRateLimit(n, win)`      | Sliding-window rate limiting                                           |
 | `MiddlewareThrottle(maxEvents, burst)`          | Token-bucket rate limiting via `golang.org/x/time/rate`                |
 | `MiddlewareMetrics(counter)`                    | Count processed events by operation                                    |

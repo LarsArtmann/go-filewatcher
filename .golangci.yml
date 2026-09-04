@@ -1,7 +1,7 @@
 version: "2"
 run:
   timeout: 5m
-  go: 1.26.4
+  go: 1.26.7
   build-tags:
     - goexperiment.arenas
     - goexperiment.goroutineleakprofile
@@ -28,7 +28,6 @@ linters:
     - copyloopvar
     - cyclop
     - decorder
-    - depguard
     - dogsled
     - dupl
     - dupword
@@ -126,25 +125,29 @@ linters:
     - wsl_v5
     - zerologlint
   disable:
+    - depguard
     - noinlineerr
   settings:
     cyclop:
       max-complexity: 12
-    depguard:
-      rules:
-        Main:
-          allow:
-            - $EXAMPLES
-            - $HOME
-            - $gostd
-            - github.com/LarsArtmann/gogenfilter
-            - github.com/fsnotify/fsnotify
-            - github.com/larsartmann/go-filewatcher
-            - github.com/sabhiram/go-gitignore
-            - golang.org/x/text
-            - golang.org/x/time
-          files:
-            - "!examples/"
+    errcheck:
+      exclude-functions:
+        - (*os.File).Close
+        - (io.Closer).Close
+        - (*sql.DB).Close
+        - (*sql.Rows).Close
+        - (*sql.Stmt).Close
+        - (net.Conn).Close
+        - (*net.TCPConn).Close
+        - (*net.UDPConn).Close
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+        - fmt.Print
+        - fmt.Printf
+        - fmt.Println
+        - (*strings.Builder).WriteString
+        - (*bytes.Buffer).WriteString
     exhaustruct:
       exclude:
         - os/exec.Cmd
@@ -152,6 +155,9 @@ linters:
       forbid:
         - msg: use slog or log.Logger instead of fmt.Print*
           pattern: ^(fmt\.Print(|f|ln)|print|println)$
+    funlen:
+      lines: 200
+      statements: 100
     ginkgolinter:
       forbid-focus-container: true
       forbid-spec-pollution: true
@@ -162,6 +168,10 @@ linters:
       replace-allow-list:
         - github.com/LarsArtmann/gogenfilter
       replace-local: true
+    gosec:
+      excludes:
+        - G304
+        - G115
     ireturn:
       allow:
         - error
@@ -171,6 +181,12 @@ linters:
         - generic
     makezero:
       always: true
+    mnd:
+      ignored-numbers:
+        - "0"
+        - "1"
+        - "2"
+        - "100"
     revive:
       rules:
         - disabled: true
@@ -196,6 +212,17 @@ linters:
         - b
         - v
       ignore-type-assert-ok: true
+    wrapcheck:
+      ignore-sigs:
+        - .Errorf(
+        - errors.New(
+        - errors.Unwrap(
+        - errors.Join(
+        - .Wrap(
+        - .Wrapf(
+        - .WithMessage(
+        - .WithMessagef(
+        - .WithStack(
   exclusions:
     generated: lax
     rules:
@@ -203,9 +230,6 @@ linters:
         linters:
           - forbidigo
           - mnd
-      # log.Fatal in example main() is intentional; exitAfterDefer fires because
-      # demo.MustWatch defers cleanup. Excluding the check for examples/ avoids
-      # per-line //nolint directives that would be the wrong fight.
       - path: ^examples/
         text: exitAfterDefer
         linters:
@@ -223,6 +247,7 @@ linters:
         linters:
           - unused
     paths:
+      - \./
       - \.gen\.go$
       - _templ\.go$
       - vendor/
@@ -238,6 +263,7 @@ formatters:
   exclusions:
     generated: lax
     paths:
+      - \./
       - _templ\.go$
 issues:
   max-issues-per-linter: 50

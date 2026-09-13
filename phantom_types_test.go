@@ -51,7 +51,7 @@ func newPathTestCases(pairs ...string) []pathTestCase {
 		wantIdx := i + 1
 		cases = append(cases, pathTestCase{
 			NewEventPath(input),
-			pairs[wantIdx], //nolint:gosec // safe: len(pairs)%2==0 ensures i+1 is in bounds
+			pairs[wantIdx],
 		})
 	}
 

@@ -161,9 +161,17 @@ linters:
     ginkgolinter:
       forbid-focus-container: true
       forbid-spec-pollution: true
+    gocognit:
+      min-complexity: 25
+    goconst:
+      ignore-tests: true
+      min-len: 4
+      min-occurrences: 5
     gocritic:
       disabled-checks:
         - ifElseChain
+    gocyclo:
+      min-complexity: 20
     gomoddirectives:
       replace-allow-list:
         - github.com/LarsArtmann/gogenfilter
@@ -187,12 +195,25 @@ linters:
         - "1"
         - "2"
         - "100"
+    nestif:
+      min-complexity: 6
     revive:
       rules:
         - disabled: true
           name: exported
         - disabled: true
           name: package-comments
+    tagalign:
+      align: false
+      order:
+        - binding
+        - json
+        - yaml
+        - xml
+        - toml
+        - validate
+        - mapstructure
+      sort: true
     testifylint:
       disable:
         - go-require
@@ -242,6 +263,14 @@ linters:
           - funlen
           - cyclop
           - goconst
+          - forcetypeassert
+          - gosec
+          - errcheck
+          - wrapcheck
+          - ireturn
+          - recvcheck
+          - contextcheck
+          - exhaustive
       - path: _test\.go
         text: unused
         linters:
@@ -250,6 +279,7 @@ linters:
       - \./
       - \.gen\.go$
       - _templ\.go$
+      - fake_.*\.go$
       - vendor/
 formatters:
   enable:
@@ -265,6 +295,7 @@ formatters:
     paths:
       - \./
       - _templ\.go$
+      - fake_.*\.go$
 issues:
   max-issues-per-linter: 50
   max-same-issues: 10

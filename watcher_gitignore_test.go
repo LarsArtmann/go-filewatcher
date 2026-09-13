@@ -19,7 +19,7 @@ func setupGitignoreTest(
 
 	subDir := filepath.Join(tmpDir, subDirName)
 
-	mkdirErr := os.MkdirAll(subDir, 0o755) //nolint:gosec // standard temp directory permissions
+	mkdirErr := os.MkdirAll(subDir, 0o755)
 	if mkdirErr != nil {
 		t.Fatal(mkdirErr)
 	}

@@ -1534,7 +1534,7 @@ func TestWatcher_AddRecursive_DepthLimit(t *testing.T) {
 	subDirB := filepath.Join(subDirA, "b")
 	subDirC := filepath.Join(subDirB, "c")
 
-	err := os.MkdirAll(subDirC, 0o755) //nolint:gosec
+	err := os.MkdirAll(subDirC, 0o755)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1572,7 +1572,7 @@ func TestWatcher_AddRecursive_FullRecursion(t *testing.T) {
 
 	subDir := filepath.Join(tmpDir, "deep", "nested", "dir")
 
-	err := os.MkdirAll(subDir, 0o755) //nolint:gosec
+	err := os.MkdirAll(subDir, 0o755)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1595,7 +1595,7 @@ func TestWatcher_WithFollowSymlinks(t *testing.T) {
 
 	targetDir := filepath.Join(tmpDir, "target")
 
-	err := os.MkdirAll(targetDir, 0o755) //nolint:gosec
+	err := os.MkdirAll(targetDir, 0o755)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -54,7 +54,7 @@ func TestAddPath_Recursive(t *testing.T) {
 
 	subDir := filepath.Join(tmpDir, "sub")
 
-	mkdirErr := os.MkdirAll(subDir, 0o755) //nolint:gosec // standard temp directory permissions
+	mkdirErr := os.MkdirAll(subDir, 0o755)
 	if mkdirErr != nil {
 		t.Fatal(mkdirErr)
 	}
@@ -143,7 +143,7 @@ func TestWalkDirFunc_SkipsIgnoredDirs(t *testing.T) {
 
 	nmDir := filepath.Join(tmpDir, "node_modules")
 
-	mkdirErr := os.MkdirAll(nmDir, 0o755) //nolint:gosec // standard temp directory permissions
+	mkdirErr := os.MkdirAll(nmDir, 0o755)
 	if mkdirErr != nil {
 		t.Fatal(mkdirErr)
 	}
@@ -189,7 +189,7 @@ func TestShouldExcludePath_ExactMatch(t *testing.T) {
 
 	excludedDir := filepath.Join(tmpDir, "forks")
 
-	mkdirErr := os.MkdirAll(excludedDir, 0o755) //nolint:gosec // standard temp directory permissions
+	mkdirErr := os.MkdirAll(excludedDir, 0o755)
 	if mkdirErr != nil {
 		t.Fatal(mkdirErr)
 	}
@@ -208,7 +208,7 @@ func TestShouldExcludePath_Subtree(t *testing.T) {
 
 	excludedDir := filepath.Join(tmpDir, "forks")
 
-	mkdirErr := os.MkdirAll(excludedDir, 0o755) //nolint:gosec // standard temp directory permissions
+	mkdirErr := os.MkdirAll(excludedDir, 0o755)
 	if mkdirErr != nil {
 		t.Fatal(mkdirErr)
 	}
@@ -253,7 +253,7 @@ func TestWalkDirFunc_SkipsExcludedPaths(t *testing.T) {
 
 	excludedDir := filepath.Join(tmpDir, "forks")
 
-	mkdirErr := os.MkdirAll(excludedDir, 0o755) //nolint:gosec // standard temp directory permissions
+	mkdirErr := os.MkdirAll(excludedDir, 0o755)
 	if mkdirErr != nil {
 		t.Fatal(mkdirErr)
 	}

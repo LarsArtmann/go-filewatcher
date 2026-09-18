@@ -420,7 +420,7 @@
         };
 
       flake.overlays.default = final: _prev: {
-        go-filewatcher = final.callPackage ./package.nix { };
+        go-filewatcher = self.packages.${final.stdenv.system}.default;
       };
     };
 }

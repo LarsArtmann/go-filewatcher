@@ -1,5 +1,5 @@
-github.com/LarsArtmann/gogenfilter/v3 v3.6.0 h1:BKLYuxE71ZoV6h4TWGPHoEX6ai0PtgrwkSDp5vgQMgA=
-github.com/LarsArtmann/gogenfilter/v3 v3.6.0/go.mod h1:jiJIptVE+7HYYkCPJ03buhyT2jd44jPlNr5xsRZe56Y=
+github.com/LarsArtmann/gogenfilter/v3 v3.6.1 h1:0I3czhazOGPifqV0EpO+drXwsNNO+ZLgefOlPXpiQFQ=
+github.com/LarsArtmann/gogenfilter/v3 v3.6.1/go.mod h1:jiJIptVE+7HYYkCPJ03buhyT2jd44jPlNr5xsRZe56Y=
 github.com/Masterminds/semver/v3 v3.5.0 h1:kQceYJfbupGfZOKZQg0kou0DgAKhzDg2NZPAwZ/2OOE=
 github.com/Masterminds/semver/v3 v3.5.0/go.mod h1:4V+yj/TJE1HU9XfppCwVMZq3I84lprf4nC11bSS5beM=
 github.com/bmatcuk/doublestar/v4 v4.10.0 h1:zU9WiOla1YA122oLM6i4EXvGW62DvKZVxIe6TYWexEs=

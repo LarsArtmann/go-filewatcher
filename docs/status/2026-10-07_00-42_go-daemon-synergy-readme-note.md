@@ -59,7 +59,7 @@ global.out.css) — not my changes, untouched, correctly left alone.
 
 1. **No post-edit verification.** The README edit was committed to disk
    without running even the docs-consistency check (it only compares README ↔
-   API_STABILITY.md *deprecation claims* — my section shouldn't trip it —
+   API_STABILITY.md _deprecation claims_ — my section shouldn't trip it —
    but I asserted that from memory instead of running it).
 2. **Idea routing debt.** The (f)-list-worthy items lived only in the chat
    until this report; a top-tier session would have written them to
@@ -77,26 +77,26 @@ global.out.css) — not my changes, untouched, correctly left alone.
 
 ## f) NEXT — up to 50, honest count: 18 (brainstorm fuel, not commitments)
 
-| #   | Task                                                                                              | Impact |
-| --- | ------------------------------------------------------------------------------------------------- | ------ |
-| 1   | Mirror the ecosystem note in go-daemon's README (cross-link both ways)                            | High   |
-| 2   | HARVEST this report's (f) into TODO_LIST.md / ROADMAP.md                                          | High   |
-| 3   | Decide example host: bump this module to Go 1.27 vs host in go-daemon repo vs sibling repo         | High   |
-| 4   | Website guide: "Running a watcher as a systemd service" (go-daemon + sd_notify + graceful drain)  | High   |
-| 5   | Website ecosystem/related page mirroring README section (kill the split brain before it grows)     | Medium |
-| 6   | Fix Go-version drift: README:60 ("1.26.4+") vs AGENTS.md ("1.26.5") vs go.mod truth               | Low    |
-| 7   | Build `watcher-daemon` example once #3 decided (OnListen→Watch, OnShutdown→Close, stream events)  | High   |
-| 8   | Health-endpoint recipe: go-daemon `WithHealthPath` + filewatcher `Stats()`                        | Medium |
-| 9   | Watchdog × self-heal demo recipe (what systemd WATCHDOG adds over `WithSelfHeal`)                 | Medium |
-| 10  | Event streaming sketch: JSON/CBOR via go-daemon negotiation; SSE variant + client `ParseSSEData`  | Medium |
-| 11  | ROADMAP entry: `filewatcher-daemon` binary as sibling repo (demand-gated)                         | Low    |
-| 12  | Verify docs-consistency CI passes on the README change locally                                    | Low    |
-| 13  | Read go-daemon `socket.go`/`notify.go` firsthand before any deeper integration work               | Low    |
-| 14  | Check whether website build imports README content or duplicates it (informs #5)                  | Medium |
-| 15  | Consider `examples/README.md` index entry once new example exists                                 | Low    |
-| 16  | Bench/measure: event → SSE serialization overhead if streaming demo ships                         | Low    |
-| 17  | If #3 = sibling repo: apply collector-extraction-style checklist for new sibling repos            | Low    |
-| 18  | Add `Related Projects` gogenfilter bullet? (already linked inline in Filters section — probably no) | Low    |
+| #  | Task                                                                                                | Impact |
+| -- | --------------------------------------------------------------------------------------------------- | ------ |
+| 1  | Mirror the ecosystem note in go-daemon's README (cross-link both ways)                              | High   |
+| 2  | HARVEST this report's (f) into TODO_LIST.md / ROADMAP.md                                            | High   |
+| 3  | Decide example host: bump this module to Go 1.27 vs host in go-daemon repo vs sibling repo          | High   |
+| 4  | Website guide: "Running a watcher as a systemd service" (go-daemon + sd_notify + graceful drain)    | High   |
+| 5  | Website ecosystem/related page mirroring README section (kill the split brain before it grows)      | Medium |
+| 6  | Fix Go-version drift: README:60 ("1.26.4+") vs AGENTS.md ("1.26.5") vs go.mod truth                 | Low    |
+| 7  | Build `watcher-daemon` example once #3 decided (OnListen→Watch, OnShutdown→Close, stream events)    | High   |
+| 8  | Health-endpoint recipe: go-daemon `WithHealthPath` + filewatcher `Stats()`                          | Medium |
+| 9  | Watchdog × self-heal demo recipe (what systemd WATCHDOG adds over `WithSelfHeal`)                   | Medium |
+| 10 | Event streaming sketch: JSON/CBOR via go-daemon negotiation; SSE variant + client `ParseSSEData`    | Medium |
+| 11 | ROADMAP entry: `filewatcher-daemon` binary as sibling repo (demand-gated)                           | Low    |
+| 12 | Verify docs-consistency CI passes on the README change locally                                      | Low    |
+| 13 | Read go-daemon `socket.go`/`notify.go` firsthand before any deeper integration work                 | Low    |
+| 14 | Check whether website build imports README content or duplicates it (informs #5)                    | Medium |
+| 15 | Consider `examples/README.md` index entry once new example exists                                   | Low    |
+| 16 | Bench/measure: event → SSE serialization overhead if streaming demo ships                           | Low    |
+| 17 | If #3 = sibling repo: apply collector-extraction-style checklist for new sibling repos              | Low    |
+| 18 | Add `Related Projects` gogenfilter bullet? (already linked inline in Filters section — probably no) | Low    |
 
 ## g) QUESTIONS I CANNOT ANSWER MYSELF
 

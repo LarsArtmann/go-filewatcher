@@ -493,8 +493,7 @@ func MiddlewareWriteFileLog(filePath string) Middleware {
 //	    filewatcher.WithCleanup(closeLog),
 //	)
 func NewFileLogMiddleware(filePath string) (Middleware, func() error) {
-	//nolint:exhaustruct // f is lazily initialized on first write
-	cached := &fileLogCache{}
+	cached := &fileLogCache{mu: sync.Mutex{}, f: nil}
 
 	closeOnce := &sync.Once{}
 

@@ -1,4 +1,4 @@
-//nolint:varnamelen,gosec // idiomatic short names; test code allows relaxed permissions
+//nolint:varnamelen // idiomatic short names
 package filewatcher
 
 import (

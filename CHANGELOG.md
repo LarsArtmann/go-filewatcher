@@ -1,36 +1,14 @@
-# Changelog
+## [Unreleased]
 
-All notable changes to this project will be documented in this file.
+### Added
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+- Nothing yet.
+
+### Fixed
+
+- Nothing yet.
 
 ## [2.4.0](https://github.com/LarsArtmann/go-filewatcher/compare/v2.3.0...v2.4.0) (2026-10-06)
-
-
-### Features
-
-* expose granular runtime knobs for backpressure, hashing, and metrics ([0b60c58](https://github.com/LarsArtmann/go-filewatcher/commit/0b60c58b76883ddae0439ea1c7214e587961ddef))
-* **filewatcher:** enhance filtering and filesystem event handling ([467fa16](https://github.com/LarsArtmann/go-filewatcher/commit/467fa163cdeb5b79cb1634576943ea1df2937648))
-* harden watcher against edge cases that bite every consumer ([4bd8246](https://github.com/LarsArtmann/go-filewatcher/commit/4bd8246f4d2dc76d63ab05b2302048c0710f3e50))
-* harden watcher against edge cases that bite every consumer ([6a075ef](https://github.com/LarsArtmann/go-filewatcher/commit/6a075efd337dc5d59c38f5704f91152ed9979132))
-* **metrics:** add metrics collection and observability for file watcher ([123c635](https://github.com/LarsArtmann/go-filewatcher/commit/123c635a5f61c71cf1510ccf74882e57eb0abdb4))
-* **metrics:** add metrics collection and testing for file watcher operations ([016dd1d](https://github.com/LarsArtmann/go-filewatcher/commit/016dd1d779588c0d9f8aed031efc13ea4c437a86))
-* **tests:** add filesystem polling gitignore integration tests ([f0546bf](https://github.com/LarsArtmann/go-filewatcher/commit/f0546bfbb54523d6ceb997148d73142207215362))
-* **watcher:** add configurable metrics collection and enhance test coverage ([51bff0c](https://github.com/LarsArtmann/go-filewatcher/commit/51bff0cc2592897b7aed0729db12fef24935c1b3))
-* **watcher:** add file watching capabilities with documentation updates ([55b64b6](https://github.com/LarsArtmann/go-filewatcher/commit/55b64b68160f49a5095363239d371c80f453f3d9))
-* **watcher:** add filesystem abstraction and self-healing support ([75ef17c](https://github.com/LarsArtmann/go-filewatcher/commit/75ef17c2231c2409f540f0505463e47b8f9552c6))
-* **watcher:** add self-healing capabilities for resilient file monitoring ([9a7c9d8](https://github.com/LarsArtmann/go-filewatcher/commit/9a7c9d8eac46436d969c81b07080ea4388b8d9f7))
-* **watcher:** enhance file filtering capabilities with custom rules ([f703edd](https://github.com/LarsArtmann/go-filewatcher/commit/f703eddd039de360fcd6951f18644edfcc02beaf))
-* **watcher:** enhance file watching capabilities with event filtering ([9d66aa5](https://github.com/LarsArtmann/go-filewatcher/commit/9d66aa58b5cce747513e9e62149401c8f508f338))
-* **watcher:** enhance file watching with initial directory walk and improved options ([c800591](https://github.com/LarsArtmann/go-filewatcher/commit/c8005912c550481ac5ab1f18088809598efc2ec2))
-* **watcher:** integrate gitignore support with polling watcher ([304f12d](https://github.com/LarsArtmann/go-filewatcher/commit/304f12d7bfe3305d6cc243167ad39a7596138a81))
-
-
-### Bug Fixes
-
-* restore go 1.26 directive accidentally bumped to 1.27 ([a3a188d](https://github.com/LarsArtmann/go-filewatcher/commit/a3a188dba4cd37673548d0150b7330331168c2ad))
-
-## [Unreleased]
 
 ### Added
 
@@ -86,6 +64,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **`applyMaxWatchesFraction` applied to explicit limits** (`watcher.go`) — the safety fraction was applied to all `maxWatches > 0`, including explicit `WithMaxWatches(n)` values, contradicting the documentation. Now only applies to auto-detected limits. `Reset()` also preserves explicit settings instead of always re-detecting.
 - **`EventsProcessed` counted dropped events** (`watcher_internal.go`) — the counter was incremented before the channel send, so events dropped by `DropOnFull` backpressure or aborted during shutdown were counted as "processed." Now only increments on successful send.
 
+
+- **Dead code: `GaugeValue()` never called** (`metrics.go`, `filesystem.go`) — the `GaugeValue()` method was defined but never invoked. The Prometheus gauge used a separate `caseSensitivityGauge(string)` function with its own switch/case, duplicating the gauge encoding. Now wired via `Stats.CaseSensitivityMode`, and the duplicate `caseSensitivityGauge()` function is deleted.
+- **`_` error discarding code smell** (`filter.go`, `options.go`) — `FilterExcludePaths` and `WithExcludePaths` used `normalized, _ := normalizePath(path)`, discarding the error with a comment. Replaced with the `cleanPath()` helper that encapsulates the best-effort intent.
+- **go.mod language version accidentally bumped to 1.27** (`go.mod`) — an auto-commit raised the required Go version to 1.27, breaking builds on Go 1.26 toolchains. Restored the intended `go 1.26.7` floor.
+
 ### Changed
 
 - **`eventsProcessed` semantics** (`watcher_internal.go`) — the counter now increments when an event reaches the event channel (inside `trackedEmit`), not when the middleware chain returns nil. This is more correct: an event is "processed" when it's emitted, not when middleware returns nil (which could happen even if the event was never sent, e.g., due to context cancellation). Events dropped by middleware are no longer counted as processed.
@@ -97,15 +80,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **`WatchLimit` semantics** (`watcher.go`) — now shows the raw system-detected inotify limit before the safety fraction. The effective cap (after fraction) is exposed as the new `Stats.WatchBudgetCap` field. Consumers who previously read `WatchLimit` to see the effective cap should switch to `WatchBudgetCap`.
 - **`hashFile` accepts `maxSize` parameter** (`filter.go`) — the hardcoded 10 MiB cap is now a parameter. `convertEvent` receives `maxHashSize int64` instead of `computeHash bool`; when `maxHashSize > 0`, hashing is enabled with that cap.
 
-### Changed
 
 - **`FilesystemCaseSensitivity` promoted to Stable API** (`API_STABILITY.md`) — the enum values are foundational (control `pathKey()` behavior) and will not change. Adding new values (e.g., `CaseSensitivityProbed` in v3) is backward-compatible. `WithCaseSensitivity` and `FilterCaseInsensitive` remain Evolving.
 - **Prometheus gauge uses `GaugeValue()` directly** (`metrics.go`) — the `filewatcher_case_sensitivity` gauge now reads `stats.CaseSensitivityMode.GaugeValue()` instead of parsing a string. Single source of truth for the gauge encoding.
+- **`FilterGeneratedCode` sqlc detection follows gogenfilter v3.6 semantics** (`filter_gogen.go`, `go.mod`) — the gogenfilter dependency moved from v3.2 to v3.6.1: weak filenames such as `models.go` are no longer treated as sqlc-generated on their own. Strong `*.sql.go` patterns still match by filename; content markers (`// Code generated by sqlc. DO NOT EDIT.`) are detected by `FilterGeneratedCodeFull` with `ContentCheckEnabled`.
 
-### Fixed
-
-- **Dead code: `GaugeValue()` never called** (`metrics.go`, `filesystem.go`) — the `GaugeValue()` method was defined but never invoked. The Prometheus gauge used a separate `caseSensitivityGauge(string)` function with its own switch/case, duplicating the gauge encoding. Now wired via `Stats.CaseSensitivityMode`, and the duplicate `caseSensitivityGauge()` function is deleted.
-- **`_` error discarding code smell** (`filter.go`, `options.go`) — `FilterExcludePaths` and `WithExcludePaths` used `normalized, _ := normalizePath(path)`, discarding the error with a comment. Replaced with the `cleanPath()` helper that encapsulates the best-effort intent.
 
 ## [2.3.0] - 2026-07-27
 

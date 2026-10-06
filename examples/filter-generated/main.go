@@ -11,7 +11,8 @@
 // Then in another terminal, create some files:
 //
 //	touch /tmp/watchtest/main.go              # Will be detected
-//	touch /tmp/watchtest/models.go            # Will be ignored (sqlc)
+//	touch /tmp/watchtest/query.sql.go         # Will be ignored (sqlc)
+//	touch /tmp/watchtest/models.go            # Will be DETECTED (weak sqlc filename alone is not proof)
 //	touch /tmp/watchtest/page_templ.go        # Will be ignored (templ)
 //	touch /tmp/watchtest/user.pb.go           # Will be ignored (protobuf)
 package main
@@ -147,15 +148,16 @@ func demonstrateSpecificFilters(watchDir string) {
 
 	// Create test files
 	createTestFile(watchDir, "main.go", "package main")
-	createTestFile(watchDir, "db/models.go", "package db")             // sqlc - filtered
-	createTestFile(watchDir, "api/user.pb.go", "package api")          // protobuf - filtered
-	createTestFile(watchDir, "web/page_templ.go", "package web")       // templ - NOT filtered
+	createTestFile(watchDir, "db/query.sql.go", "package db")    // sqlc (strong filename) - filtered
+	createTestFile(watchDir, "db/models.go", "package db")       // weak sqlc filename - NOT filtered
+	createTestFile(watchDir, "api/user.pb.go", "package api")    // protobuf - filtered
+	createTestFile(watchDir, "web/page_templ.go", "package web") // templ - NOT filtered
 	createTestFile(watchDir, "mocks/service_mock.go", "package mocks") // mockgen - NOT filtered
 
 	collectAndReport(
 		ctx, events,
 		"Filtered (no events):",
-		"  - models.go (sqlc)",
+		"  - query.sql.go (sqlc)",
 		"  - user.pb.go (protobuf)",
 		"",
 	)

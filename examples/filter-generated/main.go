@@ -148,10 +148,10 @@ func demonstrateSpecificFilters(watchDir string) {
 
 	// Create test files
 	createTestFile(watchDir, "main.go", "package main")
-	createTestFile(watchDir, "db/query.sql.go", "package db")    // sqlc (strong filename) - filtered
-	createTestFile(watchDir, "db/models.go", "package db")       // weak sqlc filename - NOT filtered
-	createTestFile(watchDir, "api/user.pb.go", "package api")    // protobuf - filtered
-	createTestFile(watchDir, "web/page_templ.go", "package web") // templ - NOT filtered
+	createTestFile(watchDir, "db/query.sql.go", "package db")          // sqlc (strong filename) - filtered
+	createTestFile(watchDir, "db/models.go", "package db")             // weak sqlc filename - NOT filtered
+	createTestFile(watchDir, "api/user.pb.go", "package api")          // protobuf - filtered
+	createTestFile(watchDir, "web/page_templ.go", "package web")       // templ - NOT filtered
 	createTestFile(watchDir, "mocks/service_mock.go", "package mocks") // mockgen - NOT filtered
 
 	collectAndReport(

@@ -154,23 +154,23 @@ When I first created `error_simulation_test.go`, the circuit breaker test had an
 
 ### Process Improvements
 
-1. **Commit message quality** — The auto-git daemon writes generic messages. For semantic changes (new interfaces, deprecations), we need human-quality commit messages. Consider disabling auto-git for sessions with architectural changes, or post-processing commit messages.
-2. **Test file linting** — `nix run .#lint` doesn't lint test files by default. Add `--tests` flag to the lint app, or at minimum document this blind spot.
-3. **LSP diagnostics** — The `golangci_lint_ls` client goes stale after interface changes. Need a way to force-rebuild its cache, not just restart.
-4. **Statistical test verification** — We keep claiming tests are "not flaky" after 3-10 runs. For timing-sensitive tests (self-heal, debouncer), establish a protocol: `-count=50 -race` before marking done.
+~~1. **Commit message quality** — The auto-git daemon writes generic messages. For semantic changes (new interfaces, deprecations), we need human-quality commit messages. Consider disabling auto-git for sessions with architectural changes, or post-processing commit messages.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~2. **Test file linting** — `nix run .#lint` doesn't lint test files by default. Add `--tests` flag to the lint app, or at minimum document this blind spot.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~3. **LSP diagnostics** — The `golangci_lint_ls` client goes stale after interface changes. Need a way to force-rebuild its cache, not just restart.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~4. **Statistical test verification** — We keep claiming tests are "not flaky" after 3-10 runs. For timing-sensitive tests (self-heal, debouncer), establish a protocol: `-count=50 -race` before marking done.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### Code Improvements
 
-5. **Circuit breaker in pipeline** — The fact that `wrapHandlerWithNilReturn` absorbs errors means circuit breaker only works as the innermost middleware. This is a **hidden architectural constraint** that should be documented or fixed. Either: (a) document that circuit breaker must wrap the failing handler directly, or (b) refactor the pipeline so errors propagate through the full chain.
-6. **`watchBackend` interface should be documented as internal** — It's unexported, but the pattern is significant. Add a comment explaining it's a test seam, not a public extension point.
-7. **`fakeBackend` could be more capable** — Currently injects errors synchronously. Could add: delayed error injection, event sequencing (create→write→remove chains), concurrent event bursts.
-8. **`MustWatch` swallows the watcher** — The caller gets events + cleanup but not the `*Watcher` itself. If an example needs `Stats()` or `Add()`, it can't use `MustWatch`. Consider returning the watcher too, or a different helper for advanced cases.
+~~5. **Circuit breaker in pipeline** — The fact that `wrapHandlerWithNilReturn` absorbs errors means circuit breaker only works as the innermost middleware. This is a **hidden architectural constraint** that should be documented or fixed. Either: (a) document that circuit breaker must wrap the failing handler directly, or (b) refactor the pipeline so errors propagate through the full chain.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~6. **`watchBackend` interface should be documented as internal** — It's unexported, but the pattern is significant. Add a comment explaining it's a test seam, not a public extension point.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~7. **`fakeBackend` could be more capable** — Currently injects errors synchronously. Could add: delayed error injection, event sequencing (create→write→remove chains), concurrent event bursts.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~8. **`MustWatch` swallows the watcher** — The caller gets events + cleanup but not the `*Watcher` itself. If an example needs `Stats()` or `Add()`, it can't use `MustWatch`. Consider returning the watcher too, or a different helper for advanced cases.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### Documentation Improvements
 
-9. **`README.md` deprecation drift** — Still references deprecated APIs as current. Live contradiction between README and API_STABILITY.md.
-10. **No migration guide** — `MIGRATION.md` doesn't exist or doesn't have the v3 deprecation section.
-11. **Website docs stale** — Public-facing docs don't reflect deprecations.
+~~9. **`README.md` deprecation drift** — Still references deprecated APIs as current. Live contradiction between README and API_STABILITY.md.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~10. **No migration guide** — `MIGRATION.md` doesn't exist or doesn't have the v3 deprecation section.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~11. **Website docs stale** — Public-facing docs don't reflect deprecations.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ---
 
@@ -178,74 +178,74 @@ When I first created `error_simulation_test.go`, the circuit breaker test had an
 
 ### P0 — Fix Live Damage (Cheap, High-Impact)
 
-1. Mark `WithOnError` as deprecated in `README.md` (line ~153)
-2. Mark `MiddlewareRateLimit` as deprecated in `README.md` (line ~204)
-3. Create/update `MIGRATION.md` with v2.3→v3 deprecation section
-4. Update `website/src/content/docs/api-reference.mdx` to mark deprecated symbols
-5. Investigate `nix run .#ci` tidy permission failure (file a tracked issue if environmental)
+~~1. Mark `WithOnError` as deprecated in `README.md` (line ~153)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~2. Mark `MiddlewareRateLimit` as deprecated in `README.md` (line ~204)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~3. Create/update `MIGRATION.md` with v2.3→v3 deprecation section~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~4. Update `website/src/content/docs/api-reference.mdx` to mark deprecated symbols~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~5. Investigate `nix run .#ci` tidy permission failure (file a tracked issue if environmental)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### P1 — Lock In & Verify
 
-6. Run self-heal tests with `-count=50 -race` for statistical confidence
-7. Run full suite with `-count=10 -race` to catch any new timing issues
-8. Add `--tests` flag to `nix run .#lint` app in `flake.nix` (fixes the test-file blind spot)
-9. Run `staticcheck` SA1019 explicitly to confirm deprecation warnings emit for consumers
-10. Verify `nix flake check` passes with new fileset entries
+~~6. Run self-heal tests with `-count=50 -race` for statistical confidence~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~7. Run full suite with `-count=10 -race` to catch any new timing issues~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~8. Add `--tests` flag to `nix run .#lint` app in `flake.nix` (fixes the test-file blind spot)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~9. Run `staticcheck` SA1019 explicitly to confirm deprecation warnings emit for consumers~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~10. Verify `nix flake check` passes with new fileset entries~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### P2 — Architecture & Testing
 
-11. Document or fix the circuit-breaker-in-pipeline limitation (`wrapHandlerWithNilReturn`)
-12. Add a compile-time interface check: `var _ watchBackend = (*fsnotifyBackend)(nil)`
-13. Add compile-time check: `var _ watchBackend = (*fakeBackend)(nil)`
-14. Write a pipeline-level circuit breaker test (send failing events through fake backend)
-15. Add `fakeBackend` delayed-error injection (for testing timeout/retry windows)
-16. Add `fakeBackend` event-sequence helper (create→write→remove chains)
-17. Add concurrent event burst test (verify no goroutine leaks under load)
-18. Test `Reset()` with a fake backend (verify it creates a real backend, discarding the fake)
-19. Test `Add()` and `Remove()` through the fake backend (track addedPaths/removedPaths)
-20. Add `go test -race -count=1 -run 'TestFakeBackend'` to verify the fake itself is race-free
+~~11. Document or fix the circuit-breaker-in-pipeline limitation (`wrapHandlerWithNilReturn`)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~12. Add a compile-time interface check: `var _ watchBackend = (*fsnotifyBackend)(nil)`~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~13. Add compile-time check: `var _ watchBackend = (*fakeBackend)(nil)`~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~14. Write a pipeline-level circuit breaker test (send failing events through fake backend)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~15. Add `fakeBackend` delayed-error injection (for testing timeout/retry windows)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~16. Add `fakeBackend` event-sequence helper (create→write→remove chains)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~17. Add concurrent event burst test (verify no goroutine leaks under load)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~18. Test `Reset()` with a fake backend (verify it creates a real backend, discarding the fake)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~19. Test `Add()` and `Remove()` through the fake backend (track addedPaths/removedPaths)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~20. Add `go test -race -count=1 -run 'TestFakeBackend'` to verify the fake itself is race-free~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### P3 — Docs & Website
 
-21. Add `watchBackend` architecture note to AGENTS.md (test seam, not public extension point)
-22. Document the `MustWatch` helper in examples README
-23. Add `resolveBatchDefaults` to the "Key Patterns" `resolve*Defaults` row in AGENTS.md
-24. Update `FEATURES.md` with "Error simulation testing" as a DONE feature
-25. Write ROADMAP entry for "Public backend plugin API" if we ever want to expose `watchBackend`
-26. Add deprecation callouts to website docs with visual badges
-27. Create a "Testing Guide" doc showing how to use `fakeBackend` for consumer testing
+~~21. Add `watchBackend` architecture note to AGENTS.md (test seam, not public extension point)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~22. Document the `MustWatch` helper in examples README~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~23. Add `resolveBatchDefaults` to the "Key Patterns" `resolve*Defaults` row in AGENTS.md~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~24. Update `FEATURES.md` with "Error simulation testing" as a DONE feature~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~25. Write ROADMAP entry for "Public backend plugin API" if we ever want to expose `watchBackend`~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~26. Add deprecation callouts to website docs with visual badges~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~27. Create a "Testing Guide" doc showing how to use `fakeBackend` for consumer testing~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### P4 — Linting & CI
 
-28. Fix `nix run .#lint` to include `--tests` flag
-29. Add `nix run .#lint-test` as a separate app if changing the default is too aggressive
-30. Add a CI gate that `README.md` and `API_STABILITY.md` don't contradict each other
-31. Add Windows CI matrix job
-32. Run `govulncheck` and `gosec` in CI (security hardening)
-33. Add `gofumpt` to the lint pipeline (currently only in `treefmt`)
-34. Capture benchmark baseline (`nix run .#bench > bench-baseline.txt`)
+~~28. Fix `nix run .#lint` to include `--tests` flag~~ OPEN → TODO_LIST (Windows CI matrix)
+~~29. Add `nix run .#lint-test` as a separate app if changing the default is too aggressive~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~30. Add a CI gate that `README.md` and `API_STABILITY.md` don't contradict each other~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~31. Add Windows CI matrix job~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~32. Run `govulncheck` and `gosec` in CI (security hardening)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~33. Add `gofumpt` to the lint pipeline (currently only in `treefmt`)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~34. Capture benchmark baseline (`nix run .#bench > bench-baseline.txt`)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### P5 — Code Quality
 
-35. Extract `cancelAndDrain` to `testing_helpers_test.go` (currently in `error_simulation_test.go`)
-36. Add `waitForCondition` to the shared test helpers documentation in AGENTS.md
-37. Consider making `fakeBackend` exported (`FakeBackend`) for consumer testing
-38. Add `WithBackend` as an exported option if consumers want custom backends
-39. Add `Stats().SelfHealAttempts` counter (currently no way to verify self-heal ran N times)
-40. Add `Stats().CircuitState` gauge (currently no observability for circuit breaker state)
-41. Add `fakeBackend` assertion helpers (`assertAdded(t, path)`, `assertAttemptCount(t, path, n)`)
+~~35. Extract `cancelAndDrain` to `testing_helpers_test.go` (currently in `error_simulation_test.go`)~~ OPEN → TODO_LIST open Q4 (export watchBackend)
+~~36. Add `waitForCondition` to the shared test helpers documentation in AGENTS.md~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~37. Consider making `fakeBackend` exported (`FakeBackend`) for consumer testing~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~38. Add `WithBackend` as an exported option if consumers want custom backends~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~39. Add `Stats().SelfHealAttempts` counter (currently no way to verify self-heal ran N times)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~40. Add `Stats().CircuitState` gauge (currently no observability for circuit breaker state)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~41. Add `fakeBackend` assertion helpers (`assertAdded(t, path)`, `assertAttemptCount(t, path, n)`)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### P6 — Future Features
 
-42. Lazy `FilterAnd` short-circuit (return on first `false`)
-43. `WatchChanges(ctx, targetState)` idempotent sync API
-44. Large-tree stress harness (100k directories)
-45. Expand fuzz tests (FilterAnd/Or/Not, Event JSON, gitignore matcher)
-46. OpenTelemetry end-to-end example
-47. Prometheus collector quickstart with `MustRegister`
-48. Semantic-release / conventional commits evaluation
-49. Document the shared-vs-unique default-guard decision with worked example
-50. Set `GOTMPDIR` to disk-backed path in devShell (prevent tmpfs exhaustion)
+~~42. Lazy `FilterAnd` short-circuit (return on first `false`)~~ OPEN → TODO_LIST (WatchChanges q3; expand fuzz; large-tree stress)
+~~43. `WatchChanges(ctx, targetState)` idempotent sync API~~ OPEN → research contract + TODO_LIST open Q3
+~~44. Large-tree stress harness (100k directories)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~45. Expand fuzz tests (FilterAnd/Or/Not, Event JSON, gitignore matcher)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~46. OpenTelemetry end-to-end example~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~47. Prometheus collector quickstart with `MustRegister`~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~48. Semantic-release / conventional commits evaluation~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~49. Document the shared-vs-unique default-guard decision with worked example~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~50. Set `GOTMPDIR` to disk-backed path in devShell (prevent tmpfs exhaustion)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ---
 

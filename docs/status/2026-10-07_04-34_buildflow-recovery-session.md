@@ -1,5 +1,7 @@
 # Status Report: buildflow --fix Recovery Session (go-filewatcher)
 
+> **SUPERSEDED (2026-10-07 06:00):** every open item here was resolved by `2026-10-07_05-17_buildflow-gomod-war-solved.md` and closed out in `2026-10-07_06-00_buildflow-green-pnpm-audit-zero-cache-war.md` (exit 0 ×2, floor held, 3-skip policy committed). Read the 06:00 report for the final state.
+
 **Date:** 2026-10-07 04:34 CEST
 **Session scope:** User ran `buildflow --fix --build-mode=full --log-level warn --max-time 5m`; it failed with 4 step failures (exit 69). This session investigated and fixed the failures, uncovering a deeper tooling war along the way.
 **Final state at time of writing:** `go.mod` = `go 1.27` (re-bumped again during the last instrumentation run, mtime tracked); working tree clean at HEAD `3f82846` (all fixes committed by the auto-commit daemon). **A full green run has NOT yet been achieved.** Every individual failure is fixed and individually verified; the full pipeline still trips over the go-directive poisoner whose identity has now been narrowed to one untested suspect.

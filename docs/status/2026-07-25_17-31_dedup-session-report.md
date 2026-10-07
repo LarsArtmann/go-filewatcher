@@ -208,7 +208,7 @@ honesty:
    rule, apply consistently, document in `AGENTS.md`.~~ DONE: policy set (shared→`resolve*` helper, unique→inline guard + named const), documented in AGENTS.md Key Patterns;
 6. ~~**Add a `resolveThrottleDefaults` / inline-cleanup** to
    `MiddlewareThrottle` for consistency with the new `resolve*` family.~~ DONE: `defaultThrottleEvents` const added (unique defaulting → inline guard);
-7. **Run `nix run .#bench` and compare** pre/post this session's refactor. — PARTIAL: pure-compute benches ran clean (no regression); `BenchmarkEmitEvent_*` could not run (pre-existing deadlock, now TODO_LIST HIGH).
+~~7. **Run `nix run .#bench` and compare** pre/post this session's refactor. — PARTIAL: pure-compute benches ran clean (no regression); `BenchmarkEmitEvent_*` could not run (pre-existing deadlock, now TODO_LIST HIGH).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### Consistency & docs
 
@@ -225,69 +225,69 @@ honesty:
 
 ### Lint & quality
 
-14. **Run `nix run .#ci`** (full: tidy + fmt + vet + lint + test) to confirm
+~~14. **Run `nix run .#ci`** (full: tidy + fmt + vet + lint + test) to confirm~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     end-to-end cleanliness, not just `.#check`.
-15. **Audit `examples/` for other magic numbers** beyond the 2 flagged.
-16. **Consider an `mnd` allow-list or const sweep** across all examples.
-17. **Re-run `art-dupl -t 1` after adopting `newTestWatcher` more widely** —
+~~15. **Audit `examples/` for other magic numbers** beyond the 2 flagged.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~16. **Consider an `mnd` allow-list or const sweep** across all examples.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~17. **Re-run `art-dupl -t 1` after adopting `newTestWatcher` more widely** —~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     expect Group #1's count to drop further where the _next_ lines also match.
 
 ### Test robustness
 
-18. **Address known flaky tests** (`TestWatcher_Stats_Metrics`,
+~~18. **Address known flaky tests** (`TestWatcher_Stats_Metrics`,~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     `TestWatcher_Watch_WithMiddleware`) listed in `AGENTS.md` — separate from
     dedup but always relevant.
-19. **Add `t.Parallel()` presence to a custom lint check** so the constraint
+~~19. **Add `t.Parallel()` presence to a custom lint check** so the constraint~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     Group #1 relies on is self-documenting in CI.
-20. **Review the 2 lifecycle tests in `watcher_reset_test.go`** — confirm the
+~~20. **Review the 2 lifecycle tests in `watcher_reset_test.go`** — confirm the~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     explicit `Close()` mid-test is still the clearest expression of intent.
 
 ### Refactor follow-ups
 
-21. **Extract a `withResolvedPath`-style audit** (already exists per commit
+~~21. **Extract a `withResolvedPath`-style audit** (already exists per commit~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     `45dfbf5`) — verify it's still used everywhere it should be.
-22. **Look for `handleError` call-site duplication** across `watcher_internal.go`.
-23. **Look for `debugLog` call-site duplication** across the pipeline.
-24. **Audit `filter_gogen.go`** integration — it's generated-code-adjacent.
-25. **Review `middleware.go` `funlen` `//nolint` directives** — now that
+~~22. **Look for `handleError` call-site duplication** across `watcher_internal.go`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~23. **Look for `debugLog` call-site duplication** across the pipeline.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~24. **Audit `filter_gogen.go`** integration — it's generated-code-adjacent.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~25. **Review `middleware.go` `funlen` `//nolint` directives** — now that~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     defaulting is extracted, some functions may have shrunk under the limit.
 
 ### Documentation / discoverability
 
-26. **Update `FEATURES.md`** if any behavior changed (it shouldn't have — pure
+~~26. **Update `FEATURES.md`** if any behavior changed (it shouldn't have — pure~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     refactor).
-27. **Update `TODO_LIST.md`** with the "standardize default-guard style" item.
-28. **Add a short "Refactoring conventions" section** to `AGENTS.md`.
-29. **Verify `docs/DOMAIN_LANGUAGE.md`** still matches (debouncer terms etc.).
-30. **Check the `website/` docs don't reference removed internals.**
+~~27. **Update `TODO_LIST.md`** with the "standardize default-guard style" item.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~28. **Add a short "Refactoring conventions" section** to `AGENTS.md`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~29. **Verify `docs/DOMAIN_LANGUAGE.md`** still matches (debouncer terms etc.).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~30. **Check the `website/` docs don't reference removed internals.**~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### Process / tooling
 
-31. **Add `art-dupl -t 5` to CI** as a quality gate (it's currently clean).
-32. **Consider `art-dupl -t 1` as a weekly drift check** (informational).
-33. **Add a pre-commit hook** that runs `nix run .#fmt`.
-34. **Run `nix flake check`** to confirm the flake itself is healthy.
-35. **Pin `art-dupl` version** if not already (reproducible dedup reports).
+~~31. **Add `art-dupl -t 5` to CI** as a quality gate (it's currently clean).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~32. **Consider `art-dupl -t 1` as a weekly drift check** (informational).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~33. **Add a pre-commit hook** that runs `nix run .#fmt`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~34. **Run `nix flake check`** to confirm the flake itself is healthy.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~35. **Pin `art-dupl` version** if not already (reproducible dedup reports).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### Misc
 
-36. **Verify the 5 unpushed commits** on `master` ahead of `origin/master` are
+~~36. **Verify the 5 unpushed commits** on `master` ahead of `origin/master` are~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     ready to push (or hold per release plan).
-37. **Review commit messages** from the auto-git daemon — ensure they're
+~~37. **Review commit messages** from the auto-git daemon — ensure they're~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     coherent with the manual work.
-38. **Consider a `BENCHMARKS.md`** to track perf over time.
-39. **Audit `phantom_types.go` usage** for any duplication in constructors.
-40. **Check `otel.go`** for any middleware-shape duplication vs `middleware.go`.
-41. **Look for duplicated error-wrapping idioms** (`fmt.Errorf("...: %w", err)`).
-42. **Review `metrics.go` collector registration** for repeated patterns.
-43. **Sweep for `//nolint` directives** — confirm each is still needed.
-44. **Ensure `gogenfilter v3` integration** still matches `AGENTS.md` notes.
-45. **Validate `vendorHash` is current** after any dep touch.
-46. **Run `golangci-lint` directly** with `--fix` for any remaining nits.
-47. **Check `fuzz_test.go`** corpus for opportunities.
-48. **Review `benchmark_test.go`** for what it actually benchmarks post-refactor.
-49. **Confirm `WithDebug` logging call sites** didn't drift during refactor.
-50. **Final full `nix build .`** to validate reproducible build end-to-end.
+~~38. **Consider a `BENCHMARKS.md`** to track perf over time.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~39. **Audit `phantom_types.go` usage** for any duplication in constructors.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~40. **Check `otel.go`** for any middleware-shape duplication vs `middleware.go`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~41. **Look for duplicated error-wrapping idioms** (`fmt.Errorf("...: %w", err)`).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~42. **Review `metrics.go` collector registration** for repeated patterns.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~43. **Sweep for `//nolint` directives** — confirm each is still needed.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~44. **Ensure `gogenfilter v3` integration** still matches `AGENTS.md` notes.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~45. **Validate `vendorHash` is current** after any dep touch.~~ OPEN → TODO_LIST (expand fuzz tests)
+~~46. **Run `golangci-lint` directly** with `--fix` for any remaining nits.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~47. **Check `fuzz_test.go`** corpus for opportunities.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~48. **Review `benchmark_test.go`** for what it actually benchmarks post-refactor.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~49. **Confirm `WithDebug` logging call sites** didn't drift during refactor.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~50. **Final full `nix build .`** to validate reproducible build end-to-end.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ---
 

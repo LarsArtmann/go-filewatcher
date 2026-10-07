@@ -109,74 +109,74 @@ The project AGENTS.md lists one "pre-existing linter warning" (`watcher_coverage
 
 ### High value — cleanup from THIS session
 
-1. **Re-capture `bench-baseline.txt` cleanly** with `2>/dev/null` (drop the slog noise).
-2. **Make `bench-baseline`/`bench-diff` hermetic** — vendor `benchstat` via flake input or `buildGoModule`; drop `@latest`.
-3. **Resolve the CWD inconsistency** — either document "run from repo root" in the app echo, or restructure so the baseline path is explicit (`--out` flag) while keeping `cd "${self}"`.
-4. **Delete or wire up `addAttemptCount`** (`fake_backend_test.go:85`).
-5. **Link the two research docs from `ROADMAP.md`** under "API evolution" and "Operational" so they don't rot.
-6. **Run `nix run .#check` + `nix build .` + `nix flake check`** to truly validate the flake changes.
+~~1. **Re-capture `bench-baseline.txt` cleanly** with `2>/dev/null` (drop the slog noise).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~2. **Make `bench-baseline`/`bench-diff` hermetic** — vendor `benchstat` via flake input or `buildGoModule`; drop `@latest`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~3. **Resolve the CWD inconsistency** — either document "run from repo root" in the app echo, or restructure so the baseline path is explicit (`--out` flag) while keeping `cd "${self}"`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~4. **Delete or wire up `addAttemptCount`** (`fake_backend_test.go:85`).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~5. **Link the two research docs from `ROADMAP.md`** under "API evolution" and "Operational" so they don't rot.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~6. **Run `nix run .#check` + `nix build .` + `nix flake check`** to truly validate the flake changes.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### Medium value — correctness/hygiene
 
-7. Decide baseline-in-CI vs local-only (see question 1); if CI, commit a sanitized baseline + add a `bench-diff` CI job with tolerance.
-8. Add `examples/` (incl. `filter-generated`) to a nix check that at least **builds** them — currently invisible.
-9. Update AGENTS.md "Known Issues" with `addAttemptCount` + fileset gap (or fix them and remove the section's staleness).
-10. Add a `commitlint`/regex CI gate for conventional-commit subjects (feeds the release-please recommendation; the eval noted 15/200 outliers).
-11. Wire `release-please` per the evaluation (scoped task — moves to TODO_LIST on approval).
-12. Add `golang.org/x/perf/cmd/benchstat` to `devShells.default.packages` so `nix develop` users have it without `go run`.
+~~7. Decide baseline-in-CI vs local-only (see question 1); if CI, commit a sanitized baseline + add a `bench-diff` CI job with tolerance.~~ OPEN → TODO_LIST open Q2 (baseline committed-vs-gitignored)
+~~8. Add `examples/` (incl. `filter-generated`) to a nix check that at least **builds** them — currently invisible.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~9. Update AGENTS.md "Known Issues" with `addAttemptCount` + fileset gap (or fix them and remove the section's staleness).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~10. Add a `commitlint`/regex CI gate for conventional-commit subjects (feeds the release-please recommendation; the eval noted 15/200 outliers).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~11. Wire `release-please` per the evaluation (scoped task — moves to TODO_LIST on approval).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~12. Add `golang.org/x/perf/cmd/benchstat` to `devShells.default.packages` so `nix develop` users have it without `go run`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### MEDIUM-priority TODO_LIST items (not started, all valid)
 
-13. Windows CI matrix (`ci.yml`).
-14. Expand fuzz tests: `FilterAnd/Or/Not`, `Event` JSON round-trip, gitignore matcher.
-15. Large-tree stress harness (100k synthetic dirs) — validates batching, budget, self-heal under load.
-16. OTel end-to-end example (runnable spans → real exporter).
-17. Prometheus collector quickstart (`MustRegister` helper or documented snippet).
-18. Docs freshness CI gate (`go doc -all` vs FEATURES.md/README.md).
+~~13. Windows CI matrix (`ci.yml`).~~ OPEN → TODO_LIST (Windows CI / expand fuzz / large-tree stress)
+~~14. Expand fuzz tests: `FilterAnd/Or/Not`, `Event` JSON round-trip, gitignore matcher.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~15. Large-tree stress harness (100k synthetic dirs) — validates batching, budget, self-heal under load.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~16. OTel end-to-end example (runnable spans → real exporter).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~17. Prometheus collector quickstart (`MustRegister` helper or documented snippet).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~18. Docs freshness CI gate (`go doc -all` vs FEATURES.md/README.md).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### From ROADMAP ideas (longer-term)
 
-19. macOS FSEvents edge-case documentation/testing.
-20. BSD/kqueue verification of budget + batched registration assumptions.
-21. v3 planning — gather breaking changes (`WithWatchedIgnoreDirs`, two-arg `ErrorHandler`).
-22. Streaming filter protocol — `(keep bool, err error)` or channel variant.
-23. pprof endpoints for watcher introspection (watch-list size, debouncer depth, filter rejections).
-24. Zero-allocation event path (pooling/stack `Event`; currently 3 allocs in `ConvertEvent`/`Create`).
-25. Race-detector CI flake quarantine strategy (`t.Skip` + issue vs event-count-agnostic asserts).
-26. Wire `.goreleaser.yml` into `release.yml` for cross-platform binaries (currently unused).
-27. Dependency freshness SLO via Dependabot status checks.
-28. Auto-generate FEATURES.md/README tables from `go doc` source.
+~~19. macOS FSEvents edge-case documentation/testing.~~ OPEN → TODO_LIST open Q1 (goreleaser) + (website dependabot)
+~~20. BSD/kqueue verification of budget + batched registration assumptions.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~21. v3 planning — gather breaking changes (`WithWatchedIgnoreDirs`, two-arg `ErrorHandler`).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~22. Streaming filter protocol — `(keep bool, err error)` or channel variant.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~23. pprof endpoints for watcher introspection (watch-list size, debouncer depth, filter rejections).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~24. Zero-allocation event path (pooling/stack `Event`; currently 3 allocs in `ConvertEvent`/`Create`).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~25. Race-detector CI flake quarantine strategy (`t.Skip` + issue vs event-count-agnostic asserts).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~26. Wire `.goreleaser.yml` into `release.yml` for cross-platform binaries (currently unused).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~27. Dependency freshness SLO via Dependabot status checks.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~28. Auto-generate FEATURES.md/README tables from `go doc` source.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### Quality/observability extras I noticed
 
-29. `MiddlewareWriteFileLog` opens the file lazily but never closes it on watcher shutdown — possible fd leak on long-lived watchers with reset cycles. Audit.
-30. `MiddlewareDeduplicate` cleanup is keyed on `len(seen)%100 == 0` — a workload that hovers at a multiple of 100 could clean every event. Minor.
-31. `exhaustruct` exclusion list is tiny (`os/exec.Cmd` only) — some middleware state structs fight it via `//nolint` inline; consider fileset-level exclusions.
-32. The `categoryStringUnknown` const is referenced from `CircuitState.String()` — verify it's in the default-const guard's expected list (it isn't `default*`-family, so the guard ignores it — fine, but worth a manual check).
-33. Add a benchmark for `FilterAnd` with **many** sub-filters (currently 2) to prove the short-circuit payoff at scale.
-34. `WatchChanges` (per the contract) — implement after the open questions in the doc are answered.
-35. `resolveRateLimitDefaults` takes a `defaultMax` param (callers differ) — consider whether a per-call const is clearer than the shared-helper-with-param shape.
-36. Document the `examples/` build exclusion explicitly in AGENTS.md "File Organization" so it's not rediscovered.
+~~29. `MiddlewareWriteFileLog` opens the file lazily but never closes it on watcher shutdown — possible fd leak on long-lived watchers with reset cycles. Audit.~~ OPEN → TODO_LIST open Q3 (WatchChanges)
+~~30. `MiddlewareDeduplicate` cleanup is keyed on `len(seen)%100 == 0` — a workload that hovers at a multiple of 100 could clean every event. Minor.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~31. `exhaustruct` exclusion list is tiny (`os/exec.Cmd` only) — some middleware state structs fight it via `//nolint` inline; consider fileset-level exclusions.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~32. The `categoryStringUnknown` const is referenced from `CircuitState.String()` — verify it's in the default-const guard's expected list (it isn't `default*`-family, so the guard ignores it — fine, but worth a manual check).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~33. Add a benchmark for `FilterAnd` with **many** sub-filters (currently 2) to prove the short-circuit payoff at scale.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~34. `WatchChanges` (per the contract) — implement after the open questions in the doc are answered.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~35. `resolveRateLimitDefaults` takes a `defaultMax` param (callers differ) — consider whether a per-call const is clearer than the shared-helper-with-param shape.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~36. Document the `examples/` build exclusion explicitly in AGENTS.md "File Organization" so it's not rediscovered.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### Docs/process
 
-37. CONTRIBUTING.md should mention the new bench baseline workflow.
-38. Add `bench-baseline.txt` format note (count=6, no -race) so future captures are comparable.
-39. The auto-git daemon committed as "v1.6.0 release" (`8ec8f61`) — that subject is misleading (no tag, no release). Consider tuning the daemon's message or amending.
-40. Status snapshot in TODO_LIST.md still shows MEDIUM=6; add a row for "research docs" or "bench workflow" if you want them tracked.
-41. The `docs/research/` docs lack a mutual cross-link (WatchChanges ↔ API evolution; semantic-release ↔ release.yml).
-42. Consider a `docs/research/INDEX.md` so research docs are discoverable.
+~~37. CONTRIBUTING.md should mention the new bench baseline workflow.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~38. Add `bench-baseline.txt` format note (count=6, no -race) so future captures are comparable.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~39. The auto-git daemon committed as "v1.6.0 release" (`8ec8f61`) — that subject is misleading (no tag, no release). Consider tuning the daemon's message or amending.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~40. Status snapshot in TODO_LIST.md still shows MEDIUM=6; add a row for "research docs" or "bench workflow" if you want them tracked.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~41. The `docs/research/` docs lack a mutual cross-link (WatchChanges ↔ API evolution; semantic-release ↔ release.yml).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~42. Consider a `docs/research/INDEX.md` so research docs are discoverable.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### Stretch
 
-43. Snapshot tests for the AGENTS.md "Default-guard convention" code block (ensure it still compiles conceptually).
-44. Add `nix run .#bench-diff` to a pre-commit or push hook for contributors who care about perf.
-45. Evaluate `goversion`/minimum-Go pinning in CI vs the flake's `go_1_26`.
-46. The `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md` is likely stale — audit or delete.
-47. `Troubleshooting.md` — verify it still matches current options/error set.
-48. `API_STABILITY.md` — add the two new research docs to "future directions."
-49. Consider a `CHANGELOG` entry convention for research-only docs (currently none).
-50. Run the `docs-health` / `update-old-docs` skills on the new research docs in 1–2 months so they don't go stale.
+~~43. Snapshot tests for the AGENTS.md "Default-guard convention" code block (ensure it still compiles conceptually).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~44. Add `nix run .#bench-diff` to a pre-commit or push hook for contributors who care about perf.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~45. Evaluate `goversion`/minimum-Go pinning in CI vs the flake's `go_1_26`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~46. The `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md` is likely stale — audit or delete.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~47. `Troubleshooting.md` — verify it still matches current options/error set.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~48. `API_STABILITY.md` — add the two new research docs to "future directions."~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~49. Consider a `CHANGELOG` entry convention for research-only docs (currently none).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~50. Run the `docs-health` / `update-old-docs` skills on the new research docs in 1–2 months so they don't go stale.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ---
 

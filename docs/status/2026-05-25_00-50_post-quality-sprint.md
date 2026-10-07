@@ -69,29 +69,29 @@
 
 | #  | Task                                             | Effort |
 | -- | ------------------------------------------------ | ------ |
-| 42 | Exponential backoff middleware                   | 20min  |
-| 45 | Filter func return match metadata                | 20min  |
-| 48 | `WatchChanges(ctx, targetState)` idempotent sync | 25min  |
-| 49 | Prometheus metrics export                        | 30min  |
-| 60 | Dead letter queue middleware                     | 30min  |
-| 61 | Self-healing watcher                             | 45min  |
-| 62 | OpenTelemetry integration                        | 45min  |
-| 63 | Error analytics                                  | 30min  |
-| 66 | Standalone CLI tool                              | 60min  |
-| 67 | Localizable error messages                       | 20min  |
-| 68 | Explore fsnotify v2 API changes                  | 30min  |
-| 69 | DebounceEntry Mixin phantom type                 | 15min  |
+~~| 42 | Exponential backoff middleware                   | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 45 | Filter func return match metadata                | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 48 | `WatchChanges(ctx, targetState)` idempotent sync | 25min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 49 | Prometheus metrics export                        | 30min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 60 | Dead letter queue middleware                     | 30min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 61 | Self-healing watcher                             | 45min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 62 | OpenTelemetry integration                        | 45min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 63 | Error analytics                                  | 30min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 66 | Standalone CLI tool                              | 60min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 67 | Localizable error messages                       | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 68 | Explore fsnotify v2 API changes                  | 30min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 69 | DebounceEntry Mixin phantom type                 | 15min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### Infrastructure
 
 | #     | Task                               | Effort |
 | ----- | ---------------------------------- | ------ |
-| 65    | Configure semantic-release         | 20min  |
-| 71    | Extract `drainEvents` to testutil  | 20min  |
-| 72    | Windows edge case tests            | 30min  |
-| 74    | Test `examples/` in CI             | 15min  |
-| 78    | Migrate CI to Nix                  | 60min  |
-| 79    | Add Cachix for binary caching      | 20min  |
+~~| 65    | Configure semantic-release         | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 71    | Extract `drainEvents` to testutil  | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 72    | Windows edge case tests            | 30min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 74    | Test `examples/` in CI             | 15min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 78    | Migrate CI to Nix                  | 60min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 79    | Add Cachix for binary caching      | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 | 76-77 | Integrate into downstream projects | 120min |
 
 ---
@@ -111,21 +111,21 @@
 
 ### Still fucked up:
 
-1. **`pollEmitEvent` at 0% coverage** — The polling event emission path is never directly exercised. Integration tests hit `pollDetectChanges` but the final emission step is missed by the coverage tool because it runs asynchronously. This is the single biggest coverage gap (~20 lines uncovered).
+~~1. **`pollEmitEvent` at 0% coverage** — The polling event emission path is never directly exercised. Integration tests hit `pollDetectChanges` but the final emission step is missed by the coverage tool because it runs asynchronously. This is the single biggest coverage gap (~20 lines uncovered).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-2. **`walkDirFunc` at 52.2% coverage** — The symlink resolution branch and error branches are not tested. Only the happy path with `shouldSkipDir` is covered.
+~~2. **`walkDirFunc` at 52.2% coverage** — The symlink resolution branch and error branches are not tested. Only the happy path with `shouldSkipDir` is covered.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-3. **`executeHandler` at 60% coverage** — Error branch (lines 190-196) may not be consistently hit. The `executeHandler` error path depends on middleware returning error AND the coverage tool capturing the async execution.
+~~3. **`executeHandler` at 60% coverage** — Error branch (lines 190-196) may not be consistently hit. The `executeHandler` error path depends on middleware returning error AND the coverage tool capturing the async execution.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-4. **`AddRecursive` at 61.9% coverage** — Edge cases (maxDepth=0, non-existent paths, permission errors) not tested.
+~~4. **`AddRecursive` at 61.9% coverage** — Edge cases (maxDepth=0, non-existent paths, permission errors) not tested.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-5. **`MiddlewareErrorBatch` at 69.7%** — Timer-based flush path untested. Only max-size flush is tested.
+~~5. **`MiddlewareErrorBatch` at 69.7%** — Timer-based flush path untested. Only max-size flush is tested.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-6. **`MiddlewareRateLimit` at 75%** / **`MiddlewareSlidingWindowRateLimit` at 71.4%** — Default value branches (when maxEvents ≤ 0) untested.
+~~6. **`MiddlewareRateLimit` at 75%** / **`MiddlewareSlidingWindowRateLimit` at 71.4%** — Default value branches (when maxEvents ≤ 0) untested.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-7. **File size limits exceeded** — `middleware.go` (687), `watcher.go` (602), `watcher_test.go` (1466), `middleware_test.go` (851), `watcher_coverage_test.go` (664) all exceed the 350-line soft limit.
+~~7. **File size limits exceeded** — `middleware.go` (687), `watcher.go` (602), `watcher_test.go` (1466), `middleware_test.go` (851), `watcher_coverage_test.go` (664) all exceed the 350-line soft limit.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-8. **`FilterGeneratedCodeFull` at 64.3%** — Multiple filter option branches untested in the gogenfilter integration.
+~~8. **`FilterGeneratedCodeFull` at 64.3%** — Multiple filter option branches untested in the gogenfilter integration.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ---
 
@@ -133,35 +133,35 @@
 
 ### Critical (blocks release quality)
 
-1. **Raise coverage from 89.8% → ≥90%** — Need tests for `pollEmitEvent` (0%), `walkDirFunc` symlink branch (52.2%), `AddRecursive` edge cases (61.9%). The gap is 0.2% — approximately 5-10 more covered statements needed.
+~~1. **Raise coverage from 89.8% → ≥90%** — Need tests for `pollEmitEvent` (0%), `walkDirFunc` symlink branch (52.2%), `AddRecursive` edge cases (61.9%). The gap is 0.2% — approximately 5-10 more covered statements needed.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-2. **Extract `pollEmitEvent` testability** — The function is unexported and only callable from the async polling loop. Options: (a) add a polling-specific integration test that creates files and verifies events arrive through the poll path, (b) extract the event construction logic to a testable helper.
+~~2. **Extract `pollEmitEvent` testability** — The function is unexported and only callable from the async polling loop. Options: (a) add a polling-specific integration test that creates files and verifies events arrive through the poll path, (b) extract the event construction logic to a testable helper.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### High Impact (architecture quality)
 
-3. **Consolidate `MiddlewareBatch` / `MiddlewareErrorBatch`** — ~142 lines of near-identical timer-based batching logic. Extract a generic `batcher[T]` that both can use.
+~~3. **Consolidate `MiddlewareBatch` / `MiddlewareErrorBatch`** — ~142 lines of near-identical timer-based batching logic. Extract a generic `batcher[T]` that both can use.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-4. **Consolidate error code mapping** — Sentinel→ErrorCode→ErrorCategory maintained in 3 places. A single registration table would eliminate all three.
+~~4. **Consolidate error code mapping** — Sentinel→ErrorCode→ErrorCategory maintained in 3 places. A single registration table would eliminate all three.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-5. **`filterFileStat` return signature** — Returns `(os.FileInfo, bool, bool)` where bools are `isFile`, `shouldFilter`. Named results or a result struct would prevent mixups.
+~~5. **`filterFileStat` return signature** — Returns `(os.FileInfo, bool, bool)` where bools are `isFile`, `shouldFilter`. Named results or a result struct would prevent mixups.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### Medium Impact (code quality)
 
-6. **Fix pre-existing lint warnings** — 9 test files have unused `testpackage` nolint directives (flagged by `nolintlint`). Safe to remove.
+~~6. **Fix pre-existing lint warnings** — 9 test files have unused `testpackage` nolint directives (flagged by `nolintlint`). Safe to remove.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-7. **Remove duplicate filter test runners** — `runFilterTests`, `runFilterTestsInline`, `runFilterTestsTable` are three variants doing the same thing.
+~~7. **Remove duplicate filter test runners** — `runFilterTests`, `runFilterTestsInline`, `runFilterTestsTable` are three variants doing the same thing.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-8. **Make `NewWatcherError` stack capture opt-in** — `debug.Stack()` is expensive for every error. Add `WithStackTraces()` option.
+~~8. **Make `NewWatcherError` stack capture opt-in** — `debug.Stack()` is expensive for every error. Add `WithStackTraces()` option.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-9. **Extract `filepath.Abs` helper** — Pattern repeated in `Add`, `AddRecursive`, `Remove`, `New`.
+~~9. **Extract `filepath.Abs` helper** — Pattern repeated in `Add`, `AddRecursive`, `Remove`, `New`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-10. **Remove stale `result` binary** — Committed binary flagged by `go-structure-linter`.
+~~10. **Remove stale `result` binary** — Committed binary flagged by `go-structure-linter`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### Housekeeping
 
-11. **Consolidate `docs/status/`** — 30+ files, many stale from April. Archive to `docs/status/archive/`.
+~~11. **Consolidate `docs/status/`** — 30+ files, many stale from April. Archive to `docs/status/archive/`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-12. **File size limits** — Multiple files exceed 350-line soft limit. Consider splitting `middleware.go` into `middleware_batch.go`, `middleware_circuit.go`, etc.
+~~12. **File size limits** — Multiple files exceed 350-line soft limit. Consider splitting `middleware.go` into `middleware_batch.go`, `middleware_circuit.go`, etc.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ---
 
@@ -171,31 +171,31 @@ Sorted by **Pareto: highest impact × lowest effort**.
 
 | #  | Task                                                                      | Effort | Impact | Rationale                                                             |
 | -- | ------------------------------------------------------------------------- | ------ | ------ | --------------------------------------------------------------------- |
-| 1  | **Add `MiddlewareRateLimit` default-value tests** (75%→100%)              | 5min   | HIGH   | Easy: test `maxEvents ≤ 0` defaults to 100                            |
-| 2  | **Add `MiddlewareSlidingWindowRateLimit` default-value tests** (71%→100%) | 5min   | HIGH   | Same pattern as above                                                 |
-| 3  | **Add `AddRecursive` depth=0 test** (61.9%→higher)                        | 10min  | HIGH   | Edge case: immediate children only                                    |
-| 4  | **Add `pollEmitEvent` integration test** (0%→higher)                      | 15min  | HIGH   | Biggest single-function gap — create file via poll path, verify event |
-| 5  | **Add `walkDirFunc` symlink error branch test** (52.2%→higher)            | 10min  | MEDIUM | Symlink resolution error path                                         |
-| 6  | **Implement exponential backoff middleware (#42)**                        | 20min  | HIGH   | Natural pairing with circuit breaker                                  |
-| 7  | **Consolidate `MiddlewareBatch`/`MiddlewareErrorBatch`** generic batcher  | 25min  | MEDIUM | ~142 lines of duplication                                             |
-| 8  | **Configure semantic-release (#65)**                                      | 20min  | MEDIUM | Goreleaser alone doesn't handle versioning                            |
-| 9  | **Test `examples/` in CI (#74)**                                          | 15min  | MEDIUM | `go build ./examples/...`                                             |
-| 10 | **Remove unused `testpackage` nolint directives** (9 files)               | 10min  | LOW    | Clean linter output                                                   |
-| 11 | **Extract `filepath.Abs` helper**                                         | 10min  | LOW    | DRY in Add/AddRecursive/Remove/New                                    |
-| 12 | **Make `NewWatcherError` stack capture opt-in**                           | 10min  | MEDIUM | Performance: expensive default                                        |
-| 13 | **Consolidate error code mapping**                                        | 15min  | MEDIUM | 3 locations → 1 registration table                                    |
-| 14 | **Dead letter queue middleware (#60)**                                    | 30min  | MEDIUM | Pairs with circuit breaker                                            |
-| 15 | **Filter func return match metadata (#45)**                               | 20min  | MEDIUM | Richer filter semantics                                               |
-| 16 | **Remove duplicate filter test runners**                                  | 15min  | LOW    | 3 variants → 1                                                        |
-| 17 | **Remove stale `result` binary**                                          | 5min   | LOW    | `git rm`, add to `.gitignore`                                         |
-| 18 | **Windows edge case tests (#72)**                                         | 30min  | MEDIUM | Cross-platform goal                                                   |
-| 19 | **Extract `drainEvents` to testutil (#71)**                               | 20min  | LOW    | Test consolidation                                                    |
-| 20 | **Prometheus metrics export (#49)**                                       | 30min  | MEDIUM | Observability integration                                             |
-| 21 | **Consolidate `docs/status/`**                                            | 15min  | LOW    | 30+ files, most stale                                                 |
-| 22 | **`filterFileStat` named result struct**                                  | 10min  | LOW    | Prevent bool mixups                                                   |
-| 23 | **`FilterGeneratedCodeFull` coverage** (64.3%→higher)                     | 15min  | LOW    | Gogenfilter integration paths                                         |
-| 24 | **WatchChanges idempotent sync (#48)**                                    | 25min  | MEDIUM | Sync API                                                              |
-| 25 | **Self-healing watcher (#61)**                                            | 45min  | MEDIUM | Auto-retry failed operations                                          |
+~~| 1  | **Add `MiddlewareRateLimit` default-value tests** (75%→100%)              | 5min   | HIGH   | Easy: test `maxEvents ≤ 0` defaults to 100                            |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 2  | **Add `MiddlewareSlidingWindowRateLimit` default-value tests** (71%→100%) | 5min   | HIGH   | Same pattern as above                                                 |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 3  | **Add `AddRecursive` depth=0 test** (61.9%→higher)                        | 10min  | HIGH   | Edge case: immediate children only                                    |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 4  | **Add `pollEmitEvent` integration test** (0%→higher)                      | 15min  | HIGH   | Biggest single-function gap — create file via poll path, verify event |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 5  | **Add `walkDirFunc` symlink error branch test** (52.2%→higher)            | 10min  | MEDIUM | Symlink resolution error path                                         |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 6  | **Implement exponential backoff middleware (#42)**                        | 20min  | HIGH   | Natural pairing with circuit breaker                                  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 7  | **Consolidate `MiddlewareBatch`/`MiddlewareErrorBatch`** generic batcher  | 25min  | MEDIUM | ~142 lines of duplication                                             |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 8  | **Configure semantic-release (#65)**                                      | 20min  | MEDIUM | Goreleaser alone doesn't handle versioning                            |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 9  | **Test `examples/` in CI (#74)**                                          | 15min  | MEDIUM | `go build ./examples/...`                                             |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 10 | **Remove unused `testpackage` nolint directives** (9 files)               | 10min  | LOW    | Clean linter output                                                   |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 11 | **Extract `filepath.Abs` helper**                                         | 10min  | LOW    | DRY in Add/AddRecursive/Remove/New                                    |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 12 | **Make `NewWatcherError` stack capture opt-in**                           | 10min  | MEDIUM | Performance: expensive default                                        |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 13 | **Consolidate error code mapping**                                        | 15min  | MEDIUM | 3 locations → 1 registration table                                    |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 14 | **Dead letter queue middleware (#60)**                                    | 30min  | MEDIUM | Pairs with circuit breaker                                            |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 15 | **Filter func return match metadata (#45)**                               | 20min  | MEDIUM | Richer filter semantics                                               |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 16 | **Remove duplicate filter test runners**                                  | 15min  | LOW    | 3 variants → 1                                                        |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 17 | **Remove stale `result` binary**                                          | 5min   | LOW    | `git rm`, add to `.gitignore`                                         |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 18 | **Windows edge case tests (#72)**                                         | 30min  | MEDIUM | Cross-platform goal                                                   |~~ OPEN → TODO_LIST (Windows CI matrix)
+~~| 19 | **Extract `drainEvents` to testutil (#71)**                               | 20min  | LOW    | Test consolidation                                                    |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 20 | **Prometheus metrics export (#49)**                                       | 30min  | MEDIUM | Observability integration                                             |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 21 | **Consolidate `docs/status/`**                                            | 15min  | LOW    | 30+ files, most stale                                                 |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 22 | **`filterFileStat` named result struct**                                  | 10min  | LOW    | Prevent bool mixups                                                   |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 23 | **`FilterGeneratedCodeFull` coverage** (64.3%→higher)                     | 15min  | LOW    | Gogenfilter integration paths                                         |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~| 24 | **WatchChanges idempotent sync (#48)**                                    | 25min  | MEDIUM | Sync API                                                              |~~ OPEN → research contract + TODO_LIST open Q3
+~~| 25 | **Self-healing watcher (#61)**                                            | 45min  | MEDIUM | Auto-retry failed operations                                          |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ---
 
@@ -205,14 +205,14 @@ Sorted by **Pareto: highest impact × lowest effort**.
 
 `pollEmitEvent` (0% coverage) is only called from `pollDetectChanges`, which runs asynchronously in the polling goroutine. The coverage tool misses it because:
 
-1. It runs in a separate goroutine that may not complete during the test
-2. The polling tests DO create files and verify events arrive, but the coverage tool attributes those to the integration test function, not to `pollEmitEvent`
+~~1. It runs in a separate goroutine that may not complete during the test~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~2. The polling tests DO create files and verify events arrive, but the coverage tool attributes those to the integration test function, not to `pollEmitEvent`~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 Options:
 
-1. **Extract event construction** — Move the `Event{}` construction from `pollEmitEvent` into a testable helper like `newPollEvent(op, path, fileState) Event`, then test that helper directly
-2. **Add sync barrier** — Make the poll loop signal when it has processed a tick, so the test can wait for coverage to register
-3. **Accept the gap** — 0.2% short of 90% is acceptable for async polling code that IS integration-tested
+~~1. **Extract event construction** — Move the `Event{}` construction from `pollEmitEvent` into a testable helper like `newPollEvent(op, path, fileState) Event`, then test that helper directly~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~2. **Add sync barrier** — Make the poll loop signal when it has processed a tick, so the test can wait for coverage to register~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~3. **Accept the gap** — 0.2% short of 90% is acceptable for async polling code that IS integration-tested~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 I recommend option 1 — it's the cleanest and doesn't change runtime behavior.
 

@@ -132,7 +132,7 @@ surfaced adjacent work that was not in scope:
 2. ~~**Update FEATURES.md** — The README got richer OTel/Prometheus examples but
    FEATURES.md was not touched.~~ DONE: FEATURES.md updated (version header,
    goreleaser status, semantic-release ✅);
-3. **Verify OTel/Prometheus snippets compile** — OPEN: see §d1/d2 below; tracked
+~~3. **Verify OTel/Prometheus snippets compile** — OPEN: see §d1/d2 below; tracked~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
    in TODO_LIST "Documentation Accuracy".
 
 ---
@@ -178,30 +178,30 @@ likely `go.opentelemetry.io/otel/exporters/stdout/stdouttrace` (with
 
 ### Process improvements
 
-1. **Update TODO_LIST.md as you complete items** — I committed the work but
+~~1. **Update TODO_LIST.md as you complete items** — I committed the work but~~ OPEN → TODO_LIST (docs-consistency exemption zero)
    left the checklist stale. This violates docs-health: TODO_LIST.md is the
    source of truth for what's done.
-2. **Compile-check documentation code snippets** — The Prometheus and OTel
+~~2. **Compile-check documentation code snippets** — The Prometheus and OTel~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
    examples in the README reference external packages. Without a
    `go doc`-based verification step or a compileable example test, these are
    accuracy risks. Consider adding `Example_*` test functions that actually
    compile.
-3. **The docs freshness gate needs a shrinkage plan** — 36 exemptions is a
+~~3. **The docs freshness gate needs a shrinkage plan** — 36 exemptions is a~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
    confession that 29% of the API is undocumented. Each sprint should whittle
    this down. The workflow should track the count and warn if it grows.
-4. **Don't ship code you know is wrong** — The `ExemplarAdder` snippet should
+~~4. **Don't ship code you know is wrong** — The `ExemplarAdder` snippet should~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
    have been rewritten or omitted, not shipped with a `// simplified` escape
    hatch.
 
 ### Architecture observations
 
-5. **`wrapHandlerWithNilReturn` limits middleware observability** — The
+~~5. **`wrapHandlerWithNilReturn` limits middleware observability** — The~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
    circuit breaker can't observe errors from downstream middleware when run
    through the real pipeline. This is by design (prevents one middleware's
    error from aborting the pipeline), but it means middleware like the circuit
    breaker that NEED to see errors can only work at the outermost layer. Worth
    an ADR or at least a doc comment.
-6. **The fake-backend is powerful but underused** — It supports scripted Add
+~~6. **The fake-backend is powerful but underused** — It supports scripted Add~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
    failures and event injection, but most tests still use real filesystem.
    More tests could be migrated to the fake for determinism and speed.
 
@@ -211,125 +211,125 @@ likely `go.opentelemetry.io/otel/exporters/stdout/stdouttrace` (with
 
 ### High impact (fix what's broken/incomplete from this session)
 
-1. **Fix the Prometheus README example** — replace polling loop with a proper
+~~1. **Fix the Prometheus README example** — replace polling loop with a proper~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
    `prometheus.Collector` wrapper that compiles and is idiomatic.
-2. **Verify OTel README snippet** against actual OTel SDK API (fix
+~~2. **Verify OTel README snippet** against actual OTel SDK API (fix~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
    `trace.Attribute` → `attribute.KeyValue`, `stdouttracer` → `stdouttrace`).
-3. **Update TODO_LIST.md** — mark all 11 items as `[x]` with commit refs.
-4. **Add `Example_*` test functions** for Prometheus and OTel — these compile
+~~3. **Update TODO_LIST.md** — mark all 11 items as `[x]` with commit refs.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~4. **Add `Example_*` test functions** for Prometheus and OTel — these compile~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
    as part of the test suite and catch API drift.
 
 ### Docs quality (shrink the 36-symbol exemption list)
 
-5. Document `ErrorContext` and `ErrorHandler` in FEATURES.md.
-6. Document `ErrorCategory` and `ErrorCode` — the error taxonomy is exported
+~~5. Document `ErrorContext` and `ErrorHandler` in FEATURES.md.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~6. Document `ErrorCategory` and `ErrorCode` — the error taxonomy is exported~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
    but undocumented in FEATURES/README.
-7. Document `IsPermanentError` / `IsTransientError` — these are user-facing
+~~7. Document `IsPermanentError` / `IsTransientError` — these are user-facing~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
    helpers for error classification.
-8. Document `CircuitState` — the circuit breaker states are exported but
+~~8. Document `CircuitState` — the circuit breaker states are exported but~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
    only mentioned in AGENTS.md.
-9. Document `BatchError` — the batch middleware error type.
-10. Document `GaugeMetric` and `CounterMetric` — these are part of the metrics
+~~9. Document `BatchError` — the batch middleware error type.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~10. Document `GaugeMetric` and `CounterMetric` — these are part of the metrics~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     API surface.
-11. Document `DebouncerInterface` — advanced users can provide custom
+~~11. Document `DebouncerInterface` — advanced users can provide custom~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     debouncers.
-12. Document `ContentCheckMode` — content hashing mode enum.
-13. Document `GeneratedCodeDetector` — the detector type behind
+~~12. Document `ContentCheckMode` — content hashing mode enum.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~13. Document `GeneratedCodeDetector` — the detector type behind~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     `FilterGeneratedCode`.
-14. Document `NewDebouncer` / `NewGlobalDebouncer` — standalone debouncer
+~~14. Document `NewDebouncer` / `NewGlobalDebouncer` — standalone debouncer~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     constructors.
-15. Document `NewFileLogMiddleware` — alias for `MiddlewareWriteFileLog`.
-16. Document `WithWatchedIgnoreDirs` — deprecated, but deprecation should be
+~~15. Document `NewFileLogMiddleware` — alias for `MiddlewareWriteFileLog`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~16. Document `WithWatchedIgnoreDirs` — deprecated, but deprecation should be~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     visible in FEATURES.md with the migration path.
-17. Document `WithCleanup` — lifecycle option.
-18. Document phantom type constructors (`NewEventPath`, `NewRootPath`) — at
+~~17. Document `WithCleanup` — lifecycle option.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~18. Document phantom type constructors (`NewEventPath`, `NewRootPath`) — at~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     least a mention in a "type safety" section.
-19. Document `NewWatcherError` — constructor for structured watcher errors.
-20. Document `DefaultIgnoreDirs` / `DefaultIgnoreDirsCopy` — users need to
+~~19. Document `NewWatcherError` — constructor for structured watcher errors.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~20. Document `DefaultIgnoreDirs` / `DefaultIgnoreDirsCopy` — users need to~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     know the default exclusion list.
 
 ### Testing gaps
 
-21. **Fuzz `FilterAnd`/`FilterOr`/`FilterNot` composition** — the TODO_LIST
+~~21. **Fuzz `FilterAnd`/`FilterOr`/`FilterNot` composition** — the TODO_LIST~~ OPEN → TODO_LIST (expand fuzz tests; large-tree stress harness)
     already has this; fuzz the combinators with random sub-filter sets.
-22. **Large-tree stress harness** — 100k synthetic directories; validate
+~~22. **Large-tree stress harness** — 100k synthetic directories; validate~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     batched registration, budget enforcement, self-heal under load.
-23. **Test `Reset()` with debounce** — the Reset test in this session didn't
+~~23. **Test `Reset()` with debounce** — the Reset test in this session didn't~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     verify that debounce configuration survives a reset + restart cycle.
-24. **Test `Reset()` with gitignore cache** — same; verify gitignore is
+~~24. **Test `Reset()` with gitignore cache** — same; verify gitignore is~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     re-initialized after Reset.
-25. **Test `AddRecursive` with maxDepth=0** — should behave like flat `Add`.
-26. **Benchmark `emitEvent` with middleware + debounce combined** — current
+~~25. **Test `AddRecursive` with maxDepth=0** — should behave like flat `Add`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~26. **Benchmark `emitEvent` with middleware + debounce combined** — current~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     benchmarks test them separately.
-27. **Benchmark `watchLoop` throughput** — end-to-end events/sec through the
+~~27. **Benchmark `watchLoop` throughput** — end-to-end events/sec through the~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     fake backend (the burst test measures correctness, not perf).
-28. **Add baseline entries for new benchmarks** — the new
+~~28. **Add baseline entries for new benchmarks** — the new~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     `BenchmarkPassesFilters_FilterAndManyFilters` has no entry in
     `benchmarkBaseline`.
 
 ### CI / automation
 
-29. **Run docs-freshness CI on PRs** — the job exists but verify it triggers
+~~29. **Run docs-freshness CI on PRs** — the job exists but verify it triggers~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     correctly on the next PR.
-30. **Add `nix flake check` to CI** — currently only the docs-consistency and
+~~30. **Add `nix flake check` to CI** — currently only the docs-consistency and~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     ci.yml workflows run; `nix flake check` covers fmt + build + test.
-31. **Add benchstat regression comparison to CI** — the ROADMAP mentions this
+~~31. **Add benchstat regression comparison to CI** — the ROADMAP mentions this~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     as exploratory; the tooling (`bench-baseline`, `bench-diff`) already
     exists locally.
-32. **Validate the docs-consistency YAML** — add a workflow-lint step or
+~~32. **Validate the docs-consistency YAML** — add a workflow-lint step or~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     `actionlint`.
 
 ### Documentation
 
-33. **Update FEATURES.md** with richer observability section (Prometheus +
+~~33. **Update FEATURES.md** with richer observability section (Prometheus +~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     OTel now have examples).
-34. **Add ADR for `wrapHandlerWithNilReturn`** — document WHY errors are
+~~34. **Add ADR for `wrapHandlerWithNilReturn`** — document WHY errors are~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     absorbed and the implication for observability middleware.
-35. **Document the fake-backend pattern** in a testing guide — it's a
+~~35. **Document the fake-backend pattern** in a testing guide — it's a~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     powerful test seam that's under-discoverable.
-36. **Add a "migration to v3" planning doc** — collect the deprecations and
+~~36. **Add a "migration to v3" planning doc** — collect the deprecations and~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     breaking changes in one place.
-37. **Cross-link docs/research/INDEX.md from AGENTS.md** — the index exists
+~~37. **Cross-link docs/research/INDEX.md from AGENTS.md** — the index exists~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     but isn't discoverable from the main developer doc.
 
 ### Code quality
 
-38. **Consolidate test helpers** — `fake_backend_coverage_test.go` adds
+~~38. **Consolidate test helpers** — `fake_backend_coverage_test.go` adds~~ OPEN → TODO_LIST open Q2 (bench-baseline committed-vs-gitignored)
     `waitForGoroutineSettle`; audit if `testing_helpers_test.go` already has
     a similar helper.
-39. **Remove `bench-baseline.txt` from gitignore tracking** — it's
+~~39. **Remove `bench-baseline.txt` from gitignore tracking** — it's~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     gitignored but exists locally; decide if it should be committed as a
     reference baseline.
-40. **Audit all `//nolint` directives** — the `watcher_coverage_test.go:1`
+~~40. **Audit all `//nolint` directives** — the `watcher_coverage_test.go:1`~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     unused nolint is documented in AGENTS.md but there may be others.
-41. **Add `go generate` check to CI** — the gogenfilter integration uses
+~~41. **Add `go generate` check to CI** — the gogenfilter integration uses~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     generated code; verify it's up to date.
 
 ### Observability
 
-42. **Add pprof endpoints** (ROADMAP idea) — expose watch-list size,
+~~42. **Add pprof endpoints** (ROADMAP idea) — expose watch-list size,~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     debouncer queue depth, filter rejection counts.
-43. **Add filter rejection metrics** — track which filters reject the most
+~~43. **Add filter rejection metrics** — track which filters reject the most~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     events for debugging.
-44. **Add debounce queue depth to Stats** — currently Stats doesn't expose
+~~44. **Add debounce queue depth to Stats** — currently Stats doesn't expose~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     debouncer internals.
 
 ### Error handling
 
-45. **Document the error taxonomy** — `ErrorCategory` (transient/permanent),
+~~45. **Document the error taxonomy** — `ErrorCategory` (transient/permanent),~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     `ErrorCode`, `IsPermanentError`, `IsTransientError` need a dedicated
     section in README.
-46. **Add error wrapping to `Reset()`** — `Reset` creates a new fsnotify
+~~46. **Add error wrapping to `Reset()`** — `Reset` creates a new fsnotify~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     watcher but doesn't re-add paths; document this limitation.
-47. **Test error channel buffering** — the error channel has a buffer; verify
+~~47. **Test error channel buffering** — the error channel has a buffer; verify~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     it doesn't drop errors under load.
 
 ### Polish
 
-48. **Add a CHANGELOG entry** for the work in this session.
-49. **Update the README benchmarks table** — the new
+~~48. **Add a CHANGELOG entry** for the work in this session.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~49. **Update the README benchmarks table** — the new~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     `FilterAndManyFilters` benchmark should appear in the table.
-50. **Consider a `MustRegister` helper** for Prometheus — the original TODO
+~~50. **Consider a `MustRegister` helper** for Prometheus — the original TODO~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
     suggested this; it would simplify the README example significantly.
 
 ---

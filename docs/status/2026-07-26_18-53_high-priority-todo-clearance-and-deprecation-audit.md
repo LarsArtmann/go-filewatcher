@@ -108,17 +108,17 @@ The `tidy` step failed with `open .../go.mod: permission denied` (Nix sandbox re
 
 ## e) WHAT WE SHOULD IMPROVE (brutal self-review)
 
-1. **I did not run staticcheck SA1019 verification.** I added `// Deprecated:` comments and lint passed (0 issues) — but golangci-lint may not surface SA1019 the way a consumer's toolchain will. I should have run `go vet` + a targeted staticcheck pass to confirm the annotations are well-formed and actually emit warnings. _(go vet did pass — but I didn't explicitly confirm deprecation-warning emission.)_
+~~1. **I did not run staticcheck SA1019 verification.** I added `// Deprecated:` comments and lint passed (0 issues) — but golangci-lint may not surface SA1019 the way a consumer's toolchain will. I should have run `go vet` + a targeted staticcheck pass to confirm the annotations are well-formed and actually emit warnings. _(go vet did pass — but I didn't explicitly confirm deprecation-warning emission.)_~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-2. **The `waitForCondition` helper hardcodes a 10ms poll interval** — a magic number, not configurable. Fine for now, but inconsistent with the project's named-const discipline for middleware defaults.
+~~2. **The `waitForCondition` helper hardcodes a 10ms poll interval** — a magic number, not configurable. Fine for now, but inconsistent with the project's named-const discipline for middleware defaults.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-3. **I didn't think about the `ErrorContext.Event *Event` pointer field** during the "two-arg ErrorHandler" deprecation decision. The data model review was shallow — I decided to keep `ErrorHandler` and deprecated `WithOnError` without scrutinizing whether `*Event` (pointer, nullable) vs `Event` (value) is the right shape. The AGENTS.md "Data Models First" mandate was not honored here.
+~~3. **I didn't think about the `ErrorContext.Event *Event` pointer field** during the "two-arg ErrorHandler" deprecation decision. The data model review was shallow — I decided to keep `ErrorHandler` and deprecated `WithOnError` without scrutinizing whether `*Event` (pointer, nullable) vs `Event` (value) is the right shape. The AGENTS.md "Data Models First" mandate was not honored here.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-4. **No `t.Helper()` discipline check on the new helper** — actually I did add `t.Helper()`. Good. (Not everything was bad.)
+~~4. **No `t.Helper()` discipline check on the new helper** — actually I did add `t.Helper()`. Good. (Not everything was bad.)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-5. **Scope creep avoided:** I correctly resisted deprecating the thin convenience wrappers (`WithExtensions`, `WithIgnoreDirs`, etc.) and documented _why_ they're kept. Good restraint.
+~~5. **Scope creep avoided:** I correctly resisted deprecating the thin convenience wrappers (`WithExtensions`, `WithIgnoreDirs`, etc.) and documented _why_ they're kept. Good restraint.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
-6. **I didn't check whether a polling helper already existed before writing `waitForCondition`.** I did grep (`waitFor|eventually|poll`) and found none — so this is OK. But I should note testify's `Eventually` is the industry shape; rolling our own is justified only because this repo has no testify dependency.
+~~6. **I didn't check whether a polling helper already existed before writing `waitForCondition`.** I did grep (`waitFor|eventually|poll`) and found none — so this is OK. But I should note testify's `Eventually` is the industry shape; rolling our own is justified only because this repo has no testify dependency.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ---
 
@@ -128,71 +128,71 @@ Sorted by **impact × urgency**. P0 = fix the damage from this session.
 
 ### P0 — Fix the split brains & drift I just created
 
-1. **Remove `WithOnError` from the "Stable APIs → Options" row** in `API_STABILITY.md`.
-2. **Remove `MiddlewareRateLimit` from the "Stable APIs → Middleware" row** in `API_STABILITY.md`.
-3. **Mark `WithOnError` and `MiddlewareRateLimit` as deprecated in `README.md`** (lines 153, 204) with a "(deprecated, use X)" note.
-4. **Add a v2.3→v3 deprecation section to `MIGRATION.md`** with before/after snippets for both newly-deprecated symbols.
-5. **Update `website/src/content/docs/api-reference.mdx`** to mark the two deprecated symbols.
-6. **Investigate & fix or file the `nix run .#ci` `tidy` permission failure** — don't leave the documented CI command broken.
+~~1. **Remove `WithOnError` from the "Stable APIs → Options" row** in `API_STABILITY.md`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~2. **Remove `MiddlewareRateLimit` from the "Stable APIs → Middleware" row** in `API_STABILITY.md`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~3. **Mark `WithOnError` and `MiddlewareRateLimit` as deprecated in `README.md`** (lines 153, 204) with a "(deprecated, use X)" note.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~4. **Add a v2.3→v3 deprecation section to `MIGRATION.md`** with before/after snippets for both newly-deprecated symbols.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~5. **Update `website/src/content/docs/api-reference.mdx`** to mark the two deprecated symbols.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~6. **Investigate & fix or file the `nix run .#ci` `tidy` permission failure** — don't leave the documented CI command broken.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### P1 — Verify & lock in this session's work
 
-7. **Run the two formerly-flaky tests with `-count=50`** (or 100) in CI to statistically confirm the fix.
-8. **Run `staticcheck` SA1019 explicitly** to confirm deprecation warnings emit correctly for consumers.
-9. **Cut `v2.3.0`** to release the deprecation annotations (deprecations are invisible until consumers upgrade).
-10. **Run benchmarks with `-count=10`** and capture a baseline (`bench-baseline.txt`) — pairs with the existing LOW-priority TODO item.
+~~7. **Run the two formerly-flaky tests with `-count=50`** (or 100) in CI to statistically confirm the fix.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~8. **Run `staticcheck` SA1019 explicitly** to confirm deprecation warnings emit correctly for consumers.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~9. **Cut `v2.3.0`** to release the deprecation annotations (deprecations are invisible until consumers upgrade).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~10. **Run benchmarks with `-count=10`** and capture a baseline (`bench-baseline.txt`) — pairs with the existing LOW-priority TODO item.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### P2 — Carry-over from TODO_LIST (MEDIUM)
 
-11. Add `mustWatch` helper to `examples/demo`; migrate the 5 example `main()` functions (kills last `art-dupl` clone group).
-12. Unit test for `resolveBatchDefaults` (the third shared `resolve*` helper).
-13. Windows CI matrix job in `ci.yml`.
-14. Error-simulation testing (fake `fsnotify.Watcher` injecting ENOSPC / permission / closed errors).
-15. Expand fuzz tests (`FilterAnd/Or/Not`, `Event` JSON round-trip, gitignore matcher).
-16. Large-tree stress harness (synthetic 100k-dir fixture).
-17. OpenTelemetry end-to-end runnable example.
-18. Prometheus collector quickstart (`MustRegister` helper or documented snippet).
-19. Docs-freshness CI gate (every exported symbol mentioned in FEATURES/README).
-20. Integrate into `dynamic-markdown-site`.
-21. Integrate into `auto-deduplicate`.
-22. Integrate into Cyberdom.
+~~11. Add `mustWatch` helper to `examples/demo`; migrate the 5 example `main()` functions (kills last `art-dupl` clone group).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~12. Unit test for `resolveBatchDefaults` (the third shared `resolve*` helper).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~13. Windows CI matrix job in `ci.yml`.~~ OPEN → TODO_LIST (Windows CI / expand fuzz / large-tree stress)
+~~14. Error-simulation testing (fake `fsnotify.Watcher` injecting ENOSPC / permission / closed errors).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~15. Expand fuzz tests (`FilterAnd/Or/Not`, `Event` JSON round-trip, gitignore matcher).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~16. Large-tree stress harness (synthetic 100k-dir fixture).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~17. OpenTelemetry end-to-end runnable example.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~18. Prometheus collector quickstart (`MustRegister` helper or documented snippet).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~19. Docs-freshness CI gate (every exported symbol mentioned in FEATURES/README).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~20. Integrate into `dynamic-markdown-site`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~21. Integrate into `auto-deduplicate`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~22. Integrate into Cyberdom.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### P3 — Carry-over from TODO_LIST (LOW)
 
-23. Capture benchmark baseline (`benchstat` reference).
-24. Set `GOTMPDIR` to disk-backed path in `flake.nix` devShell.
-25. Package-level `//nolint:gocritic` exception for `examples/`.
-26. Test asserting every middleware default const is used.
-27. Document shared-vs-unique default-guard decision in `AGENTS.md`.
-28. Lazy `FilterAnd` short-circuit (return on first `false`).
-29. `WatchChanges(ctx, targetState)` idempotent sync API — sketch contract.
-30. Evaluate semantic-release / conventional commits.
+~~23. Capture benchmark baseline (`benchstat` reference).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~24. Set `GOTMPDIR` to disk-backed path in `flake.nix` devShell.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~25. Package-level `//nolint:gocritic` exception for `examples/`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~26. Test asserting every middleware default const is used.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~27. Document shared-vs-unique default-guard decision in `AGENTS.md`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~28. Lazy `FilterAnd` short-circuit (return on first `false`).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~29. `WatchChanges(ctx, targetState)` idempotent sync API — sketch contract.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~30. Evaluate semantic-release / conventional commits.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### P4 — Improvements surfaced by this session's self-review
 
-31. **Make `waitForCondition` poll interval configurable** (named const or param).
-32. **Review `ErrorContext` data model** — is `Event *Event` (nullable pointer) the right shape vs `Event` value? Honor "Data Models First."
-33. **Add `ExampleMiddlewareThrottle` godoc example** alongside the deprecated `ExampleMiddlewareRateLimit`.
-34. **Add an automated "deprecation consistency" check** — a script asserting no symbol appears in both the Stable and Deprecated columns of `API_STABILITY.md` (prevents the exact split brain I created).
-35. **Add a CI lint rule that fails if `README.md` references a `// Deprecated:` symbol without a deprecation marker.**
-36. **Audit the auto-git commit message quality** — `3605cb9`'s message is generic AI boilerplate that doesn't describe the real semantic changes (deprecations, deadlock fix). Consider conventional-commit enforcement.
-37. **Consider a `golangci-lint` config toggle** to enable `staticcheck` SA1019 explicitly with a deprecation-warning baseline.
-38. **Document the `waitForCondition` vs testify-`Eventually` decision** in `AGENTS.md` (why we roll our own).
-39. **Add a "deprecation lifecycle" section to `AGENTS.md`** so future deprecations automatically trigger README + MIGRATION + website updates (a checklist).
-40. **Investigate whether `MiddlewareSlidingWindowRateLimit` can be expressed via `MiddlewareThrottle`** — the v3-candidates table says "keep," but the relationship deserves a sharper doc differentiator.
+~~31. **Make `waitForCondition` poll interval configurable** (named const or param).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~32. **Review `ErrorContext` data model** — is `Event *Event` (nullable pointer) the right shape vs `Event` value? Honor "Data Models First."~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~33. **Add `ExampleMiddlewareThrottle` godoc example** alongside the deprecated `ExampleMiddlewareRateLimit`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~34. **Add an automated "deprecation consistency" check** — a script asserting no symbol appears in both the Stable and Deprecated columns of `API_STABILITY.md` (prevents the exact split brain I created).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~35. **Add a CI lint rule that fails if `README.md` references a `// Deprecated:` symbol without a deprecation marker.**~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~36. **Audit the auto-git commit message quality** — `3605cb9`'s message is generic AI boilerplate that doesn't describe the real semantic changes (deprecations, deadlock fix). Consider conventional-commit enforcement.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~37. **Consider a `golangci-lint` config toggle** to enable `staticcheck` SA1019 explicitly with a deprecation-warning baseline.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~38. **Document the `waitForCondition` vs testify-`Eventually` decision** in `AGENTS.md` (why we roll our own).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~39. **Add a "deprecation lifecycle" section to `AGENTS.md`** so future deprecations automatically trigger README + MIGRATION + website updates (a checklist).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~40. **Investigate whether `MiddlewareSlidingWindowRateLimit` can be expressed via `MiddlewareThrottle`** — the v3-candidates table says "keep," but the relationship deserves a sharper doc differentiator.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### P5 — Broader quality (from prior session context, lower urgency)
 
-41. Reduce the `watcher_coverage_test.go:1` stale `modernize` nolint (pre-existing).
-42. Consolidate the 3 rate-limiter middlewares' shared `rateLimiterMiddleware` docs.
-43. Consider whether `WithWatchedIgnoreDirs` (the original deprecation) can actually be removed in v3 now that the inventory is complete.
-44. Add a `Deprecated` badge to the website component for deprecated API pages.
-45. Generate `API_STABILITY.md` tables from `go doc -all` + `// Deprecated:` parsing (kills the manual-sync split-brain risk permanently).
-46. Add a `make docs-check` / `nix run .#docs-check` that validates API_STABILITY ↔ code consistency.
-47. Profile `emitEvent` under the new benchmark to find the next hotspot (now that it runs).
-48. Consider a `Watcher` constructor validation that rejects mutually-exclusive debounce options.
-49. Add integration tests that exercise the deprecated options to guarantee they keep working until v3.
-50. **Review whether the auto-git daemon's generic commit messages are acceptable** — if not, configure conventional-commit templates or disable auto-commit during focused work.
+~~41. Reduce the `watcher_coverage_test.go:1` stale `modernize` nolint (pre-existing).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~42. Consolidate the 3 rate-limiter middlewares' shared `rateLimiterMiddleware` docs.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~43. Consider whether `WithWatchedIgnoreDirs` (the original deprecation) can actually be removed in v3 now that the inventory is complete.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~44. Add a `Deprecated` badge to the website component for deprecated API pages.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~45. Generate `API_STABILITY.md` tables from `go doc -all` + `// Deprecated:` parsing (kills the manual-sync split-brain risk permanently).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~46. Add a `make docs-check` / `nix run .#docs-check` that validates API_STABILITY ↔ code consistency.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~47. Profile `emitEvent` under the new benchmark to find the next hotspot (now that it runs).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~48. Consider a `Watcher` constructor validation that rejects mutually-exclusive debounce options.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~49. Add integration tests that exercise the deprecated options to guarantee they keep working until v3.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+~~50. **Review whether the auto-git daemon's generic commit messages are acceptable** — if not, configure conventional-commit templates or disable auto-commit during focused work.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ---
 

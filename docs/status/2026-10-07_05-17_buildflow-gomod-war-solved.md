@@ -1,5 +1,7 @@
 # Status: buildflow go.mod War SOLVED (root cause + proof) — 2026-10-07 05:17
 
+> **SUPERSEDED (2026-10-07 06:00):** closed out by `2026-10-07_06-00_buildflow-green-pnpm-audit-zero-cache-war.md` — findings gate cleared honestly (pnpm-audit 12→0), pipeline exit 0 twice, master pushed. §b/c residues below are resolved there except where marked.
+
 **Session window:** 04:37–05:17 CEST (resumed from `2026-10-07_04-34_buildflow-recovery-session.md`)
 **Mission:** make `buildflow --fix --build-mode=full --log-level warn --max-time 5m` pass in go-filewatcher.
 

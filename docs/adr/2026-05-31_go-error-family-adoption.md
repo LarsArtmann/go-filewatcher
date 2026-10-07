@@ -19,7 +19,7 @@
 | `Coded` interface → `ErrorCode() string`                    | `ErrorCode` type + `Code()` method                     | Same concept, different implementation                     |
 | `Classified` interface → `ErrorFamily() Family`             | `WatcherError.IsTransient()` / `.IsPermanent()`        | Same intent, different granularity                         |
 | `Contextual` interface → `ErrorContext() map[string]string` | `ErrorContext` struct (Operation/Path/Event/Retryable) | Struct is more domain-specific                             |
-| `errorfamily.New()` constructors                            | `NewWatcherError()` constructor                        | filewatcher's is simpler and **unused in production code** |
+| `errorfamily.New()` constructors                            | `NewWatcherError()` constructor                        | filewatcher's is simpler and unused in production code at ADR time |
 | `Classify()` + `RegisterClassification()`                   | `categorizeError()` (hardcoded switch)                 | filewatcher's sentinels are fixed; no extensibility needed |
 | `HandleError()` → stderr + exit code                        | `handleError()` → channel/callback/stderr              | filewatcher has no CLI boundary                            |
 | Diagnostics (`diagnose/`)                                   | None                                                   | Filesystem/Network diagnostics don't apply here            |
@@ -45,6 +45,8 @@ This is domain-specific, lean, and has **zero external dependencies**.
 
 ### 3. NewWatcherError is never called in production code
 
+> **UPDATE 2026-10-07:** now false — `watcher_selfheal.go:86` calls `NewWatcherError("selfHeal", ...)` in the self-heal retry path. The adoption-rejection verdict is unaffected.
+
 The production path is `fmt.Errorf("%w: ...", sentinel)` — callers use `errors.Is()` for matching. `WatcherError` is exported but unused in the hot path. The structured error system is barely exercised. Adopting go-error-family would add a dependency for something that's essentially dead weight already.
 
 ### 4. Dependency cost exceeds value
@@ -64,7 +66,7 @@ Not yet v1.0. Adopting it means buying into an unstable API for a domain (error 
 
 The current `errors.go` could be simplified independently:
 
-- `NewWatcherError()` is unused in production code → candidate for removal or deprecation
+- ~~`NewWatcherError()` is unused in production code → candidate for removal or deprecation~~ UPDATE 2026-10-07: now used by self-heal (`watcher_selfheal.go:86`); kept
 - `ErrorCode` constants duplicate the sentinel identity → could be derived at runtime
 - `ErrorContext` struct overlaps with `WatcherError` fields
 

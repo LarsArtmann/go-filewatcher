@@ -119,7 +119,7 @@ func normalizePath(path string) (string, error) {
 // but do not require the path to be absolute. For strict absolute resolution,
 // use normalizePath and check the returned error.
 func cleanPath(path string) string {
-	cleaned, _ := normalizePath(path)
+	cleaned, _ := normalizePath(path) //nolint:erraudit // documented best-effort contract of cleanPath
 
 	return cleaned
 }

@@ -59,7 +59,7 @@ func (w *Watcher) pollSnapshot(snapshot map[string]fileState) {
 
 //nolint:nilerr
 func (w *Watcher) pollWalkDir(rootPath string, snapshot map[string]fileState) {
-	_ = filepath.WalkDir(rootPath, func(path string, d os.DirEntry, err error) error { //nolint:nilerr,varnamelen
+	_ = filepath.WalkDir(rootPath, func(path string, d os.DirEntry, err error) error { //nolint:nilerr,erraudit,varnamelen // poll loop tolerates unreadable dirs; the next poll retries
 		if err != nil {
 			return nil
 		}

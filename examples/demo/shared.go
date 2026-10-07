@@ -56,10 +56,10 @@ func MustWatch(
 
 	events, err := watcher.Watch(ctx)
 	if err != nil {
-		_ = watcher.Close()
+		_ = watcher.Close() //nolint:erraudit // fatal path: close failure is irrelevant next to err
 
 		log.Fatal(err)
 	}
 
-	return events, func() { _ = watcher.Close() }
+	return events, func() { _ = watcher.Close() } //nolint:erraudit // cleanup closure cannot report errors
 }

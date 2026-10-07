@@ -114,7 +114,7 @@ func (w *Watcher) walkAndAddPaths(root RootPath) error {
 	w.walkBatch = nil
 
 	if err != nil {
-		return fmt.Errorf("walking directory %q: %w", root, err)
+		return fmt.Errorf("walking directory %q: %w", root, err) //nolint:erraudit // root already identifies the directory; rootKey is its canonical form
 	}
 
 	// Track the root path only if it wasn't already added via addBatch.

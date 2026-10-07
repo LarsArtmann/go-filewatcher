@@ -443,7 +443,7 @@ func (c *fileLogCache) write(filePath string, event Event) error {
 	}
 
 	if writeErr != nil {
-		return fmt.Errorf("opening log file: %w", writeErr)
+		return fmt.Errorf("opening log file %q: %w", filePath, writeErr)
 	}
 
 	if c.f != nil {
@@ -454,7 +454,7 @@ func (c *fileLogCache) write(filePath string, event Event) error {
 			event.Path,
 		)
 		if writeErr != nil {
-			return fmt.Errorf("writing event to log: %w", writeErr)
+			return fmt.Errorf("writing event to log file %q: %w", filePath, writeErr)
 		}
 	}
 

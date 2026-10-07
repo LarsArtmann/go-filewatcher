@@ -198,18 +198,18 @@ func validateDirExists(abs string) error {
 // the closed-check error; caller identifies the public method for the resolution
 // error. This is the canonical entry point for mutating watcher operations
 // (Add, Remove, AddRecursive) — keeping their pre-op validation in one place.
-func (w *Watcher) withResolvedPath(path, opName, caller string, fn func(abs string) error) error {
+func (w *Watcher) withResolvedPath(path, opName string, fn func(abs string) error) error {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
 	err := w.checkClosedOp(opName)
 	if err != nil {
-		return err
+		return err //nolint:erraudit // checkClosedOp already embeds opName in its message
 	}
 
 	abs, resolveErr := normalizePath(path)
 	if resolveErr != nil {
-		return fmt.Errorf("resolving path %q in %s: %w", path, caller, resolveErr)
+		return fmt.Errorf("resolving path %q during %s: %w", path, opName, resolveErr)
 	}
 
 	return fn(abs)
@@ -465,7 +465,7 @@ func (w *Watcher) WatchOnce(ctx context.Context) (Event, error) {
 // Add adds a new path to the watcher. The path must be an existing directory.
 // This method is safe for concurrent use with other methods.
 func (w *Watcher) Add(path string) error {
-	return w.withResolvedPath(path, "add path", "Add()", func(abs string) error {
+	return w.withResolvedPath(path, "add path", func(abs string) error {
 		if err := validateDirExists(abs); err != nil {
 			return err
 		}
@@ -485,7 +485,7 @@ func (w *Watcher) Add(path string) error {
 // If maxDepth is N > 0, directories up to N levels deep are watched.
 // This method is safe for concurrent use with other methods.
 func (w *Watcher) AddRecursive(path string, maxDepth int) error {
-	err := w.withResolvedPath(path, "add recursive path", "AddRecursive()", func(abs string) error {
+	err := w.withResolvedPath(path, "add recursive path", func(abs string) error {
 		if err := validateDirExists(abs); err != nil {
 			return err
 		}
@@ -552,7 +552,7 @@ func (w *Watcher) addPathWithDepth(root RootPath, maxDepth int, currentDepth *in
 
 		addPathErr := w.addPathWithDepth(NewRootPath(subPath), maxDepth, currentDepth)
 		if addPathErr != nil {
-			return fmt.Errorf("maxDepth=%d: %w", maxDepth, addPathErr)
+			return fmt.Errorf("adding %q (maxDepth=%d): %w", subPath, maxDepth, addPathErr)
 		}
 
 		*currentDepth--
@@ -568,9 +568,9 @@ const opAddPath = "add-path"
 // this path and all its subdirectories (if recursive).
 // This method is safe for concurrent use with other methods.
 func (w *Watcher) Remove(path string) error {
-	return w.withResolvedPath(path, "remove path", "Remove()", func(abs string) error {
+	return w.withResolvedPath(path, "remove path", func(abs string) error {
 		// Remove the path itself from fsnotify
-		_ = w.fswatcher.Remove(abs)
+		_ = w.fswatcher.Remove(abs) //nolint:erraudit // best-effort: an unwatched path is expected here
 
 		// Remove all subdirectory watches under this path, respecting
 		// filesystem case-sensitivity for the comparison.
@@ -583,7 +583,7 @@ func (w *Watcher) Remove(path string) error {
 			pKey := w.pathKey(p)
 
 			if pKey == absKey || strings.HasPrefix(pKey, prefix) {
-				_ = w.fswatcher.Remove(p)
+				_ = w.fswatcher.Remove(p) //nolint:erraudit // best-effort subtree prune; not-watched paths are expected
 				delete(w.watchListKeys, pKey) // incremental: drop only pruned subtree keys
 			} else {
 				remaining = append(remaining, p)
@@ -730,7 +730,7 @@ func (w *Watcher) Reset() error {
 
 	// Close old fsnotify watcher if it exists
 	if w.fswatcher != nil {
-		_ = w.fswatcher.Close()
+		_ = w.fswatcher.Close() //nolint:erraudit // the old watcher is discarded either way
 	}
 
 	// Reset runtime state
@@ -842,7 +842,7 @@ func (w *Watcher) Close() error {
 	// channels are torn down so cleanup funcs can safely release resources.
 	for _, cleanup := range w.cleanups {
 		if cleanup != nil {
-			_ = cleanup()
+			_ = cleanup() //nolint:erraudit // teardown: cleanup errors have nowhere to be reported
 		}
 	}
 

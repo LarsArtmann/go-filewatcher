@@ -185,7 +185,7 @@ left the checklist stale. This violates docs-health: TODO_LIST.md is the
 source of truth for what's done.
 ~~2. **Compile-check documentation code snippets** — The Prometheus and OTel~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 examples in the README reference external packages. Without a
-`go doc`-based verification step or a compileable example test, these are
+`go doc`-based verification step or a compilable example test, these are
 accuracy risks. Consider adding `Example_*` test functions that actually
 compile.
 ~~3. **The docs freshness gate needs a shrinkage plan** — 36 exemptions is a~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
@@ -346,7 +346,7 @@ approach is implementing `prometheus.Collector`. However,
 `prometheus/client_golang` is NOT a dependency of this library (by design —
 the `PrometheusCollector` is dependency-free). **Should I:**
 
-- (a) Add a compileable `Example_PrometheusCollector` test function that
+- (a) Add a compilable `Example_PrometheusCollector` test function that
   pulls in `prometheus/client_golang` as a test dependency, or
 - (b) Replace the bad snippet with a correct `prometheus.Collector` wrapper
   documented as pseudo-code (no compile verification), or

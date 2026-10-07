@@ -138,11 +138,7 @@ certain directions worth exploring.
   See [docs/research/semantic-release-evaluation.md](./docs/research/semantic-release-evaluation.md)
   for the tradeoff analysis that informed this choice.
 
----
-
-## Non-Goals
-
-### Ecosystem ( exploratory, adjacent )
+### Ecosystem
 
 - **go-daemon pairing examples** — `examples/watcher-daemon`
   (OnListen→`Watch`, OnShutdown→`Close`, stream `Event`s over unix socket/SSE),
@@ -151,6 +147,10 @@ certain directions worth exploring.
   decision pending (this module is Go 1.26-pinned; go-daemon needs 1.27+).
   A standalone `filewatcher-daemon` sibling binary is demand-gated.
   (`src: 2026-10-07_00-42`)
+
+---
+
+## Non-Goals
 
 These are explicitly **out of scope** to keep the library focused:
 

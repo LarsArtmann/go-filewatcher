@@ -550,83 +550,41 @@ Plain `type X string` named types for compile-time type safety on path-like stri
 
 ## Release / CI Gotchas
 
-### release-please needs a repo permission
+## Release / CI Gotchas
 
-`release-please.yml` fails with "GitHub Actions is not permitted to create or approve pull
-requests" when the repo setting is off. Fix:
-
-```bash
-gh api -X PUT repos/LarsArtmann/go-filewatcher/actions/permissions/workflow \
-  --input - <<'EOF'
-{"default_workflow_permissions":"read","can_approve_pull_request_merge_requests":true}
-EOF
-```
-
-On PR merge, release-please creates the tag AND the GitHub Release directly. `release.yml`
-only fires for manually-pushed `v*` tags (GITHUB_TOKEN-created tags do not re-trigger workflows).
-
-### release-please is path-scoped — website/docs/.github never trigger releases
-
-`release-please.yml` runs in config-file mode (`release-please-config.json` +
-`.release-please-manifest.json`). The root package sets
-`exclude-paths: ["website", "docs", ".github"]`: commits touching ONLY those paths are
-skipped by release-please. Before this existed, a `fix(website)` commit shipped v2.4.1 —
-a Go patch release with zero Go changes (2026-10-07). Convention on top: use
-`chore(website)` / `docs(website)` / `build(website)` scopes for non-module changes,
-never `fix(website)` / `feat(website)`.
-
-### golangci-lint version pin
-
-CI (`ci.yml`) and `release.yml` pin golangci-lint **v2.14.0** — the same version the Nix flake
-provides locally. The `.golangci.yml` uses the `exhaustruct_v5` settings key, which only exists
-in v2.13+; v2.12 rejects the whole config at validation. When bumping the linter, bump all
-three places together (flake, ci.yml, release.yml).
-
-### Release PRs show CI "workflow file issue" startup failures
-
-On release-please PRs, CI, Commitlint, and Docs Consistency fail with `conclusion: failure` and
-ZERO jobs ("This run likely failed because of a workflow file issue") — hit both the 2.4.0 and
-2.4.1 release PRs (2026-10-06/07). Not a YAML bug: the identical workflow files run green on
-Dependabot PRs and on master pushes in the same hour. Treat it as GitHub-side; verify release
-content via the master push CI on the merge commit instead. The release is unaffected —
-release-please creates the tag and GitHub Release directly on merge.
+| Gotcha | Rule |
+| ------ | ---- |
+| release-please needs a repo permission | Fails with "GitHub Actions is not permitted to create or approve pull requests" when off. Fix: `gh api -X PUT repos/LarsArtmann/go-filewatcher/actions/permissions/workflow --input - <<< '{"default_workflow_permissions":"read","can_approve_pull_request_merge_requests":true}'`. On PR merge release-please creates the tag AND the GitHub Release; `release.yml` only fires for manually-pushed `v*` tags. |
+| release-please is path-scoped | Config-file mode with `exclude-paths: ["website", "docs", ".github"]` — commits touching ONLY those paths never cut releases. Convention: `chore/docs/build(website)` for non-module changes, never `fix(website)`/`feat(website)` (that shipped a Go-less v2.4.1 on 2026-10-07). |
+| golangci-lint version pin | v2.14.0 pinned in flake, `ci.yml`, and `release.yml` — bump all three together. `.golangci.yml` uses the `exhaustruct_v5` key (v2.13+ only; v2.12 rejects the config). |
+| Release-PR CI "workflow file issue" | Release-please PRs show `conclusion: failure` with ZERO jobs (hit v2.4.0 + v2.4.1). GitHub-side quirk — identical workflows run green on Dependabot PRs and master pushes. Verify releases via master CI on the merge commit; the release itself is unaffected. |
+| Verify built slugs before publishing URLs | GitHub slugs strip dots: `migration-v2.3-to-v2.4` → `/guides/migration-v23-to-v24/`. Check `ls dist/guides/` (or the live URL) before `gh release edit`/deploy — the unchecked slug 404'd in the published v2.4.0 notes. |
+| Auto-commit daemon races | The daemon commits (and occasionally resets) local master while you work. `git fetch` + check `git log HEAD..origin/master` before pushing; rebase if diverged. Never assume your last local commit is still HEAD. |
 
 ### go.mod language version
 
-The `go` directive must stay at the CI matrix floor (`go 1.26.x`). The local dev toolchain is
-newer (Go 1.27); running go commands can silently bump the directive (2026-09-29 incident broke
-CI for a week). If CI fails with "go.mod requires go >= 1.27", restore `go 1.26.7`.
+The `go` directive must stay at the CI matrix floor (`go 1.26.7`); the local
+toolchain is newer and three BuildFlow tools silently bump it (strace-proven
+2026-10-07, all skipped via `skip_steps` in `.buildflow.yml`):
+`go-version-auto-configure` (wants major.minor-only), `go-mod-update` (minor
+mode bumps to latest Go), and `go-structure-linter` (buildflow 202b114+
+auto-repairs its "Go 1.27 is available" finding mid-run, backups in
+`/tmp/go-structure-linter-backups/`). `go-mod-normalize` is exonerated
+(candidate downgrade is rejected by the dependency-floor gate, then atomically
+restored). Restore: `sed -i 's/^go 1\.27$/go 1.26.7/' go.mod`. The bump can
+land on origin even when you ran no go commands (daemon commits) — check the
+`go` line whenever the daemon commits go.mod; dependent PR CI recovers only
+after master is fixed plus a branch update/re-run.
 
-Recurred 2026-10-07 (~1 day of red CI, all open PRs' Test/Lint/Examples failing): a parallel
-session's go commands produced the bump and the auto-commit daemon committed and pushed it.
-The bump can land on origin even when you ran no go commands yourself — check the `go` line
-whenever the daemon commits go.mod, and expect dependent PR CI to recover only after master
-is fixed plus a branch update/re-run.
+**Worktrees and nix**: flake evaluation IGNORES dirty state in linked
+worktrees (no `-dirty` drv suffix; it builds the COMMITTED go.mod). Commit the
+floor before any worktree proof run.
 
-Forensic root cause (2026-10-07, strace-proven): **three BuildFlow tools fight the directive**,
-all buildflow-internal (writer TIDs show zero execve). All three are skipped via
-`skip_steps` in `.buildflow.yml`:
-
-- `go-version-auto-configure` — wants a major.minor-only directive.
-- `go-mod-update` — minor mode bumps the directive to the latest Go release.
-- `go-structure-linter` (new in buildflow 202b114) — reports "Go 1.27 is available" as an
-  error finding and **auto-repairs by bumping the directive mid-run**, leaving backups in
-  `/tmp/go-structure-linter-backups/go.mod.<timestamp>.bak`.
-
-`go-mod-normalize` is exonerated: it writes a candidate downgrade, the dependency-floor
-gate (`go mod tidy -diff`) rejects it, and it atomically restores (net-zero; "kept:
-downgrade is not dependency-floor-safe" WARN in every run log). Restore command:
-`sed -i 's/^go 1\.27$/go 1.26.7/' go.mod`.
-
-**Worktrees and nix**: `nix flake` evaluation IGNORES dirty state in linked worktrees
-(drv is not suffixed `-dirty`; it builds the COMMITTED go.mod). In a worktree the floor
-must be committed for nix to see it; the main checkout uses the dirty tree as usual.
-
-### Auto-commit daemon races
-
-The daemon commits (and occasionally resets) local master while you work. Before pushing,
-`git fetch` and check `git log HEAD..origin/master`; rebase your commits onto origin/master if
-they diverge. Never assume your last local commit is still HEAD.
+**BuildFlow on this shared machine**: a fleet binary can gain NEW tools
+mid-session — on any behavior change run `buildflow doctor` + `buildflow list
+providers` BEFORE rerunning (a stale-binary run cost ~2h on 2026-10-07). Under
+high load (many concurrent agent sessions), steps get killed at spawn and
+report false failures; serialize heavy runs or wait for a quiet window.
 
 ## Known Issues
 

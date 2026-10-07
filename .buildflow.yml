@@ -4,9 +4,3 @@
 # flip-flopped the line 3 times in 20 commits. Skip until dispositions align.
 skip_steps:
   - go-version-auto-configure
-  # go.mod is guarded read-only (chmod 444) against a concurrent session whose
-  # Go 1.27 toolchain keeps bumping the go line (AGENTS.md > Known Issues).
-  # `go mod tidy` rewrites go.mod even when `tidy -diff` is clean, so it would
-  # fail on the guard; tidiness is still verified by go-mod-update's tidy -diff
-  # check. To tidy: chmod 644 go.mod, run go mod tidy, chmod 444 go.mod.
-  - go-mod-tidy

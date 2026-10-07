@@ -148,6 +148,12 @@ certain directions worth exploring.
   A standalone `filewatcher-daemon` sibling binary is demand-gated.
   (`src: 2026-10-07_00-42`)
 
+- **Master-health automation** — beyond the existing CI badge: a workflow that
+  auto-opens an issue when a master push run fails (go.mod-class breakage gets
+  noticed without a PR-review session as detector), plus a "re-run failed jobs"
+  nudge for PRs hit by zero-job startup failures (they never retry on their
+  own). (`src: 2026-10-07_03-10 §f28/f38`)
+
 ---
 
 ## Non-Goals

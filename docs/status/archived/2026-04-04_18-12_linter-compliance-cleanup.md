@@ -52,41 +52,42 @@
 
 | #  | Task | Effort                                                                                                           |
 | -- | ---- | ---------------------------------------------------------------------------------------------------------------- |
-| ~~ | 1    | Add `//nolint:exhaustruct` or refactor `Watcher` struct initialization to match field order in struct definition |
-| ~~ | 2    | Run full `just ci` pipeline (tidy, fmt, vet, lint, test) to confirm clean CI                                     |
-| ~~ | 3    | Add integration tests that exercise the full Watch→Event→Close lifecycle with real filesystem events             |
-| ~~ | 4    | Add benchmarks for hot paths (`passesFilters`, `processEvent`, `getDebounceKey`) using `just bench`              |
-| ~~ | 5    | Add test coverage for `Remove()` method — no dedicated test exists                                               |
-| ~~ | 6    | Add test coverage for `WatchList()` method — no dedicated test exists                                            |
-| ~~ | 7    | Add test coverage for `Stats()` method — no dedicated test exists                                                |
-| ~~ | 8    | Test concurrent `Add`/`Remove` during active `Watch` for race conditions                                         |
-| ~~ | 9    | Verify graceful shutdown behavior when context is cancelled mid-event-processing                                 |
-| ~~ | 10   | Add edge case tests: watching non-existent dir, watching file (not dir), empty path                              |
+| ~~ | ~~1~~ | ~~Add `//nolint:exhaustruct` or refactor `Watcher` struct initialization to match field order in struct definition~~ |
+| ~~ | ~~2~~ | ~~Run full `just ci` pipeline (tidy, fmt, vet, lint, test) to confirm clean CI~~ |
+| ~~ | ~~3~~ | ~~Add integration tests that exercise the full Watch→Event→Close lifecycle with real filesystem events~~ |
+| ~~ | ~~4~~ | ~~Add benchmarks for hot paths (`passesFilters`, `processEvent`, `getDebounceKey`) using `just bench`~~ |
+| ~~ | ~~5~~ | ~~Add test coverage for `Remove()` method — no dedicated test exists~~ |
+| ~~ | ~~6~~ | ~~Add test coverage for `WatchList()` method — no dedicated test exists~~ |
+| ~~ | ~~7~~ | ~~Add test coverage for `Stats()` method — no dedicated test exists~~ |
+| ~~ | ~~8~~ | ~~Test concurrent `Add`/`Remove` during active `Watch` for race conditions~~ |
+| ~~ | ~~9~~ | ~~Verify graceful shutdown behavior when context is cancelled mid-event-processing~~ |
+| ~~ | ~~10~~ | ~~Add edge case tests: watching non-existent dir, watching file (not dir), empty path~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ### Medium Priority (API & Features)
 
 | #  | Task | Effort                                                                                    |
 | -- | ---- | ----------------------------------------------------------------------------------------- |
-| ~~ | 11   | Add `WithOnError(func(error))` option to replace `WithErrorHandler` for consistent naming |
-| ~~ | 12   | Document thread-safety guarantees on all public methods                                   |
-| ~~ | 13   | Add `IsClosed() bool` method for external state inspection                                |
-| ~~ | 14   | Consider adding `Event.Name` (just filename) alongside `Event.Path` (full path)           |
-| ~~ | 15   | Add `FilterGlob(pattern string) Filter` for glob-based path filtering                     |
-| ~~ | 16   | Add `MiddlewareRateLimit(maxEvents int, window time.Duration) Middleware`                 |
-| ~~ | 17   | Add `WithBufferStrategy` option (drop oldest vs drop newest when buffer full)             |
-| ~~ | 18   | Add `FilterMinAge(minAge time.Duration) Filter` to ignore rapid create/delete cycles      |
-| ~~ | 19   | Expose `convertEvent` for testing or make it a public utility                             |
-| ~~ | 20   | Add `Event.String()` method for better logging/debugging                                  |
+| ~~ | ~~11~~ | ~~Add `WithOnError(func(error))` option to replace `WithErrorHandler` for consistent naming~~ |
+| ~~ | ~~12~~ | ~~Document thread-safety guarantees on all public methods~~ |
+| ~~ | ~~13~~ | ~~Add `IsClosed() bool` method for external state inspection~~ |
+| ~~ | ~~14~~ | ~~Consider adding `Event.Name` (just filename) alongside `Event.Path` (full path)~~ |
+| ~~ | ~~15~~ | ~~Add `FilterGlob(pattern string) Filter` for glob-based path filtering~~ |
+| ~~ | ~~16~~ | ~~Add `MiddlewareRateLimit(maxEvents int, window time.Duration) Middleware`~~ |
+| ~~ | ~~17~~ | ~~Add `WithBufferStrategy` option (drop oldest vs drop newest when buffer full)~~ |
+| ~~ | ~~18~~ | ~~Add `FilterMinAge(minAge time.Duration) Filter` to ignore rapid create/delete cycles~~ |
+| ~~ | ~~19~~ | ~~Expose `convertEvent` for testing or make it a public utility~~ |
+| ~~ | ~~20~~ | ~~Add `Event.String()` method for better logging/debugging~~ |
 
 ### Lower Priority (Ecosystem & DX)
 
 | #  | Task | Effort                                                                                                                 |
 | -- | ---- | ---------------------------------------------------------------------------------------------------------------------- |
-| ~~ | 21   | Add a `CHANGELOG.md` following Keep a Changelog format                                                                 |
-| ~~ | 22   | Add GoDoc examples for all public functions/types                                                                      |
-| ~~ | 23   | Add GitHub Actions CI workflow (lint, test, vet on multiple Go versions)                                               |
-| ~~ | 24   | Add `just coverage` target that enforces minimum coverage threshold                                                    |
-| ~~ | 25   | Consider adding error wrapping with `%w` in `handleNewDirectory` (currently silently ignores `addPath` errors via `_`) |
+| ~~ | ~~21~~ | ~~Add a `CHANGELOG.md` following Keep a Changelog format~~ |
+| ~~ | ~~22~~ | ~~Add GoDoc examples for all public functions/types~~ |
+| ~~ | ~~23~~ | ~~Add GitHub Actions CI workflow (lint, test, vet on multiple Go versions)~~ |
+| ~~ | ~~24~~ | ~~Add `just coverage` target that enforces minimum coverage threshold~~ |
+| ~~ | ~~25~~ | ~~Consider adding error wrapping with `%w` in `handleNewDirectory` (currently silently ignores `addPath` errors via `_`)~~ |
 
 ## g) TOP QUESTION I CANNOT FIGURE OUT MYSELF
 

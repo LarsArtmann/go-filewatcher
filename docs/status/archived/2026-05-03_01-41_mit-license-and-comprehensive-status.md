@@ -122,31 +122,32 @@ go-filewatcher is a **production-ready, high-performance file system watcher** f
 
 | #  | Item | Impact                                                 | Effort           |
 | -- | ---- | ------------------------------------------------------ | ---------------- |
-| ~~ | 1    | Commit MIT license change                              | 🔴 Critical      |
-| ~~ | 2    | Fix `Add()` double-append bug in `watchList`           | 🔴 Bug fix       |
-| ~~ | 3    | Align flake.nix Go version to 1.26                     | 🔴 Toolchain     |
-| ~~ | 4    | Cut v0.3.0 release (tag + CHANGELOG)                   | 🔴 Release       |
-| ~~ | 5    | Move `testing_helpers.go` to test package or build-tag | 🟡 Ship quality  |
-| ~~ | 6    | Fix `MiddlewareBatch` timer error swallowing           | 🟡 Robustness    |
-| ~~ | 7    | Fix `handleNewDirectory` error swallowing              | 🟡 Robustness    |
-| ~~ | 8    | Add rename event integration test                      | 🟡 Coverage      |
-| ~~ | 9    | Add multi-directory initialization test                | 🟡 Coverage      |
-| ~~ | 10   | Close coverage gaps in `addPath`/`walkDirFunc`         | 🟡 Quality       |
-| ~~ | 11   | Replace hand-rolled `Op.MarshalJSON`                   | 🟢 Robustness    |
-| ~~ | 12   | Protect `DefaultIgnoreDirs` from mutation              | 🟢 Safety        |
-| ~~ | 13   | Populate CHANGELOG for v0.1.0 and v0.2.0               | 🟢 Docs          |
-| ~~ | 14   | Add `nix run .#test` and `nix run .#lint` to flake.nix | 🟢 DX            |
-| ~~ | 15   | Add `CONTRIBUTING.md` (now MIT-licensed)               | 🟢 Community     |
-| ~~ | 16   | Ring buffer for `SlidingWindowRateLimit`               | 🟢 Perf          |
-| ~~ | 17   | Add buffer overflow / backpressure test                | 🟡 Coverage      |
-| ~~ | 18   | Add concurrent Add/Remove during watching test         | 🟡 Coverage      |
-| ~~ | 19   | Implement `WatchOnce()`                                | 🔵 Feature       |
-| ~~ | 20   | Implement symlink following support                    | 🔵 Feature       |
-| ~~ | 21   | Implement polling fallback for NFS                     | 🔵 Feature       |
-| ~~ | 22   | Add `Event.Size` / `Event.ModTime()` fields            | 🔵 Feature       |
-| ~~ | 23   | Implement `MiddlewareThrottle`                         | 🔵 Feature       |
-| ~~ | 24   | Set up GoReleaser pipeline                             | 🔵 Infra         |
-| ~~ | 25   | OpenTelemetry integration                              | 🔵 Observability |
+| ~~ | ~~1~~ | ~~Commit MIT license change~~ | ~~🔴 Critical~~ |
+| ~~ | ~~2~~ | ~~Fix `Add()` double-append bug in `watchList`~~ | ~~🔴 Bug fix~~ |
+| ~~ | ~~3~~ | ~~Align flake.nix Go version to 1.26~~ | ~~🔴 Toolchain~~ |
+| ~~ | ~~4~~ | ~~Cut v0.3.0 release (tag + CHANGELOG)~~ | ~~🔴 Release~~ |
+| ~~ | ~~5~~ | ~~Move `testing_helpers.go` to test package or build-tag~~ | ~~🟡 Ship quality~~ |
+| ~~ | ~~6~~ | ~~Fix `MiddlewareBatch` timer error swallowing~~ | ~~🟡 Robustness~~ |
+| ~~ | ~~7~~ | ~~Fix `handleNewDirectory` error swallowing~~ | ~~🟡 Robustness~~ |
+| ~~ | ~~8~~ | ~~Add rename event integration test~~ | ~~🟡 Coverage~~ |
+| ~~ | ~~9~~ | ~~Add multi-directory initialization test~~ | ~~🟡 Coverage~~ |
+| ~~ | ~~10~~ | ~~Close coverage gaps in `addPath`/`walkDirFunc`~~ | ~~🟡 Quality~~ |
+| ~~ | ~~11~~ | ~~Replace hand-rolled `Op.MarshalJSON`~~ | ~~🟢 Robustness~~ |
+| ~~ | ~~12~~ | ~~Protect `DefaultIgnoreDirs` from mutation~~ | ~~🟢 Safety~~ |
+| ~~ | ~~13~~ | ~~Populate CHANGELOG for v0.1.0 and v0.2.0~~ | ~~🟢 Docs~~ |
+| ~~ | ~~14~~ | ~~Add `nix run .#test` and `nix run .#lint` to flake.nix~~ | ~~🟢 DX~~ |
+| ~~ | ~~15~~ | ~~Add `CONTRIBUTING.md` (now MIT-licensed)~~ | ~~🟢 Community~~ |
+| ~~ | ~~16~~ | ~~Ring buffer for `SlidingWindowRateLimit`~~ | ~~🟢 Perf~~ |
+| ~~ | ~~17~~ | ~~Add buffer overflow / backpressure test~~ | ~~🟡 Coverage~~ |
+| ~~ | ~~18~~ | ~~Add concurrent Add/Remove during watching test~~ | ~~🟡 Coverage~~ |
+| ~~ | ~~19~~ | ~~Implement `WatchOnce()`~~ | ~~🔵 Feature~~ |
+| ~~ | ~~20~~ | ~~Implement symlink following support~~ | ~~🔵 Feature~~ |
+| ~~ | ~~21~~ | ~~Implement polling fallback for NFS~~ | ~~🔵 Feature~~ |
+| ~~ | ~~22~~ | ~~Add `Event.Size` / `Event.ModTime()` fields~~ | ~~🔵 Feature~~ |
+| ~~ | ~~23~~ | ~~Implement `MiddlewareThrottle`~~ | ~~🔵 Feature~~ |
+| ~~ | ~~24~~ | ~~Set up GoReleaser pipeline~~ | ~~🔵 Infra~~ |
+| ~~ | ~~25~~ | ~~OpenTelemetry integration~~ | ~~🔵 Observability~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ---
 

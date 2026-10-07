@@ -66,13 +66,14 @@ generic stamps.
 
 | Report                            | Decision | Key correction                                                                                                                                                            |
 | --------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `10-34_dedup-followup`            | ANNOTATE | Resolution table: 6 "OPEN" items → DONE (benches fixed, MustWatch shipped, baseline captured, GOTMPDIR set, gocritic excluded). Stale "Still open" inline note corrected. |
-| `18-39_docs-health-pass`          | ANNOTATE | Resolution appendix added: TODO_LIST structural decay recurred (rebuilt again), DOMAIN_LANGUAGE gap still open, score-math lesson noted.                                  |
-| `18-53_high-priority-deprecation` | ANNOTATE | At a Glance table: 🔴 split brain + docs drift → **FIXED**. All §d items resolved. 11-row Resolution table.                                                               |
-| `20-00_error-simulation`          | ANNOTATE | §C "NOT STARTED" → **ALL RESOLVED** with inline `~~DONE:` markers on each item.                                                                                           |
-| `21-00_low-priority-clearance`    | ANNOTATE | TL;DR corrected: all 3 "rough edges" + 2 "ignored" items **FIXED**. 10-row Resolution table.                                                                              |
-| `22-23_todo-clearance-review`     | ANNOTATE | §c TODO_LIST rebuild done. §d Prometheus/OTel issues **STILL OPEN** (tracked in TODO_LIST).                                                                               |
-| `22-01_full-todo-list-clearance`  | **SKIP** | Already accurate, clean, recent. (But see §d4 — verification was partial.)                                                                                                |
+| ~~`10-34_dedup-followup`~~ | ~~ANNOTATE~~ | ~~Resolution table: 6 "OPEN" items → DONE (benches fixed, MustWatch shipped, baseline captured, GOTMPDIR set, gocritic excluded). Stale "Still open" inline note corrected.~~ |
+| ~~`18-39_docs-health-pass`~~ | ~~ANNOTATE~~ | ~~Resolution appendix added: TODO_LIST structural decay recurred (rebuilt again), DOMAIN_LANGUAGE gap still open, score-math lesson noted.~~ |
+| ~~`18-53_high-priority-deprecation`~~ | ~~ANNOTATE~~ | ~~At a Glance table: 🔴 split brain + docs drift → **FIXED**. All §d items resolved. 11-row Resolution table.~~ |
+| ~~`20-00_error-simulation`~~ | ~~ANNOTATE~~ | ~~§C "NOT STARTED" → **ALL RESOLVED** with inline `~~DONE:` markers on each item.~~ |
+| ~~`21-00_low-priority-clearance`~~ | ~~ANNOTATE~~ | ~~TL;DR corrected: all 3 "rough edges" + 2 "ignored" items **FIXED**. 10-row Resolution table.~~ |
+| ~~`22-23_todo-clearance-review`~~ | ~~ANNOTATE~~ | ~~§c TODO_LIST rebuild done. §d Prometheus/OTel issues **STILL OPEN** (tracked in TODO_LIST).~~ |
+| ~~`22-01_full-todo-list-clearance`~~ | ~~**SKIP**~~ | ~~Already accurate, clean, recent. (But see §d4 — verification was partial.)~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ### a6. Quality gates run (partial)
 

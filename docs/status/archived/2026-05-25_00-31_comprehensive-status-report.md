@@ -67,10 +67,11 @@
 
 | #  | Task | What's Done                    | What's Missing                                                              |
 | -- | ---- | ------------------------------ | --------------------------------------------------------------------------- |
-| ~~ | 1    | Coverage ≥90%                  | Main package at 87.7%. Most functions at 100%.                              |
-| ~~ | 2    | Error simulation testing       | Indirect tests via `handleError` calls                                      |
-| ~~ | 3    | Pre-commit hook compliance     | Production code clean                                                       |
-| ~~ | 4    | Code duplication in middleware | Identified: `MiddlewareBatch` / `MiddlewareErrorBatch` share batching logic |
+| ~~ | ~~1~~ | ~~Coverage ≥90%~~ | ~~Main package at 87.7%. Most functions at 100%.~~ |
+| ~~ | ~~2~~ | ~~Error simulation testing~~ | ~~Indirect tests via `handleError` calls~~ |
+| ~~ | ~~3~~ | ~~Pre-commit hook compliance~~ | ~~Production code clean~~ |
+| ~~ | ~~4~~ | ~~Code duplication in middleware~~ | ~~Identified: `MiddlewareBatch` / `MiddlewareErrorBatch` share batching logic~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ---
 
@@ -80,36 +81,36 @@
 
 | #  | Task | Effort                                           |
 | -- | ---- | ------------------------------------------------ |
-| ~~ | 42   | Exponential backoff middleware                   |
-| ~~ | 45   | Filter func return match metadata                |
-| ~~ | 48   | `WatchChanges(ctx, targetState)` idempotent sync |
-| ~~ | 49   | Prometheus metrics export                        |
-| ~~ | 60   | Dead letter queue                                |
-| ~~ | 61   | Self-healing watcher                             |
-| ~~ | 62   | OpenTelemetry integration                        |
-| ~~ | 63   | Error analytics                                  |
-| ~~ | 66   | Standalone CLI tool                              |
-| ~~ | 67   | Localizable error messages                       |
-| ~~ | 68   | Explore fsnotify v2 API changes                  |
-| ~~ | 69   | DebounceEntry Mixin phantom type                 |
+| ~~ | ~~42~~ | ~~Exponential backoff middleware~~ |
+| ~~ | ~~45~~ | ~~Filter func return match metadata~~ |
+| ~~ | ~~48~~ | ~~`WatchChanges(ctx, targetState)` idempotent sync~~ |
+| ~~ | ~~49~~ | ~~Prometheus metrics export~~ |
+| ~~ | ~~60~~ | ~~Dead letter queue~~ |
+| ~~ | ~~61~~ | ~~Self-healing watcher~~ |
+| ~~ | ~~62~~ | ~~OpenTelemetry integration~~ |
+| ~~ | ~~63~~ | ~~Error analytics~~ |
+| ~~ | ~~66~~ | ~~Standalone CLI tool~~ |
+| ~~ | ~~67~~ | ~~Localizable error messages~~ |
+| ~~ | ~~68~~ | ~~Explore fsnotify v2 API changes~~ |
+| ~~ | ~~69~~ | ~~DebounceEntry Mixin phantom type~~ |
 
 ### From TODO_LIST.md — Infra/Quality
 
 | #  | Task | Effort                                    |
 | -- | ---- | ----------------------------------------- |
-| ~~ | 65   | Configure semantic-release                |
-| ~~ | 71   | Extract `drainEvents` to testutil package |
-| ~~ | 72   | Windows edge case tests                   |
-| ~~ | 74   | Test examples/ in CI                      |
-| ~~ | 78   | Migrate CI to Nix                         |
-| ~~ | 79   | Add Cachix for binary caching             |
+| ~~ | ~~65~~ | ~~Configure semantic-release~~ |
+| ~~ | ~~71~~ | ~~Extract `drainEvents` to testutil package~~ |
+| ~~ | ~~72~~ | ~~Windows edge case tests~~ |
+| ~~ | ~~74~~ | ~~Test examples/ in CI~~ |
+| ~~ | ~~78~~ | ~~Migrate CI to Nix~~ |
+| ~~ | ~~79~~ | ~~Add Cachix for binary caching~~ |
 
 ### From TODO_LIST.md — Integration
 
 | #  | Task | Effort                                |
 | -- | ---- | ------------------------------------- |
-| ~~ | 76   | Integrate into file-and-image-renamer |
-| ~~ | 77   | Integrate into dynamic-markdown-site  |
+| ~~ | ~~76~~ | ~~Integrate into file-and-image-renamer~~ |
+| ~~ | ~~77~~ | ~~Integrate into dynamic-markdown-site~~ |
 
 ---
 
@@ -200,31 +201,31 @@ Sorted by **Pareto: highest impact × lowest effort first**.
 
 | Priority | #  | Task | Effort                                                                                                  | Impact | Rationale |
 | -------- | -- | ---- | ------------------------------------------------------------------------------------------------------- | ------ | --------- |
-| ~~       | 1  | —    | **Add tests for 0% functions** (`ErrorCategory.String`, `CircuitState.String`, `WithWatchedIgnoreDirs`) | 10min  | HIGH      |
-| ~~       | 2  | 9    | **Fix `WatchOnce` double `%w`** — use `%v` for second error                                             | 5min   | HIGH      |
-| ~~       | 3  | —    | **Fix `Event.ModTime` `omitempty`** → `omitzero`                                                        | 2min   | MEDIUM    |
-| ~~       | 4  | —    | **Extract `copyWatchList()` helper** — eliminate 3× duplication                                         | 10min  | MEDIUM    |
-| ~~       | 5  | —    | **Add `walkDirFunc` symlink branch tests** — raise from 52.2%                                           | 15min  | HIGH      |
-| ~~       | 6  | —    | **Add `executeHandler` error branch tests** — raise from 60.0%                                          | 10min  | HIGH      |
-| ~~       | 7  | —    | **Add `AddRecursive` depth edge case tests** — raise from 61.9%                                         | 15min  | HIGH      |
-| ~~       | 8  | —    | **Add `pollEmitEvent` test** — raise from 0.0%                                                          | 15min  | HIGH      |
-| ~~       | 9  | —    | **Add `MiddlewareErrorSanitization` nil path test**                                                     | 5min   | MEDIUM    |
-| ~~       | 10 | —    | **Add `MiddlewareErrorBatch` timer flush test**                                                         | 10min  | MEDIUM    |
-| ~~       | 11 | 42   | **Implement exponential backoff middleware**                                                            | 20min  | HIGH      |
-| ~~       | 12 | —    | **Consolidate `MiddlewareBatch` / `MiddlewareErrorBatch`** generic batcher                              | 25min  | MEDIUM    |
-| ~~       | 13 | —    | **Fix `Event.LogValue` to include `Size` and `ModTime`**                                                | 5min   | LOW       |
-| ~~       | 14 | —    | **Fix `WithPolling` option ordering bug** — don't clobber `pollInterval` if already set                 | 10min  | HIGH      |
-| ~~       | 15 | 65   | **Configure semantic-release**                                                                          | 20min  | MEDIUM    |
-| ~~       | 16 | 74   | **Test `examples/` in CI** — `go build ./examples/...`                                                  | 15min  | MEDIUM    |
-| ~~       | 17 | —    | **Remove `WithWatchedIgnoreDirs`** — redundant with `WithFilter(FilterIgnoreDirs(...))`                 | 10min  | LOW       |
-| ~~       | 18 | —    | **Make `NewWatcherError` stack capture opt-in**                                                         | 10min  | MEDIUM    |
-| ~~       | 19 | —    | **Fix `MiddlewareErrorSanitization` error chain** — preserve `errors.Is`/`errors.As`                    | 15min  | HIGH      |
-| ~~       | 20 | 71   | **Extract `drainEvents` to testutil**                                                                   | 20min  | LOW       |
-| ~~       | 21 | 60   | **Dead letter queue middleware**                                                                        | 30min  | MEDIUM    |
-| ~~       | 22 | 45   | **Filter func return match metadata**                                                                   | 20min  | MEDIUM    |
-| ~~       | 23 | 72   | **Windows-specific edge case tests**                                                                    | 30min  | MEDIUM    |
-| ~~       | 24 | —    | **Consolidate `docs/status/`** — archive stale files                                                    | 15min  | LOW       |
-| ~~       | 25 | 49   | **Prometheus metrics export**                                                                           | 30min  | MEDIUM    |
+| ~~       | ~~1~~ | ~~—~~ | ~~**Add tests for 0% functions** (`ErrorCategory.String`, `CircuitState.String`, `WithWatchedIgnoreDirs`)~~ | ~~10min~~ | ~~HIGH~~ |
+| ~~       | ~~2~~ | ~~9~~ | ~~**Fix `WatchOnce` double `%w`** — use `%v` for second error~~ | ~~5min~~ | ~~HIGH~~ |
+| ~~       | ~~3~~ | ~~—~~ | ~~**Fix `Event.ModTime` `omitempty`** → `omitzero`~~ | ~~2min~~ | ~~MEDIUM~~ |
+| ~~       | ~~4~~ | ~~—~~ | ~~**Extract `copyWatchList()` helper** — eliminate 3× duplication~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~       | ~~5~~ | ~~—~~ | ~~**Add `walkDirFunc` symlink branch tests** — raise from 52.2%~~ | ~~15min~~ | ~~HIGH~~ |
+| ~~       | ~~6~~ | ~~—~~ | ~~**Add `executeHandler` error branch tests** — raise from 60.0%~~ | ~~10min~~ | ~~HIGH~~ |
+| ~~       | ~~7~~ | ~~—~~ | ~~**Add `AddRecursive` depth edge case tests** — raise from 61.9%~~ | ~~15min~~ | ~~HIGH~~ |
+| ~~       | ~~8~~ | ~~—~~ | ~~**Add `pollEmitEvent` test** — raise from 0.0%~~ | ~~15min~~ | ~~HIGH~~ |
+| ~~       | ~~9~~ | ~~—~~ | ~~**Add `MiddlewareErrorSanitization` nil path test**~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~       | ~~10~~ | ~~—~~ | ~~**Add `MiddlewareErrorBatch` timer flush test**~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~       | ~~11~~ | ~~42~~ | ~~**Implement exponential backoff middleware**~~ | ~~20min~~ | ~~HIGH~~ |
+| ~~       | ~~12~~ | ~~—~~ | ~~**Consolidate `MiddlewareBatch` / `MiddlewareErrorBatch`** generic batcher~~ | ~~25min~~ | ~~MEDIUM~~ |
+| ~~       | ~~13~~ | ~~—~~ | ~~**Fix `Event.LogValue` to include `Size` and `ModTime`**~~ | ~~5min~~ | ~~LOW~~ |
+| ~~       | ~~14~~ | ~~—~~ | ~~**Fix `WithPolling` option ordering bug** — don't clobber `pollInterval` if already set~~ | ~~10min~~ | ~~HIGH~~ |
+| ~~       | ~~15~~ | ~~65~~ | ~~**Configure semantic-release**~~ | ~~20min~~ | ~~MEDIUM~~ |
+| ~~       | ~~16~~ | ~~74~~ | ~~**Test `examples/` in CI** — `go build ./examples/...`~~ | ~~15min~~ | ~~MEDIUM~~ |
+| ~~       | ~~17~~ | ~~—~~ | ~~**Remove `WithWatchedIgnoreDirs`** — redundant with `WithFilter(FilterIgnoreDirs(...))`~~ | ~~10min~~ | ~~LOW~~ |
+| ~~       | ~~18~~ | ~~—~~ | ~~**Make `NewWatcherError` stack capture opt-in**~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~       | ~~19~~ | ~~—~~ | ~~**Fix `MiddlewareErrorSanitization` error chain** — preserve `errors.Is`/`errors.As`~~ | ~~15min~~ | ~~HIGH~~ |
+| ~~       | ~~20~~ | ~~71~~ | ~~**Extract `drainEvents` to testutil**~~ | ~~20min~~ | ~~LOW~~ |
+| ~~       | ~~21~~ | ~~60~~ | ~~**Dead letter queue middleware**~~ | ~~30min~~ | ~~MEDIUM~~ |
+| ~~       | ~~22~~ | ~~45~~ | ~~**Filter func return match metadata**~~ | ~~20min~~ | ~~MEDIUM~~ |
+| ~~       | ~~23~~ | ~~72~~ | ~~**Windows-specific edge case tests**~~ | ~~30min~~ | ~~MEDIUM~~ |
+| ~~       | ~~24~~ | ~~—~~ | ~~**Consolidate `docs/status/`** — archive stale files~~ | ~~15min~~ | ~~LOW~~ |
+| ~~       | ~~25~~ | ~~49~~ | ~~**Prometheus metrics export**~~ | ~~30min~~ | ~~MEDIUM~~ |
 
 ---
 

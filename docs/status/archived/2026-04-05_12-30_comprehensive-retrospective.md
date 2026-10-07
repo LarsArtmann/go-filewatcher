@@ -37,11 +37,12 @@
 
 | #  | Item | Priority                                       |
 | -- | ---- | ---------------------------------------------- |
-| ~~ | 1    | Integration/E2E tests                          |
-| ~~ | 2    | Fuzz tests for filter functions                |
-| ~~ | 3    | `Watcher.Restart()` / `Watcher.Reset()` method |
-| ~~ | 4    | Example tests (`TestExample*`)                 |
-| ~~ | 5    | Coverage threshold in CI (>90%)                |
+| ~~ | ~~1~~ | ~~Integration/E2E tests~~ |
+| ~~ | ~~2~~ | ~~Fuzz tests for filter functions~~ |
+| ~~ | ~~3~~ | ~~`Watcher.Restart()` / `Watcher.Reset()` method~~ |
+| ~~ | ~~4~~ | ~~Example tests (`TestExample*`)~~ |
+| ~~ | ~~5~~ | ~~Coverage threshold in CI (>90%)~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ## d) TOTALLY FUCKED UP 💥
 
@@ -89,24 +90,24 @@ Nothing! All changes build clean, pass with `-race`, lint at 0 issues, and tests
 
 | #  | Item | Impact                                                                   | Effort | Category |
 | -- | ---- | ------------------------------------------------------------------------ | ------ | -------- |
-| ~~ | 1    | Close MiddlewareWriteFileLog file handle on Watcher.Close()              | High   | Low      |
-| ~~ | 2    | Add `slog.LogValuer` to Event type                                       | High   | Low      |
-| ~~ | 3    | Replace bare `atomic int64` with `atomic.Int64` in MiddlewareRateLimit   | Medium | Low      |
-| ~~ | 4    | Fix GlobalDebouncer.Debounce key parameter (use it or remove it)         | Medium | Low      |
-| ~~ | 5    | Add integration tests: watch tree → create/modify/delete → verify events | High   | Medium   |
-| ~~ | 6    | Add coverage threshold enforcement in CI (>=90%)                         | High   | Low      |
-| ~~ | 7    | Consolidate doc.go — move package doc there, remove from watcher.go      | Medium | Low      |
-| ~~ | 8    | Add `UnmarshalText` to Op type for YAML/JSON round-trip symmetry         | Medium | Low      |
-| ~~ | 9    | Enrich Stats struct: event counts, filter stats, error count, uptime     | High   | Medium   |
-| ~~ | 10   | Make convertEvent's os.Stat optional or cacheable                        | High   | Medium   |
-| ~~ | 11   | Add watcher-level benchmarks (full event pipeline)                       | Medium | Low      |
-| ~~ | 12   | Add fuzz tests for FilterRegex and FilterGlob                            | Medium | Medium   |
-| ~~ | 13   | Add example tests (TestExample\*) in example_test.go                     | Medium | Low      |
-| ~~ | 14   | Validate WithBuffer(0) — error or document                               | Low    | Low      |
-| ~~ | 15   | Add benchmark results table to README                                    | Medium | Low      |
-| ~~ | 16   | Add API stability doc (stable vs experimental)                           | Medium | Low      |
-| ~~ | 17   | Adopt semver in CHANGELOG                                                | Low    | Low      |
-| ~~ | 18   | Add benchmark regression detection in CI                                 | Medium | Medium   |
+| ~~ | ~~1~~ | ~~Close MiddlewareWriteFileLog file handle on Watcher.Close()~~ | ~~High~~ | ~~Low~~ |
+| ~~ | ~~2~~ | ~~Add `slog.LogValuer` to Event type~~ | ~~High~~ | ~~Low~~ |
+| ~~ | ~~3~~ | ~~Replace bare `atomic int64` with `atomic.Int64` in MiddlewareRateLimit~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~4~~ | ~~Fix GlobalDebouncer.Debounce key parameter (use it or remove it)~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~5~~ | ~~Add integration tests: watch tree → create/modify/delete → verify events~~ | ~~High~~ | ~~Medium~~ |
+| ~~ | ~~6~~ | ~~Add coverage threshold enforcement in CI (>=90%)~~ | ~~High~~ | ~~Low~~ |
+| ~~ | ~~7~~ | ~~Consolidate doc.go — move package doc there, remove from watcher.go~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~8~~ | ~~Add `UnmarshalText` to Op type for YAML/JSON round-trip symmetry~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~9~~ | ~~Enrich Stats struct: event counts, filter stats, error count, uptime~~ | ~~High~~ | ~~Medium~~ |
+| ~~ | ~~10~~ | ~~Make convertEvent's os.Stat optional or cacheable~~ | ~~High~~ | ~~Medium~~ |
+| ~~ | ~~11~~ | ~~Add watcher-level benchmarks (full event pipeline)~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~12~~ | ~~Add fuzz tests for FilterRegex and FilterGlob~~ | ~~Medium~~ | ~~Medium~~ |
+| ~~ | ~~13~~ | ~~Add example tests (TestExample\*) in example_test.go~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~14~~ | ~~Validate WithBuffer(0) — error or document~~ | ~~Low~~ | ~~Low~~ |
+| ~~ | ~~15~~ | ~~Add benchmark results table to README~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~16~~ | ~~Add API stability doc (stable vs experimental)~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~17~~ | ~~Adopt semver in CHANGELOG~~ | ~~Low~~ | ~~Low~~ |
+| ~~ | ~~18~~ | ~~Add benchmark regression detection in CI~~ | ~~Medium~~ | ~~Medium~~ |
 
 ~~| 19 | Extract drainEvents to testutil package | Low | Low | Testing |~~ done — shipped ≤v2.2.0, verified v2.4.1
 ~~| 20 | Add Watcher.Restart() method | Medium | Medium | API |~~ done — shipped ≤v2.2.0, verified v2.4.1

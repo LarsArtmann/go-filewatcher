@@ -603,6 +603,25 @@ The bump can land on origin even when you ran no go commands yourself — check 
 whenever the daemon commits go.mod, and expect dependent PR CI to recover only after master
 is fixed plus a branch update/re-run.
 
+Forensic root cause (2026-10-07, strace-proven): **three BuildFlow tools fight the directive**,
+all buildflow-internal (writer TIDs show zero execve). All three are skipped via
+`skip_steps` in `.buildflow.yml`:
+
+- `go-version-auto-configure` — wants a major.minor-only directive.
+- `go-mod-update` — minor mode bumps the directive to the latest Go release.
+- `go-structure-linter` (new in buildflow 202b114) — reports "Go 1.27 is available" as an
+  error finding and **auto-repairs by bumping the directive mid-run**, leaving backups in
+  `/tmp/go-structure-linter-backups/go.mod.<timestamp>.bak`.
+
+`go-mod-normalize` is exonerated: it writes a candidate downgrade, the dependency-floor
+gate (`go mod tidy -diff`) rejects it, and it atomically restores (net-zero; "kept:
+downgrade is not dependency-floor-safe" WARN in every run log). Restore command:
+`sed -i 's/^go 1\.27$/go 1.26.7/' go.mod`.
+
+**Worktrees and nix**: `nix flake` evaluation IGNORES dirty state in linked worktrees
+(drv is not suffixed `-dirty`; it builds the COMMITTED go.mod). In a worktree the floor
+must be committed for nix to see it; the main checkout uses the dirty tree as usual.
+
 ### Auto-commit daemon races
 
 The daemon commits (and occasionally resets) local master while you work. Before pushing,
@@ -622,3 +641,24 @@ Build-script approvals live in `website/pnpm-workspace.yaml` under `allowBuilds:
 ### buildflow nix-hash-fix cannot repair this flake
 
 `nix-hash-fix` has failed 15+/15 runs here: after a hash mismatch it reports "the stale hash was not found verbatim in any .nix file" even when `vendorHash = "sha256-…"` sits verbatim in flake.nix (BuildFlow repo bug; the 2026-10-07 fix was hand-applied after the fixer gave up). Until fixed upstream, update the `vendorHash` in flake.nix to the `got:` hash from `nix build` output by hand, then verify with `nix build`. Consequence: do NOT extract vendorHash into a separate file (the nix-checker suggestion) — it would break the one manual repair path that works.
+
+### buildflow pnpm-audit result cache replays after lockfile-only fixes
+
+The detector result cache keys pnpm-audit on `package.json` but NOT `pnpm-lock.yaml`, so
+vulnerabilities fixed via `pnpm audit --fix=update` (lockfile-only change) keep gating the
+full pipeline with the stale 9-error finding set even though `pnpm audit` in `website/` is
+clean. Surgical purge (the reference's DB path is wrong; the real DB is `cache.db`):
+
+```bash
+nix shell nixpkgs#sqlite -c sqlite3 ~/.cache/buildflow/cache.db \
+  "DELETE FROM result_cache WHERE value LIKE '%pnpm-audit%';"
+```
+
+A no-cache run (`BUILDFLOW_NO_RESULT_CACHE=1`) proves the fix but does NOT overwrite the
+stale entry (BuildFlow gap), and it re-executes every step — under high machine load the
+re-run hits step timeouts (go killed at spawn) and produces false step failures. Purge the
+entry, then re-run the normal cached pipeline. Note `pnpm audit --fix` in pnpm 11 needs an
+explicit strategy (`--fix=update` re-resolves the lockfile; `--fix=override` adds
+overrides to `website/pnpm-workspace.yaml`). 2026-10-07: 12 vulns (9 high) → 0 via
+update + one override (`postcss-selector-parser@<7.1.6: ^7.1.6`, forced major bump,
+website build verified green after).

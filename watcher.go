@@ -583,7 +583,9 @@ func (w *Watcher) Remove(path string) error {
 			pKey := w.pathKey(p)
 
 			if pKey == absKey || strings.HasPrefix(pKey, prefix) {
-				_ = w.fswatcher.Remove(p) //nolint:erraudit // best-effort subtree prune; not-watched paths are expected
+				_ = w.fswatcher.Remove(
+					p,
+				) //nolint:erraudit // best-effort subtree prune; not-watched paths are expected
 				delete(w.watchListKeys, pKey) // incremental: drop only pruned subtree keys
 			} else {
 				remaining = append(remaining, p)

@@ -320,9 +320,20 @@ func (w *Watcher) handleError(ctx ErrorContext, err error) {
 
 	// Default: log to stderr
 	if ctx.Path != "" {
-		_, _ = fmt.Fprintf(os.Stderr, "filewatcher: %s: %s: %v\n", ctx.Operation, ctx.Path, err) //nolint:erraudit // last-resort stderr write in the error handler itself
+		_, _ = fmt.Fprintf(
+			os.Stderr,
+			"filewatcher: %s: %s: %v\n",
+			ctx.Operation,
+			ctx.Path,
+			err,
+		) //nolint:erraudit // last-resort stderr write in the error handler itself
 	} else {
-		_, _ = fmt.Fprintf(os.Stderr, "filewatcher: %s: %v\n", ctx.Operation, err) //nolint:erraudit // last-resort stderr write in the error handler itself
+		_, _ = fmt.Fprintf(
+			os.Stderr,
+			"filewatcher: %s: %v\n",
+			ctx.Operation,
+			err,
+		) //nolint:erraudit // last-resort stderr write in the error handler itself
 	}
 }
 

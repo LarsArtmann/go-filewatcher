@@ -59,39 +59,42 @@ func (w *Watcher) pollSnapshot(snapshot map[string]fileState) {
 
 //nolint:nilerr
 func (w *Watcher) pollWalkDir(rootPath string, snapshot map[string]fileState) {
-	_ = filepath.WalkDir(rootPath, func(path string, d os.DirEntry, err error) error { //nolint:nilerr,erraudit,varnamelen // poll loop tolerates unreadable dirs; the next poll retries
-		if err != nil {
+	_ = filepath.WalkDir(
+		rootPath,
+		func(path string, d os.DirEntry, err error) error { //nolint:nilerr,erraudit,varnamelen // poll loop tolerates unreadable dirs; the next poll retries
+			if err != nil {
+				return nil
+			}
+
+			if d.IsDir() {
+				if w.shouldSkipDir(d.Name()) ||
+					w.shouldExcludePath(path) {
+					return filepath.SkipDir
+				}
+
+				// Load .gitignore for this directory before checking, mirroring walkDirFunc.
+				w.loadGitignoreForDir(path)
+
+				if w.shouldSkipByGitignore(path) {
+					return filepath.SkipDir
+				}
+			}
+
+			info, statErr := d.Info()
+			if statErr != nil {
+				return nil //nolint:nilerr
+			}
+
+			snapshot[w.pathKey(path)] = fileState{
+				path:    path,
+				modTime: info.ModTime(),
+				size:    info.Size(),
+				isDir:   d.IsDir(),
+			}
+
 			return nil
-		}
-
-		if d.IsDir() {
-			if w.shouldSkipDir(d.Name()) ||
-				w.shouldExcludePath(path) {
-				return filepath.SkipDir
-			}
-
-			// Load .gitignore for this directory before checking, mirroring walkDirFunc.
-			w.loadGitignoreForDir(path)
-
-			if w.shouldSkipByGitignore(path) {
-				return filepath.SkipDir
-			}
-		}
-
-		info, statErr := d.Info()
-		if statErr != nil {
-			return nil //nolint:nilerr
-		}
-
-		snapshot[w.pathKey(path)] = fileState{
-			path:    path,
-			modTime: info.ModTime(),
-			size:    info.Size(),
-			isDir:   d.IsDir(),
-		}
-
-		return nil
-	})
+		},
+	)
 }
 
 // pollDetectChanges compares the current filesystem state against the snapshot

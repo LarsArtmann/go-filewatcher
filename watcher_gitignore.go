@@ -88,8 +88,8 @@ func (w *Watcher) shouldSkipByGitignore(path string) bool {
 
 		// Compute relative path using canonical forms so the ancestor
 		// relationship is consistent on case-insensitive filesystems.
-		relPath, err := filepath.Rel(gitignoreKey, canonicalPath) //nolint:erraudit // both paths are canonical keys; on Rel failure just skip this matcher
-		if err != nil {
+		relPath, err := filepath.Rel(gitignoreKey, canonicalPath)
+		if err != nil { //nolint:erraudit // both paths are canonical keys; on Rel failure just skip this matcher
 			continue
 		}
 

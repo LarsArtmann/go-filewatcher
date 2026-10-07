@@ -373,7 +373,17 @@ func TestMiddlewareWriteFileLog(t *testing.T) {
 
 	tmpFile := t.TempDir() + "/events.log"
 
-	mw := MiddlewareWriteFileLog(tmpFile)
+	// Use the constructor directly so the test can close the file handle:
+	// the wrapper discards the closer, and on Windows an open handle blocks
+	// t.TempDir()'s RemoveAll cleanup (files are lockable while open there).
+	mw, closer := NewFileLogMiddleware(tmpFile)
+
+	t.Cleanup(func() {
+		if closeErr := closer(); closeErr != nil {
+			t.Errorf("closing log file: %v", closeErr)
+		}
+	})
+
 	handler := mw(noopHandler())
 
 	e := fixedWriteEvent("/tmp/test.go")
@@ -398,7 +408,16 @@ func TestMiddlewareWriteFileLog_Appends(t *testing.T) {
 
 	tmpFile := t.TempDir() + "/events.log"
 
-	mw := MiddlewareWriteFileLog(tmpFile)
+	// Same close discipline as TestMiddlewareWriteFileLog: release the
+	// handle before TempDir cleanup (Windows locks open files).
+	mw, closer := NewFileLogMiddleware(tmpFile)
+
+	t.Cleanup(func() {
+		if closeErr := closer(); closeErr != nil {
+			t.Errorf("closing log file: %v", closeErr)
+		}
+	})
+
 	handler := mw(noopHandler())
 
 	_ = handler(context.Background(), testWriteEvent("a.go"))

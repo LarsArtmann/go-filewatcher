@@ -1,6 +1,6 @@
 # Feature Inventory
 
-**Last Updated:** 2026-08-12 · **Version:** v2.4.0
+**Last Updated:** 2026-10-07 · **Version:** v2.4.1
 
 Honest status of every capability in go-filewatcher. Statuses:
 
@@ -39,7 +39,7 @@ Honest status of every capability in go-filewatcher. Statuses:
 | IgnoreGlobs (patterns)          | ✅     | `WithIgnorePatterns` option                                                                                                        |
 | ContentHash                     | ✅     | `FilterContentHash` + `ContentCheckMode`; `WithContentHashing()` — SHA-256                                                         |
 | Gitignore repository matcher    | ✅     | `FilterGitignore(repoRoot)` — event-time check against .gitignore                                                                  |
-| Generated-code detection        | ✅     | sqlc, protobuf, templ, mockgen, stringer via `NewGeneratedCodeDetector` + gogenfilter v3.2.0                                       |
+| Generated-code detection        | ✅     | sqlc, protobuf, templ, mockgen, stringer via `NewGeneratedCodeDetector` + gogenfilter v3.6.1 (sqlc: `*.sql.go` by filename, `models.go` only via content marker)                                     |
 | Filter combinators (AND/OR/NOT) | ✅     | `FilterAnd`, `FilterOr`, `FilterNot`                                                                                               |
 | Case-insensitive filter wrapper | ✅     | `FilterCaseInsensitive(inner)` — lowercases + NFC-normalizes the event path before delegating to the inner filter                  |
 | Case-sensitive filter wrapper   | ✅     | `FilterCaseSensitive(inner)` — NFC-normalizes without case-folding (useful on macOS NFD paths)                                     |
@@ -162,7 +162,7 @@ Honest status of every capability in go-filewatcher. Statuses:
 | Nix apps for all common commands   | ✅     | `nix run .#{check,ci,test,lint,lint-fix,bench,coverage,...}`                                                                                                                                                                                                            |
 | GitHub Actions CI                  | ✅     | Test with race + 90% threshold, lint, examples-build, bench                                                                                                                                                                                                             |
 | Documentation website              | ✅     | Astro + Starlight site at `filewatcher.lars.software`                                                                                                                                                                                                                   |
-| Godoc examples                     | ✅     | 26 examples in `example_test.go`                                                                                                                                                                                                                                        |
+| Godoc examples                     | ✅     | 30 examples in `example_test.go`                                                                                                                                                                                                                                        |
 | Error simulation testing framework | ✅     | `error_simulation_test.go` + `fake_backend_test.go` — scripted Add failures, error injection, full pipeline tests                                                                                                                                                       |
 | Runnable example programs          | ✅     | `examples/{basic,middleware,per-path-debounce,demo,filter-generated}`                                                                                                                                                                                                   |
 | Cross-platform releases            | 🟡     | `release.yml` triggers on `v*` tags (tests + lint + GitHub Release with auto-generated notes); release-please automates versioning from conventional commits. `.goreleaser.yml` exists but is NOT invoked — no compiled binaries shipped (see TODO_LIST open questions) |

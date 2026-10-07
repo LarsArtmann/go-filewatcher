@@ -1,6 +1,6 @@
 # TODO List
 
-**Last Updated:** 2026-07-29
+**Last Updated:** 2026-10-07 (docs-health harvest from the 2026-08-12 reliability series + seven 2026-10-07 reports)
 
 Short- and mid-term actionable work. Each item is scoped — pick one, do it, tick
 the box. An item lives here only when it is bounded and estimable; vague or
@@ -8,6 +8,14 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 [CHANGELOG.md](./CHANGELOG.md), never here.
 
 ---
+
+## Urgent
+
+- [ ] **Ubuntu 26 runner migration audit — deadline 2026-10-12** — GitHub is
+      migrating `ubuntu-latest`; warnings already appear in every run log.
+      Audit all workflows (`.github/workflows/*.yml`) for runner-compat
+      breakage and pin or adapt.
+      (`src: 2026-10-07_03-09 §f22, 2026-10-07_02-24 §f11`)
 
 ## Testing & Platform
 
@@ -21,28 +29,111 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       document the limitation explicitly. (See ROADMAP → Platform Coverage.)
 - [ ] **Expand fuzz tests** — current corpus covers `FilterRegex`,
       `FilterExtensions`, `FilterIgnoreGlobs`, `OpUnmarshalText`, `FilterMinSize`,
-      and `PathKey` (NFC/idempotency/case-folding, added 2026-07-29). Add fuzzers
-      for `FilterAnd`/`FilterOr`/`FilterNot` composition, `Event` JSON round-trip,
-      and the gitignore matcher.
+      and `PathKey` (NFC/idempotency/case-folding). Add fuzzers for
+      `FilterAnd`/`FilterOr`/`FilterNot` composition, `Event` JSON round-trip,
+      the gitignore matcher, `FilterIgnoreDirsCaseInsensitive`, and
+      `MiddlewareDeduplicateCaseInsensitive`.
+      (`src: 2026-08-12_19-22 §f16`)
 - [ ] **Large-tree stress harness** — synthetic 100k-directory fixture that
       validates batched registration, budget enforcement, and self-heal under
       load.
+- [ ] **Test: `WithContentHashing()` + `WithContentHashMaxSize(0)` interaction** —
+      pin the (currently undocumented) semantics of combining both options;
+      the interaction is debatable and should be a tested decision.
+      (`src: 2026-08-12_19-22 §F8, §G1`)
+- [ ] **Test: `Stats.WatchBudgetCap == Stats.WatchLimit` when fraction is 1.0** —
+      end-to-end guard that the default (no safety fraction) never reduces the
+      detected limit.
+      (`src: 2026-08-12_19-22 §F9`)
+- [ ] **Test: `ErrorContext.Event` population** — the field is populated on
+      handler/middleware error paths (added in the v2.4.0 lint fix) but untested.
+      (`src: 2026-10-07_02-24 §f13`)
+
+## CI & Release Hardening
+
+- [ ] **CI guard: go-directive floor** — fail the build if `go.mod`'s `go`
+      directive ≠ `1.26.7` (or exceeds the CI matrix version). Three incidents
+      (2026-09-29, 2026-10-07 ×2) were caused by silent bumps; the buildflow
+      skip-list is name-fragile, a CI check is structural.
+      (`src: 2026-10-07_02-24 §f8, 05-17 §f36, 06-00 §f4/C5`)
+- [ ] **Go 1.27 in the CI test matrix** — add alongside the 1.26 floor; pairs
+      with the fleet Go-strategy decision (see open questions).
+      (`src: 2026-10-07_02-24 §f9, 04-34 §f22`)
+- [ ] **Required status checks on master + release PRs** — the v2.4.0 release
+      PR merged while master was red; nothing structurally prevents that.
+      (`src: 2026-10-07_02-24 §f10/c7`)
+- [ ] **`release.yml` `workflow_dispatch` trigger** — the workflow is dead code
+      for GITHUB_TOKEN-created tags (they don't re-trigger workflows); the
+      manual path needs a trigger or its test+lint should fold into
+      release-please flow.
+      (`src: 2026-10-07_02-24 §f12/b3`)
+- [ ] **BuildFlow binary upgrade + skip-list re-verify** — binary is `202b114`,
+      BuildFlow HEAD moved past it; after upgrade re-run the pipeline and
+      re-prove the three skips still resolve (provider renames silently
+      unskip). Also triage the non-gating finding noise (9-tools-unavailable
+      warning, go-auto-upgrade ×12, nix-checker ×8, nix-build-verify fate,
+      vulnix CVEs) and file the two upstream BuildFlow issues once approved
+      (see open questions).
+      (`src: 2026-10-07_06-00 §f7/B2/B3/C1`)
+- [ ] **Re-capture benchmark baseline post-v2.4.x** — `nix run .#bench-baseline`
+      on a quiet machine (AGENTS.md bench discipline: no parallel load).
+      (`src: 2026-10-07_02-24 §f16, 03-09 §f17`)
 
 ## Documentation
 
-- [ ] **Shrink docs-consistency exemption list** — the
-      `check-exported-symbol-docs` CI gate exempts 14 symbols (down from 36).
-      The remaining gaps are `FilterGeneratedCodeFull` and
-      `FilterGeneratedCodeWithFilter`. Document them in FEATURES.md to reach
-      zero exemptions (excluding phantom-type helpers and deprecated symbols).
+- [ ] **Shrink docs-consistency exemption list** — the CI gate exempts 15
+      symbols (11 phantom-type helpers + `WatcherStateFlags` +
+      `WithWatchedIgnoreDirs` (deprecated) + 2 real gaps:
+      `FilterGeneratedCodeFull` and `FilterGeneratedCodeWithFilter`). Document
+      the two filters in FEATURES.md to reach zero real exemptions.
+- [ ] **Split AGENTS.md to carrying capacity** — ~645 lines vs the doctor's
+      220-line max; move File Organization table, gogenfilter API notes, CI
+      Workflows table, and Linter Cheat Sheet to `docs/` with pointers. Every
+      distinct concept must survive the move.
+      (`src: 2026-10-07_04-34 §c1, 06-00 §f18/B5`)
+- [ ] **Website deploy runbook** — document install → build → deploy via flake
+      apps, the `trailingSlash: false` quirk, cleanUrls, and "verify built
+      slugs before publishing URLs" (the v2.4.0 release-notes 404 lesson) in
+      AGENTS.md or a RELEASE.md.
+      (`src: 2026-10-07_03-09 §f5/#30, 02-24 §e1/e5`)
 
 ## Website Maintenance
 
 - [ ] **Fix website dependabot alerts** — `fast-uri` (high, host confusion) and
-      `astro` (medium, reflected XSS) in `website/package.json`. These are in
-      the website toolchain (separate flake.nix), not the Go library. Update
-      website deps with `cd website && pnpm update`.
-      (`src: 2026-07-29_14-06 §Dependabot`)
+      `astro` (medium, reflected XSS) in `website/package.json`. Update with
+      `cd website && pnpm update`. (`src: 2026-07-29_14-06 §Dependabot`)
+- [ ] **Website CI build job** — `pnpm install && pnpm build` (+ `html-validate`,
+      already a devDep) in CI; today website breakage is only caught at manual
+      deploy time (hit twice on 2026-10-07).
+      (`src: 2026-10-07_03-09 §f2/#6, 02-24 §f24`)
+- [ ] **Website link checker** — `html-validate` or an Astro dead-link plugin in
+      the build; would have caught the migration-guide 404.
+      (`src: 2026-10-07_03-09 §f3`)
+- [ ] **Post-audit website chores** — `pnpm dedupe` after the 2026-10-07
+      lockfile churn; review the 7 `minimumReleaseAgeExclude` entries once the
+      patched versions age out (see open questions); drop the
+      `postcss-selector-parser` override when expressive-code bumps
+      postcss-nested; document the override's existence; redeploy after dep
+      updates; spot-check sharp 0.35.5 rendering on an image-heavy page.
+      (`src: 2026-10-07_06-00 §f5/#22/#23/#24/#36/#37/B4`)
+- [ ] **Website small items** — add `editLink`/`lastUpdated` to astro.config if
+      missing; consider gitignoring `changelog.mdx` (committed build artifact);
+      check the OG image renders on social cards.
+      (`src: 2026-10-07_03-09 §f24/#25/#28`)
+
+## Hygiene
+
+- [ ] **Review/merge dependabot PRs #31, #32; close stale #14.**
+      (`src: 2026-10-07_02-24 §f15/c4`)
+- [ ] **Verify prettier's "3 fixed" daemon-committed files** from the 06:00
+      buildflow run 1 (unreviewed auto-edits).
+      (`src: 2026-10-07_06-00 §f31`)
+- [ ] **Run gitleaks + codespell once** — never run in the pipeline.
+      (`src: 2026-10-07_06-00 §f32`)
+- [ ] **Clean /tmp evidence logs** once CI is confirmed green after this push
+      (`/tmp/gfw-main-run*.log`, `/tmp/proof-run.log`, `/tmp/strace-*.log`,
+      `/tmp/gomod-*.log`, `/tmp/bf-*.log`).
+      (`src: 2026-10-07_06-00 §f34`)
 
 ## v3 Candidates
 
@@ -54,6 +145,12 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       on `runtime.GOOS`. More accurate for edge cases (case-sensitive NTFS,
       case-sensitive APFS volume).
       (`src: 2026-07-29_09-44 §f #27`)
+- [ ] **Filesystem API micro-polish** — `Parse(string)` for
+      `FilesystemCaseSensitivity`, a `CaseSensitivityConfigured` stat (vs the
+      resolved-mode stat), a lock-policy doc note for
+      `EffectiveCaseSensitivity`, a symlink-to-watched-path dedup test, and an
+      `EffectiveCaseSensitivity`-vs-`Reset()` concurrency test.
+      (`src: 2026-07-29_14-38 §f4/5/10/13/17`)
 
 ---
 
@@ -66,14 +163,14 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 | Tests          | 100%  | ✅     |
 | Flaky tests    | 0     | ✅     |
 | Broken benches | 0     | ✅     |
-| Open items     | 8     | 🟡     |
+| Open items     | 29    | 🟡     |
 
 ---
 
 ## Open questions (blockers, not tasks — need user decision)
 
-These are **not** actionable until answered. Routed here from the 2026-07-26
-self-reviews so they are not lost; they do not belong in the checklist above.
+These are **not** actionable until answered. They do not belong in the
+checklist above.
 
 1. **Is `.goreleaser.yml` dead config to delete, or an unfinished wiring task?**
    `release.yml` uses `softprops/action-gh-release` with auto-generated notes and
@@ -101,14 +198,31 @@ self-reviews so they are not lost; they do not belong in the checklist above.
    value. This is a v3 decision — exporting it is a breaking commitment.
    (`src: 2026-07-26_20-00 §G Q1`)
 
-### Resolved (2026-07-29)
+5. **Should website deploys be automated from CI** (Firebase service-account
+   secret on master push / workflow_dispatch), or stay manual-and-local?
+   Determines the website CI job's scope.
+   (`src: 2026-10-07_03-09 §g Q2`)
 
-- ~~Should `Stats.CaseSensitivity` change from `string` to
-  `FilesystemCaseSensitivity`?~~ **Resolved:** Added `Stats.CaseSensitivityMode`
-  as an additive enum field. Non-breaking, eliminates string-to-float mapping
-  duplication.
-- ~~Should dependabot vulnerabilities in website toolchain block Go library
-  releases?~~ **Resolved:** No. Website is separate deployment (Firebase
-  Hosting) with its own toolchain. Tracked as TODO.
-- ~~Should `FilesystemCaseSensitivity` be Stable or Evolving?~~ **Resolved:**
-  Stable. Foundational enum, values will not change.
+6. **File the two upstream BuildFlow issues?** (a) go-structure-linter
+   auto-bumps the `go` directive mid-run (strace evidence ready); (b) result
+   cache ignores `pnpm-lock.yaml` for pnpm-audit (stale replay until TTL).
+   Both are fleet-wide hazards; filings need your go-ahead since you own
+   BuildFlow.
+   (`src: 2026-10-07_05-17 §g Q1, 06-00 §g Q1/C1`)
+
+7. **go-daemon ecosystem follow-ups** — mirror the "Related Projects" note in
+   go-daemon's README (cross-repo edit), and choose the host for a
+   `watcher-daemon` example: bump this module to Go 1.27, host in go-daemon's
+   repo, or a sibling repo.
+   (`src: 2026-10-07_00-42 §b1/g1/g2`)
+
+8. **Are the 7 new `minimumReleaseAgeExclude` entries an acceptable standing
+   supply-chain tradeoff** (trusting same-day patched releases), and when
+   should they be pruned?
+   (`src: 2026-10-07_06-00 §g Q3/B4`)
+
+9. **Changelog policy for releases** — should future releases block tagging on
+   curated changelog content (curate inside the release PR before merge), or is
+   the tag-gets-stub/master-gets-curation split acceptable (as shipped for
+   v2.4.0)?
+   (`src: 2026-10-07_02-24 §g Q3`)

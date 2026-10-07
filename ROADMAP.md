@@ -1,6 +1,6 @@
 # Roadmap
 
-**Last Updated:** 2026-07-26
+**Last Updated:** 2026-10-07
 
 Long-term direction and raw ideas for go-filewatcher. Items here are
 **exploratory and not yet committed** — they graduate to
@@ -46,12 +46,35 @@ certain directions worth exploring.
 
 ### API Evolution
 
-- **v3 planning** — accumulated deprecations (`WithWatchedIgnoreDirs`) and
-  awkward signatures (the two-arg `ErrorHandler`) suggest a v3 cleanup pass.
+- **v3 planning** — accumulated deprecations (`WithWatchedIgnoreDirs`,
+  `WithOnError`, `MiddlewareRateLimit`) and awkward signatures (the two-arg
+  `ErrorHandler`) suggest a v3 cleanup pass.
   The concrete deprecation inventory is a TODO_LIST task; this is the strategic
   framing: gather breaking changes over the next 6–12 months before cutting.
   See [docs/research/watchchanges-contract.md](./docs/research/watchchanges-contract.md)
   for the event-contract analysis that informs v3 API decisions.
+- **Poll-mode event quality (v2.5+/v3)** — `WithPollDeduplicate(true)`
+  (per-path timestamp tracking with an LRU) and `WithPollDetectRenames(true)`
+  (platform-specific inode extraction) are designed-but-unbuilt; both are
+  large features. The dedup limitation is documented in the `WithPolling` doc
+  comment and Troubleshooting guide.
+  (`src: 2026-08-12 series`)
+- **`MiddlewareDropCallback` API** — explicit drop notification would replace
+  the `atomic.Bool` "returned nil without emitting" heuristic (which can
+  miscount transforming middleware).
+- **Split `maxWatches` into configured + effective** — three fields currently
+  track one concept (`maxWatches`, `maxWatchesExplicit`, `maxWatchesDetected`).
+- **Split `Stats` into sub-structs** — `EventStats`/`ErrorStats`/`WatchStats`
+  would keep the flat struct from growing a field per feature.
+- **Extract a `channelSender` type from `emitEvent`** — encapsulate the
+  blocking vs DropOnFull send strategy; makes the strategy testable in
+  isolation and shortens a 60+ line function.
+- **Runtime deprecation warning for `MiddlewareWriteFileLog`** — doc comment
+  warns today; a `log.Warn` is v3 prep.
+- **gogenfilter sqlc output-dir config** — expose gogenfilter's
+  config-aware detection so sqlc users can deliberately re-enable
+  `models.go` filtering.
+  (`src: 2026-10-07_02-24 §f17`)
 - **Streaming filter protocol** — current `Filter` is a sync bool. Consider
   returning `(keep bool, err error)` or a channel-based variant for filters
   that need async I/O (e.g. remote manifest lookup).
@@ -103,7 +126,8 @@ certain directions worth exploring.
 - **Dependency freshness SLO** — current policy is "update within 24h"; codify
   with Dependabot status checks.
 - **Docs freshness gate** — the `check-exported-symbol-docs` CI workflow exists
-  and ratchets against a 36-symbol exemption list (29% of the API). The
+  and ratchets against a 15-symbol exemption list (11 phantom-type helpers, 1
+  deprecated option, `WatcherStateFlags`, and 2 real gaps being closed). The
   exploratory angle is auto-generating doc tables from `go doc -all` source
   parsing to eliminate manual sync entirely.
   See [docs/research/INDEX.md](./docs/research/INDEX.md) for related research.
@@ -117,6 +141,16 @@ certain directions worth exploring.
 ---
 
 ## Non-Goals
+
+### Ecosystem ( exploratory, adjacent )
+
+- **go-daemon pairing examples** — `examples/watcher-daemon`
+  (OnListen→`Watch`, OnShutdown→`Close`, stream `Event`s over unix socket/SSE),
+  a "watcher as a systemd service" website guide (sd_notify + watchdog ×
+  `WithSelfHeal`), and a health endpoint backed by `Stats()`. Host-repo
+  decision pending (this module is Go 1.26-pinned; go-daemon needs 1.27+).
+  A standalone `filewatcher-daemon` sibling binary is demand-gated.
+  (`src: 2026-10-07_00-42`)
 
 These are explicitly **out of scope** to keep the library focused:
 
@@ -139,7 +173,9 @@ These are explicitly **out of scope** to keep the library focused:
 | Major (X.0.0) | When breaking changes pile up | Removed deprecations, signature changes     |
 
 See [API_STABILITY.md](./API_STABILITY.md) for the full stability policy.
-v2.3.0 (2026-07-27) shipped deprecations (`WithOnError`, `MiddlewareRateLimit`),
-the backend test-seam abstraction, error simulation, CI automation (commitlint,
-release-please, docs-consistency), and extensive lint/dedup hardening. The next
-minor will accumulate toward v3.0, where deprecated symbols will be removed.
+v2.4.0 (2026-10-06) shipped filesystem case-sensitivity + NFC normalization,
+the reliability knobs (`WithMaxWatchesSafetyFraction`, `WithEventChannelMode`,
+`WithContentHashMaxSize`, `WithErrorBufferSize`), middleware drop/backpressure
+stats, and symlink cycle detection. v2.4.1 (2026-10-07) was a website-only
+patch (release-please is now path-scoped so that cannot recur). The next minor
+will accumulate toward v3.0, where deprecated symbols will be removed.

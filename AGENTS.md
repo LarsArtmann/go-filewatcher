@@ -80,6 +80,7 @@ its own flake/toolchain — not part of the Go module. Build `cd website && nix 
 .#build`. The `/changelog` page is GENERATED from repo `CHANGELOG.md` by
 `sync-changelog.mjs` on every build — never hand-edit the mdx; update CHANGELOG and
 rebuild. Details: [website/README.md](website/README.md) if present.
+Deploy procedure + quirks: [docs/website-deploy-runbook.md](docs/website-deploy-runbook.md).
 
 ---
 
@@ -198,6 +199,9 @@ mid-session — on any behavior change run `buildflow doctor` + `buildflow list
 providers` BEFORE rerunning (a stale-binary run cost ~2h on 2026-10-07). Under
 high load (many concurrent agent sessions), steps get killed at spawn and
 report false failures; serialize heavy runs or wait for a quiet window.
+Observed 2026-10-07 (second time): the binary changed from `202b114` to
+`acdb606-dirty` between sessions — treat the version in TODO_LIST's BuildFlow
+item as a snapshot, not a constant.
 
 ## Known Issues
 

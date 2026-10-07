@@ -19,14 +19,27 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 
 ## Testing & Platform
 
-- [ ] **Windows CI matrix** — add a `windows-latest` job to `ci.yml` that runs
-      `go test ./...`. Windows has different event semantics (no inotify);
-      document any platform-specific skips.
-- [ ] **macOS CI matrix for case-insensitive verification** — the case-
-      sensitivity and NFD/NFC behavior is verified as _logic_ on Linux
-      (case-sensitive ext4). Real APFS behavior (case-only rename coalescing,
-      NFD event paths) is only provable on macOS. Add a `macos-latest` job or
-      document the limitation explicitly. (See ROADMAP → Platform Coverage.)
+- [x] **Windows + macOS CI matrix (probe legs)** — DONE 2026-10-07 (PR #47):
+      `windows-2025` + `macos-15` run in the test matrix (informational, not
+      required). The probe surfaced and fixed a real test bug (`failedPaths`
+      raw-path lookup only worked on Linux) and 34 POSIX-shape assertion
+      failures (skipped via `skipOnWindows(t)`; `ExampleEventPath` split
+      per-OS). Windows coverage steps need `shell: bash` (PowerShell splits
+      `-flag=file.ext`). Platform notes in README; gotcha #27 in
+      docs/gotchas.md.
+      (`src: 2026-10-07_02-24 §f8`)
+- [ ] **Promote windows/macos probe legs to required checks** — decision point
+      after the legs bake for a week: promote, or keep informational and
+      document why. Prerequisite for promotion: per-OS expectations replacing
+      the `skipOnWindows` skips (next item).
+      (`src: 2026-10-07_02-24 §f8`)
+- [ ] **Per-OS test expectations for Windows** — the `skipOnWindows(t)` skips
+      hide correct-per-OS behavior behind POSIX-shaped assertions
+      (`TestCleanPath`, `TestNormalizePath_EdgeCases`, `TestEventPath_Join/Dir`,
+      `TestFilterExcludePaths`, `TestFilterIgnoreDirs`/`Hidden` + case
+      variants). Rewrite with `filepath`-based expectations so Windows runs
+      the assertions too.
+      (`src: PR #47 probe run 37602089069`)
 - [ ] **Expand fuzz tests** — current corpus covers `FilterRegex`,
       `FilterExtensions`, `FilterIgnoreGlobs`, `OpUnmarshalText`, `FilterMinSize`,
       and `PathKey` (NFC/idempotency/case-folding). Add fuzzers for
@@ -42,16 +55,18 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       deadlock. Timeout caps now bound the blast radius (`b2caf11`); root cause
       still unknown.
       (`src: 2026-10-07_03-10 §b5/f4`)
-- [ ] **Test: `WithContentHashing()` + `WithContentHashMaxSize(0)` interaction** —
-      pin the (currently undocumented) semantics of combining both options;
-      the interaction is debatable and should be a tested decision.
+- [x] **Test: `WithContentHashing()` + `WithContentHashMaxSize(0)` interaction** —
+      DONE 2026-10-07 (PR #46): 0 disables hashing entirely; the option-order
+      trap (MaxSize(0) before WithContentHashing() is re-substituted with the
+      10 MiB default) is pinned explicitly.
       (`src: 2026-08-12_19-22 §F8, §G1`)
-- [ ] **Test: `Stats.WatchBudgetCap == Stats.WatchLimit` when fraction is 1.0** —
-      end-to-end guard that the default (no safety fraction) never reduces the
-      detected limit.
+- [x] **Test: `Stats.WatchBudgetCap == Stats.WatchLimit` when fraction is 1.0** —
+      DONE 2026-10-07 (PR #46): fraction 1.0 is a documented no-op; 0.75
+      scales; 0 is a no-op; default watcher cap == detected limit.
       (`src: 2026-08-12_19-22 §F9`)
-- [ ] **Test: `ErrorContext.Event` population** — the field is populated on
-      handler/middleware error paths (added in the v2.4.0 lint fix) but untested.
+- [x] **Test: `ErrorContext.Event` population** — DONE 2026-10-07 (PR #46):
+      handler/middleware errors carry the event; registration errors carry
+      nil event with populated path + retryable=true.
       (`src: 2026-10-07_02-24 §f13`)
 
 ## CI & Release Hardening
@@ -143,12 +158,19 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 
 ## Hygiene
 
-- [ ] **Review/merge dependabot PRs #31, #32; close stale #14.**
+- [x] **Review/merge dependabot PRs #31, #32; close stale #14.** — DONE
+      2026-10-07: all three already CLOSED (unmerged); the website dep updates
+      they carried landed via the 06:00 pnpm-audit wave. No open dependabot
+      PRs remain.
       (`src: 2026-10-07_02-24 §f15/c4`)
 - [ ] **Verify prettier's "3 fixed" daemon-committed files** from the 06:00
       buildflow run 1 (unreviewed auto-edits).
       (`src: 2026-10-07_06-00 §f31`)
-- [ ] **Run gitleaks + codespell once** — never run in the pipeline.
+- [x] **Run gitleaks + codespell once** — DONE 2026-10-07 (PR #49): gitleaks
+      clean (working tree + 586-commit history); codespell found exactly two
+      real typos (fixed), the rest deliberate (café test data, WRONLY syscall
+      constant, "accreting"); `.codespellrc` captures the false positives so a
+      plain run exits clean. codespell not yet in the buildflow pipeline.
       (`src: 2026-10-07_06-00 §f32`)
 - [ ] **Clean /tmp evidence logs** once CI is confirmed green after this push
       (`/tmp/gfw-main-run*.log`, `/tmp/proof-run.log`, `/tmp/strace-*.log`,
@@ -213,7 +235,12 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 | Tests          | 100%  | ✅     |
 | Flaky tests    | 0     | ✅     |
 | Broken benches | 0     | ✅     |
-| Open items     | 39    | 🟡     |
+| Open items     | 40    | 🟡     |
+
+Count note 2026-10-07: six items ticked today (CI guard, required checks,
+workflow_dispatch, probe legs, reliability test trio, codespell), three new
+items added (leg-promotion decision, per-OS expectations, follow-up items
+from the probe), net 39 → 40.
 
 ---
 

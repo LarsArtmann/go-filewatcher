@@ -9,7 +9,7 @@ TODO list is the live backlog.
 
 | Report | Topic | State |
 | --- | --- | --- |
-| [09-47 pareto-execution-ci-hardening](./2026-10-07_09-47_pareto-execution-ci-hardening.md) | CI hardening (floor guard, 26.04 readiness), event-channel race fix, docs debts; PRs #38–#44 | Merged through §f5; §f6+ in progress |
+| [09-47 pareto-execution-ci-hardening](./2026-10-07_09-47_pareto-execution-ci-hardening.md) | CI hardening (floor guard, 26.04 readiness), event-channel race fix, docs debts; PRs #38–#49 | All merged 2026-10-07: §f1–f11, f14, f20, f21 done; §f6 status index + §f50 release landed (v2.4.2); §f12/§f16+ queued for a quiet machine |
 | [08-14 docs-health-full-archive-sweep](./2026-10-07_08-14_docs-health-full-archive-sweep.md) | All 2026-0* reports annotated & archived; full-archive sweep | Done; §b6 vendorHash re-verify open |
 | [06-00 buildflow-green-pnpm-audit-zero-cache-war](./2026-10-07_06-00_buildflow-green-pnpm-audit-zero-cache-war.md) | BuildFlow green, pnpm audit zeroed via update+override, result-cache purge | Done; cache-key gap upstream (gated) |
 | [05-17 buildflow-gomod-war-solved](./2026-10-07_05-17_buildflow-gomod-war-solved.md) | Root cause of the go.mod floor bumps (three tools, strace-proven) | Done; superseded by the structural floor guard (PR #38) |

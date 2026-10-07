@@ -17,6 +17,12 @@ on:
 permissions:
   contents: write
 
+# event.go imports encoding/json/v2 (GOEXPERIMENT-gated); without this the
+# test step fails with "build constraints exclude all Go files" (found by the
+# 2026-10-07 workflow_dispatch dry-run on v2.4.2).
+env:
+  GOEXPERIMENT: jsonv2
+
 jobs:
   release:
     runs-on: ubuntu-24.04 # pinned for ubuntu-26.04 migration (2026-10-19 rollout)

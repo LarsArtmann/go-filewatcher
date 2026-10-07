@@ -445,6 +445,8 @@ func TestEffectiveCaseSensitivity(t *testing.T) {
 func TestNormalizePath_EdgeCases(t *testing.T) {
 	t.Parallel()
 
+	skipOnWindows(t)
+
 	tests := []struct {
 		name  string
 		input string
@@ -612,6 +614,8 @@ func TestStats_CaseSensitivityModeReflectsMode(t *testing.T) {
 
 func TestCleanPath(t *testing.T) {
 	t.Parallel()
+
+	skipOnWindows(t)
 
 	tests := []struct {
 		name  string

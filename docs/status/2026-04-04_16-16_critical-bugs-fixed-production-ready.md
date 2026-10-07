@@ -241,26 +241,26 @@ var (
 
 | #  | Feature                                        | Priority | Effort |
 | -- | ---------------------------------------------- | -------- | ------ |
-| 1  | `Remove(path string)` method                   | P1       | 15min  |
-| 2  | `WatchList() []string` method                  | P1       | 10min  |
-| 3  | `Stats()` method (event counts, uptime)        | P2       | 20min  |
-| 4  | `FilterRegex(pattern)` filter                  | P2       | 10min  |
-| 5  | `WithBuffer(size int)` option                  | P2       | 5min   |
-| 6  | `FilterMinSize(size int64)` filter             | P3       | 10min  |
-| 7  | `FilterCustom(fn func(Event) bool)` alias      | P3       | 5min   |
-| 8  | `WithOnAdd(fn func(path string))` callback     | P3       | 10min  |
-| 9  | `examples/` directory with standalone programs | P2       | 30min  |
-| 10 | Benchmark tests for debouncer/middleware       | P2       | 30min  |
-| 11 | Stress tests (10k+ files)                      | P3       | 1hr    |
-| 12 | `io.Closer` formalization                      | P3       | 2min   |
+~~| 1  | `Remove(path string)` method                   | P1       | 15min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 2  | `WatchList() []string` method                  | P1       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 3  | `Stats()` method (event counts, uptime)        | P2       | 20min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 4  | `FilterRegex(pattern)` filter                  | P2       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 5  | `WithBuffer(size int)` option                  | P2       | 5min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 6  | `FilterMinSize(size int64)` filter             | P3       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 7  | `FilterCustom(fn func(Event) bool)` alias      | P3       | 5min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 8  | `WithOnAdd(fn func(path string))` callback     | P3       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 9  | `examples/` directory with standalone programs | P2       | 30min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 10 | Benchmark tests for debouncer/middleware       | P2       | 30min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 11 | Stress tests (10k+ files)                      | P3       | 1hr    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 12 | `io.Closer` formalization                      | P3       | 2min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### CI/CD
 
 | # | Task                              | Priority |
 | - | --------------------------------- | -------- |
-| 1 | GitHub Actions workflow           | P2       |
-| 2 | Automated release with goreleaser | P3       |
-| 3 | Coverage reporting to codecov     | P3       |
+~~| 1 | GitHub Actions workflow           | P2       |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 2 | Automated release with goreleaser | P3       |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 3 | Coverage reporting to codecov     | P3       |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -276,23 +276,23 @@ var (
 
 | # | Task                                            | Effort | Impact |
 | - | ----------------------------------------------- | ------ | ------ |
-| 1 | Document combined-op priority in `convertEvent` | 5min   | Low    |
-| 2 | Add `Example*` test functions for godoc         | 20min  | Medium |
-| 3 | Add benchmark tests                             | 30min  | Medium |
-| 4 | Create `examples/` directory                    | 30min  | Medium |
-| 5 | Add GitHub Actions CI                           | 20min  | High   |
+~~| 1 | Document combined-op priority in `convertEvent` | 5min   | Low    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 2 | Add `Example*` test functions for godoc         | 20min  | Medium |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 3 | Add benchmark tests                             | 30min  | Medium |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 4 | Create `examples/` directory                    | 30min  | Medium |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 5 | Add GitHub Actions CI                           | 20min  | High   |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Before v1.0.0 (Future Roadmap)
 
 | # | Task                                 | Effort |
 | - | ------------------------------------ | ------ |
-| 1 | `Remove(path)` method                | 15min  |
-| 2 | `WatchList() []string` inspection    | 10min  |
-| 3 | `Stats()` observability              | 20min  |
-| 4 | `FilterRegex()` for pattern matching | 10min  |
-| 5 | Stress testing with large file sets  | 1hr    |
-| 6 | Windows-specific edge case handling  | 2hr    |
-| 7 | Fuzz testing for filters             | 30min  |
+~~| 1 | `Remove(path)` method                | 15min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 2 | `WatchList() []string` inspection    | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 3 | `Stats()` observability              | 20min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 4 | `FilterRegex()` for pattern matching | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 5 | Stress testing with large file sets  | 1hr    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 6 | Windows-specific edge case handling  | 2hr    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 7 | Fuzz testing for filters             | 30min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -300,33 +300,33 @@ var (
 
 | #  | Task                                            | Priority | Effort | Status      |
 | -- | ----------------------------------------------- | -------- | ------ | ----------- |
-| 1  | Tag v0.1.0 release                              | P0       | 2min   | Ready       |
-| 2  | Add GitHub Actions CI                           | P1       | 20min  | Not started |
-| 3  | Add `Remove(path)` method                       | P1       | 15min  | ✅ Done     |
-| 4  | Add `WatchList() []string` method               | P1       | 10min  | ✅ Done     |
-| 5  | Add `FilterRegex(pattern)` filter               | P2       | 10min  | ✅ Done     |
-| 6  | Add `WithBuffer(size int)` option               | P2       | 5min   | ✅ Done     |
-| 7  | Add `Stats()` method                            | P2       | 20min  | ✅ Done     |
-| 8  | Add benchmark tests                             | P2       | 30min  | Not started |
-| 9  | Create `examples/` directory                    | P2       | 30min  | ✅ Done     |
-| 10 | Add `Example*` test functions                   | P2       | 20min  | ✅ Done     |
-| 11 | Document combined-op priority                   | P3       | 5min   | ✅ Done     |
-| 12 | Add `FilterMinSize(size int64)`                 | P3       | 10min  | ✅ Done     |
-| 13 | Add `FilterCustom(fn)` escape hatch             | P3       | 5min   | ✅ Done     |
-| 14 | Add `WithOnAdd(fn)` callback                    | P3       | 10min  | ✅ Done     |
-| 15 | Add `io.Closer` formalization                   | P3       | 2min   | ✅ Done     |
-| 16 | Add `Event.IsDir` field for directory detection | P3       | 5min   | ✅ Done     |
-| 17 | Stress test with 10k+ files                     | P3       | 1hr    | Not started |
-| 18 | Add fuzz tests for filters                      | P3       | 30min  | Not started |
-| 19 | Improve README with advanced examples           | P3       | 30min  | Not started |
-| 20 | Add goreleaser configuration                    | P3       | 20min  | Not started |
-| 21 | Add codecov integration                         | P3       | 15min  | Not started |
-| 22 | Add security scanning (gosec)                   | P3       | 10min  | Not started |
-| 23 | Add dependabot configuration                    | P3       | 5min   | Not started |
-| 24 | Add contribution guidelines                     | P3       | 20min  | Not started |
-| 25 | Add code of conduct                             | P3       | 10min  | Not started |
-| 26 | Add issue templates                             | P3       | 15min  | Not started |
-| 27 | Add PR template                                 | P3       | 10min  | Not started |
+~~| 1  | Tag v0.1.0 release                              | P0       | 2min   | Ready       |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 2  | Add GitHub Actions CI                           | P1       | 20min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 3  | Add `Remove(path)` method                       | P1       | 15min  | ✅ Done     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 4  | Add `WatchList() []string` method               | P1       | 10min  | ✅ Done     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 5  | Add `FilterRegex(pattern)` filter               | P2       | 10min  | ✅ Done     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 6  | Add `WithBuffer(size int)` option               | P2       | 5min   | ✅ Done     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 7  | Add `Stats()` method                            | P2       | 20min  | ✅ Done     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 8  | Add benchmark tests                             | P2       | 30min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 9  | Create `examples/` directory                    | P2       | 30min  | ✅ Done     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 10 | Add `Example*` test functions                   | P2       | 20min  | ✅ Done     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 11 | Document combined-op priority                   | P3       | 5min   | ✅ Done     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 12 | Add `FilterMinSize(size int64)`                 | P3       | 10min  | ✅ Done     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 13 | Add `FilterCustom(fn)` escape hatch             | P3       | 5min   | ✅ Done     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 14 | Add `WithOnAdd(fn)` callback                    | P3       | 10min  | ✅ Done     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 15 | Add `io.Closer` formalization                   | P3       | 2min   | ✅ Done     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 16 | Add `Event.IsDir` field for directory detection | P3       | 5min   | ✅ Done     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 17 | Stress test with 10k+ files                     | P3       | 1hr    | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 18 | Add fuzz tests for filters                      | P3       | 30min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 19 | Improve README with advanced examples           | P3       | 30min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 20 | Add goreleaser configuration                    | P3       | 20min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 21 | Add codecov integration                         | P3       | 15min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 22 | Add security scanning (gosec)                   | P3       | 10min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 23 | Add dependabot configuration                    | P3       | 5min   | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 24 | Add contribution guidelines                     | P3       | 20min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 25 | Add code of conduct                             | P3       | 10min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 26 | Add issue templates                             | P3       | 15min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 27 | Add PR template                                 | P3       | 10min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

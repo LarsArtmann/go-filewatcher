@@ -158,37 +158,37 @@ Present and functional but could use:
 
 | # | Task                              | Priority | Effort |
 | - | --------------------------------- | -------- | ------ |
-| 1 | GitHub Actions workflow           | P1       | 20min  |
-| 2 | Automated release with goreleaser | P2       | 30min  |
-| 3 | Coverage reporting to codecov     | P3       | 15min  |
-| 4 | Dependabot configuration          | P3       | 5min   |
+~~| 1 | GitHub Actions workflow           | P1       | 20min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 2 | Automated release with goreleaser | P2       | 30min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 3 | Coverage reporting to codecov     | P3       | 15min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 4 | Dependabot configuration          | P3       | 5min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Testing & Quality
 
 | # | Task                                            | Priority | Effort |
 | - | ----------------------------------------------- | -------- | ------ |
-| 5 | Benchmark tests (debouncer, middleware, filter) | P2       | 30min  |
-| 6 | Stress tests (10k+ files)                       | P3       | 1hr    |
-| 7 | Fuzz tests for filters                          | P3       | 30min  |
+~~| 5 | Benchmark tests (debouncer, middleware, filter) | P2       | 30min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 6 | Stress tests (10k+ files)                       | P3       | 1hr    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 7 | Fuzz tests for filters                          | P3       | 30min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Documentation & Community
 
 | #  | Task                     | Priority | Effort |
 | -- | ------------------------ | -------- | ------ |
-| 8  | Advanced README examples | P3       | 30min  |
-| 9  | CONTRIBUTING.md          | P3       | 20min  |
-| 10 | CODE_OF_CONDUCT.md       | P3       | 10min  |
-| 11 | Issue templates          | P3       | 15min  |
-| 12 | PR template              | P3       | 10min  |
+~~| 8  | Advanced README examples | P3       | 30min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 9  | CONTRIBUTING.md          | P3       | 20min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 10 | CODE_OF_CONDUCT.md       | P3       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 11 | Issue templates          | P3       | 15min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 12 | PR template              | P3       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Potential Features (v0.2.0+)
 
 | #  | Task                                            | Priority | Effort |
 | -- | ----------------------------------------------- | -------- | ------ |
-| 13 | `WithPollInterval(d)` for fspoll fallback       | P3       | 1hr    |
-| 14 | `Event.Size` field for file size on change      | P3       | 15min  |
-| 15 | `FilterModifiedSince(t)` time-based filter      | P3       | 15min  |
-| 16 | Batch event mode (collect N events, emit slice) | P3       | 30min  |
+~~| 13 | `WithPollInterval(d)` for fspoll fallback       | P3       | 1hr    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 14 | `Event.Size` field for file size on change      | P3       | 15min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 15 | `FilterModifiedSince(t)` time-based filter      | P3       | 15min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 16 | Batch event mode (collect N events, emit slice) | P3       | 30min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -211,28 +211,28 @@ The only concern is the **1 unpushed commit** on master — should push when rea
 
 ### High Impact, Low Effort
 
-1. **Push to origin** — 1 commit ahead, trivial to fix
-2. **GitHub Actions CI** — Prevents regressions, enables confidence in PRs
-3. **Fix example linter warnings** — Clean up `log.Fatal` after `defer` patterns in examples
+~~1. **Push to origin** — 1 commit ahead, trivial to fix~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **GitHub Actions CI** — Prevents regressions, enables confidence in PRs~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Fix example linter warnings** — Clean up `log.Fatal` after `defer` patterns in examples~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### High Impact, Medium Effort
 
-4. **Benchmark tests** — Establish performance baselines, catch regressions
-5. **Improve watcher error path coverage** — Currently ~50%, target ~80%
-6. **Advanced README** — Dynamic path management, performance tips, comparison with fsnotify
+~~4. **Benchmark tests** — Establish performance baselines, catch regressions~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. **Improve watcher error path coverage** — Currently ~50%, target ~80%~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. **Advanced README** — Dynamic path management, performance tips, comparison with fsnotify~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Medium Impact, Higher Effort
 
-7. **Stress testing** — Verify behavior under heavy file system activity (10k+ files)
-8. **goreleaser** — Automated cross-platform releases
-9. **Fuzz testing** — Hardening filter logic against edge cases
-10. **Community files** — CONTRIBUTING.md, issue templates, PR template
+~~7. **Stress testing** — Verify behavior under heavy file system activity (10k+ files)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **goreleaser** — Automated cross-platform releases~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **Fuzz testing** — Hardening filter logic against edge cases~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **Community files** — CONTRIBUTING.md, issue templates, PR template~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Architecture Considerations
 
-11. **Event batching** — Option to collect events into slices for batch processing
-12. **Polling fallback** — For platforms where fsnotify has limitations
-13. **Event enrichment** — File size, checksum on change events
+~~11. **Event batching** — Option to collect events into slices for batch processing~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. **Polling fallback** — For platforms where fsnotify has limitations~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~13. **Event enrichment** — File size, checksum on change events~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -240,31 +240,31 @@ The only concern is the **1 unpushed commit** on master — should push when rea
 
 | #  | Task                                                   | Priority | Effort | Category  |
 | -- | ------------------------------------------------------ | -------- | ------ | --------- |
-| 1  | Push 1 unpushed commit to origin                       | P0       | 1min   | Infra     |
-| 2  | Add GitHub Actions CI workflow                         | P1       | 20min  | Infra     |
-| 3  | Tag v0.1.0 release                                     | P1       | 2min   | Release   |
-| 4  | Fix example linter warnings (exitAfterDefer, errcheck) | P1       | 10min  | Quality   |
-| 5  | Add benchmark tests for debouncer                      | P2       | 15min  | Testing   |
-| 6  | Add benchmark tests for middleware                     | P2       | 15min  | Testing   |
-| 7  | Add benchmark tests for filters                        | P2       | 15min  | Testing   |
-| 8  | Improve watcher error path test coverage               | P2       | 30min  | Testing   |
-| 9  | Add advanced examples to README                        | P2       | 30min  | Docs      |
-| 10 | Add goreleaser configuration                           | P2       | 30min  | Release   |
-| 11 | Add CONTRIBUTING.md                                    | P2       | 20min  | Community |
-| 12 | Add GitHub issue templates                             | P2       | 15min  | Community |
-| 13 | Add PR template                                        | P2       | 10min  | Community |
-| 14 | Add stress tests (10k+ files)                          | P3       | 1hr    | Testing   |
-| 15 | Add fuzz tests for filters                             | P3       | 30min  | Testing   |
-| 16 | Add dependabot config                                  | P3       | 5min   | Infra     |
-| 17 | Add codecov integration                                | P3       | 15min  | Infra     |
-| 18 | Add CODE_OF_CONDUCT.md                                 | P3       | 10min  | Community |
-| 19 | Add `WithPollInterval` fallback option                 | P3       | 1hr    | Feature   |
-| 20 | Add `Event.Size` field                                 | P3       | 15min  | Feature   |
-| 21 | Add `FilterModifiedSince(t)` filter                    | P3       | 15min  | Feature   |
-| 22 | Add batch event mode                                   | P3       | 30min  | Feature   |
-| 23 | Add performance comparison vs raw fsnotify             | P3       | 1hr    | Docs      |
-| 24 | Add Windows-specific edge case tests                   | P3       | 2hr    | Testing   |
-| 25 | Add `WatchWithRetry` auto-reconnection                 | P3       | 1hr    | Feature   |
+~~| 1  | Push 1 unpushed commit to origin                       | P0       | 1min   | Infra     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 2  | Add GitHub Actions CI workflow                         | P1       | 20min  | Infra     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 3  | Tag v0.1.0 release                                     | P1       | 2min   | Release   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 4  | Fix example linter warnings (exitAfterDefer, errcheck) | P1       | 10min  | Quality   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 5  | Add benchmark tests for debouncer                      | P2       | 15min  | Testing   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 6  | Add benchmark tests for middleware                     | P2       | 15min  | Testing   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 7  | Add benchmark tests for filters                        | P2       | 15min  | Testing   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 8  | Improve watcher error path test coverage               | P2       | 30min  | Testing   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 9  | Add advanced examples to README                        | P2       | 30min  | Docs      |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 10 | Add goreleaser configuration                           | P2       | 30min  | Release   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 11 | Add CONTRIBUTING.md                                    | P2       | 20min  | Community |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 12 | Add GitHub issue templates                             | P2       | 15min  | Community |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 13 | Add PR template                                        | P2       | 10min  | Community |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 14 | Add stress tests (10k+ files)                          | P3       | 1hr    | Testing   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 15 | Add fuzz tests for filters                             | P3       | 30min  | Testing   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 16 | Add dependabot config                                  | P3       | 5min   | Infra     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 17 | Add codecov integration                                | P3       | 15min  | Infra     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 18 | Add CODE_OF_CONDUCT.md                                 | P3       | 10min  | Community |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 19 | Add `WithPollInterval` fallback option                 | P3       | 1hr    | Feature   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 20 | Add `Event.Size` field                                 | P3       | 15min  | Feature   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 21 | Add `FilterModifiedSince(t)` filter                    | P3       | 15min  | Feature   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 22 | Add batch event mode                                   | P3       | 30min  | Feature   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 23 | Add performance comparison vs raw fsnotify             | P3       | 1hr    | Docs      |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 24 | Add Windows-specific edge case tests                   | P3       | 2hr    | Testing   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 25 | Add `WatchWithRetry` auto-reconnection                 | P3       | 1hr    | Feature   |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

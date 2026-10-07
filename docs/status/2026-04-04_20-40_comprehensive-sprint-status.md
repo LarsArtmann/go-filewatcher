@@ -45,27 +45,27 @@ The go-filewatcher library is a functional, well-structured utility built on fsn
 
 | #  | Improvement                                             | Priority  | Est. Work | Impact                                |
 | -- | ------------------------------------------------------- | --------- | --------- | ------------------------------------- |
-| 1  | Fix `handleNewDirectory` race condition                 | 🔴 High   | 30 min    | Data race → production crash          |
-| 2  | Make `shouldSkipDir` respect user ignore dirs           | 🔴 High   | 20 min    | Silent resource waste, user confusion |
-| 3  | Replace `cockroachdb/errors` with stdlib                | 🟡 Medium | 30 min    | 6 fewer transitive deps               |
-| 4  | Improve `Op` type: add `MarshalText`/`UnmarshalText`    | 🟡 Medium | 15 min    | JSON serialization for logging/audit  |
-| 5  | Add `Event` JSON tags and `MarshalJSON`                 | 🟡 Medium | 10 min    | Structured logging integration        |
-| 6  | Refactor `getDebounceKey` — remove type assertion       | 🟢 Low    | 10 min    | Code smell, add `IsPerPath() bool`    |
-| 7  | Replace `log.Logger` with `slog` in `MiddlewareLogging` | 🟡 Medium | 20 min    | Modern Go logging (1.21+)             |
-| 8  | Cache file handle in `MiddlewareWriteFileLog`           | 🔴 High   | 15 min    | Opens file per event → fd exhaustion  |
-| 9  | Split `watcher.go` (549 lines) into 3 files             | 🟢 Low    | 20 min    | Maintainability                       |
-| 10 | Raise test coverage to 90%+                             | 🟡 Medium | 2-3 hrs   | Confidence in correctness             |
-| 11 | Add `-race` to test commands                            | 🟡 Medium | 5 min     | Catch data races in CI                |
-| 12 | Integrate into `file-and-image-renamer`                 | 🟡 Medium | 1 hr      | Fixes confirmed debounce bug          |
-| 13 | Add `MiddlewareSlog` (new, alongside existing)          | 🟢 Low    | 15 min    | Modern alternative                    |
-| 14 | Add `Watcher.WatchList()` contains check test           | 🟢 Low    | 5 min     | Verify tracking works                 |
-| 15 | Add `Watcher.Remove()` subdirectory removal test        | 🟢 Low    | 10 min    | Untested edge case                    |
-| 16 | Fix `TestWatcher_Watch_Deletes` flakiness               | 🟡 Medium | 15 min    | Intermittent CI failures              |
-| 17 | Add `Example_new` / `Example_watch` to doc.go           | 🟢 Low    | 10 min    | godoc discoverability                 |
-| 18 | Add `.golangci.yml` lint config                         | 🟢 Low    | 15 min    | Consistent linting                    |
-| 19 | Add GitHub Actions CI workflow                          | 🟡 Medium | 30 min    | Automated testing                     |
-| 20 | Add `doc.go` benchmark tests                            | 🟢 Low    | 20 min    | Performance regression detection      |
-| 21 | Add CHANGELOG.md entries for this sprint                | 🟢 Low    | 5 min     | Release documentation                 |
+~~| 1  | Fix `handleNewDirectory` race condition                 | 🔴 High   | 30 min    | Data race → production crash          |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 2  | Make `shouldSkipDir` respect user ignore dirs           | 🔴 High   | 20 min    | Silent resource waste, user confusion |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 3  | Replace `cockroachdb/errors` with stdlib                | 🟡 Medium | 30 min    | 6 fewer transitive deps               |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 4  | Improve `Op` type: add `MarshalText`/`UnmarshalText`    | 🟡 Medium | 15 min    | JSON serialization for logging/audit  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 5  | Add `Event` JSON tags and `MarshalJSON`                 | 🟡 Medium | 10 min    | Structured logging integration        |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 6  | Refactor `getDebounceKey` — remove type assertion       | 🟢 Low    | 10 min    | Code smell, add `IsPerPath() bool`    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 7  | Replace `log.Logger` with `slog` in `MiddlewareLogging` | 🟡 Medium | 20 min    | Modern Go logging (1.21+)             |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 8  | Cache file handle in `MiddlewareWriteFileLog`           | 🔴 High   | 15 min    | Opens file per event → fd exhaustion  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 9  | Split `watcher.go` (549 lines) into 3 files             | 🟢 Low    | 20 min    | Maintainability                       |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 10 | Raise test coverage to 90%+                             | 🟡 Medium | 2-3 hrs   | Confidence in correctness             |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 11 | Add `-race` to test commands                            | 🟡 Medium | 5 min     | Catch data races in CI                |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 12 | Integrate into `file-and-image-renamer`                 | 🟡 Medium | 1 hr      | Fixes confirmed debounce bug          |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 13 | Add `MiddlewareSlog` (new, alongside existing)          | 🟢 Low    | 15 min    | Modern alternative                    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 14 | Add `Watcher.WatchList()` contains check test           | 🟢 Low    | 5 min     | Verify tracking works                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 15 | Add `Watcher.Remove()` subdirectory removal test        | 🟢 Low    | 10 min    | Untested edge case                    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 16 | Fix `TestWatcher_Watch_Deletes` flakiness               | 🟡 Medium | 15 min    | Intermittent CI failures              |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 17 | Add `Example_new` / `Example_watch` to doc.go           | 🟢 Low    | 10 min    | godoc discoverability                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 18 | Add `.golangci.yml` lint config                         | 🟢 Low    | 15 min    | Consistent linting                    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 19 | Add GitHub Actions CI workflow                          | 🟡 Medium | 30 min    | Automated testing                     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 20 | Add `doc.go` benchmark tests                            | 🟢 Low    | 20 min    | Performance regression detection      |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 21 | Add CHANGELOG.md entries for this sprint                | 🟢 Low    | 5 min     | Release documentation                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -83,19 +83,19 @@ could not import io (open .../Library/Caches/go-build/.../xxx-d: no such file or
 
 **Root Cause Analysis:**
 
-1. Go 1.26.0 is installed via **Nix** at `/nix/store/5ajixjk279m40yf6x96xxlnvw1wg6hq3-go-1.26.0/share/go`
-2. The Nix store is **read-only** — Go cannot write its compiled standard library artifacts there
-3. Go falls back to `~/Library/Caches/go-build/` for cached compilation
-4. Previous `rm -rf` of the cache directory **partially succeeded** — the directory was recreated but Go's internal indexing is broken
-5. `go clean -cache` reports success but **doesn't fully clear** — stale index entries remain
-6. Even `go build -a` (force full rebuild) hangs because it can't write the rebuilt stdlib packages
+~~1. Go 1.26.0 is installed via **Nix** at `/nix/store/5ajixjk279m40yf6x96xxlnvw1wg6hq3-go-1.26.0/share/go`~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. The Nix store is **read-only** — Go cannot write its compiled standard library artifacts there~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. Go falls back to `~/Library/Caches/go-build/` for cached compilation~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. Previous `rm -rf` of the cache directory **partially succeeded** — the directory was recreated but Go's internal indexing is broken~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. `go clean -cache` reports success but **doesn't fully clear** — stale index entries remain~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. Even `go build -a` (force full rebuild) hangs because it can't write the rebuilt stdlib packages~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 **What we tried:**
 
-1. `rm -rf ~/Library/Caches/go-build/` — partial success, cache regenerates broken
-2. `go clean -cache` — reports success, doesn't fix
-3. `go build -a ./...` — hangs indefinitely on stdlib compilation
-4. All killed after 60+ seconds
+~~1. `rm -rf ~/Library/Caches/go-build/` — partial success, cache regenerates broken~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. `go clean -cache` — reports success, doesn't fix~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. `go build -a ./...` — hangs indefinitely on stdlib compilation~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. All killed after 60+ seconds~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 **Likely Fix:**
 
@@ -122,39 +122,39 @@ nix-env -iA nixpkgs.go_1_26
 
 ### Architecture
 
-1. **`cockroachdb/errors` is overkill** — 6 transitive deps for 4 sentinel errors and ~10 `errors.Wrap` calls. A utility library should minimize its dependency tree. Stdlib `errors.New` + `fmt.Errorf("...: %w", err)` covers everything.
+~~1. **`cockroachdb/errors` is overkill** — 6 transitive deps for 4 sentinel errors and ~10 `errors.Wrap` calls. A utility library should minimize its dependency tree. Stdlib `errors.New` + `fmt.Errorf("...: %w", err)` covers everything.~~ done — shipped ≤v2.1.0, verified v2.4.1
 
-2. **`shouldSkipDir` is disconnected from `WithIgnoreDirs`** — This is a design flaw, not a bug. `WithIgnoreDirs` adds a _filter_ (post-walk) but `shouldSkipDir` (pre-walk) only checks `DefaultIgnoreDirs`. The fix needs a new field `userSkipDirs []string` populated during option application, merged in `shouldSkipDir`.
+~~2. **`shouldSkipDir` is disconnected from `WithIgnoreDirs`** — This is a design flaw, not a bug. `WithIgnoreDirs` adds a _filter_ (post-walk) but `shouldSkipDir` (pre-walk) only checks `DefaultIgnoreDirs`. The fix needs a new field `userSkipDirs []string` populated during option application, merged in `shouldSkipDir`.~~ done — shipped ≤v2.1.0, verified v2.4.1
 
-3. **`getDebounceKey` type assertion smell** — Uses `w.debounceInterface.(*Debouncer)` to distinguish per-path vs global debounce. Should use an explicit `perPathDebounce bool` flag or add `IsPerPath() bool` to the interface.
+~~3. **`getDebounceKey` type assertion smell** — Uses `w.debounceInterface.(*Debouncer)` to distinguish per-path vs global debounce. Should use an explicit `perPathDebounce bool` flag or add `IsPerPath() bool` to the interface.~~ done — shipped ≤v2.1.0, verified v2.4.1
 
-4. **`MiddlewareLogging` uses `log.Logger`** — Go 1.21+ has `log/slog`. The middleware should accept `slog.Logger` or `slog.Handler` with a backward-compat adapter for `log.Logger`.
+~~4. **`MiddlewareLogging` uses `log.Logger`** — Go 1.21+ has `log/slog`. The middleware should accept `slog.Logger` or `slog.Handler` with a backward-compat adapter for `log.Logger`.~~ done — shipped ≤v2.1.0, verified v2.4.1
 
-5. **`MiddlewareWriteFileLog` opens file per event** — Potential fd exhaustion under burst. Should cache the file handle and implement `io.Closer`.
+~~5. **`MiddlewareWriteFileLog` opens file per event** — Potential fd exhaustion under burst. Should cache the file handle and implement `io.Closer`.~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Type Model Improvements
 
-6. **`Op` lacks `MarshalText`/`UnmarshalText`** — Without this, `Event` can't be serialized to JSON. Add these methods so `json.Marshal(event)` works for audit/logging.
+~~6. **`Op` lacks `MarshalText`/`UnmarshalText`** — Without this, `Event` can't be serialized to JSON. Add these methods so `json.Marshal(event)` works for audit/logging.~~ done — shipped ≤v2.1.0, verified v2.4.1
 
-7. **`Event` lacks JSON tags** — Should have explicit `json:"path"`, `json:"op"`, `json:"timestamp"`, `json:"is_dir"` tags.
+~~7. **`Event` lacks JSON tags** — Should have explicit `json:"path"`, `json:"op"`, `json:"timestamp"`, `json:"is_dir"` tags.~~ done — shipped ≤v2.1.0, verified v2.4.1
 
-8. **`Stats` is too thin** — Should include `StartTime`, `EventCount`, `FilterCount` for proper observability.
+~~8. **`Stats` is too thin** — Should include `StartTime`, `EventCount`, `FilterCount` for proper observability.~~ done — shipped ≤v2.1.0, verified v2.4.1
 
-9. **`Event` should implement `fmt.Stringer`** — Already has `String()` on `Op` but `Event.String()` could be richer.
+~~9. **`Event` should implement `fmt.Stringer`** — Already has `String()` on `Op` but `Event.String()` could be richer.~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Testing
 
-10. **Coverage is ~77%** — Missing tests for: `handleError` stderr path, `MiddlewareLogging`, `MiddlewareWriteFileLog`, `watchLoop` error channel, `Remove` subdirectory removal, double `Watch()` call.
+~~10. **Coverage is ~77%** — Missing tests for: `handleError` stderr path, `MiddlewareLogging`, `MiddlewareWriteFileLog`, `watchLoop` error channel, `Remove` subdirectory removal, double `Watch()` call.~~ done — shipped ≤v2.1.0, verified v2.4.1
 
-11. **No race detection** — `-race` flag not in justfile. The `handleNewDirectory` race would be caught immediately.
+~~11. **No race detection** — `-race` flag not in justfile. The `handleNewDirectory` race would be caught immediately.~~ done — shipped ≤v2.1.0, verified v2.4.1
 
-12. **Flaky test** — `TestWatcher_Watch_Deletes` failed once with timeout. Race between file removal and fsnotify delivery.
+~~12. **Flaky test** — `TestWatcher_Watch_Deletes` failed once with timeout. Race between file removal and fsnotify delivery.~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Real-World Integration
 
-13. **`hierarchical-errors` already uses this library** — Found at `cmd/watch.go`. This is validation that the API works.
+~~13. **`hierarchical-errors` already uses this library** — Found at `cmd/watch.go`. This is validation that the API works.~~ done — shipped ≤v2.1.0, verified v2.4.1
 
-14. **`file-and-image-renamer` has a confirmed debounce bug** — Uses `time.Sleep` that never resets on new events. Replacing with go-filewatcher would fix it.
+~~14. **`file-and-image-renamer` has a confirmed debounce bug** — Uses `time.Sleep` that never resets on new events. Replacing with go-filewatcher would fix it.~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -162,31 +162,31 @@ nix-env -iA nixpkgs.go_1_26
 
 | Rank   | Action                                            | Work   | Impact                | Risk                | Depends On                  |
 | ------ | ------------------------------------------------- | ------ | --------------------- | ------------------- | --------------------------- |
-| **1**  | **Fix Go build cache**                            | 15 min | 🔴 Blocks everything  | None                | Nothing                     |
-| **2**  | **Fix `handleNewDirectory` race**                 | 30 min | 🔴 Data race → crash  | Low                 | Build cache                 |
-| **3**  | **Make `shouldSkipDir` respect user dirs**        | 20 min | 🔴 Resource waste     | Low                 | Build cache                 |
-| **4**  | **Replace cockroachdb/errors with stdlib**        | 30 min | 🟡 6 fewer deps       | Medium (API compat) | Build cache + user approval |
-| **5**  | **Add `Op.MarshalText`/`UnmarshalText`**          | 15 min | 🟡 JSON support       | None                | Build cache                 |
-| **6**  | **Add `Event` JSON tags**                         | 10 min | 🟡 Structured logging | None                | Build cache                 |
-| **7**  | **Cache file handle in `MiddlewareWriteFileLog`** | 15 min | 🔴 FD exhaustion      | Low (API change)    | Build cache                 |
-| **8**  | **Replace `log.Logger` with `slog`**              | 20 min | 🟡 Modern logging     | Low (API change)    | Build cache                 |
-| **9**  | **Refactor `getDebounceKey`**                     | 10 min | 🟢 Code quality       | None                | Build cache                 |
-| **10** | **Run tests with `-race`**                        | 5 min  | 🟡 Catch races        | None                | Build cache                 |
-| **11** | **Add race to justfile**                          | 5 min  | 🟡 CI quality         | None                | #10                         |
-| **12** | **Add test coverage for `handleError` stderr**    | 10 min | 🟡 Coverage           | None                | Build cache                 |
-| **13** | **Add test for `MiddlewareLogging`**              | 10 min | 🟡 Coverage           | None                | Build cache                 |
-| **14** | **Add test for `MiddlewareWriteFileLog`**         | 15 min | 🟡 Coverage           | None                | Build cache                 |
-| **15** | **Add test for `Remove` subdirectory**            | 10 min | 🟡 Coverage           | None                | Build cache                 |
-| **16** | **Fix `TestWatcher_Watch_Deletes` flakiness**     | 15 min | 🟡 CI stability       | None                | Build cache                 |
-| **17** | **Split `watcher.go` into 3 files**               | 20 min | 🟢 Maintainability    | None                | Build cache                 |
-| **18** | **Add `Stats` observability fields**              | 15 min | 🟢 Observability      | Low                 | Build cache                 |
-| **19** | **Integrate into file-and-image-renamer**         | 1 hr   | 🟡 Real-world fix     | Medium              | #2, #3                      |
-| **20** | **Add GitHub Actions CI**                         | 30 min | 🟡 Automation         | None                | All above                   |
-| **21** | **Add `.golangci.yml`**                           | 15 min | 🟢 Code quality       | None                | Build cache                 |
-| **22** | **Add benchmark tests**                           | 20 min | 🟢 Perf tracking      | None                | Build cache                 |
-| **23** | **Add `Example_*` functions**                     | 10 min | 🟢 godoc              | None                | Build cache                 |
-| **24** | **Update CHANGELOG.md**                           | 5 min  | 🟢 Documentation      | None                | All above                   |
-| **25** | **Tag v0.2.0 release**                            | 5 min  | 🟢 Distribution       | None                | All above                   |
+~~| **1**  | **Fix Go build cache**                            | 15 min | 🔴 Blocks everything  | None                | Nothing                     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **2**  | **Fix `handleNewDirectory` race**                 | 30 min | 🔴 Data race → crash  | Low                 | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **3**  | **Make `shouldSkipDir` respect user dirs**        | 20 min | 🔴 Resource waste     | Low                 | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **4**  | **Replace cockroachdb/errors with stdlib**        | 30 min | 🟡 6 fewer deps       | Medium (API compat) | Build cache + user approval |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **5**  | **Add `Op.MarshalText`/`UnmarshalText`**          | 15 min | 🟡 JSON support       | None                | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **6**  | **Add `Event` JSON tags**                         | 10 min | 🟡 Structured logging | None                | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **7**  | **Cache file handle in `MiddlewareWriteFileLog`** | 15 min | 🔴 FD exhaustion      | Low (API change)    | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **8**  | **Replace `log.Logger` with `slog`**              | 20 min | 🟡 Modern logging     | Low (API change)    | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **9**  | **Refactor `getDebounceKey`**                     | 10 min | 🟢 Code quality       | None                | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **10** | **Run tests with `-race`**                        | 5 min  | 🟡 Catch races        | None                | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **11** | **Add race to justfile**                          | 5 min  | 🟡 CI quality         | None                | #10                         |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **12** | **Add test coverage for `handleError` stderr**    | 10 min | 🟡 Coverage           | None                | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **13** | **Add test for `MiddlewareLogging`**              | 10 min | 🟡 Coverage           | None                | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **14** | **Add test for `MiddlewareWriteFileLog`**         | 15 min | 🟡 Coverage           | None                | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **15** | **Add test for `Remove` subdirectory**            | 10 min | 🟡 Coverage           | None                | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **16** | **Fix `TestWatcher_Watch_Deletes` flakiness**     | 15 min | 🟡 CI stability       | None                | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **17** | **Split `watcher.go` into 3 files**               | 20 min | 🟢 Maintainability    | None                | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **18** | **Add `Stats` observability fields**              | 15 min | 🟢 Observability      | Low                 | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **19** | **Integrate into file-and-image-renamer**         | 1 hr   | 🟡 Real-world fix     | Medium              | #2, #3                      |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **20** | **Add GitHub Actions CI**                         | 30 min | 🟡 Automation         | None                | All above                   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **21** | **Add `.golangci.yml`**                           | 15 min | 🟢 Code quality       | None                | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **22** | **Add benchmark tests**                           | 20 min | 🟢 Perf tracking      | None                | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **23** | **Add `Example_*` functions**                     | 10 min | 🟢 godoc              | None                | Build cache                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **24** | **Update CHANGELOG.md**                           | 5 min  | 🟢 Documentation      | None                | All above                   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| **25** | **Tag v0.2.0 release**                            | 5 min  | 🟢 Distribution       | None                | All above                   |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

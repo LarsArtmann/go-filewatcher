@@ -8,6 +8,13 @@
 
 - Nothing yet.
 
+## [2.4.1](https://github.com/LarsArtmann/go-filewatcher/compare/v2.4.0...v2.4.1) (2026-10-07)
+
+
+### Bug Fixes
+
+* **website:** stop card grids overflowing into the right-hand TOC ([7c4ea79](https://github.com/LarsArtmann/go-filewatcher/commit/7c4ea79c6781b8dad78af1a22f96bf29b0fa5583))
+
 ## [2.4.0](https://github.com/LarsArtmann/go-filewatcher/compare/v2.3.0...v2.4.0) (2026-10-06)
 
 ### Added

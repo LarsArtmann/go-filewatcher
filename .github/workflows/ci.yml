@@ -59,9 +59,15 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
       - run: go build ./...
+        shell: bash
       - run: go test -race -count=1 ./...
+        shell: bash
+      # bash shell: PowerShell splits "-coverprofile=coverage.out" into
+      # "-coverprofile=coverage" + ".out" (the -flag=file.ext tokenization quirk)
       - run: go test -count=1 -coverprofile=coverage.out .
+        shell: bash
       - run: go tool cover -func=coverage.out
+        shell: bash
       - name: Enforce coverage threshold
         shell: bash
         run: |

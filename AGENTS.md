@@ -572,11 +572,26 @@ provides locally. The `.golangci.yml` uses the `exhaustruct_v5` settings key, wh
 in v2.13+; v2.12 rejects the whole config at validation. When bumping the linter, bump all
 three places together (flake, ci.yml, release.yml).
 
+### Release PRs show CI "workflow file issue" startup failures
+
+On release-please PRs, CI, Commitlint, and Docs Consistency fail with `conclusion: failure` and
+ZERO jobs ("This run likely failed because of a workflow file issue") — hit both the 2.4.0 and
+2.4.1 release PRs (2026-10-06/07). Not a YAML bug: the identical workflow files run green on
+Dependabot PRs and on master pushes in the same hour. Treat it as GitHub-side; verify release
+content via the master push CI on the merge commit instead. The release is unaffected —
+release-please creates the tag and GitHub Release directly on merge.
+
 ### go.mod language version
 
 The `go` directive must stay at the CI matrix floor (`go 1.26.x`). The local dev toolchain is
 newer (Go 1.27); running go commands can silently bump the directive (2026-09-29 incident broke
 CI for a week). If CI fails with "go.mod requires go >= 1.27", restore `go 1.26.7`.
+
+Recurred 2026-10-07 (~1 day of red CI, all open PRs' Test/Lint/Examples failing): a parallel
+session's go commands produced the bump and the auto-commit daemon committed and pushed it.
+The bump can land on origin even when you ran no go commands yourself — check the `go` line
+whenever the daemon commits go.mod, and expect dependent PR CI to recover only after master
+is fixed plus a branch update/re-run.
 
 ### Auto-commit daemon races
 

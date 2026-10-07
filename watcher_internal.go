@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"os"
 	"slices"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -31,14 +32,13 @@ func (w *Watcher) debugLogEvent(msg string, event Event) {
 	w.debugLog(msg, slog.String("path", event.Path), slog.String("op", event.Op.String()))
 }
 
-func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event) {
+func (w *Watcher) watchLoop(ctx context.Context, eventCh chan<- Event, chUsers *sync.WaitGroup) {
 	defer w.wg.Done()
+	defer chUsers.Done()
 	defer func() {
 		if w.debounceInterface != nil {
 			w.debounceInterface.Stop()
 		}
-
-		w.closeEventChOnce.Do(func() { close(eventCh) })
 	}()
 
 	w.debugLog("watch loop started")

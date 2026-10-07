@@ -40,6 +40,8 @@ Honest status of every capability in go-filewatcher. Statuses:
 | ContentHash                     | ✅     | `FilterContentHash` + `ContentCheckMode`; `WithContentHashing()` — SHA-256                                                                                       |
 | Gitignore repository matcher    | ✅     | `FilterGitignore(repoRoot)` — event-time check against .gitignore                                                                                                |
 | Generated-code detection        | ✅     | sqlc, protobuf, templ, mockgen, stringer via `NewGeneratedCodeDetector` + gogenfilter v3.6.1 (sqlc: `*.sql.go` by filename, `models.go` only via content marker) |
+| Generated-code full content check | ✅   | `FilterGeneratedCodeFull(mode, options...)` — `ContentCheckEnabled` reads files for `DO NOT EDIT` markers (catches weak sqlc filenames), `ContentCheckDisabled` is filename-only with zero I/O |
+| Generated-code custom instance  | ✅     | `FilterGeneratedCodeWithFilter(genFilter)` — wraps your own `gogenfilter.Filter` for custom filesystems and include/exclude patterns                        |
 | Filter combinators (AND/OR/NOT) | ✅     | `FilterAnd`, `FilterOr`, `FilterNot`                                                                                                                             |
 | Case-insensitive filter wrapper | ✅     | `FilterCaseInsensitive(inner)` — lowercases + NFC-normalizes the event path before delegating to the inner filter                                                |
 | Case-sensitive filter wrapper   | ✅     | `FilterCaseSensitive(inner)` — NFC-normalizes without case-folding (useful on macOS NFD paths)                                                                   |

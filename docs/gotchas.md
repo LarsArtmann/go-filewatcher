@@ -241,3 +241,27 @@ respects explicit settings instead of always re-detecting from
 `/proc/sys/fs/inotify/max_user_watches`.
 
 ---
+
+### 27. Windows/macOS Test Legs: Inotify-Only Features and POSIX-Shape Assertions
+
+The CI matrix probes windows-2025 and macos-15. Three platform truths keep
+those legs green:
+
+- **Watch budgets are inotify-only.** `detectMaxWatches` reads
+  `/proc/sys/fs/inotify/max_user_watches`; on macOS/Windows there is no kernel
+  cap, so budget enforcement (and `WithMaxWatchesSafetyFraction`) is a no-op
+  there. Tests asserting budget behavior need no skips (they test the Linux
+  path), but docs must not claim cross-platform budget enforcement.
+- **`failedPaths` is keyed by `pathKey()`, never raw paths.** On
+  case-insensitive systems the key is lowercased, so a test that looks up
+  `failedPaths[subDir]` with a mixed-case raw path works on Linux by accident
+  and fails on macOS (found 2026-10-07 via the probe leg). Always look up
+  through `watcher.pathKey(path)`.
+- **POSIX-shape assertions skip on Windows** via `skipOnWindows(t)` in
+  `testing_helpers_test.go`: tests like `TestCleanPath` feed `/a/b/` literals
+  and assert forward-slash output — on Windows `filepath.Clean` legitimately
+  returns `a\b`. The library behavior is correct per-OS; the assertions are
+  POSIX contracts pending per-OS expectations. `ExampleEventPath` is split
+  into `example_path_test.go` (!windows) and `example_path_windows_test.go`
+  because Example funcs cannot call `t.Skip`.
+

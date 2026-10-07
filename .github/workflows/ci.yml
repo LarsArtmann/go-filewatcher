@@ -40,6 +40,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     strategy:
+      fail-fast: false # probe legs must all complete to expose the full failure set
       matrix:
         # No go 1.27 leg: encoding/json/v2 (used in event.go) requires the
         # go directive >= 1.27 under the Go 1.27 toolchain, which is

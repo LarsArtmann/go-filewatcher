@@ -499,7 +499,10 @@ func TestFakeBackend_AddFailsSpecificPaths(t *testing.T) {
 		watcher.mu.RLock()
 		defer watcher.mu.RUnlock()
 
-		_, failed := watcher.failedPaths[subDir]
+		// failedPaths is keyed by pathKey (NFC + lowercased on
+		// case-insensitive systems like macOS) — a raw-path lookup only
+		// works by accident on case-sensitive Linux.
+		_, failed := watcher.failedPaths[watcher.pathKey(subDir)]
 
 		return failed
 	})
@@ -507,7 +510,7 @@ func TestFakeBackend_AddFailsSpecificPaths(t *testing.T) {
 	// Root path should NOT be in failedPaths.
 	watcher.mu.RLock()
 
-	_, rootFailed := watcher.failedPaths[tmpDir]
+	_, rootFailed := watcher.failedPaths[watcher.pathKey(tmpDir)]
 
 	watcher.mu.RUnlock()
 

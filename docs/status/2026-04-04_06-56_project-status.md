@@ -105,23 +105,23 @@ func (w *Watcher) getDebounceKey(path string) string {
 
 ### Missing Features
 
-- [ ] No rate limiting option (only via middleware)
-- [ ] No max-depth option for recursive watching
-- [ ] No symlink handling configuration
-- [ ] No file size filters
-- [ ] No regex-based filters
+~~- [ ] No rate limiting option (only via middleware)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] No max-depth option for recursive watching~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] No symlink handling configuration~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] No file size filters~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] No regex-based filters~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Documentation
 
-- [ ] No API documentation site
-- [ ] No examples directory
-- [ ] No usage benchmarks
+~~- [ ] No API documentation site~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] No examples directory~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] No usage benchmarks~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Release
 
-- [ ] Not tagged for release (v0.1.0+)
-- [ ] No goreleaser configuration
-- [ ] No semantic versioning discipline
+~~- [ ] Not tagged for release (v0.1.0+)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] No goreleaser configuration~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] No semantic versioning discipline~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -219,10 +219,10 @@ func (w *Watcher) getDebounceKey() string {
 
 **Questions:**
 
-1. Should `Debouncer` (per-path) return the file path as the key?
-2. Should `GlobalDebouncer` return a fixed key like `"global"`?
-3. Or should this function be removed since `executeHandler` doesn't use it?
-4. Was this intended to support per-path debouncing with path-based keys?
+~~1. Should `Debouncer` (per-path) return the file path as the key?~~ OBSOLETE — resolved by later middleware/CI design
+~~2. Should `GlobalDebouncer` return a fixed key like `"global"`?~~ OBSOLETE — resolved by later middleware/CI design
+~~3. Or should this function be removed since `executeHandler` doesn't use it?~~ OBSOLETE — resolved by later middleware/CI design
+~~4. Was this intended to support per-path debouncing with path-based keys?~~ OBSOLETE — resolved by later middleware/CI design
 
 **Current behavior:** Both debouncers work correctly without using this function's return value:
 

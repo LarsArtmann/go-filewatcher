@@ -1,0 +1,132 @@
+# Status Report: BuildFlow Green Achieved + pnpm-audit Zeroed + Cache War (Session Continuation)
+
+**Date:** 2026-10-07 06:00 CEST
+**Repo:** `/home/lars/projects/go-filewatcher` @ `8ff471a` (master, clean tree, **4 commits ahead of origin/master**, not pushed)
+**Mission:** make `buildflow --fix --build-mode=full --log-level warn --max-time 5m` pass. **STATUS: ACHIEVED — EXIT 0, verified twice (runs 4 and 5).**
+**Predecessor reports:** `04-34_buildflow-recovery-session.md` → `05-17_buildflow-gomod-war-solved.md` → **this report**.
+
+---
+
+## Headline
+
+1. **The go.mod war is over on main.** Floor `go 1.26.7` held through three consecutive full pipeline runs. The 3-skip policy (`.buildflow.yml`) plus the strace-proven three-bumper attribution (go-version-auto-configure, go-mod-update, go-structure-linter) is committed, documented in AGENTS.md, and the daemon has stopped re-flipping.
+2. **The findings gate is cleared the honest way — findings fixed, not gate relaxed.** pnpm-audit: 12 vulnerabilities (9 high/error) → **0** via `pnpm audit --fix=update` + one override. Website build verified green after the forced major bump. `--fail-on=error` threshold untouched.
+3. **A new BuildFlow bug found on the way:** the detector result cache keys pnpm-audit on `package.json` and ignores `pnpm-lock.yaml`, so fixed vulnerabilities kept gating the pipeline as stale replay. Purged surgically via sqlite; correct DB path (`cache.db`, not the reference's `buildflow.db` — that file is a 0-byte decoy) recorded in AGENTS.md.
+4. **The session's honest low point:** one wasted 4-minute no-cache full run (run 3) that produced 3 false step failures under load average 421–631. Sequencing error, details in (d).
+
+---
+
+## a) FULLY DONE
+
+| # | Item | Evidence |
+|---|------|----------|
+| A1 | **go.mod floor stabilized on main** — restored `1.27→1.26.7`, held through runs 1, 4, 5; daemon committed the policy + floor | `head -3 go.mod` after every run; run logs |
+| A2 | **Three-bumper mechanism forensically closed** — strace attribution (4 writer TIDs, zero execve = buildflow-internal; backup dir fingerprints go-structure-linter), go-mod-normalize exonerated (net-zero atomic restore), all encoded as `skip_steps` with rationale comments | `.buildflow.yml`; `05-17` report; AGENTS.md "go.mod language version" |
+| A3 | **pnpm-audit 12→0** — `--fix=update` re-resolved lockfile (js-yaml 4.3.2, fast-uri 3.1.8, http-cache-semantics 4.2.1, smol-toml 1.8.1, source-map-js 1.2.2, sharp 0.35.5); `--fix=override` forced `postcss-selector-parser@<7.1.6: ^7.1.6` (parent `postcss-nested@6` pins `^6`, so no in-range fix exists) | `pnpm audit` → "No known vulnerabilities found"; `pnpm why` → single 7.1.6 |
+| A4 | **Website builds green after forced major bump** — 14 pages, pagefind index, sitemap | `nix run .#build` in `website/` |
+| A5 | **Result-cache stale entry purged with correct procedure** — real DB is `~/.cache/buildflow/cache.db` (`result_cache` table); `DELETE … LIKE '%pnpm-audit%'`; verified 0 remaining | sqlite output; run 4 went exit 0 immediately after |
+| A6 | **Full pipeline EXIT=0, twice** — 58/70 steps passed, 0 failed, 6 skipped via config, 51 not applicable; remaining ✗ marks are non-gating (info/warning) findings | `/tmp/gfw-main-run4.log`, `/tmp/gfw-main-run5.log` |
+| A7 | **nix build green** — vendorHash `9qQXBs…` (flake.nix:25) confirmed against current go.mod/deps | `nix build .` exit 0 |
+| A8 | **AGENTS.md updated with 3 new gotchas** — three-bumper forensic section + restore sed + worktree-nix-dirty-tracking; pnpm-audit cache-replay + correct purge command + pnpm 11 `--fix` strategy syntax | AGENTS.md (daemon-committed) |
+| A9 | **Cleanup complete** — `/tmp/gfw-verify` worktree + `verify-gomod-floor` branch removed; inotifywait watcher killed; stale index.lock checked | `git worktree list` → main only |
+| A10 | **Evidence chain preserved** — all 5 run logs + proof-run log in /tmp for post-mortem until CI green | `/tmp/gfw-main-run*.log`, `/tmp/proof-run.log` |
+
+## b) PARTIALLY DONE
+
+| # | Item | What's missing |
+|---|------|----------------|
+| B1 | **type-check (4 findings) resolution** — the findings blocked the 05:17 proof run but were absent from this session's run 1 and never returned. Possibly fixed as a side effect (prettier-format "3 fixed" in the same run) or transient (env nix-run). **Root cause never established** — see (d) | Root-cause or documented acceptance |
+| B2 | **BuildFlow binary freshness** — binary is `202b114`, BuildFlow HEAD moved to `6bd862d` during the session (another session rebuilt mid-run; I waited it out rather than racing it). Advisory-only preflight warning, but a new binary may carry new bumpers/findings | Upgrade + re-run + re-verify skip-list coverage |
+| B3 | **Non-gating finding noise triage** — counted only (dependabot 1 info, go-auto-upgrade 12 warn, nix-checker 8 warn/info, art-dupl 97, branching-flow 14, nix-flake-check 16, flake-meta-checker 1 detect-only); none individually assessed this session | Individual triage or deliberate acceptance |
+| B4 | **pnpm-workspace.yaml review** — tooling added 7 `minimumReleaseAgeExclude` entries (trusting same-day patched releases) + 1 override; committed by the daemon before human review. Mechanism verified (audit 0, build green) but the supply-chain tradeoff is unreviewed | Your call: accept / tighten (see question g3) |
+| B5 | **AGENTS.md health** — 3 gotchas added, but the file grew to ~645 lines vs the doctor's 220-line max; now the largest preflight warning | Split per doctor suggestion (content → README/FEATURES/docs) |
+| B6 | **nix verification depth** — only `packages.default` (vendorHash :25) verified green; the second vendorHash (flake.nix:111) flagged by nix-checker was not re-verified this session; `nix flake check` not re-run at quiet load | Full `nix flake check` pass |
+
+## c) NOT STARTED
+
+| # | Item | Why blocked / note |
+|---|------|--------------------|
+| C1 | **Upstream BuildFlow issues** — (a) go-structure-linter mid-run auto-bump of the go directive; (b) result-cache blind spot for lockfile-only changes; (c) skill-reference DB-path bug (`buildflow.db` decoy) — (a)+(b) were pending your answer since 05:17; (c) is new | Awaiting g1 |
+| C2 | **Push master** — 4 commits ahead (floor restore, 3-skip policy, AGENTS.md gotchas, status reports) | Awaiting g2; also needs pre-push `git fetch` per AGENTS.md daemon-race rule |
+| C3 | **TODO_LIST harvest** from this report's section (f) (docs-health HARVEST) | Report just written; harvest is the documented next move |
+| C4 | **Annotate predecessor reports** (04-34, 05-17) with resolution status (docs-health ANNOTATE) | Not started |
+| C5 | **Flip-proof guard** — nothing prevents a future buildflow binary from re-flipping go.mod (skip list only covers known bumper names); no pre-commit/CI check on the `go` line exists | Needs design decision (hook vs CI vs upstream fix) |
+| C6 | **This-session lessons not yet in AGENTS.md** — (a) "wait out concurrent buildflow installs before running" rule; (b) "high load ⇒ step-timeout kills at spawn ⇒ false step failures" triage note | Two small additions, queued |
+
+## d) TOTALLY FUCKED UP (honest failures, this session)
+
+| # | Item | Damage | Lesson |
+|---|------|--------|--------|
+| D1 | **Run 3 sequencing blunder** — after proving the cache bug with a cheap single-step no-cache run, I immediately launched a full `BUILDFLOW_NO_RESULT_CACHE=1` pipeline run instead of doing the surgical purge the skill's failure-triage reference prescribes. Result: 4m14s of full re-execution under load average 421–631, 3 steps killed at spawn (nix-build, test-compile, test-race) — false failures that polluted the signal and had to be explained away | ~4 min wasted, 3 phantom failures to triage | **Read the triage reference BEFORE reaching for the blunt instrument.** The reference ("surgical purge; a no-cache run does NOT overwrite the stale entry") was one grep away |
+| D2 | **Unexplained fix reported as done** — I told you "type-check's 4 findings are gone" without establishing why. An unexplained green is a ghost: it can re-appear in CI or on the next run and nobody will know the trigger | Unverified claim in a final report | Findings that vanish without an owner get root-caused or explicitly flagged as unexplained (B1) |
+| D3 | **Trusted the skill reference's DB path blindly** — `~/.cache/buildflow/buildflow.db` failed with "no such table"; the real DB is `cache.db` and `buildflow.db` is a 0-byte decoy. One `.tables` inspection upfront would have avoided the failed round-trip | 1 wasted command cycle; reference bug found (worth upstreaming to crush-config) | Verify paths with `.tables`/`ls` before quoting them in destructive commands |
+| D4 | **Edit tool rejected AGENTS.md edit twice** — file changed externally (daemon) between my bash `sed -n` reads and the edit; the tool only counts `view` reads. Two rejected round-trips | Trivial, but 2 wasted cycles | External-churn repos: always `view` immediately before `edit`, never substitute bash reads |
+| D5 | **Carried from predecessor session (context for fairness):** three blind pipeline reruns before checking `buildflow doctor`/provider list for the new tool; worktree proof run without committing the floor (nix ignores dirty worktrees). Both already encoded as lessons in the 05:17 report | Already paid | Already recorded |
+
+## e) WHAT WE SHOULD IMPROVE
+
+1. **Fail-safe the go.mod floor structurally, not just procedurally.** skip_steps names are breakable (binary renames a step → bumper returns silently). A tiny CI/pre-commit check asserting `go 1.26.7` turns the war into a red build instead of a silent flip. (C5)
+2. **Stop accepting unexplained greens.** Disappearing findings (type-check) and disappearing failures (run 3's phantom step-fails) both got rationalized instead of root-caused. Rule: any state change without an owner gets a follow-up line item.
+3. **Triage references before remedies.** The buildflow skill has a deep-triage reference with the exact cache-purge recipe; both of this session's wasted cycles (D1, D3) would have been avoided by reading it first. Make "grep the reference" step 1 of any tool-weirdness, not step 3.
+4. **Noise budget for the findings gate.** 169 findings remain, all non-gating, and they now hide real signals (the 4-warning preflight, health-check "9 tools unavailable" warning in run 1's log was never investigated). A deliberate accept/reject pass would shrink the log to actionable size.
+5. **Supply-chain hygiene in `minimumReleaseAgeExclude`.** The audit fix trust-gate bypassed for 7 just-patched versions. That's a reasonable tradeoff during an active incident but should be re-reviewed once the patched versions age past the release-age window — and the entries removed again.
+6. **AGENTS.md is past its carrying capacity.** Every incident appends a gotcha; the file is now 2.9× the recommended size and growing each session. Split by audience (CI ops vs library users vs AI sessions).
+7. **Shared-machine run discipline.** Load 421–631 with ~9 concurrent agent sessions is normal here; step timeouts make heavy runs non-deterministic. Either serialize heavy runs (wait for load < threshold) or ask upstream for load-aware step budgets.
+8. **Result-cache staleness is a class of bug, not an instance.** pnpm-audit keyed without pnpm-lock.yaml today; the same blind spot pattern will exist for any tool whose findings depend on files outside its declared match set. Worth one upstream issue covering the pattern (C1b), not just the pnpm instance.
+
+## f) TOP 40 THINGS WE SHOULD GET DONE NEXT
+
+*Sorted roughly by impact × urgency. Items 1–8 are the load-bearing ones; the rest are triage/hygiene. This list is brainstorm input for docs-health HARVEST — most items beyond #10 belong in ROADMAP, not TODO_LIST.*
+
+| # | Task | Impact | Effort |
+|---|------|--------|--------|
+| 1 | Push master (4 commits: floor + policy + docs) after `git fetch` + divergence check | Blocks everything downstream (PR CI recovery) | XS |
+| 2 | File upstream BuildFlow issue: go-structure-linter auto-bumps `go` directive mid-run (strace evidence ready) | Fleet-wide: every covered repo with a pinned floor is exposed | S |
+| 3 | File upstream BuildFlow issue: result cache ignores pnpm-lock.yaml for pnpm-audit (generalize: findings depending on undeclared files replay until TTL) | Fleet-wide | S |
+| 4 | Decide + implement a flip-proof guard (pre-commit or CI check asserting `go 1.26.7`) | Prevents the entire war class from recurring | S |
+| 5 | Review the 7 `minimumReleaseAgeExclude` entries added by audit --fix; remove once patched versions age out | Supply-chain risk acceptance should be deliberate | XS |
+| 6 | Root-cause the vanished type-check findings (B1) or mark them accepted-unexplained in AGENTS.md | Closes the only remaining unverified claim | S |
+| 7 | Upgrade buildflow binary 202b114→HEAD, re-run pipeline, re-verify skip list still covers all bumpers | New binary = new behavior; policy must be re-proven | M |
+| 8 | Verify CI green on GitHub after push (local green ≠ CI green; ci.yml pins its own toolchain) | The actual user-facing goal of the mission | S |
+| 9 | Fix buildflow skill reference DB path (`buildflow.db`→`cache.db`) in crush-config repo (committed change via fan-out) | Future sessions avoid D3 | XS |
+| 10 | docs-health HARVEST: fold section (f) into TODO_LIST/ROADMAP per routing rigor | Keeps next sessions from re-deriving this list | S |
+| 11 | docs-health ANNOTATE: mark 04-34 + 05-17 reports resolved-inline | Report chain stays trustworthy | S |
+| 12 | Re-enable go-structure-linter in `.buildflow.yml` once upstream policy fix lands | Restore lost coverage | XS |
+| 13 | Investigate "9 tools unavailable (health check failed)" warning from run 1 log | Unknown unknown | S |
+| 14 | Triage go-auto-upgrade 12 warnings (incl. samber/lo import-adding skip noted in log) | Real modernization signal, currently noise | M |
+| 15 | Triage nix-checker 8 findings (2 vendorHash attrs; oscillation documented) | Decides skip vs fix | M |
+| 16 | Decide fate of nix-build-verify (17/17 fails) and nix-hash-fix (83/85 fails, documented broken): skip_steps vs upstream repair | 100%-failure steps are pure latency | XS |
+| 17 | Investigate nix-build 20/21 failure history (OOM vs real) | Distinguishes infra noise from product bug | M |
+| 18 | Split AGENTS.md to ≤220 lines (doctor finding): move gotchas to docs/ | Restores preflight to green | M |
+| 19 | Add "wait out concurrent buildflow installs" + "high load ⇒ spawn-kill false failures" to AGENTS.md triage notes (C6) | Records this session's paid lessons | XS |
+| 20 | Run full `nix flake check` at quiet load; verify second vendorHash (flake.nix:111) | Closes B6 | S |
+| 21 | Watch next Dependabot run: website PRs may conflict with the new override | Avoids churn next week | XS |
+| 22 | Consider `pnpm dedupe` after lockfile churn (±150 lines) | Leaner installs | XS |
+| 23 | Drop the postcss-selector-parser override when expressive-code >0.44.1 bumps postcss-nested | Remove permanent workaround | XS |
+| 24 | Document the override's existence + why in website docs (prevent future "why is this version forced?") | Institutional memory | XS |
+| 25 | Triage detect-only findings: art-dupl 97, branching-flow 14, nix-flake-check 16, flake-meta-checker 1 | Decide signal vs noise | M |
+| 26 | Resolve dependabot-auto-configure's 1 unfixable info finding | Last ✗ on the summary that's cheap | XS |
+| 27 | Ask upstream for load-aware step budgets (or a --min-free-load flag) | Makes shared-machine runs deterministic | S |
+| 28 | Report buildflow.db 0-byte decoy as papercut (with the skill reference fix) | Small upstream quality win | XS |
+| 29 | Re-run `buildflow doctor` after binary upgrade; aim to clear the 4 preflight warnings | Environment hygiene | XS |
+| 30 | Re-review `--fail-on=error` threshold policy once noise is triaged (g3-adjacent) | Gate strictness should be a decision, not a default | XS |
+| 31 | Verify prettier-format's "3 fixed" files from run 1 (daemon-committed churn, unreviewed) | No unreviewed auto-edits | XS |
+| 32 | Run on-demand gitleaks + codespell once (never run in pipeline; not run this session) | Coverage gap | XS |
+| 33 | Confirm result-cache TTL (7d) can't mask future advisories: does an advisory-DB change invalidate audit results? | Cache correctness | S |
+| 34 | Clean /tmp evidence logs once CI is confirmed green | Hygiene | XS |
+| 35 | Sed restore command is version-specific (`1.27`→`1.26.7`); generalize or script it | Tiny future-proofing | XS |
+| 36 | Spot-check sharp 0.35.5 beyond build-level (render one image-heavy page) | Build-green ≠ visually-green | XS |
+| 37 | Check whether website needs a Firebase redeploy after dep updates | Ship the fixes | XS |
+| 38 | Add pnpm 11 `audit --fix` strategy syntax to website contributor docs | Saves the next person the ERR_PNPM_INVALID_FIX_OPTION round-trip | XS |
+| 39 | Verify no leftover background processes from this session (watchers/strace) beyond the ones killed | Hygiene | XS |
+| 40 | Bench-diff sanity pass at quiet load (AGENTS.md bench discipline) — only if Go hot paths were touched; likely N/A this session | Optional | M |
+
+## g) QUESTIONS I CAN NOT FIGURE OUT MYSELF
+
+1. **File the two BuildFlow upstream issues** (go-structure-linter's mid-run auto-bump; result-cache ignoring pnpm-lock.yaml) — and should the go-structure-linter behavior be treated as a bug to report, or is auto-repair intentional design that we're opting out of locally? (This was question 1 from the 05:17 report; you haven't answered it yet.)
+2. **Push the 4 local commits to master now?** The pipeline is green locally (exit 0 ×2, nix build green), but local green ≠ CI green, and pushing is the moment dependent PRs' CI either recovers or doesn't. Yes/hold?
+3. **Are the 7 new `minimumReleaseAgeExclude` entries acceptable as a standing supply-chain tradeoff** (trusting same-day patched releases to close 9 high-severity findings), or do you want them pruned again once the patched versions age past your release-age window — and if so, after how long?
+
+---
+
+*Session end state: mission achieved (exit 0 ×2), tree clean, 4 commits ahead of origin, awaiting instructions. No push, no upstream filings, no gate-policy changes without your explicit go.*

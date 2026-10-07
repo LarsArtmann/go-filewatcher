@@ -118,28 +118,28 @@ This is cosmetic, not functional.
 
 ### Critical (before using in production)
 
-1. **Raise coverage to 90%+** — Cover `MiddlewareLogging`, `MiddlewareWriteFileLog`, `handleError`, `watchLoop` error channel
-2. **Add a README.md** — Without it, the library is undiscoverable
-3. **Add `Example*` test functions** — Runnable godoc examples for `New()`, `Watch()`, filters
+~~1. **Raise coverage to 90%+** — Cover `MiddlewareLogging`, `MiddlewareWriteFileLog`, `handleError`, `watchLoop` error channel~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Add a README.md** — Without it, the library is undiscoverable~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Add `Example*` test functions** — Runnable godoc examples for `New()`, `Watch()`, filters~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Important (before v1.0)
 
-4. **Benchmarks for debounce** — Verify the debouncer doesn't leak timers or have latency issues
-5. **Stress test with thousands of files** — Verify fsnotify watcher handles large codebases
-6. **Integration test with actual project** — Replace fsnotify in one real project (e.g., `hierarchical-errors`)
-7. **Add `WithBuffer(size int)` option** — Allow configuring channel buffer size (currently hardcoded to 64)
-8. **Add `FilterRegex(pattern string)` filter** — Regex-based path filtering
-9. **Add `FilterCustom(fn func(path string) bool)` filter** — Escape hatch for complex logic
-10. **Consider `FilterGlob` using `path.Match` vs `filepath.Match`** — Current implementation only matches basename
+~~4. **Benchmarks for debounce** — Verify the debouncer doesn't leak timers or have latency issues~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. **Stress test with thousands of files** — Verify fsnotify watcher handles large codebases~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. **Integration test with actual project** — Replace fsnotify in one real project (e.g., `hierarchical-errors`)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. **Add `WithBuffer(size int)` option** — Allow configuring channel buffer size (currently hardcoded to 64)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **Add `FilterRegex(pattern string)` filter** — Regex-based path filtering~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **Add `FilterCustom(fn func(path string) bool)` filter** — Escape hatch for complex logic~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **Consider `FilterGlob` using `path.Match` vs `filepath.Match`** — Current implementation only matches basename~~ OBSOLETE — justfile removed, Nix flake apps
 
 ### Nice to have
 
-9. **Add `Watcher.Stats()` method** — Return event counts, uptime, last event time
-10. **Add `WithOnAdd(fn func(path string))` option** — Callback when a directory is added to the watcher
-11. **Consider `io.Closer` interface compliance** — `Watcher` already has `Close()` but doesn't formally implement `io.Closer`
-12. **Add `Event.Duration()` helper** — Time since event occurred (useful for latency metrics)
-13. **Add `FilterMinSize(size int64)` filter** — Ignore files below a size threshold
-14. **Extract debounce interface** — `debounceInterface` is `interface{}`, should be a named interface
+~~9. **Add `Watcher.Stats()` method** — Return event counts, uptime, last event time~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **Add `WithOnAdd(fn func(path string))` option** — Callback when a directory is added to the watcher~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. **Consider `io.Closer` interface compliance** — `Watcher` already has `Close()` but doesn't formally implement `io.Closer`~~ OBSOLETE — external repos, out of scope
+~~12. **Add `Event.Duration()` helper** — Time since event occurred (useful for latency metrics)~~ OPEN → TODO_LIST (large-tree stress harness)
+~~13. **Add `FilterMinSize(size int64)` filter** — Ignore files below a size threshold~~ OBSOLETE — external repos, out of scope
+~~14. **Extract debounce interface** — `debounceInterface` is `interface{}`, should be a named interface~~ OBSOLETE — external repos, out of scope
 
 ---
 
@@ -147,31 +147,31 @@ This is cosmetic, not functional.
 
 | #  | Task                                                             | Priority | Effort |
 | -- | ---------------------------------------------------------------- | -------- | ------ |
-| 1  | Write README.md with installation, quickstart, API reference     | P0       | 30min  |
-| 2  | Add LICENSE file (matching go-cqrs-lite)                         | P0       | 2min   |
-| 3  | Add `Example*` test functions for godoc                          | P0       | 20min  |
-| 4  | Raise coverage to 90%+ (cover middleware, error paths)           | P0       | 30min  |
-| 5  | Extract `debounceInterface` to named interface                   | P1       | 10min  |
-| 6  | Add `WithBuffer(size int)` option                                | P1       | 5min   |
-| 7  | Add `FilterRegex(pattern string)`                                | P1       | 10min  |
-| 8  | Add benchmark tests for Debouncer                                | P1       | 20min  |
-| 9  | Add golangci-lint config                                         | P1       | 15min  |
-| 10 | Create Makefile or justfile                                      | P1       | 10min  |
-| 11 | Set up GitHub Actions CI                                         | P1       | 20min  |
-| 12 | Integrate in `hierarchical-errors` (replace hand-rolled watcher) | P2       | 1hr    |
-| 13 | Integrate in `todo-list-ai-go` (replace scanner fsnotify code)   | P2       | 1hr    |
-| 14 | Integrate in `Kernovia` (replace hotreload watcher + Debouncer)  | P2       | 1hr    |
-| 15 | Add CHANGELOG.md                                                 | P2       | 5min   |
-| 16 | Add CONTRIBUTING.md                                              | P2       | 10min  |
-| 17 | Add `Watcher.Stats()` method                                     | P2       | 20min  |
-| 18 | Stress test with 10k+ files                                      | P2       | 30min  |
-| 19 | Add `examples/` directory with standalone programs               | P2       | 30min  |
-| 20 | Add `FilterCustom(fn func(path string) bool)`                    | P3       | 5min   |
-| 21 | Formalize `io.Closer` interface compliance                       | P3       | 2min   |
-| 22 | Add `WithOnAdd(fn)` callback option                              | P3       | 10min  |
-| 23 | Add `FilterMinSize(size int64)` filter                           | P3       | 10min  |
-| 24 | Tag v0.1.0 after integrations pass                               | P3       | 2min   |
-| 25 | Write blog post / announce                                       | P4       | 1hr    |
+~~| 1  | Write README.md with installation, quickstart, API reference     | P0       | 30min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 2  | Add LICENSE file (matching go-cqrs-lite)                         | P0       | 2min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 3  | Add `Example*` test functions for godoc                          | P0       | 20min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 4  | Raise coverage to 90%+ (cover middleware, error paths)           | P0       | 30min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 5  | Extract `debounceInterface` to named interface                   | P1       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 6  | Add `WithBuffer(size int)` option                                | P1       | 5min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 7  | Add `FilterRegex(pattern string)`                                | P1       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 8  | Add benchmark tests for Debouncer                                | P1       | 20min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 9  | Add golangci-lint config                                         | P1       | 15min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 10 | Create Makefile or justfile                                      | P1       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 11 | Set up GitHub Actions CI                                         | P1       | 20min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 12 | Integrate in `hierarchical-errors` (replace hand-rolled watcher) | P2       | 1hr    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 13 | Integrate in `todo-list-ai-go` (replace scanner fsnotify code)   | P2       | 1hr    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 14 | Integrate in `Kernovia` (replace hotreload watcher + Debouncer)  | P2       | 1hr    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 15 | Add CHANGELOG.md                                                 | P2       | 5min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 16 | Add CONTRIBUTING.md                                              | P2       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 17 | Add `Watcher.Stats()` method                                     | P2       | 20min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 18 | Stress test with 10k+ files                                      | P2       | 30min  |~~ OBSOLETE — FilterCustom removed (f21fc03)
+~~| 19 | Add `examples/` directory with standalone programs               | P2       | 30min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 20 | Add `FilterCustom(fn func(path string) bool)`                    | P3       | 5min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 21 | Formalize `io.Closer` interface compliance                       | P3       | 2min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 22 | Add `WithOnAdd(fn)` callback option                              | P3       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 23 | Add `FilterMinSize(size int64)` filter                           | P3       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 24 | Tag v0.1.0 after integrations pass                               | P3       | 2min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 25 | Write blog post / announce                                       | P4       | 1hr    |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

@@ -8,25 +8,25 @@
 
 ## a) FULLY DONE
 
-| # | Item | Evidence |
-|---|------|----------|
-| 1 | **Website deployed** with the v2.4.0 docs (incl. migration guide) | Firebase target `filewatcher`, release complete; guide live |
-| 2 | Fixed migration-guide link in v2.4.0 GitHub release notes (dots are stripped from slugs: real URL is `/guides/migration-v23-to-v24/`) | `gh release edit`, live fetch 200 |
-| 3 | Committed pnpm's `minimumReleaseAgeExclude` additions so builds are reproducible | `843bd9d` |
-| 4 | **Card-grid overflow into "On this page" TOC fixed** — root cause: CardGrid `1fr 1fr` tracks size to min-content; long identifiers (`WithMaxWatchesSafetyFraction`) pushed the grid into the TOC. Fix: `min-width: 0` + `overflow-wrap: anywhere` (unlayered, beats `starlight.components`), site-wide | `7c4ea79`, rule verified in live CSS bundle |
-| 5 | **Website changelog was missing 2.2.1/2.3.0/2.4.0** — page was a hand-copied snapshot frozen at 2.2.0. Replaced with generated page: `website/scripts/sync-changelog.mjs` regenerates `changelog.mdx` from repo `CHANGELOG.md` on every `pnpm build`/`pnpm dev` | Script wired in `package.json`; live `/changelog` verified with all 11 versions, newest first (node https check: 2.4.1/2.4.0/2.3.0 all present) |
-| 6 | **release-please path-scoped** — `release-please-config.json` + `.release-please-manifest.json` (seeded 2.4.1), workflow switched to config-file mode; `exclude-paths: ["website", "docs", ".github"]` | `744a0ee` + daemon's `5de2ff5`; run green in 17s, clean no-op, no spurious PR |
-| 7 | **v2.4.1 release notes annotated** — "no Go code changes, safe to skip" note prepended | `gh release edit v2.4.1` |
-| 8 | AGENTS.md updated: changelog-sync mechanism (never hand-edit the generated file), release-please path-scoping + commit-scope convention | `6afc6a7`, `744a0ee` |
-| 9 | Website redeployed with 2.4.1 changelog entry picked up by the sync | live markers verified |
+| # | Item                                                                                                                                                                                                                                                                                                   | Evidence                                                                                                                                        |
+| - | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | **Website deployed** with the v2.4.0 docs (incl. migration guide)                                                                                                                                                                                                                                      | Firebase target `filewatcher`, release complete; guide live                                                                                     |
+| 2 | Fixed migration-guide link in v2.4.0 GitHub release notes (dots are stripped from slugs: real URL is `/guides/migration-v23-to-v24/`)                                                                                                                                                                  | `gh release edit`, live fetch 200                                                                                                               |
+| 3 | Committed pnpm's `minimumReleaseAgeExclude` additions so builds are reproducible                                                                                                                                                                                                                       | `843bd9d`                                                                                                                                       |
+| 4 | **Card-grid overflow into "On this page" TOC fixed** — root cause: CardGrid `1fr 1fr` tracks size to min-content; long identifiers (`WithMaxWatchesSafetyFraction`) pushed the grid into the TOC. Fix: `min-width: 0` + `overflow-wrap: anywhere` (unlayered, beats `starlight.components`), site-wide | `7c4ea79`, rule verified in live CSS bundle                                                                                                     |
+| 5 | **Website changelog was missing 2.2.1/2.3.0/2.4.0** — page was a hand-copied snapshot frozen at 2.2.0. Replaced with generated page: `website/scripts/sync-changelog.mjs` regenerates `changelog.mdx` from repo `CHANGELOG.md` on every `pnpm build`/`pnpm dev`                                        | Script wired in `package.json`; live `/changelog` verified with all 11 versions, newest first (node https check: 2.4.1/2.4.0/2.3.0 all present) |
+| 6 | **release-please path-scoped** — `release-please-config.json` + `.release-please-manifest.json` (seeded 2.4.1), workflow switched to config-file mode; `exclude-paths: ["website", "docs", ".github"]`                                                                                                 | `744a0ee` + daemon's `5de2ff5`; run green in 17s, clean no-op, no spurious PR                                                                   |
+| 7 | **v2.4.1 release notes annotated** — "no Go code changes, safe to skip" note prepended                                                                                                                                                                                                                 | `gh release edit v2.4.1`                                                                                                                        |
+| 8 | AGENTS.md updated: changelog-sync mechanism (never hand-edit the generated file), release-please path-scoping + commit-scope convention                                                                                                                                                                | `6afc6a7`, `744a0ee`                                                                                                                            |
+| 9 | Website redeployed with 2.4.1 changelog entry picked up by the sync                                                                                                                                                                                                                                    | live markers verified                                                                                                                           |
 
 ## b) PARTIALLY DONE
 
-| Item | Done | Missing |
-|------|------|---------|
-| Verify v2.4.1 on the module proxy | tag/release exist, merged by user | never checked `go list -m @v2.4.1` / proxy serves it (it's a no-Go-changes release, so impact is nil, but unverified) |
-| Website build reproducibility | pnpm workspace/lockfile committed | `node_modules` is still machine-local; no CI job builds the website, so drift/`astro: command not found`-class failures are only caught at manual deploy time (hit once this session) |
-| AGENTS.md accuracy | gotchas added | the "Release / CI Gotchas" section is accreting entries from parallel sessions (go.mod recurrence, release-PR startup failures, mine) — correct but increasingly a wall of text; could use consolidation |
+| Item                              | Done                              | Missing                                                                                                                                                                                                  |
+| --------------------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Verify v2.4.1 on the module proxy | tag/release exist, merged by user | never checked `go list -m @v2.4.1` / proxy serves it (it's a no-Go-changes release, so impact is nil, but unverified)                                                                                    |
+| Website build reproducibility     | pnpm workspace/lockfile committed | `node_modules` is still machine-local; no CI job builds the website, so drift/`astro: command not found`-class failures are only caught at manual deploy time (hit once this session)                    |
+| AGENTS.md accuracy                | gotchas added                     | the "Release / CI Gotchas" section is accreting entries from parallel sessions (go.mod recurrence, release-PR startup failures, mine) — correct but increasingly a wall of text; could use consolidation |
 
 ## c) NOT STARTED
 
@@ -46,7 +46,7 @@
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **Scope discipline**: non-module changes must use `chore/docs/build(website)` — now both configured (exclude-paths) and documented; the remaining failure mode is *me* forgetting again.
+1. **Scope discipline**: non-module changes must use `chore/docs/build(website)` — now both configured (exclude-paths) and documented; the remaining failure mode is _me_ forgetting again.
 2. **Verify published URLs against the built slug** before `gh release edit`/deploy — a 5-second `ls dist/guides/` would have caught the 404.
 3. **Website deploy is manual and unguarded**: no CI build, no link checker, no preview. Cheapest next step: a website build job + `html-validate` (already a devDep) in CI.
 4. **Changelog page was duplicated content** — now generated. Generalize the instinct: any repo file mirrored into `website/` should be generated, never copied.

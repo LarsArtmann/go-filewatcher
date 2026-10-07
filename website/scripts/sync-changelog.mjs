@@ -19,9 +19,7 @@ if (firstEntry === -1) {
 	process.exit(1);
 }
 
-const body = changelog
-	.slice(firstEntry + 1)
-	.trimEnd();
+const body = changelog.slice(firstEntry + 1).trimEnd();
 
 const page = `---
 title: Changelog

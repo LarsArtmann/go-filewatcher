@@ -204,6 +204,6 @@ what this session directly observed.
 
 ---
 
-*Point-in-time snapshot. Written per the user's explicit `.md` instruction (status-report
+_Point-in-time snapshot. Written per the user's explicit `.md` instruction (status-report
 skill's canonical format is HTML — override honored and flagged). Section (f) is HARVEST input
-for TODO_LIST.md / ROADMAP.md.*
+for TODO_LIST.md / ROADMAP.md._

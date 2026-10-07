@@ -71,6 +71,8 @@ func TestEventPath_Base(t *testing.T) {
 func TestEventPath_Dir(t *testing.T) {
 	t.Parallel()
 
+	skipOnWindows(t)
+
 	tests := []struct {
 		input EventPath
 		want  EventPath
@@ -99,6 +101,8 @@ func TestEventPath_Ext(t *testing.T) {
 
 func TestEventPath_Join(t *testing.T) {
 	t.Parallel()
+
+	skipOnWindows(t)
 
 	tests := []struct {
 		base  EventPath

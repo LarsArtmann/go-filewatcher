@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -12,6 +13,18 @@ import (
 )
 
 const testFilePermission = 0o600 // rw------- (owner read/write only)
+
+// skipOnWindows skips tests whose assertions hardcode POSIX path semantics
+// (forward-slash literals, /-rooted paths). The library itself uses filepath
+// semantics per OS; these tests verify the POSIX shape of that behavior and
+// need per-OS expectations before they can run on Windows.
+func skipOnWindows(t *testing.T) {
+	t.Helper()
+
+	if runtime.GOOS == "windows" {
+		t.Skip("POSIX path-shape assertions; needs per-OS expectations for Windows")
+	}
+}
 
 func testEvent(path string, op Op) Event {
 	return Event{

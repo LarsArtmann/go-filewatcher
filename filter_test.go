@@ -141,6 +141,8 @@ func TestFilterIgnoreExtensions(t *testing.T) {
 //nolint:tparallel // Subtests call t.Parallel() inside runFilterTests helper
 func TestFilterIgnoreDirs(t *testing.T) {
 	t.Parallel()
+
+	skipOnWindows(t)
 	runFilterTests(
 		t,
 		"FilterIgnoreDirs",
@@ -152,6 +154,8 @@ func TestFilterIgnoreDirs(t *testing.T) {
 //nolint:tparallel // Subtests call t.Parallel() inside runFilterTests helper
 func TestFilterIgnoreDirsCaseInsensitive(t *testing.T) {
 	t.Parallel()
+
+	skipOnWindows(t)
 	runFilterTests(
 		t,
 		"FilterIgnoreDirsCaseInsensitive",
@@ -171,6 +175,8 @@ func TestFilterIgnoreDirsCaseInsensitive(t *testing.T) {
 //nolint:tparallel // Subtests call t.Parallel() inside runFilterTests helper
 func TestFilterIgnoreHidden(t *testing.T) {
 	t.Parallel()
+
+	skipOnWindows(t)
 	runFilterTests(t, "FilterIgnoreHidden", FilterIgnoreHidden(), ignoreHiddenTestCases())
 }
 
@@ -207,6 +213,8 @@ func TestFilterOperations(t *testing.T) {
 
 func TestFilterExcludePaths(t *testing.T) {
 	t.Parallel()
+
+	skipOnWindows(t)
 
 	tmpDir := t.TempDir()
 

@@ -133,9 +133,13 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 - [ ] **Fix website dependabot alerts** — `fast-uri` (high, host confusion) and
       `astro` (medium, reflected XSS) in `website/package.json`. Update with
       `cd website && pnpm update`. (`src: 2026-07-29_14-06 §Dependabot`)
-- [ ] **Website CI build job** — `pnpm install && pnpm build` (+ `html-validate`,
-      already a devDep) in CI; today website breakage is only caught at manual
-      deploy time (hit twice on 2026-10-07).
+- [x] **Website CI build job** — DONE 2026-10-07 (PRs #52–#54):
+      `website-build.yml` runs pnpm install (frozen lockfile) + astro build on
+      website/** PRs and master pushes. Three fix-forward rounds taught the
+      workflow gotchas now in crush-config lessons: full 40-char action SHAs,
+      actions ignoring `defaults.run.working-directory` (pass
+      `package_json_file`), and the job being non-required (verified on the PR
+      before each merge anyway). html-validate still to wire in if wanted.
       (`src: 2026-10-07_03-09 §f2/#6, 02-24 §f24`)
 - [ ] **Website link checker** — `html-validate` or an Astro dead-link plugin in
       the build; would have caught the migration-guide 404.

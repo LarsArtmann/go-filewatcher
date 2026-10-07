@@ -56,7 +56,7 @@ The go-filewatcher library is a functional, well-structured utility built on fsn
 ~~| 9  | Split `watcher.go` (549 lines) into 3 files             | 🟢 Low    | 20 min    | Maintainability                       |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 10 | Raise test coverage to 90%+                             | 🟡 Medium | 2-3 hrs   | Confidence in correctness             |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 11 | Add `-race` to test commands                            | 🟡 Medium | 5 min     | Catch data races in CI                |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 12 | Integrate into `file-and-image-renamer`                 | 🟡 Medium | 1 hr      | Fixes confirmed debounce bug          |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 12 | Integrate into `file-and-image-renamer`                 | 🟡 Medium | 1 hr      | Fixes confirmed debounce bug          |~~ OBSOLETE — external repo, out of scope
 ~~| 13 | Add `MiddlewareSlog` (new, alongside existing)          | 🟢 Low    | 15 min    | Modern alternative                    |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 14 | Add `Watcher.WatchList()` contains check test           | 🟢 Low    | 5 min     | Verify tracking works                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 15 | Add `Watcher.Remove()` subdirectory removal test        | 🟢 Low    | 10 min    | Untested edge case                    |~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -84,7 +84,7 @@ could not import io (open .../Library/Caches/go-build/.../xxx-d: no such file or
 **Root Cause Analysis:**
 
 ~~1. Go 1.26.0 is installed via **Nix** at `/nix/store/5ajixjk279m40yf6x96xxlnvw1wg6hq3-go-1.26.0/share/go`~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~2. The Nix store is **read-only** — Go cannot write its compiled standard library artifacts there~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. The Nix store is **read-only** — Go cannot write its compiled standard library artifacts there~~ OBSOLETE — Nix flake migration later resolved toolchain
 ~~3. Go falls back to `~/Library/Caches/go-build/` for cached compilation~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~4. Previous `rm -rf` of the cache directory **partially succeeded** — the directory was recreated but Go's internal indexing is broken~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~5. `go clean -cache` reports success but **doesn't fully clear** — stale index entries remain~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -154,7 +154,8 @@ nix-env -iA nixpkgs.go_1_26
 
 ~~13. **`hierarchical-errors` already uses this library** — Found at `cmd/watch.go`. This is validation that the API works.~~ done — shipped ≤v2.1.0, verified v2.4.1
 
-~~14. **`file-and-image-renamer` has a confirmed debounce bug** — Uses `time.Sleep` that never resets on new events. Replacing with go-filewatcher would fix it.~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. **`file-and-image-renamer` has a confirmed debounce bug** — Uses `time.Sleep` that never resets on new events. Replacing with go-filewatcher would fix it.~~ OBSOLETE — external repo, out of scope
+
 
 ---
 

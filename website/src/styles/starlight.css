@@ -58,3 +58,17 @@
   --sl-color-hairline-light: var(--sl-color-gray-6);
   --sl-color-hairline-shade: var(--sl-color-gray-6);
 }
+
+/* Card grids use `1fr 1fr` tracks whose auto minimum is the card's
+ * min-content width. Long unbreakable identifiers (e.g.
+ * WithMaxWatchesSafetyFraction) in card titles therefore widen the grid
+ * past the content column and spill the cards into the right-hand
+ * "On this page" TOC. Let tracks shrink and tokens wrap instead.
+ * (Unlayered on purpose: unlayered rules beat starlight.components.) */
+.card-grid .card {
+  min-width: 0;
+}
+
+.card .title {
+  overflow-wrap: anywhere;
+}

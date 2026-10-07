@@ -48,8 +48,10 @@ jobs:
         go-version: ["1.26"]
         # ubuntu-26.04 is proven here BEFORE ubuntu-latest migrates to it
         # (rollout starts 2026-10-19, completes 2026-11-19). Keep 24.04 until
-        # GitHub announces its deprecation brownouts.
-        os: [ubuntu-24.04, ubuntu-26.04]
+        # GitHub announces its deprecation brownouts. windows/macos legs are
+        # PROBE legs (informational): triage platform-specific test failures
+        # before making them required.
+        os: [ubuntu-24.04, ubuntu-26.04, macos-15, windows-2025]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
@@ -60,10 +62,12 @@ jobs:
       - run: go test -count=1 -coverprofile=coverage.out .
       - run: go tool cover -func=coverage.out
       - name: Enforce coverage threshold
+        shell: bash
         run: |
           COVERAGE=$(go tool cover -func=coverage.out | tail -1 | awk '{print $3}' | sed 's/%//')
           echo "Library coverage: ${COVERAGE}%"
-          if [ "$(echo "$COVERAGE < 85" | bc -l)" -eq 1 ]; then
+          # awk comparison instead of bc: no bc on Windows runners
+          if awk -v c="$COVERAGE" 'BEGIN { exit !(c < 85) }'; then
             echo "::error::Coverage ${COVERAGE}% is below 85% threshold"
             exit 1
           fi

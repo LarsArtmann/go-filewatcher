@@ -560,6 +560,7 @@ Plain `type X string` named types for compile-time type safety on path-like stri
 | Release-PR CI "workflow file issue"       | Release-please PRs show `conclusion: failure` with ZERO jobs (hit v2.4.0 + v2.4.1). GitHub-side quirk — identical workflows run green on Dependabot PRs and master pushes. Verify releases via master CI on the merge commit; the release itself is unaffected.                                                                                                                                                 |
 | Verify built slugs before publishing URLs | GitHub slugs strip dots: `migration-v2.3-to-v2.4` → `/guides/migration-v23-to-v24/`. Check `ls dist/guides/` (or the live URL) before `gh release edit`/deploy — the unchecked slug 404'd in the published v2.4.0 notes.                                                                                                                                                                                        |
 | Auto-commit daemon races                  | The daemon commits (and occasionally resets) local master while you work. `git fetch` + check `git log HEAD..origin/master` before pushing; rebase if diverged. Never assume your last local commit is still HEAD.                                                                                                                                                                                              |
+| ubuntu-latest migrates to 26.04           | Rollout starts 2026-10-19, complete 2026-11-19 (actions/runner-images#14748). Audited 2026-10-07: all workflows are pinned-SHA actions + explicit Go versions, no Python/apt-key/cgroup exposure. The CI test matrix runs both ubuntu-24.04 and ubuntu-26.04 (early compat proof); all other jobs are pinned to ubuntu-24.04 for determinism through the rollout window. Re-evaluate pins when GitHub announces 24.04 brownouts (expected 2027). |
 
 ### go.mod language version
 
@@ -580,9 +581,16 @@ after master is fixed plus a branch update/re-run.
 remembered — a `Go Directive Floor` CI job asserts `go 1.26.7` and blocks the
 test matrix (`needs: go-directive`), and `nix flake check` runs the same
 assertion as the `go-directive` check. Intentional bumps must change go.mod
-AND both guards in one commit. The CI test matrix also carries a `1.27`
-entry alongside the `1.26` floor, so a floor-vs-future drift surfaces as a
-test failure too.
+AND both guards in one commit.
+
+**No go 1.27 CI leg (deliberate, 2026-10-07)**: a 1.27 matrix entry was
+tried and removed the same day — under the Go 1.27 toolchain,
+`encoding/json/v2` (imported in `event.go`) requires the go directive to be
+≥ 1.27, so the leg cannot build while the floor is pinned at 1.26.7 (CI run
+37581977239: "json.Marshal requires go1.27 or later (file is go1.26)").
+Re-adding the 1.27 leg REQUIRES the intentional floor bump to 1.27 — which
+also means revisiting the json/v2 usage or accepting the bump. This is
+recorded as a v3 decision (docs/research/v3-decisions.md).
 
 **Worktrees and nix**: flake evaluation IGNORES dirty state in linked
 worktrees (no `-dirty` drv suffix; it builds the COMMITTED go.mod). Commit the

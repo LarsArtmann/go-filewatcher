@@ -14,12 +14,32 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
+  go-directive:
+    name: Go Directive Floor
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Assert go.mod directive is pinned to the CI floor
+        run: |
+          expected="go 1.26.7"
+          actual=$(grep -E '^go [0-9]+(\.[0-9]+){0,2}$' go.mod | head -1)
+          if [ "$actual" != "$expected" ]; then
+            echo "::error::go.mod go-directive drifted."
+            echo "::error::expected: '$expected'"
+            echo "::error::found:    '$actual'"
+            echo "Three incidents (2026-09-29, 2026-10-07 x2) came from silent bumps of this line."
+            echo "Restore go.mod, or bump it deliberately in BOTH go.mod and this guard (.github/workflows/ci.yml + flake.nix go-directive check)."
+            exit 1
+          fi
+          echo "go-directive OK: $actual"
+
   test:
     name: Test
+    needs: go-directive
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: ["1.26"]
+        go-version: ["1.26", "1.27"]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0

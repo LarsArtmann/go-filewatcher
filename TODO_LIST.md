@@ -176,9 +176,11 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       constant, "accreting"); `.codespellrc` captures the false positives so a
       plain run exits clean. codespell not yet in the buildflow pipeline.
       (`src: 2026-10-07_06-00 §f32`)
-- [ ] **Clean /tmp evidence logs** once CI is confirmed green after this push
-      (`/tmp/gfw-main-run*.log`, `/tmp/proof-run.log`, `/tmp/strace-*.log`,
-      `/tmp/gomod-*.log`, `/tmp/bf-*.log`).
+- [x] **Clean /tmp evidence logs** — DONE 2026-10-07 15:10 (resume session):
+      120 files trashed via `trash` (recoverable, rm-ban respected), 0
+      remaining; shared caches (e.g. `npm-cache-buildflow/`) untouched. Scope
+      was pattern-matched (`-user lars`, today), not per-file ownership-proof
+      — flagged as a judgment call in the 15:21 report §d.
       (`src: 2026-10-07_06-00 §f34`)
 
 ## Process debts (2026-10-07 docs sweep tail)
@@ -252,12 +254,13 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 | Tests          | 100%  | ✅     |
 | Flaky tests    | 0     | ✅     |
 | Broken benches | 0     | ✅     |
-| Open items     | 40    | 🟡     |
+| Open items     | 39    | 🟡     |
 
 Count note 2026-10-07: six items ticked today (CI guard, required checks,
 workflow_dispatch, probe legs, reliability test trio, codespell), three new
 items added (leg-promotion decision, per-OS expectations, follow-up items
-from the probe), net 39 → 40.
+from the probe), net 39 → 40; the /tmp evidence-log cleanup ticked in the
+15:21 resume session, net 40 → 39.
 
 ---
 

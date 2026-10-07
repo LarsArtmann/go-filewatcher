@@ -200,24 +200,24 @@ Pre-existing race conditions detected in `TestWatcher_Watch_WithDebounce` and re
 
 ### P0: Critical (Breaking Changes for v2.0)
 
-1. **Event.Path as FilePath** - Add phantom type to core API
-2. **Watcher struct split** - Separate config from state
-3. **Boolean bit flags** - Optimize memory with WatcherFlags
-4. **Path type everywhere** - Consistent FilePath/RootPath usage
+~~1. **Event.Path as FilePath** - Add phantom type to core API~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Watcher struct split** - Separate config from state~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Boolean bit flags** - Optimize memory with WatcherFlags~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. **Path type everywhere** - Consistent FilePath/RootPath usage~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### P1: High Value
 
-5. **Pre-commit hooks** - Enforce linting before commit
-6. **Property-based tests** - Add fuzzing for edge cases
-7. **Benchmark suite** - Performance regression testing
-8. **Integration tests** - Test with real fsnotify behavior
+~~5. **Pre-commit hooks** - Enforce linting before commit~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. **Property-based tests** - Add fuzzing for edge cases~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. **Benchmark suite** - Performance regression testing~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **Integration tests** - Test with real fsnotify behavior~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### P2: Medium Value
 
-9. **Documentation examples** - More complex usage patterns
-10. **Debug logging** - Optional verbose operation logging
-11. **Metrics collection** - Prometheus/OpenTelemetry support
-12. **Circuit breaker** - Fail-fast on repeated errors
+~~9. **Documentation examples** - More complex usage patterns~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **Debug logging** - Optional verbose operation logging~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. **Metrics collection** - Prometheus/OpenTelemetry support~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. **Circuit breaker** - Fail-fast on repeated errors~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### P3: Nice to Have
 
@@ -231,10 +231,10 @@ Pre-existing race conditions detected in `TestWatcher_Watch_WithDebounce` and re
 
 The current codebase has a mature API used by consumers. Implementing these changes requires:
 
-1. Clear migration guide for users
-2. Version bump to v2.0.0
-3. Deprecation timeline for v1.x
-4. Feature parity testing
+~~1. Clear migration guide for users~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. Version bump to v2.0.0~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. Deprecation timeline for v1.x~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. Feature parity testing~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 **Recommendation**: Poll current users before committing to v2 development.
 

@@ -137,12 +137,12 @@ The go-filewatcher project is in **excellent condition** with a clean build, com
 
 ### Known Issues
 
-1. **Go Version Mismatch Warning** 🟡
+~~1. **Go Version Mismatch Warning** 🟡~~ done — shipped ≤v2.1.0, verified v2.4.1
    - **Issue:** `compile: version "go1.26.1" does not match go tool version "go1.26.0"`
    - **Impact:** Warning only, does not affect functionality
    - **Fix:** Update nix flake or local Go installation to 1.26.1
 
-2. **Test Execution Time** 🟡
+~~2. **Test Execution Time** 🟡~~ done — shipped ≤v2.1.0, verified v2.4.1
    - **Issue:** Tests take significant time due to file system operations and debounce delays
    - **Impact:** Development velocity, CI pipeline speed
    - **Mitigation:** Tests pass reliably, consider parallel test optimization
@@ -153,48 +153,48 @@ The go-filewatcher project is in **excellent condition** with a clean build, com
 
 ### Immediate (This Week)
 
-1. **Verify GitHub Actions CI** - `.github/workflows/ci.yml` exists but needs testing
-2. **Complete Phantom Type Integration** - `Event.Path`, error context wrapping
-3. **Add Missing Method Tests** - `Remove()`, `WatchList()`, `Stats()`
-4. **Add Integration Test** - Full Watch→Event→Close lifecycle
+~~1. **Verify GitHub Actions CI** - `.github/workflows/ci.yml` exists but needs testing~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Complete Phantom Type Integration** - `Event.Path`, error context wrapping~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Add Missing Method Tests** - `Remove()`, `WatchList()`, `Stats()`~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. **Add Integration Test** - Full Watch→Event→Close lifecycle~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Short Term (Next 2 Weeks)
 
-5. **Complete Error Context Wrapping**
+~~5. **Complete Error Context Wrapping**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - `watcher.go` - Add context to all error returns
    - `watcher_walk.go` - Add context to path-related errors
 
-6. **Add Missing Tests**
+~~6. **Add Missing Tests**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - `Remove()` method test
    - `WatchList()` method test
    - `Stats()` method test
    - `MiddlewareWriteFileLog()` test
 
-7. **CI/CD Setup**
+~~7. **CI/CD Setup**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Verify GitHub Actions workflow
    - Add race detector in CI
    - Coverage threshold enforcement
 
 ### Medium Term (Next Month)
 
-8. **API Stability**
+~~8. **API Stability**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Tag v2.0.0 release
    - Document public API stability guarantees
    - Add API stability document
 
-9. **Performance**
+~~9. **Performance**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Set up continuous benchmark tracking
    - Add benchmark regression detection
    - Memory profiling for large directory trees
 
-10. **Developer Experience**
+~~10. **Developer Experience**~~ done — shipped ≤v2.1.0, verified v2.4.1
     - Complete Architecture.md
     - Write Troubleshooting.md
     - Add more godoc examples
 
 ### Long Term (Next Quarter)
 
-11. **Feature Completeness**
+~~11. **Feature Completeness**~~ done — shipped ≤v2.1.0, verified v2.4.1
     - Event batching with configurable window
     - Symlink following support
     - Self-healing watcher
@@ -206,37 +206,37 @@ The go-filewatcher project is in **excellent condition** with a clean build, com
 
 ### P0: Critical (Do Now)
 
-1. **Verify GitHub Actions CI Pipeline** - File exists, needs testing/validation
-2. **Complete Phantom Type Integration** - `Event.Path` and error context
-3. **Add Test for Remove() Method** - Currently untested API method
-4. **Add Test for WatchList() Method** - Currently untested API method
-5. **Add Test for Stats() Method** - Currently untested API method
+~~1. **Verify GitHub Actions CI Pipeline** - File exists, needs testing/validation~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Complete Phantom Type Integration** - `Event.Path` and error context~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Add Test for Remove() Method** - Currently untested API method~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. **Add Test for WatchList() Method** - Currently untested API method~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. **Add Test for Stats() Method** - Currently untested API method~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### P1: High Priority
 
-6. **Add Integration Test: Full Watch→Event→Close Lifecycle** - E2E coverage gap
-7. **Complete Error Context Wrapping in watcher.go** - Better error messages for debugging
-8. **Complete Error Context Wrapping in watcher_walk.go** - Path context for walk errors
-9. **Add MiddlewareRateLimit** - Rate limiting middleware
-10. **Add FilterGlob Pattern Support** - Common user request
-11. **Add WithOnError Option** - Alternative error handling
-12. **Fix GlobalDebouncer.Debounce Key Parameter** - Either use or remove it
-13. **Add slog.LogValuer to Event** - Structured logging support
-14. **Add Benchmark Results to README** - Performance documentation
-15. **Create Architecture.md** - Document system design
+~~6. **Add Integration Test: Full Watch→Event→Close Lifecycle** - E2E coverage gap~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. **Complete Error Context Wrapping in watcher.go** - Better error messages for debugging~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **Complete Error Context Wrapping in watcher_walk.go** - Path context for walk errors~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **Add MiddlewareRateLimit** - Rate limiting middleware~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **Add FilterGlob Pattern Support** - Common user request~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. **Add WithOnError Option** - Alternative error handling~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. **Fix GlobalDebouncer.Debounce Key Parameter** - Either use or remove it~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~13. **Add slog.LogValuer to Event** - Structured logging support~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. **Add Benchmark Results to README** - Performance documentation~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~15. **Create Architecture.md** - Document system design~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### P2: Medium Priority
 
-16. **Add Watcher.WatchOnce()** - One-shot watch mode
-17. **Add WithRecursive(false) Option** - Non-recursive watching
-18. **Implement Event Batching** - Batch events over window
-19. **Add MiddlewareDeduplicate** - Drop duplicate events
-20. **Add FilterExcludePaths** - Exclude specific paths
-21. **Add FilterMinAge()** - Ignore old files
-22. **Add FilterMaxSize()** - Complement to FilterMinSize
-23. **Write Troubleshooting.md** - Common issues guide
-24. **Add Benchmark Regression Tests** - Prevent performance degradation
-25. **Tag v2.0.0 Release** - API is stable
+~~16. **Add Watcher.WatchOnce()** - One-shot watch mode~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~17. **Add WithRecursive(false) Option** - Non-recursive watching~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~18. **Implement Event Batching** - Batch events over window~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~19. **Add MiddlewareDeduplicate** - Drop duplicate events~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~20. **Add FilterExcludePaths** - Exclude specific paths~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~21. **Add FilterMinAge()** - Ignore old files~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~22. **Add FilterMaxSize()** - Complement to FilterMinSize~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~23. **Write Troubleshooting.md** - Common issues guide~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~24. **Add Benchmark Regression Tests** - Prevent performance degradation~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~25. **Tag v2.0.0 Release** - API is stable~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

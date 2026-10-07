@@ -142,14 +142,14 @@ The go-filewatcher project is in **excellent condition** with all tests passing,
 
 ### Critical Issues
 
-1. **gopls Diagnostic Cache Corruption** 🔴
+~~1. **gopls Diagnostic Cache Corruption** 🔴~~ done — shipped ≤v2.1.0, verified v2.4.1
    - **Location:** `filter_gogen_test.go:233`
    - **Error:** "no new variables on left side of :="
    - **Reality:** Code uses `err =` (assignment), not `:=` (declaration)
    - **Impact:** LSP shows false error, but code compiles and tests pass
    - **Fix:** Restart gopls / clear LSP cache
 
-2. **Go Version Mismatch Warning** 🟡
+~~2. **Go Version Mismatch Warning** 🟡~~ done — shipped ≤v2.1.0, verified v2.4.1
    - **Issue:** `compile: version "go1.26.1" does not match go tool version "go1.26.0"`
    - **Impact:** Warning only, does not affect functionality
    - **Fix:** Update nix flake or local Go installation
@@ -172,55 +172,55 @@ The `examples/filter-generated/main.go` has accumulated technical debt:
 
 ### Immediate (This Week)
 
-1. **Fix gopls Diagnostic Issue**
+~~1. **Fix gopls Diagnostic Issue**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Restart gopls or clear cache
    - Verify LSP diagnostics match actual compilation
 
-2. **Clean Up Examples**
+~~2. **Clean Up Examples**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Either fix all 14 linter issues in examples/
    - Or deprecate examples/ and move to example_test.go
 
-3. **Update TODO_LIST.md**
+~~3. **Update TODO_LIST.md**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Mark completed items (15 high-priority items done)
    - Re-prioritize remaining 182 items
 
 ### Short Term (Next 2 Weeks)
 
-4. **Complete Error Context Wrapping**
+~~4. **Complete Error Context Wrapping**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - `watcher.go` - Add context to all error returns
    - `watcher_walk.go` - Add context to path-related errors
 
-5. **Add Missing Tests**
+~~5. **Add Missing Tests**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - `Remove()` method test
    - `WatchList()` method test
    - `Stats()` method test
    - `MiddlewareWriteFileLog()` test
 
-6. **CI/CD Setup**
+~~6. **CI/CD Setup**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - GitHub Actions workflow
    - Race detector in CI
    - Coverage threshold enforcement
 
 ### Medium Term (Next Month)
 
-7. **API Stability**
+~~7. **API Stability**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Tag v2.0.0 release
    - Document public API stability guarantees
    - Add API stability document
 
-8. **Performance**
+~~8. **Performance**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Set up continuous benchmark tracking
    - Add benchmark regression detection
    - Memory profiling for large directory trees
 
-9. **Developer Experience**
+~~9. **Developer Experience**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Complete Architecture.md
    - Write Troubleshooting.md
    - Add more godoc examples
 
 ### Long Term (Next Quarter)
 
-10. **Feature Completeness**
+~~10. **Feature Completeness**~~ done — shipped ≤v2.1.0, verified v2.4.1
     - Event batching with configurable window
     - Symlink following support
     - Self-healing watcher
@@ -232,37 +232,37 @@ The `examples/filter-generated/main.go` has accumulated technical debt:
 
 ### P0: Critical (Do Now)
 
-1. **Restart gopls / Clear LSP Cache** - False positive diagnostic blocking IDE experience
-2. **Fix Examples Linter Issues** - 14 violations in examples/filter-generated/main.go
-3. **Complete Error Context Wrapping in watcher.go** - Better error messages for debugging
-4. **Complete Error Context Wrapping in watcher_walk.go** - Path context for walk errors
-5. **Add Test for Remove() Method** - Currently untested API method
+~~1. **Restart gopls / Clear LSP Cache** - False positive diagnostic blocking IDE experience~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Fix Examples Linter Issues** - 14 violations in examples/filter-generated/main.go~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Complete Error Context Wrapping in watcher.go** - Better error messages for debugging~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. **Complete Error Context Wrapping in watcher_walk.go** - Path context for walk errors~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. **Add Test for Remove() Method** - Currently untested API method~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### P1: High Priority
 
-6. **Add Test for WatchList() Method** - Currently untested API method
-7. **Add Test for Stats() Method** - Currently untested API method
-8. **Add Integration Test: Full Watch→Event→Close Lifecycle** - E2E coverage gap
-9. **Set Up GitHub Actions CI** - Automate testing on PRs
-10. **Add MiddlewareRateLimit** - Rate limiting middleware
-11. **Add FilterGlob Pattern Support** - Common user request
-12. **Add WithOnError Option** - Alternative error handling
-13. **Fix GlobalDebouncer.Debounce Key Parameter** - Either use or remove
-14. **Add Event.Path Phantom Type** - Type safety for paths
-15. **Add slog.LogValuer to Event** - Structured logging support
+~~6. **Add Test for WatchList() Method** - Currently untested API method~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. **Add Test for Stats() Method** - Currently untested API method~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **Add Integration Test: Full Watch→Event→Close Lifecycle** - E2E coverage gap~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **Set Up GitHub Actions CI** - Automate testing on PRs~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **Add MiddlewareRateLimit** - Rate limiting middleware~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. **Add FilterGlob Pattern Support** - Common user request~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. **Add WithOnError Option** - Alternative error handling~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~13. **Fix GlobalDebouncer.Debounce Key Parameter** - Either use or remove~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. **Add Event.Path Phantom Type** - Type safety for paths~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~15. **Add slog.LogValuer to Event** - Structured logging support~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### P2: Medium Priority
 
-16. **Add Watcher.WatchOnce()** - One-shot watch mode
-17. **Add WithRecursive(false) Option** - Non-recursive watching
-18. **Implement Event Batching** - Batch events over window
-19. **Add MiddlewareDeduplicate** - Drop duplicate events
-20. **Add FilterExcludePaths** - Exclude specific paths
-21. **Add FilterMinAge()** - Ignore old files
-22. **Add FilterMaxSize()** - Complement to FilterMinSize
-23. **Create Architecture.md** - Document system design
-24. **Write Troubleshooting.md** - Common issues guide
-25. **Add Benchmark Results to README** - Performance documentation
+~~16. **Add Watcher.WatchOnce()** - One-shot watch mode~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~17. **Add WithRecursive(false) Option** - Non-recursive watching~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~18. **Implement Event Batching** - Batch events over window~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~19. **Add MiddlewareDeduplicate** - Drop duplicate events~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~20. **Add FilterExcludePaths** - Exclude specific paths~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~21. **Add FilterMinAge()** - Ignore old files~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~22. **Add FilterMaxSize()** - Complement to FilterMinSize~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~23. **Create Architecture.md** - Document system design~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~24. **Write Troubleshooting.md** - Common issues guide~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~25. **Add Benchmark Results to README** - Performance documentation~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

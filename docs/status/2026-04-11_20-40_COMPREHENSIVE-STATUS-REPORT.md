@@ -84,16 +84,16 @@ The go-filewatcher project is in a **PRODUCTION-READY** state with a minor test 
 
 ### Future Enhancements
 
-1. **Event Batching API** — Batch multiple events into single callback
-2. **Symlink Following** — Optional symlink resolution
-3. **File Content Hashing** — Detect actual content changes vs metadata
-4. **Plugin System** — Allow custom middleware plugins
-5. **WebSocket Bridge** — Real-time event streaming over WS
-6. **Prometheus Metrics** — Built-in instrumentation middleware
-7. **Configuration File** — YAML/TOML config support
-8. **Windows Service Mode** — Run as Windows service
-9. **Docker Health Checks** — Built-in health endpoint
-10. **Event Persistence** — Replay events from log
+~~1. **Event Batching API** — Batch multiple events into single callback~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Symlink Following** — Optional symlink resolution~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **File Content Hashing** — Detect actual content changes vs metadata~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. **Plugin System** — Allow custom middleware plugins~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. **WebSocket Bridge** — Real-time event streaming over WS~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. **Prometheus Metrics** — Built-in instrumentation middleware~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. **Configuration File** — YAML/TOML config support~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **Windows Service Mode** — Run as Windows service~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **Docker Health Checks** — Built-in health endpoint~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **Event Persistence** — Replay events from log~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -118,31 +118,31 @@ The go-filewatcher project is in a **PRODUCTION-READY** state with a minor test 
 
 ### Immediate (This Week)
 
-1. **Clear LSP Diagnostics Cache** — Restart gopls to clear stale errors
-2. **Add Integration Tests** — Test actual filesystem watching across platforms
-3. **Benchmark Suite** — Measure performance under load
-4. **Fuzz Testing** — For filter and middleware edge cases
+~~1. **Clear LSP Diagnostics Cache** — Restart gopls to clear stale errors~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Add Integration Tests** — Test actual filesystem watching across platforms~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Benchmark Suite** — Measure performance under load~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. **Fuzz Testing** — For filter and middleware edge cases~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Short Term (Next Month)
 
-5. **Event Batching** — Configurable batch window for high-frequency changes
-6. **Adaptive Debouncing** — Dynamic delay based on event frequency
-7. **Metrics Export** — Prometheus/OpenTelemetry middleware
-8. **Documentation Site** — GitHub Pages with examples
+~~5. **Event Batching** — Configurable batch window for high-frequency changes~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. **Adaptive Debouncing** — Dynamic delay based on event frequency~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. **Metrics Export** — Prometheus/OpenTelemetry middleware~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **Documentation Site** — GitHub Pages with examples~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Long Term (Next Quarter)
 
-9. **Plugin Architecture** — Dynamic middleware loading
-10. **Cross-Platform Optimizations** — Platform-specific backends
-11. **Distributed Watching** — Multi-node coordination
-12. **Event Sourcing** — Persistent event log with replay
+~~9. **Plugin Architecture** — Dynamic middleware loading~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **Cross-Platform Optimizations** — Platform-specific backends~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. **Distributed Watching** — Multi-node coordination~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. **Event Sourcing** — Persistent event log with replay~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Code Quality Improvements
 
-13. **Reduce Cyclomatic Complexity** — Some functions exceed 15 branches
-14. **Extract Helpers** — Deduplicate test helper code
-15. **Property-Based Testing** — Use `testing/quick` or `gopter`
-16. **Chaos Engineering** — Randomly inject failures in tests
+~~13. **Reduce Cyclomatic Complexity** — Some functions exceed 15 branches~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. **Extract Helpers** — Deduplicate test helper code~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~15. **Property-Based Testing** — Use `testing/quick` or `gopter`~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~16. **Chaos Engineering** — Randomly inject failures in tests~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -150,40 +150,40 @@ The go-filewatcher project is in a **PRODUCTION-READY** state with a minor test 
 
 ### Priority 1: Critical 🔥
 
-1. [ ] Clear LSP diagnostic cache (restart gopls)
-2. [ ] Add integration test for recursive watching
-3. [ ] Verify all test files compile and pass
-4. [ ] Add test for `handleError` with ErrorContext
+~~1. [ ] Clear LSP diagnostic cache (restart gopls)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. [ ] Add integration test for recursive watching~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. [ ] Verify all test files compile and pass~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. [ ] Add test for `handleError` with ErrorContext~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Priority 2: High 📈
 
-5. [ ] Implement event batching API (`WithBatchWindow(duration)`)
-6. [ ] Add adaptive debouncing (dynamic delay)
-7. [ ] Create Prometheus metrics middleware
-8. [ ] Add fsnotify backend abstraction
-9. [ ] Implement symlink following option
-10. [ ] Add file content hash filter
+~~5. [ ] Implement event batching API (`WithBatchWindow(duration)`)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. [ ] Add adaptive debouncing (dynamic delay)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. [ ] Create Prometheus metrics middleware~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. [ ] Add fsnotify backend abstraction~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. [ ] Implement symlink following option~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. [ ] Add file content hash filter~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Priority 3: Medium 🛠️
 
-11. [ ] Create GitHub Pages documentation site
-12. [ ] Add fuzz tests for filters
-13. [ ] Implement chaos testing (random failures)
-14. [ ] Add property-based tests
-15. [ ] Create benchmark comparison with raw fsnotify
-16. [ ] Add Windows-specific optimizations
-17. [ ] Implement configuration file support (YAML)
-18. [ ] Add Docker health check endpoint
+~~11. [ ] Create GitHub Pages documentation site~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. [ ] Add fuzz tests for filters~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~13. [ ] Implement chaos testing (random failures)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. [ ] Add property-based tests~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~15. [ ] Create benchmark comparison with raw fsnotify~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~16. [ ] Add Windows-specific optimizations~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~17. [ ] Implement configuration file support (YAML)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~18. [ ] Add Docker health check endpoint~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Priority 4: Low ✨
 
-19. [ ] Create video tutorial series
-20. [ ] Write blog post about design decisions
-21. [ ] Add benchmarking to CI pipeline
-22. [ ] Create contributor guidelines
-23. [ ] Add issue templates
-24. [ ] Implement plugin system
-25. [ ] Create distributed watching prototype
+~~19. [ ] Create video tutorial series~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~20. [ ] Write blog post about design decisions~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~21. [ ] Add benchmarking to CI pipeline~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~22. [ ] Create contributor guidelines~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~23. [ ] Add issue templates~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~24. [ ] Implement plugin system~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~25. [ ] Create distributed watching prototype~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

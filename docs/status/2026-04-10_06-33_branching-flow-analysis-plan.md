@@ -37,11 +37,11 @@ The branching-flow multi-linter analysis identified **6 core issues** across 8 l
 
 | # | Violation              | Current                                 | New Type                   |
 | - | ---------------------- | --------------------------------------- | -------------------------- |
-| 1 | debouncer.go:115       | `Debounce(key string, ...)`             | `type DebounceKey string`  |
-| 2 | testing_helpers.go:73  | `assertLogContains(..., substr string)` | `type LogSubstring string` |
-| 3 | testing_helpers.go:144 | `createTestFile(..., tmpDir string)`    | `type TempDir string`      |
-| 4 | watcher_walk.go:22     | `addPath(root string)`                  | `type RootPath string`     |
-| 5 | watcher_walk.go:34     | `walkAndAddPaths(root string)`          | `type RootPath string`     |
+~~| 1 | debouncer.go:115       | `Debounce(key string, ...)`             | `type DebounceKey string`  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 2 | testing_helpers.go:73  | `assertLogContains(..., substr string)` | `type LogSubstring string` |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 3 | testing_helpers.go:144 | `createTestFile(..., tmpDir string)`    | `type TempDir string`      |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 4 | watcher_walk.go:22     | `addPath(root string)`                  | `type RootPath string`     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 5 | watcher_walk.go:34     | `walkAndAddPaths(root string)`          | `type RootPath string`     |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 **Rationale**: Prevents passing wrong string arguments at compile time.
 
@@ -70,15 +70,15 @@ The branching-flow multi-linter analysis identified **6 core issues** across 8 l
 
 | Line | Current                              | Suggested Improvement            |
 | ---- | ------------------------------------ | -------------------------------- |
-| 91   | Context variable 'opts' lost         | Add operation context            |
-| 98   | Context variable 'opts' lost         | Add path resolution context      |
-| 102  | Context variable 'opts' lost         | Add validation context           |
-| 105  | Context variable 'opts' lost         | Add directory check context      |
-| 111  | Context variable 'opts' lost         | Add fsnotify context             |
-| 188  | Context variable 'path' lost         | Add "Add()" operation context    |
-| 197  | Context variable 'path' not included | Wrap addPath error               |
-| 210  | Context variable 'path' lost         | Add "Remove()" operation context |
-| 219  | Context variable 'path' lost         | Add removal context              |
+~~| 91   | Context variable 'opts' lost         | Add operation context            |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 98   | Context variable 'opts' lost         | Add path resolution context      |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 102  | Context variable 'opts' lost         | Add validation context           |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 105  | Context variable 'opts' lost         | Add directory check context      |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 111  | Context variable 'opts' lost         | Add fsnotify context             |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 188  | Context variable 'path' lost         | Add "Add()" operation context    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 197  | Context variable 'path' not included | Wrap addPath error               |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 210  | Context variable 'path' lost         | Add "Remove()" operation context |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 219  | Context variable 'path' lost         | Add removal context              |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 **Rationale**: Better debugging experience with full error chains.
 
@@ -90,7 +90,7 @@ The branching-flow multi-linter analysis identified **6 core issues** across 8 l
 
 | Line | Current                   | Improvement                          |
 | ---- | ------------------------- | ------------------------------------ |
-| 46   | Context variable 'd' lost | Add walk context with directory info |
+~~| 46   | Context variable 'd' lost | Add walk context with directory info |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

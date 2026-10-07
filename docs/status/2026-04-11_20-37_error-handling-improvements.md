@@ -237,37 +237,37 @@ func StructuredErrorHandler(logger *slog.Logger) ErrorHandler {
 
 ### High Priority (P0 - Critical)
 
-1. **Address flaky middleware test** - `TestWatcher_Watch_WithMiddleware` needs investigation
-2. **Add stack traces to WatcherError** - Production debugging essential
-3. **Write migration guide** - Document error handler signature change
-4. **Add structured logging example** - Common use case
-5. **Update CHANGELOG.md** - Document breaking changes (ErrorHandler signature)
+~~1. **Address flaky middleware test** - `TestWatcher_Watch_WithMiddleware` needs investigation~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Add stack traces to WatcherError** - Production debugging essential~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Write migration guide** - Document error handler signature change~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. **Add structured logging example** - Common use case~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. **Update CHANGELOG.md** - Document breaking changes (ErrorHandler signature)~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Medium Priority (P1 - Important)
 
-6. **Error rate limiting middleware** - Prevent log spam
-7. **Context propagation through pipeline** - Better observability
-8. **Circuit breaker middleware** - Automatic transient error handling
-9. **Add error benchmarks** - Measure impact of error wrapping
-10. **Integration test for error handler** - End-to-end error scenario
-11. **Document error categorization** - When to retry vs fail fast
-12. **Add error metrics example** - Prometheus/Grafana integration
-13. **Error recovery strategies** - Automatic retry for transient errors
-14. **Batch error handling** - Collect and report multiple errors
-15. **Error correlation IDs** - Link related errors together
+~~6. **Error rate limiting middleware** - Prevent log spam~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. **Context propagation through pipeline** - Better observability~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **Circuit breaker middleware** - Automatic transient error handling~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **Add error benchmarks** - Measure impact of error wrapping~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **Integration test for error handler** - End-to-end error scenario~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. **Document error categorization** - When to retry vs fail fast~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. **Add error metrics example** - Prometheus/Grafana integration~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~13. **Error recovery strategies** - Automatic retry for transient errors~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. **Batch error handling** - Collect and report multiple errors~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~15. **Error correlation IDs** - Link related errors together~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Lower Priority (P2 - Nice to Have)
 
-16. **Error sanitization** - Remove sensitive paths from errors
-17. **Localizable error messages** - i18n support
-18. **Error code constants** - Machine-readable error identifiers
-19. **OpenTelemetry integration** - Error spans and traces
-20. **Dead letter queue** - Persist unhandled errors
-21. **Error analytics** - Track most common error types
-22. **Self-healing watcher** - Auto-restart on permanent errors
-23. **Error simulation testing** - Chaos engineering for error paths
-24. **Performance impact analysis** - Measure error handling overhead
-25. **Error handling best practices doc** - Guide for library users
+~~16. **Error sanitization** - Remove sensitive paths from errors~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~17. **Localizable error messages** - i18n support~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~18. **Error code constants** - Machine-readable error identifiers~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~19. **OpenTelemetry integration** - Error spans and traces~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~20. **Dead letter queue** - Persist unhandled errors~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~21. **Error analytics** - Track most common error types~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~22. **Self-healing watcher** - Auto-restart on permanent errors~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~23. **Error simulation testing** - Chaos engineering for error paths~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~24. **Performance impact analysis** - Measure error handling overhead~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~25. **Error handling best practices doc** - Guide for library users~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

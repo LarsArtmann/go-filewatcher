@@ -156,24 +156,24 @@ The go-filewatcher project is in **ACTIVE DEVELOPMENT** with significant recent 
 
 ### High Priority
 
-1. **Fix LSP false positives** - Investigate test package configuration
-2. **Complete gogenfilter documentation** - Add to README with examples
-3. **Add integration tests** for filter_gogen.go
-4. **Review API surface** - Document any breaking changes from bool→flags
+~~1. **Fix LSP false positives** - Investigate test package configuration~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Complete gogenfilter documentation** - Add to README with examples~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Add integration tests** for filter_gogen.go~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. **Review API surface** - Document any breaking changes from bool→flags~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Medium Priority
 
-5. **Benchmark improvements** - Measure actual memory savings from bit flags
-6. **Expand filter options** - More built-in filter functions
-7. **Error message improvements** - Context-aware error wrapping
-8. **Configuration file support** - YAML/JSON watcher configuration
+~~5. **Benchmark improvements** - Measure actual memory savings from bit flags~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. **Expand filter options** - More built-in filter functions~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. **Error message improvements** - Context-aware error wrapping~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **Configuration file support** - YAML/JSON watcher configuration~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Low Priority
 
-9. **WebSocket output** - Alternative event transport
-10. **Docker multi-stage build** - Smaller production images
-11. **gRPC interface** - For remote watching
-12. **Plugin system** - Dynamic filter loading
+~~9. **WebSocket output** - Alternative event transport~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **Docker multi-stage build** - Smaller production images~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. **gRPC interface** - For remote watching~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. **Plugin system** - Dynamic filter loading~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -181,40 +181,40 @@ The go-filewatcher project is in **ACTIVE DEVELOPMENT** with significant recent 
 
 ### Immediate (Next 24h)
 
-1. ✅ Commit current changes with detailed message
-2. 📋 Update README.md with gogenfilter documentation
-3. 📋 Write integration tests for filter_gogen.go
-4. 📋 Verify bit flag changes don't break public API
-5. 📋 Add example demonstrating generated code filtering
+~~1. ✅ Commit current changes with detailed message~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. 📋 Update README.md with gogenfilter documentation~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. 📋 Write integration tests for filter_gogen.go~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. 📋 Verify bit flag changes don't break public API~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. 📋 Add example demonstrating generated code filtering~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### This Week
 
-6. 📋 Fix LSP configuration for test files
-7. 📋 Add benchmark for filter functions
-8. 📋 Review and document all exported API changes
-9. 📋 Create changelog entry for recent changes
-10. 📋 Add more comprehensive middleware examples
+~~6. 📋 Fix LSP configuration for test files~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. 📋 Add benchmark for filter functions~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. 📋 Review and document all exported API changes~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. 📋 Create changelog entry for recent changes~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. 📋 Add more comprehensive middleware examples~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### This Month
 
-11. 📋 Implement event batching for high throughput
-12. 📋 Add memory pool for Event objects
-13. 📋 Create Git ignore pattern filter
-14. 📋 Add file size-based filtering
-15. 📋 Implement configuration file loading
-16. 📋 Add metrics collection interface
-17. 📋 Create Docker example with optimal settings
-18. 📋 Write advanced usage documentation
-19. 📋 Add fuzzing tests for event processing
-20. 📋 Create performance comparison document
+~~11. 📋 Implement event batching for high throughput~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. 📋 Add memory pool for Event objects~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~13. 📋 Create Git ignore pattern filter~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. 📋 Add file size-based filtering~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~15. 📋 Implement configuration file loading~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~16. 📋 Add metrics collection interface~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~17. 📋 Create Docker example with optimal settings~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~18. 📋 Write advanced usage documentation~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~19. 📋 Add fuzzing tests for event processing~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~20. 📋 Create performance comparison document~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Future
 
-21. 📋 gRPC interface for remote monitoring
-22. 📋 WebSocket output adapter
-23. 📋 Plugin system architecture design
-24. 📋 Distributed watching support
-25. 📋 Kubernetes operator for cluster-wide watching
+~~21. 📋 gRPC interface for remote monitoring~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~22. 📋 WebSocket output adapter~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~23. 📋 Plugin system architecture design~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~24. 📋 Distributed watching support~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~25. 📋 Kubernetes operator for cluster-wide watching~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

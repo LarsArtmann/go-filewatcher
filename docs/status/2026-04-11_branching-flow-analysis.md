@@ -140,10 +140,10 @@ Splitting would harm usability and encapsulation.
 
 ## Recommendations
 
-1. **Keep current error handling** - Context variables are adequately represented
-2. **Keep 4 bool fields** - Clarity over micro-optimization
-3. **Keep large Watcher struct** - Better encapsulation and usability
-4. **Consider adding `RootPath` usage** in `watcher_walk.go` (lines 22, 36) if API changes are acceptable
+~~1. **Keep current error handling** - Context variables are adequately represented~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Keep 4 bool fields** - Clarity over micro-optimization~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Keep large Watcher struct** - Better encapsulation and usability~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. **Consider adding `RootPath` usage** in `watcher_walk.go` (lines 22, 36) if API changes are acceptable~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

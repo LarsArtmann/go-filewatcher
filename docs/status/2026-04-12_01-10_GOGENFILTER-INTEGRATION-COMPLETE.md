@@ -122,50 +122,50 @@ github.com/LarsArtmann/gogenfilter v0.1.0
 
 ### Critical Issues (Fix Immediately)
 
-1. **BUILD CACHE CORRUPTION** - `go build` and `go test` hang indefinitely
+~~1. **BUILD CACHE CORRUPTION** - `go build` and `go test` hang indefinitely~~ done — shipped ≤v2.1.0, verified v2.4.1
    - **Root Cause:** Unknown - possibly gogenfilter compilation issue or circular dependency
    - **Impact:** Cannot verify tests or build project
    - **Solution:** Try `go clean -cache`, remove replace directive, or investigate gogenfilter build
 
-2. **LOCAL REPLACE DIRECTIVE** - Blocks publishing
+~~2. **LOCAL REPLACE DIRECTIVE** - Blocks publishing~~ done — shipped ≤v2.1.0, verified v2.4.1
    - **Issue:** `go.mod` has `replace github.com/LarsArtmann/gogenfilter => ../gogenfilter`
    - **Impact:** Cannot push to remote or use as library
    - **Solution:** Remove replace directive; use proper version v0.1.0
 
 ### High Priority (Fix This Week)
 
-3. **TEST EXECUTION** - Tests written but not verified
+~~3. **TEST EXECUTION** - Tests written but not verified~~ done — shipped ≤v2.1.0, verified v2.4.1
    - **Impact:** Cannot confirm integration works
    - **Solution:** Fix build issues, run full test suite
 
-4. **EXAMPLE COMPILATION** - LSP shows import errors in filter-generated example
+~~4. **EXAMPLE COMPILATION** - LSP shows import errors in filter-generated example~~ done — shipped ≤v2.1.0, verified v2.4.1
    - **Impact:** Example may not compile
    - **Solution:** Verify example compiles and runs correctly
 
 ### Medium Priority (Fix Next Sprint)
 
-5. **BENCHMARK SUITE** - No performance comparison
+~~5. **BENCHMARK SUITE** - No performance comparison~~ done — shipped ≤v2.1.0, verified v2.4.1
    - **Impact:** Unknown overhead of gogenfilter integration
    - **Solution:** Add benchmarks comparing filter performance
 
-6. **COMPREHENSIVE DOCUMENTATION** - No advanced usage examples
+~~6. **COMPREHENSIVE DOCUMENTATION** - No advanced usage examples~~ done — shipped ≤v2.1.0, verified v2.4.1
    - **Impact:** Users don't know how to combine filters
    - **Solution:** Add documentation for FilterAnd, FilterOr combinations
 
-7. **CI/CD INTEGRATION** - No automated gogenfilter tests
+~~7. **CI/CD INTEGRATION** - No automated gogenfilter tests~~ done — shipped ≤v2.1.0, verified v2.4.1
    - **Impact:** Regression risk
    - **Solution:** Add GitHub Actions job for gogenfilter tests
 
-8. **CONTENT DETECTION VALIDATION** - Real-world testing needed
+~~8. **CONTENT DETECTION VALIDATION** - Real-world testing needed~~ done — shipped ≤v2.1.0, verified v2.4.1
    - **Impact:** Content-based detection may have edge cases
    - **Solution:** Test with actual generated files from each tool
 
 ### Low Priority (Nice to Have)
 
-9. **Middleware Integration Example** - Show gogenfilter + logging chain
-10. **Error Handling Documentation** - How to handle filter errors
-11. **Metrics Integration** - Expose gogenfilter metrics through watcher
-12. **Hot Reload Support** - Dynamic filter configuration
+~~9. **Middleware Integration Example** - Show gogenfilter + logging chain~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **Error Handling Documentation** - How to handle filter errors~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. **Metrics Integration** - Expose gogenfilter metrics through watcher~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. **Hot Reload Support** - Dynamic filter configuration~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -173,40 +173,40 @@ github.com/LarsArtmann/gogenfilter v0.1.0
 
 ### Blockers (Must Fix)
 
-1. Fix `go build` hang issue
-2. Remove go.mod replace directive
-3. Verify all tests pass
-4. Confirm example compiles and runs
+~~1. Fix `go build` hang issue~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. Remove go.mod replace directive~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. Verify all tests pass~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. Confirm example compiles and runs~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### High Priority (This Week)
 
-5. Run full test suite with race detection
-6. Add benchmark for FilterGeneratedCode
-7. Create advanced filter composition example
-8. Test with real generated files from sqlc
-9. Test with real generated files from protobuf
-10. Test with real generated files from templ
-11. Add GitHub Actions job for gogenfilter
-12. Write integration guide for users
+~~5. Run full test suite with race detection~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. Add benchmark for FilterGeneratedCode~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. Create advanced filter composition example~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. Test with real generated files from sqlc~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. Test with real generated files from protobuf~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. Test with real generated files from templ~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. Add GitHub Actions job for gogenfilter~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. Write integration guide for users~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Medium Priority (Next Sprint)
 
-13. Optimize FilterGeneratedCode for hot paths
-14. Add metrics integration
-15. Create troubleshooting guide
-16. Add more generator types (ent, gqlgen, etc.)
-17. Support custom filename patterns
-18. Support custom content patterns
-19. Add filter cache for repeated paths
-20. Create middleware that logs filtered files
+~~13. Optimize FilterGeneratedCode for hot paths~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. Add metrics integration~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~15. Create troubleshooting guide~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~16. Add more generator types (ent, gqlgen, etc.)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~17. Support custom filename patterns~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~18. Support custom content patterns~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~19. Add filter cache for repeated paths~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~20. Create middleware that logs filtered files~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Nice to Have (Backlog)
 
-21. Visualize filter statistics
-22. CLI tool for testing filters
-23. Integration with popular frameworks (Gin, Echo)
-24. Web dashboard for watcher stats
-25. Automatic generator detection (no config needed)
+~~21. Visualize filter statistics~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~22. CLI tool for testing filters~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~23. Integration with popular frameworks (Gin, Echo)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~24. Web dashboard for watcher stats~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~25. Automatic generator detection (no config needed)~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

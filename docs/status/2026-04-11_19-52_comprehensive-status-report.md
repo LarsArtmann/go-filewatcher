@@ -135,21 +135,21 @@ These are LOW PRIORITY — they don't affect correctness, only style.
 
 ### High Value (Should Do)
 
-1. **Go cache cleanup** — Fix corrupted cache to enable fast incremental builds
-2. **Race condition investigation** — Run `go test -race` on base commit to confirm pre-existing race
-3. **tparallel fixes** — Add `t.Parallel()` to filter subtests (6 issues, easy fix)
+~~1. **Go cache cleanup** — Fix corrupted cache to enable fast incremental builds~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Race condition investigation** — Run `go test -race` on base commit to confirm pre-existing race~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **tparallel fixes** — Add `t.Parallel()` to filter subtests (6 issues, easy fix)~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Medium Value (Nice to Have)
 
-4. **testpackage migration** — Move test files to `*_test` packages (5 files)
-5. **noinlineerr refactor** — Split inline error handling in tests (10 issues)
-6. **varnamelen** — Rename short variables (40 issues, tedious)
+~~4. **testpackage migration** — Move test files to `*_test` packages (5 files)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. **noinlineerr refactor** — Split inline error handling in tests (10 issues)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. **varnamelen** — Rename short variables (40 issues, tedious)~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Lower Value (Deferred)
 
-7. **Event.Path phantom type** — Breaking change, deferred to v2.0
-8. **Watcher struct split** — Breaking change, deferred to v2.0
-9. **Boolean bit flags** — Breaking change, deferred to v2.0
+~~7. **Event.Path phantom type** — Breaking change, deferred to v2.0~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **Watcher struct split** — Breaking change, deferred to v2.0~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **Boolean bit flags** — Breaking change, deferred to v2.0~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -197,31 +197,31 @@ HEAD -> master (ahead of origin by 3 commits)
 
 ## Top 25 Action Items (Future Work)
 
-1. Fix Go cache corruption manually (`rm -rf ~/Library/Caches/`)
-2. Investigate race condition in TestWatcher_Watch_WithDebounce
-3. Add t.Parallel() to filter subtests
-4. Move test files to `*_test` packages
-5. Refactor inline error handling in tests
-6. Rename short variables (varnamelen)
-7. Design Event.Path phantom type for v2.0
-8. Plan Watcher struct split for v2.0
-9. Add more integration tests
-10. Add benchmark regression tests
-11. Document public API with examples
-12. Add `WithRecursive(false)` option
-13. Add `WithPolling(fallback bool)` for NFS/network mounts
-14. Consider `Event.ModTime()` field
-15. Add `Watcher.WatchOnce()` for one-shot mode
-16. Consider `FilterMinAge()` for ignoring old files
-17. Add `MiddlewareRateBurst()` for token bucket rate limiting
-18. Add `MiddlewareDeduplicate()` to drop duplicate events
-19. Consider `Watcher.WatchChanges(ctx, targetState)` for idempotent sync
-20. Add `Event.Size()` field by stat'ing the file
-21. Add `FilterMaxSize()` complement to FilterMinSize
-22. Add `MiddlewareBatch()` to batch events over a window
-23. Consider `Watcher.AddRecursive(path)` for partial recursion
-24. Add `WithIgnorePatterns()` using glob patterns
-25. Plan v2.0 release with breaking changes
+~~1. Fix Go cache corruption manually (`rm -rf ~/Library/Caches/`)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. Investigate race condition in TestWatcher_Watch_WithDebounce~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. Add t.Parallel() to filter subtests~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. Move test files to `*_test` packages~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. Refactor inline error handling in tests~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. Rename short variables (varnamelen)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. Design Event.Path phantom type for v2.0~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. Plan Watcher struct split for v2.0~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. Add more integration tests~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. Add benchmark regression tests~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. Document public API with examples~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. Add `WithRecursive(false)` option~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~13. Add `WithPolling(fallback bool)` for NFS/network mounts~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. Consider `Event.ModTime()` field~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~15. Add `Watcher.WatchOnce()` for one-shot mode~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~16. Consider `FilterMinAge()` for ignoring old files~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~17. Add `MiddlewareRateBurst()` for token bucket rate limiting~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~18. Add `MiddlewareDeduplicate()` to drop duplicate events~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~19. Consider `Watcher.WatchChanges(ctx, targetState)` for idempotent sync~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~20. Add `Event.Size()` field by stat'ing the file~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~21. Add `FilterMaxSize()` complement to FilterMinSize~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~22. Add `MiddlewareBatch()` to batch events over a window~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~23. Consider `Watcher.AddRecursive(path)` for partial recursion~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~24. Add `WithIgnorePatterns()` using glob patterns~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~25. Plan v2.0 release with breaking changes~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

@@ -63,23 +63,23 @@ The go-filewatcher project has reached a **mature, production-ready state** with
 ### Performance Optimization (80%)
 
 - [x] Benchmarks created and running
-- [ ] Benchmark results not yet in README
-- [ ] No performance comparison with raw fsnotify
-- [ ] No continuous benchmark tracking
+~~- [ ] Benchmark results not yet in README~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] No performance comparison with raw fsnotify~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] No continuous benchmark tracking~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Advanced Features (75%)
 
 - [x] Custom filters and middleware
 - [x] Per-path callbacks
-- [ ] Event batching (not implemented)
-- [ ] File content hashing (not implemented)
+~~- [ ] Event batching (not implemented)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] File content hashing (not implemented)~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Developer Experience (85%)
 
 - [x] Good error messages
 - [x] Clear API design
-- [ ] Debug mode with verbose logging (partial)
-- [ ] No interactive CLI tool
+~~- [ ] Debug mode with verbose logging (partial)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] No interactive CLI tool~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -87,21 +87,21 @@ The go-filewatcher project has reached a **mature, production-ready state** with
 
 ### Planned Features
 
-- [ ] **Event Batching**: Group multiple events into single callback
-- [ ] **File Content Hashing**: Detect actual content changes vs metadata
-- [ ] **Watch Symlinks**: Follow symbolic links option
-- [ ] **Exponential Backoff**: For error recovery
-- [ ] **Metrics Export**: Prometheus/OpenTelemetry integration
-- [ ] **CLI Tool**: Standalone file watcher binary
-- [ ] **Plugin System**: Dynamic filter/middleware loading
-- [ ] **Remote Watching**: Watch over SSH/network
+~~- [ ] **Event Batching**: Group multiple events into single callback~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] **File Content Hashing**: Detect actual content changes vs metadata~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] **Watch Symlinks**: Follow symbolic links option~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] **Exponential Backoff**: For error recovery~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] **Metrics Export**: Prometheus/OpenTelemetry integration~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] **CLI Tool**: Standalone file watcher binary~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] **Plugin System**: Dynamic filter/middleware loading~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] **Remote Watching**: Watch over SSH/network~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Documentation
 
-- [ ] **Contributing Guide**: How to contribute to the project
-- [ ] **Changelog**: Version history and migration guide
-- [ ] **Architecture Docs**: Deep dive into internals
-- [ ] **Troubleshooting Guide**: Common issues and solutions
+~~- [ ] **Contributing Guide**: How to contribute to the project~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] **Changelog**: Version history and migration guide~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] **Architecture Docs**: Deep dive into internals~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] **Troubleshooting Guide**: Common issues and solutions~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -123,22 +123,22 @@ All known issues have been resolved:
 
 ### High Priority
 
-1. **Add Benchmark Results to README**: Show performance numbers upfront
-2. **Create Performance Comparison**: vs raw fsnotify usage
-3. **Add Continuous Benchmarking**: Track performance regressions in CI
+~~1. **Add Benchmark Results to README**: Show performance numbers upfront~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Create Performance Comparison**: vs raw fsnotify usage~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Add Continuous Benchmarking**: Track performance regressions in CI~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Medium Priority
 
-4. **Event Batching**: For high-frequency change scenarios
-5. **Better Debug Logging**: Structured debug output option
-6. **CLI Tool**: Simple command-line file watcher
-7. **Contributing Guide**: Lower barrier for contributors
+~~4. **Event Batching**: For high-frequency change scenarios~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. **Better Debug Logging**: Structured debug output option~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. **CLI Tool**: Simple command-line file watcher~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. **Contributing Guide**: Lower barrier for contributors~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Low Priority
 
-8. **Content Hashing**: Detect actual file changes
-9. **Plugin System**: Extensibility without recompilation
-10. **More Examples**: Real-world use cases (hot reload, build systems)
+~~8. **Content Hashing**: Detect actual file changes~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **Plugin System**: Extensibility without recompilation~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **More Examples**: Real-world use cases (hot reload, build systems)~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -146,43 +146,43 @@ All known issues have been resolved:
 
 ### Performance & Benchmarks (1-5)
 
-1. Add benchmark results table to README.md
-2. Create benchmark comparison with raw fsnotify
-3. Set up continuous benchmark tracking in CI
-4. Optimize hot paths based on benchmark data
-5. Add memory allocation benchmarks for all critical paths
+~~1. Add benchmark results table to README.md~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. Create benchmark comparison with raw fsnotify~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. Set up continuous benchmark tracking in CI~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. Optimize hot paths based on benchmark data~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. Add memory allocation benchmarks for all critical paths~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Documentation (6-10)
 
-6. Write CONTRIBUTING.md with guidelines
-7. Create CHANGELOG.md with version history
-8. Add Architecture.md deep dive document
-9. Write Troubleshooting.md guide
-10. Create video tutorial or GIF demos
+~~6. Write CONTRIBUTING.md with guidelines~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. Create CHANGELOG.md with version history~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. Add Architecture.md deep dive document~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. Write Troubleshooting.md guide~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. Create video tutorial or GIF demos~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Features (11-18)
 
-11. Implement event batching with configurable window
-12. Add file content hashing option
-13. Create standalone CLI tool
-14. Add symlink following support
-15. Implement exponential backoff for errors
-16. Add Prometheus metrics export
-17. Create debug mode with verbose structured logging
-18. Add plugin system for dynamic extensions
+~~11. Implement event batching with configurable window~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. Add file content hashing option~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~13. Create standalone CLI tool~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. Add symlink following support~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~15. Implement exponential backoff for errors~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~16. Add Prometheus metrics export~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~17. Create debug mode with verbose structured logging~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~18. Add plugin system for dynamic extensions~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Testing & Quality (19-22)
 
-19. Add fuzz tests for filter functions
-20. Create stress tests for high-load scenarios
-21. Add integration tests with docker containers
-22. Set up code coverage reporting in CI
+~~19. Add fuzz tests for filter functions~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~20. Create stress tests for high-load scenarios~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~21. Add integration tests with docker containers~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~22. Set up code coverage reporting in CI~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Community & Ecosystem (23-25)
 
-23. Create GitHub issue templates
-24. Set up GitHub discussions for Q&A
-25. Publish blog post announcing the library
+~~23. Create GitHub issue templates~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~24. Set up GitHub discussions for Q&A~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~25. Publish blog post announcing the library~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -195,10 +195,10 @@ We recently changed `ErrorHandler` from `func(error)` to `func(ErrorContext, err
 
 **Options:**
 
-1. **Keep breaking change** - It's cleaner, users should pin to versions
-2. **Add deprecated compatibility** - Support both signatures with type checking
-3. **Bump to v2** - Follow semver strictly
-4. **Revert to simple error** - Keep ErrorContext internal only
+~~1. **Keep breaking change** - It's cleaner, users should pin to versions~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Add deprecated compatibility** - Support both signatures with type checking~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Bump to v2** - Follow semver strictly~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. **Revert to simple error** - Keep ErrorContext internal only~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 **What I need from you:**
 

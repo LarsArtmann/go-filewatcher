@@ -167,10 +167,10 @@ Multiple parallel tests manipulate the global `os.Stderr` variable:
 
 **Why It's Fucked:**
 
-1. `t.Parallel()` runs tests concurrently
-2. Tests capture `os.Stderr` by reassignment
-3. Global state mutation without synchronization
-4. Tests read/write `os.Stderr` at the same time
+~~1. `t.Parallel()` runs tests concurrently~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. Tests capture `os.Stderr` by reassignment~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. Global state mutation without synchronization~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. Tests read/write `os.Stderr` at the same time~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 **Impact:**
 
@@ -200,56 +200,56 @@ Multiple parallel tests manipulate the global `os.Stderr` variable:
 
 ### Immediate Actions (This Week)
 
-1. **Fix Race Conditions**
+~~1. **Fix Race Conditions**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Remove `t.Parallel()` from stderr-capturing tests
    - OR implement thread-safe stderr capture
    - OR use `testing` package output capture
 
-2. **Document Breaking Changes**
+~~2. **Document Breaking Changes**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Write MIGRATION.md guide
    - Update CHANGELOG.md
    - Add deprecation notice to old examples
 
-3. **Stabilize CI**
+~~3. **Stabilize CI**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Ensure `just check` passes completely
    - Add race detector to CI (after fix)
 
 ### Short-term (Next 2 Weeks)
 
-4. **Add Integration Tests**
+~~4. **Add Integration Tests**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Test actual file watching scenarios
    - Cross-platform testing (Linux, macOS, Windows)
 
-5. **Benchmark Analysis**
+~~5. **Benchmark Analysis**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Run benchmarks
    - Establish performance baselines
    - Document memory allocations
 
-6. **Error Context Enhancement**
+~~6. **Error Context Enhancement**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Add more granular operation types
    - Include stack traces in development mode
    - Add error correlation IDs
 
 ### Medium-term (Next Month)
 
-7. **Observability**
+~~7. **Observability**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - OpenTelemetry integration
    - Prometheus metrics
    - Structured logging support
 
-8. **API Hardening**
+~~8. **API Hardening**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Review all public APIs for race safety
    - Add context cancellation tests
    - Stress testing
 
-9. **Documentation**
+~~9. **Documentation**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Architecture decision records (ADRs)
    - Performance tuning guide
    - Troubleshooting guide
 
 ### Long-term (Next Quarter)
 
-10. **Advanced Features**
+~~10. **Advanced Features**~~ done — shipped ≤v2.1.0, verified v2.4.1
     - Watch-specific events (only metadata changes)
     - Batch event processing
     - Event persistence/recovery
@@ -260,40 +260,40 @@ Multiple parallel tests manipulate the global `os.Stderr` variable:
 
 ### Critical (Do Now)
 
-1. **Fix race conditions in test suite** - Blocks everything
-2. **Make `just check` pass with race detector** - CI requirement
-3. **Write MIGRATION.md for ErrorHandler changes** - User impact
-4. **Update CHANGELOG with v2.0.0 breaking changes** - Communication
-5. **Tag v2.0.0 release** - Version clarity
+~~1. **Fix race conditions in test suite** - Blocks everything~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Make `just check` pass with race detector** - CI requirement~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Write MIGRATION.md for ErrorHandler changes** - User impact~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. **Update CHANGELOG with v2.0.0 breaking changes** - Communication~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. **Tag v2.0.0 release** - Version clarity~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### High Priority (This Week)
 
-6. **Review all parallel tests for race safety** - Systemic issue
-7. **Implement proper test isolation** - Best practice
-8. **Update examples with new ErrorHandler signature** - Documentation
-9. **Add comprehensive error context in production code** - Feature completeness
-10. **Fix ExampleEvent test output** - Test reliability
+~~6. **Review all parallel tests for race safety** - Systemic issue~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. **Implement proper test isolation** - Best practice~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **Update examples with new ErrorHandler signature** - Documentation~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **Add comprehensive error context in production code** - Feature completeness~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **Fix ExampleEvent test output** - Test reliability~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Medium Priority (Next 2 Weeks)
 
-11. **Benchmark performance analysis** - Performance visibility
-12. **Review debouncer for race conditions** - Core component
-13. **Implement retry logic for transient errors** - Resilience
-14. **Add stress tests for concurrent event handling** - Robustness
-15. **Document error handling best practices** - Developer experience
+~~11. **Benchmark performance analysis** - Performance visibility~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. **Review debouncer for race conditions** - Core component~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~13. **Implement retry logic for transient errors** - Resilience~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. **Add stress tests for concurrent event handling** - Robustness~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~15. **Document error handling best practices** - Developer experience~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Lower Priority (Next Month)
 
-16. **Add tracing integration** - Observability
-17. **Review middleware chain for race safety** - Code review
-18. **Implement proper shutdown sequence** - Clean exit
-19. **Add metrics for error rates** - Monitoring
-20. **Review fsnotify error handling** - Edge cases
-21. **Add test for ErrorContext propagation** - Test coverage
-22. **Fix TestWatcher_Watch_WithMiddleware flakiness** - Quality
-23. **Implement error categorization tests** - Feature coverage
-24. **Create release notes** - Communication
-25. **Add production readiness checklist** - Quality gate
+~~16. **Add tracing integration** - Observability~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~17. **Review middleware chain for race safety** - Code review~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~18. **Implement proper shutdown sequence** - Clean exit~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~19. **Add metrics for error rates** - Monitoring~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~20. **Review fsnotify error handling** - Edge cases~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~21. **Add test for ErrorContext propagation** - Test coverage~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~22. **Fix TestWatcher_Watch_WithMiddleware flakiness** - Quality~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~23. **Implement error categorization tests** - Feature coverage~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~24. **Create release notes** - Communication~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~25. **Add production readiness checklist** - Quality gate~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

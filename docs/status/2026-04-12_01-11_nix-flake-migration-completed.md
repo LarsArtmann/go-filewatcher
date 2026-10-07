@@ -84,26 +84,26 @@ None. Migration was clean and successful.
 
 ### High Priority
 
-1. **Go Version Alignment:** Update flake.nix to use Go 1.26.1 specifically when available in nixpkgs
-2. **Flake Testing:** Complete full `nix flake check` verification
-3. **CI/CD Update:** Update GitHub Actions workflow to use Nix instead of just
-4. **Documentation:** Add Nix installation instructions to README.md
-5. **Wrapper Scripts:** Consider adding shell aliases or scripts for common commands
+~~1. **Go Version Alignment:** Update flake.nix to use Go 1.26.1 specifically when available in nixpkgs~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Flake Testing:** Complete full `nix flake check` verification~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **CI/CD Update:** Update GitHub Actions workflow to use Nix instead of just~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. **Documentation:** Add Nix installation instructions to README.md~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. **Wrapper Scripts:** Consider adding shell aliases or scripts for common commands~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Medium Priority
 
-6. **flake.lock Updates:** Set up automated updates with `nix flake update`
-7. **Cachix Integration:** Set up binary cache for faster builds
-8. **Nix Package:** Consider publishing to nixpkgs as a proper package
-9. **Home Manager Module:** Provide Home Manager configuration for users
-10. **Docker Integration:** Create Nix-based Docker image
+~~6. **flake.lock Updates:** Set up automated updates with `nix flake update`~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. **Cachix Integration:** Set up binary cache for faster builds~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **Nix Package:** Consider publishing to nixpkgs as a proper package~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **Home Manager Module:** Provide Home Manager configuration for users~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **Docker Integration:** Create Nix-based Docker image~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Low Priority
 
-11. **Nix Run Apps:** Add `nix run .#<command>` support for each task
-12. **Flake Checks:** Add automated checks (build, test, lint)
-13. **Nix Shell Alternatives:** Provide minimal shell without all tools
-14. **Documentation Site:** Add Nix setup to documentation website
+~~11. **Nix Run Apps:** Add `nix run .#<command>` support for each task~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. **Flake Checks:** Add automated checks (build, test, lint)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~13. **Nix Shell Alternatives:** Provide minimal shell without all tools~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. **Documentation Site:** Add Nix setup to documentation website~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -111,43 +111,43 @@ None. Migration was clean and successful.
 
 ### Critical (Do First)
 
-1. **Fix Go Version in Flake:** Ensure Go 1.26.1 is used (currently 1.24.x)
-2. **Update CI/CD:** Replace `just` commands with direct Go commands in `.github/workflows/ci.yml`
-3. **Test Flake:** Complete `nix develop` and `nix flake check` verification
-4. **Update README:** Add Nix installation and usage instructions
-5. **Add CHANGELOG Entry:** Document breaking change (justfile removal)
+~~1. **Fix Go Version in Flake:** Ensure Go 1.26.1 is used (currently 1.24.x)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Update CI/CD:** Replace `just` commands with direct Go commands in `.github/workflows/ci.yml`~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Test Flake:** Complete `nix develop` and `nix flake check` verification~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. **Update README:** Add Nix installation and usage instructions~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. **Add CHANGELOG Entry:** Document breaking change (justfile removal)~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### High Priority
 
-6. **Fix 5 Critical Phantom Types** (from branching-flow-analysis-plan)
-7. **Create Wrapper Scripts:** Optional scripts for users who prefer commands over `go ...`
-8. **Add Nix to CI:** Install Nix in GitHub Actions for consistency
-9. **Update TODO_LIST:** Mark justfile-related tasks as completed
-10. **Test direnv:** Verify `.envrc` works correctly with direnv
+~~6. **Fix 5 Critical Phantom Types** (from branching-flow-analysis-plan)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. **Create Wrapper Scripts:** Optional scripts for users who prefer commands over `go ...`~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **Add Nix to CI:** Install Nix in GitHub Actions for consistency~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **Update TODO_LIST:** Mark justfile-related tasks as completed~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **Test direnv:** Verify `.envrc` works correctly with direnv~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Medium Priority
 
-11. **Fix handleNewDirectory race** (writes watchList without lock)
-12. **Fix shouldSkipDir** to respect WithIgnoreDirs during walking
-13. **Fix race conditions in test suite**
-14. **Fix MiddlewareWriteFileLog** — cache file handle
-15. **Fix 10 exhaustruct violations in filter_test.go**
+~~11. **Fix handleNewDirectory race** (writes watchList without lock)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. **Fix shouldSkipDir** to respect WithIgnoreDirs during walking~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~13. **Fix race conditions in test suite**~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. **Fix MiddlewareWriteFileLog** — cache file handle~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~15. **Fix 10 exhaustruct violations in filter_test.go**~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Feature Development
 
-16. **Implement event batching** with configurable window
-17. **Add FilterGlob pattern** support
-18. **Add Watcher.WatchOnce()** for one-shot mode
-19. **Add symlink following** support
-20. **Add Event.ModTime()** field
+~~16. **Implement event batching** with configurable window~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~17. **Add FilterGlob pattern** support~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~18. **Add Watcher.WatchOnce()** for one-shot mode~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~19. **Add symlink following** support~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~20. **Add Event.ModTime()** field~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Testing & Quality
 
-21. **Raise test coverage** from 77% → 90%+
-22. **Add integration tests** for full Watch→Event→Close lifecycle
-23. **Add benchmark regression** tests
-24. **Fix flaky tests** (TestWatcher_Watch_Deletes, middleware tests)
-25. **Add stress tests** (10k+ files)
+~~21. **Raise test coverage** from 77% → 90%+~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~22. **Add integration tests** for full Watch→Event→Close lifecycle~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~23. **Add benchmark regression** tests~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~24. **Fix flaky tests** (TestWatcher_Watch_Deletes, middleware tests)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~25. **Add stress tests** (10k+ files)~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

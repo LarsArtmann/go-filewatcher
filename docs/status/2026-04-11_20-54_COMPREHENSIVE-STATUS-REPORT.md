@@ -110,27 +110,27 @@
 
 ### Immediate (P0)
 
-1. **Fix Go Cache** - Required for any verification
-2. **Complete Phantom Types** - Address 3 critical violations
-3. **Run Full Test Suite** - Verify boolean blindness fix
+~~1. **Fix Go Cache** - Required for any verification~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Complete Phantom Types** - Address 3 critical violations~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Run Full Test Suite** - Verify boolean blindness fix~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Short-term (P1)
 
-4. **Error Context Wrapping** - Better debugging experience
-5. **Property-Based Tests** - Add fuzzing for edge cases
-6. **Benchmark Suite** - Performance regression testing
+~~4. **Error Context Wrapping** - Better debugging experience~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. **Property-Based Tests** - Add fuzzing for edge cases~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. **Benchmark Suite** - Performance regression testing~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Medium-term (P2)
 
-7. **Watcher Struct Refactor** - Split config from state
-8. **Integration Tests** - Real fsnotify behavior
-9. **Documentation** - More complex usage patterns
+~~7. **Watcher Struct Refactor** - Split config from state~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **Integration Tests** - Real fsnotify behavior~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **Documentation** - More complex usage patterns~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Long-term (P3)
 
-10. **v2.0 Breaking Changes** - Event.Path phantom type, struct split
-11. **Metrics Collection** - Prometheus/OpenTelemetry
-12. **Debug Logging** - Optional verbose operation logging
+~~10. **v2.0 Breaking Changes** - Event.Path phantom type, struct split~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. **Metrics Collection** - Prometheus/OpenTelemetry~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. **Debug Logging** - Optional verbose operation logging~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -140,41 +140,41 @@
 
 | # | Task                                   | File               | Effort |
 | - | -------------------------------------- | ------------------ | ------ |
-| 1 | Fix Go build cache corruption          | -                  | 10 min |
-| 2 | Implement `OpString` phantom type      | errors.go:102      | 5 min  |
-| 3 | Implement `RootString` phantom type    | watcher_walk.go:23 | 5 min  |
-| 4 | Implement `RootString` phantom type    | watcher_walk.go:37 | 5 min  |
-| 5 | Run full test suite with race detector | -                  | 5 min  |
+~~| 1 | Fix Go build cache corruption          | -                  | 10 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 2 | Implement `OpString` phantom type      | errors.go:102      | 5 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 3 | Implement `RootString` phantom type    | watcher_walk.go:23 | 5 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 4 | Implement `RootString` phantom type    | watcher_walk.go:37 | 5 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 5 | Run full test suite with race detector | -                  | 5 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### P1: High Value
 
 | #  | Task                                     | Impact          | Effort |
 | -- | ---------------------------------------- | --------------- | ------ |
-| 6  | Add error context wrapping (10 issues)   | Debugging       | 20 min |
-| 7  | Add property-based tests (fuzzing)       | Reliability     | 30 min |
-| 8  | Create benchmark regression suite        | Performance     | 20 min |
-| 9  | Add integration tests with real fsnotify | Quality         | 45 min |
-| 10 | Document all phantom types               | Maintainability | 15 min |
-| 11 | Add `PathString` phantom type (breaking) | Type Safety     | 30 min |
-| 12 | Optimize `Watcher` struct (split)        | Memory          | 45 min |
-| 13 | Add pre-commit hooks                     | Quality Gates   | 15 min |
-| 14 | Create migration guide for v2.0          | Adoption        | 30 min |
-| 15 | Add debug logging middleware             | Debugging       | 20 min |
+~~| 6  | Add error context wrapping (10 issues)   | Debugging       | 20 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 7  | Add property-based tests (fuzzing)       | Reliability     | 30 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 8  | Create benchmark regression suite        | Performance     | 20 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 9  | Add integration tests with real fsnotify | Quality         | 45 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 10 | Document all phantom types               | Maintainability | 15 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 11 | Add `PathString` phantom type (breaking) | Type Safety     | 30 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 12 | Optimize `Watcher` struct (split)        | Memory          | 45 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 13 | Add pre-commit hooks                     | Quality Gates   | 15 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 14 | Create migration guide for v2.0          | Adoption        | 30 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 15 | Add debug logging middleware             | Debugging       | 20 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### P2: Medium Value
 
 | #  | Task                               | Impact        | Effort |
 | -- | ---------------------------------- | ------------- | ------ |
-| 16 | Add Prometheus metrics collection  | Observability | 45 min |
-| 17 | Implement circuit breaker pattern  | Resilience    | 30 min |
-| 18 | Add more complex usage examples    | Documentation | 30 min |
-| 19 | Optimize filter composition        | Performance   | 20 min |
-| 20 | Add `BufferSize` phantom type      | Type Safety   | 10 min |
-| 21 | Add custom filesystem abstraction  | Testability   | 45 min |
-| 22 | Create event coalescing strategies | Performance   | 40 min |
-| 23 | Add symlink following support      | Features      | 30 min |
-| 24 | Optimize `DebouncerMixin` further  | Memory        | 15 min |
-| 25 | Add structured logging             | Observability | 30 min |
+~~| 16 | Add Prometheus metrics collection  | Observability | 45 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 17 | Implement circuit breaker pattern  | Resilience    | 30 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 18 | Add more complex usage examples    | Documentation | 30 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 19 | Optimize filter composition        | Performance   | 20 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 20 | Add `BufferSize` phantom type      | Type Safety   | 10 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 21 | Add custom filesystem abstraction  | Testability   | 45 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 22 | Create event coalescing strategies | Performance   | 40 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 23 | Add symlink following support      | Features      | 30 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 24 | Optimize `DebouncerMixin` further  | Memory        | 15 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 25 | Add structured logging             | Observability | 30 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

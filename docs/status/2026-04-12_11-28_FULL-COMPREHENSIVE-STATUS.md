@@ -200,63 +200,63 @@ The go-filewatcher project is in **excellent condition**. All tests pass, the bu
 
 ### Immediate (This Week)
 
-1. **Add nolint directives for intentional non-parallel tests**
+~~1. **Add nolint directives for intentional non-parallel tests**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - `TestErrorHandler_DefaultLogsToStderr`
    - `TestErrorHandler_DefaultWithoutPath`
    - `TestWatcher_handleError_Default`
 
-2. **Clear LSP diagnostic cache**
+~~2. **Clear LSP diagnostic cache**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Restart gopls to resolve false import errors
 
-3. **Document pre-existing race condition**
+~~3. **Document pre-existing race condition**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Add ADR explaining debouncer race
 
 ### Short Term (Next 2 Weeks)
 
-4. **Complete filter_gogen.go test coverage**
+~~4. **Complete filter_gogen.go test coverage**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Add integration tests for all generator types
    - Test edge cases (symlinks, permissions)
 
-5. **Address TODO_LIST.md P0 items**
+~~5. **Address TODO_LIST.md P0 items**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Focus on critical architecture improvements
    - Fix remaining race conditions
 
-6. **Improve example code quality**
+~~6. **Improve example code quality**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Fix linter warnings in examples/
    - Add proper error handling
 
 ### Medium Term (Next Month)
 
-7. **Add missing public API tests**
+~~7. **Add missing public API tests**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Stats(), Remove(), WatchList()
    - FilterMinSize(), MiddlewareWriteFileLog()
 
-8. **Create Architecture.md**
+~~8. **Create Architecture.md**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - Document design decisions
    - Explain phantom type strategy
 
-9. **Implement event batching**
+~~9. **Implement event batching**~~ done — shipped ≤v2.1.0, verified v2.4.1
    - WithBatchWindow(duration) option
    - Group rapid-fire events
 
-10. **Add observability features**
+~~10. **Add observability features**~~ done — shipped ≤v2.1.0, verified v2.4.1
     - Prometheus metrics
     - Structured logging
 
 ### Long Term (Next Quarter)
 
-11. **v2.0 Release**
+~~11. **v2.0 Release**~~ done — shipped ≤v2.1.0, verified v2.4.1
     - Tag v2.0.0 with breaking changes
     - Complete migration documentation
 
-12. **Performance optimizations**
+~~12. **Performance optimizations**~~ done — shipped ≤v2.1.0, verified v2.4.1
     - Memory pool for Event objects
     - Profile-guided optimization
 
-13. **Plugin system**
+~~13. **Plugin system**~~ done — shipped ≤v2.1.0, verified v2.4.1
     - Dynamic filter/middleware loading
 
-14. **Distributed watching**
+~~14. **Distributed watching**~~ done — shipped ≤v2.1.0, verified v2.4.1
     - Multi-node coordination
     - Kubernetes operator
 
@@ -268,41 +268,41 @@ The go-filewatcher project is in **excellent condition**. All tests pass, the bu
 
 | # | Task                                                 | File/Area              | Effort | Customer Value       |
 | - | ---------------------------------------------------- | ---------------------- | ------ | -------------------- |
-| 1 | Add nolint:paralleltest for intentional serial tests | errors_test.go:330,360 | 5 min  | Clean linter output  |
-| 2 | Fix gopls diagnostic cache                           | LSP restart            | 2 min  | Developer experience |
-| 3 | Document pre-existing debouncer race                 | docs/adr/              | 15 min | Transparency         |
-| 4 | Complete filter_gogen.go tests                       | filter_gogen_test.go   | 45 min | Quality assurance    |
-| 5 | Fix examples/filter-generated linter issues          | examples/              | 20 min | Code quality         |
+~~| 1 | Add nolint:paralleltest for intentional serial tests | errors_test.go:330,360 | 5 min  | Clean linter output  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 2 | Fix gopls diagnostic cache                           | LSP restart            | 2 min  | Developer experience |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 3 | Document pre-existing debouncer race                 | docs/adr/              | 15 min | Transparency         |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 4 | Complete filter_gogen.go tests                       | filter_gogen_test.go   | 45 min | Quality assurance    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 5 | Fix examples/filter-generated linter issues          | examples/              | 20 min | Code quality         |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### P1: High Value
 
 | #  | Task                             | Impact          | Effort  |
 | -- | -------------------------------- | --------------- | ------- |
-| 6  | Add tests for Stats() method     | Coverage        | 15 min  |
-| 7  | Add tests for Remove() method    | Coverage        | 15 min  |
-| 8  | Add tests for WatchList() method | Coverage        | 15 min  |
-| 9  | Create Architecture.md           | Documentation   | 1 hour  |
-| 10 | Add benchmark results to README  | Marketing       | 30 min  |
-| 11 | Implement WithOnError() option   | API enhancement | 20 min  |
-| 12 | Add stress tests                 | Reliability     | 2 hours |
-| 13 | Fix remaining linter issues      | Quality         | 1 hour  |
-| 14 | Create CONTRIBUTING.md           | Community       | 30 min  |
-| 15 | Add fuzz tests for filters       | Robustness      | 1 hour  |
+~~| 6  | Add tests for Stats() method     | Coverage        | 15 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 7  | Add tests for Remove() method    | Coverage        | 15 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 8  | Add tests for WatchList() method | Coverage        | 15 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 9  | Create Architecture.md           | Documentation   | 1 hour  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 10 | Add benchmark results to README  | Marketing       | 30 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 11 | Implement WithOnError() option   | API enhancement | 20 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 12 | Add stress tests                 | Reliability     | 2 hours |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 13 | Fix remaining linter issues      | Quality         | 1 hour  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 14 | Create CONTRIBUTING.md           | Community       | 30 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 15 | Add fuzz tests for filters       | Robustness      | 1 hour  |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### P2: Medium Value
 
 | #  | Task                            | Impact        | Effort  |
 | -- | ------------------------------- | ------------- | ------- |
-| 16 | Implement event batching        | Performance   | 2 hours |
-| 17 | Add Prometheus metrics          | Observability | 1 hour  |
-| 18 | Add slog integration            | Logging       | 1 hour  |
-| 19 | Create Troubleshooting.md       | Support       | 30 min  |
-| 20 | Add WithRecursive(false) option | API           | 15 min  |
-| 21 | Implement WatchOnce() mode      | Feature       | 30 min  |
-| 22 | Add FilterMinAge()              | Feature       | 30 min  |
-| 23 | Add FilterMaxSize()             | Feature       | 20 min  |
-| 24 | Create video tutorial           | Education     | 3 hours |
-| 25 | Tag v2.0.0 release              | Milestone     | 15 min  |
+~~| 16 | Implement event batching        | Performance   | 2 hours |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 17 | Add Prometheus metrics          | Observability | 1 hour  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 18 | Add slog integration            | Logging       | 1 hour  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 19 | Create Troubleshooting.md       | Support       | 30 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 20 | Add WithRecursive(false) option | API           | 15 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 21 | Implement WatchOnce() mode      | Feature       | 30 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 22 | Add FilterMinAge()              | Feature       | 30 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 23 | Add FilterMaxSize()             | Feature       | 20 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 24 | Create video tutorial           | Education     | 3 hours |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 25 | Tag v2.0.0 release              | Milestone     | 15 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

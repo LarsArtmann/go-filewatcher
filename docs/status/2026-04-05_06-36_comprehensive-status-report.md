@@ -182,36 +182,36 @@ Present and functional but missing:
 
 | # | Item                                                          | Priority | Effort | Impact                               |
 | - | ------------------------------------------------------------- | -------- | ------ | ------------------------------------ |
-| 1 | Replace `cockroachdb/errors` with stdlib                      | 🟠 High  | 10min  | Eliminates 39 transitive deps        |
-| 2 | Fix `shouldSkipDir` to respect user `WithIgnoreDirs`          | 🟠 High  | 10min  | Wastes kernel FDs, confusing         |
-| 3 | Fix `MiddlewareWriteFileLog` — cache file handle              | 🟠 High  | 10min  | Opens file per event → FD exhaustion |
-| 4 | Fix `convertEvent` combined ops (Create\|Write → Create only) | 🟡 Med   | 10min  | Silently loses Write ops             |
-| 5 | Replace `log.Logger` with `log/slog` in middleware            | 🟡 Med   | 10min  | Modern Go (1.21+)                    |
-| 6 | Split `watcher.go` (548 lines) into focused files             | 🟢 Low   | 10min  | Maintainability                      |
-| 7 | Extract `fsnotify.Watcher` behind internal interface          | 🟢 Low   | 10min  | Enables mock testing                 |
-| 8 | Add `Errors() <-chan error` method                            | 🟢 Low   | 10min  | Better than callback composability   |
+~~| 1 | Replace `cockroachdb/errors` with stdlib                      | 🟠 High  | 10min  | Eliminates 39 transitive deps        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 2 | Fix `shouldSkipDir` to respect user `WithIgnoreDirs`          | 🟠 High  | 10min  | Wastes kernel FDs, confusing         |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 3 | Fix `MiddlewareWriteFileLog` — cache file handle              | 🟠 High  | 10min  | Opens file per event → FD exhaustion |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 4 | Fix `convertEvent` combined ops (Create\|Write → Create only) | 🟡 Med   | 10min  | Silently loses Write ops             |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 5 | Replace `log.Logger` with `log/slog` in middleware            | 🟡 Med   | 10min  | Modern Go (1.21+)                    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 6 | Split `watcher.go` (548 lines) into focused files             | 🟢 Low   | 10min  | Maintainability                      |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 7 | Extract `fsnotify.Watcher` behind internal interface          | 🟢 Low   | 10min  | Enables mock testing                 |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 8 | Add `Errors() <-chan error` method                            | 🟢 Low   | 10min  | Better than callback composability   |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ### Testing
 
 | #  | Item                                  | Priority | Effort | Impact           |
 | -- | ------------------------------------- | -------- | ------ | ---------------- |
-| 9  | Tests for 6 zero-coverage functions   | 🟠 High  | 10min  | Coverage → 85%+  |
-| 10 | Benchmark tests (debouncer, filter)   | 🟡 Med   | 10min  | Perf baseline    |
-| 11 | Stress tests (10k+ files)             | 🟢 Low   | 10min  | Scale confidence |
-| 12 | Fix `TestWatcher_Watch_Deletes` flake | 🟡 Med   | 10min  | CI stability     |
+~~| 9  | Tests for 6 zero-coverage functions   | 🟠 High  | 10min  | Coverage → 85%+  |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 10 | Benchmark tests (debouncer, filter)   | 🟡 Med   | 10min  | Perf baseline    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 11 | Stress tests (10k+ files)             | 🟢 Low   | 10min  | Scale confidence |~~ OPEN → TODO_LIST (large-tree stress harness)
+~~| 12 | Fix `TestWatcher_Watch_Deletes` flake | 🟡 Med   | 10min  | CI stability     |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ### Infrastructure / Release
 
 | #  | Item                              | Priority | Effort | Impact                |
 | -- | --------------------------------- | -------- | ------ | --------------------- |
-| 13 | GitHub Actions CI pipeline        | 🟠 High  | 10min  | Automated quality     |
-| 14 | Tag v0.1.0 release                | 🟡 Med   | 2min   | Ship it               |
-| 15 | Push 2 unpushed commits to origin | 🟡 Med   | 1min   | Backup + visibility   |
-| 16 | Goreleaser configuration          | 🟢 Low   | 10min  | Cross-platform builds |
-| 17 | CONTRIBUTING.md + CODEOWNERS      | 🟢 Low   | 10min  | Community readiness   |
-| 18 | Dependabot / Renovate config      | 🟢 Low   | 5min   | Automated updates     |
-| 19 | Remove `report/jscpd-report.json` | 🟢 Low   | 1min   | Dead artifact         |
-| 20 | Remove empty `pkg/` directory     | 🟢 Low   | 1min   | Dead directory        |
+~~| 13 | GitHub Actions CI pipeline        | 🟠 High  | 10min  | Automated quality     |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 14 | Tag v0.1.0 release                | 🟡 Med   | 2min   | Ship it               |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 15 | Push 2 unpushed commits to origin | 🟡 Med   | 1min   | Backup + visibility   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 16 | Goreleaser configuration          | 🟢 Low   | 10min  | Cross-platform builds |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 17 | CONTRIBUTING.md + CODEOWNERS      | 🟢 Low   | 10min  | Community readiness   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 18 | Dependabot / Renovate config      | 🟢 Low   | 5min   | Automated updates     |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 19 | Remove `report/jscpd-report.json` | 🟢 Low   | 1min   | Dead artifact         |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 20 | Remove empty `pkg/` directory     | 🟢 Low   | 1min   | Dead directory        |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 
@@ -229,13 +229,13 @@ Present and functional but missing:
 
 **Residual concerns (not blockers):**
 
-1. **39 transitive dependencies** — `cockroachdb/errors` pulls in sentry-go, protobuf, and 37 others. For a utility library with 5 sentinel errors, this is the definition of overkill.
+~~1. **39 transitive dependencies** — `cockroachdb/errors` pulls in sentry-go, protobuf, and 37 others. For a utility library with 5 sentinel errors, this is the definition of overkill.~~ done — shipped ≤v2.2.0, verified v2.4.1
 
-2. **`MiddlewareWriteFileLog` opens file per event** — Under burst filesystem activity, this could exhaust file descriptors. Not a race, but a performance/reliability footgun.
+~~2. **`MiddlewareWriteFileLog` opens file per event** — Under burst filesystem activity, this could exhaust file descriptors. Not a race, but a performance/reliability footgun.~~ done — shipped ≤v2.2.0, verified v2.4.1
 
-3. **`convertEvent` silently loses combined ops** — fsnotify reports `Create|Write` as a bitmask. The switch picks the first match (Create), discarding Write. Not a bug per se (documented priority), but surprising for users who expect all ops.
+~~3. **`convertEvent` silently loses combined ops** — fsnotify reports `Create|Write` as a bitmask. The switch picks the first match (Create), discarding Write. Not a bug per se (documented priority), but surprising for users who expect all ops.~~ done — shipped ≤v2.2.0, verified v2.4.1
 
-4. **Flaky test** — `TestWatcher_Watch_Deletes` intermittent timeout on macOS. Race between file removal and fsnotify event delivery. Observed 1 failure in ~5 runs historically.
+~~4. **Flaky test** — `TestWatcher_Watch_Deletes` intermittent timeout on macOS. Race between file removal and fsnotify event delivery. Observed 1 failure in ~5 runs historically.~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 
@@ -245,41 +245,41 @@ Present and functional but missing:
 
 | # | Action                                                     | Why                                                    |
 | - | ---------------------------------------------------------- | ------------------------------------------------------ |
-| 1 | Add tests for `Remove()`, `WatchList()`, `FilterMinSize()` | 3 functions at 0% coverage; easy table-driven tests    |
-| 2 | Add tests for `GlobalDebouncer.Flush()`, `handleError()`   | 2 more functions at 0%; easy to test                   |
-| 3 | Add test for `MiddlewareWriteFileLog()`                    | Last 0% function; test with temp file                  |
-| 4 | Replace `cockroachdb/errors` with stdlib                   | 41 → 2 total dependencies. This IS the library's value |
-| 5 | GitHub Actions CI                                          | Prevent regressions, enable confidence in PRs          |
+~~| 1 | Add tests for `Remove()`, `WatchList()`, `FilterMinSize()` | 3 functions at 0% coverage; easy table-driven tests    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 2 | Add tests for `GlobalDebouncer.Flush()`, `handleError()`   | 2 more functions at 0%; easy to test                   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 3 | Add test for `MiddlewareWriteFileLog()`                    | Last 0% function; test with temp file                  |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 4 | Replace `cockroachdb/errors` with stdlib                   | 41 → 2 total dependencies. This IS the library's value |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 5 | GitHub Actions CI                                          | Prevent regressions, enable confidence in PRs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ### High Impact / Medium Effort
 
 | #  | Action                                               | Why                                         |
 | -- | ---------------------------------------------------- | ------------------------------------------- |
-| 6  | Fix `shouldSkipDir` to respect user `WithIgnoreDirs` | Prevents wasting kernel FDs on ignored dirs |
-| 7  | Fix `MiddlewareWriteFileLog` file handle caching     | Prevents FD exhaustion under burst          |
-| 8  | Tag v0.1.0 + push to origin                          | Ship it                                     |
-| 9  | Fix `convertEvent` combined ops                      | Don't silently lose Write events            |
-| 10 | Add benchmarks                                       | Performance baseline for future changes     |
+~~| 6  | Fix `shouldSkipDir` to respect user `WithIgnoreDirs` | Prevents wasting kernel FDs on ignored dirs |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 7  | Fix `MiddlewareWriteFileLog` file handle caching     | Prevents FD exhaustion under burst          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 8  | Tag v0.1.0 + push to origin                          | Ship it                                     |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 9  | Fix `convertEvent` combined ops                      | Don't silently lose Write events            |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 10 | Add benchmarks                                       | Performance baseline for future changes     |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ### Medium Impact / Various Effort
 
 | #  | Action                                           | Why                           |
 | -- | ------------------------------------------------ | ----------------------------- |
-| 11 | Replace `log.Logger` with `slog`                 | Modern Go standard (1.21+)    |
-| 12 | Fix `TestWatcher_Watch_Deletes` flakiness        | CI stability                  |
-| 13 | Update README with advanced usage + architecture | User onboarding               |
-| 14 | CONTRIBUTING.md + CODEOWNERS                     | Community readiness           |
-| 15 | Split `watcher.go` into focused files            | 548 lines is hard to navigate |
+~~| 11 | Replace `log.Logger` with `slog`                 | Modern Go standard (1.21+)    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 12 | Fix `TestWatcher_Watch_Deletes` flakiness        | CI stability                  |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 13 | Update README with advanced usage + architecture | User onboarding               |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 14 | CONTRIBUTING.md + CODEOWNERS                     | Community readiness           |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 15 | Split `watcher.go` into focused files            | 548 lines is hard to navigate |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ### Lower Priority
 
 | #  | Action                                           | Why                          |
 | -- | ------------------------------------------------ | ---------------------------- |
-| 16 | Extract `fsnotify.Watcher` behind interface      | Enables mock testing         |
-| 17 | Stress tests (10k+ files)                        | Scale confidence             |
-| 18 | Goreleaser configuration                         | Cross-platform releases      |
-| 19 | Dependabot / Renovate                            | Automated dependency updates |
-| 20 | Remove `report/jscpd-report.json` + empty `pkg/` | Dead artifacts               |
+~~| 16 | Extract `fsnotify.Watcher` behind interface      | Enables mock testing         |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 17 | Stress tests (10k+ files)                        | Scale confidence             |~~ OPEN → TODO_LIST (large-tree stress harness)
+~~| 18 | Goreleaser configuration                         | Cross-platform releases      |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 19 | Dependabot / Renovate                            | Automated dependency updates |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 20 | Remove `report/jscpd-report.json` + empty `pkg/` | Dead artifacts               |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 
@@ -289,31 +289,32 @@ Sorted by impact × ease ÷ risk. Each task ≤12 min.
 
 | #  | Task                                                           | Priority | Effort | Category   | Status      |
 | -- | -------------------------------------------------------------- | -------- | ------ | ---------- | ----------- |
-| 1  | Add test for `Remove()` method                                 | 🟠 P1    | 10min  | Testing    | Not started |
-| 2  | Add test for `WatchList()` method                              | 🟠 P1    | 10min  | Testing    | Not started |
-| 3  | Add test for `FilterMinSize()` filter                          | 🟠 P1    | 10min  | Testing    | Not started |
-| 4  | Add test for `GlobalDebouncer.Flush()`                         | 🟠 P1    | 10min  | Testing    | Not started |
-| 5  | Add test for `handleError()` stderr path                       | 🟠 P1    | 10min  | Testing    | Not started |
-| 6  | Add test for `MiddlewareWriteFileLog()`                        | 🟠 P1    | 10min  | Testing    | Not started |
-| 7  | Verify coverage ≥85% after new tests                           | 🟠 P1    | 5min   | Quality    | Not started |
-| 8  | Replace `cockroachdb/errors` with stdlib                       | 🟠 P1    | 10min  | Arch       | Not started |
-| 9  | Fix `shouldSkipDir` to respect `WithIgnoreDirs` during walking | 🟠 P1    | 10min  | Bug        | Not started |
-| 10 | Fix `MiddlewareWriteFileLog` — cache file handle               | 🟠 P1    | 10min  | Bug        | Not started |
-| 11 | Add GitHub Actions CI pipeline                                 | 🟡 P2    | 10min  | Infra      | Not started |
-| 12 | Push 2 unpushed commits to origin                              | 🟡 P2    | 1min   | Infra      | Not started |
-| 13 | Tag v0.1.0 release                                             | 🟡 P2    | 2min   | Release    | Not started |
-| 14 | Fix `convertEvent` combined fsnotify ops                       | 🟡 P2    | 10min  | Bug        | Not started |
-| 15 | Add benchmark tests (debouncer, filters, middleware)           | 🟡 P2    | 10min  | Testing    | Not started |
-| 16 | Replace `log.Logger` with `slog` in `MiddlewareLogging`        | 🟡 P2    | 10min  | Arch       | Not started |
-| 17 | Fix `TestWatcher_Watch_Deletes` flakiness                      | 🟡 P2    | 10min  | Testing    | Not started |
-| 18 | Update README + CHANGELOG with all changes                     | 🟡 P2    | 10min  | Docs       | Not started |
-| 19 | Split `watcher.go` (548 lines) into focused files              | 🟢 P3    | 10min  | Arch       | Not started |
-| 20 | Add `CONTRIBUTING.md` + `CODEOWNERS`                           | 🟢 P3    | 10min  | Community  | Not started |
-| 21 | Extract `fsnotify.Watcher` behind internal interface           | 🟢 P3    | 10min  | Arch       | Not started |
-| 22 | Goreleaser configuration                                       | 🟢 P3    | 10min  | Infra      | Not started |
-| 23 | Remove dead artifacts (`report/`, empty `pkg/`)                | 🟢 P3    | 2min   | Cleanup    | Not started |
-| 24 | Stress tests (10k+ files)                                      | 🔵 P4    | 10min  | Testing    | Not started |
-| 25 | Integrate into real projects for validation                    | 🔵 P4    | 60min  | Validation | Not started |
+~~| 1  | Add test for `Remove()` method                                 | 🟠 P1    | 10min  | Testing    | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 2  | Add test for `WatchList()` method                              | 🟠 P1    | 10min  | Testing    | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 3  | Add test for `FilterMinSize()` filter                          | 🟠 P1    | 10min  | Testing    | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 4  | Add test for `GlobalDebouncer.Flush()`                         | 🟠 P1    | 10min  | Testing    | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 5  | Add test for `handleError()` stderr path                       | 🟠 P1    | 10min  | Testing    | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 6  | Add test for `MiddlewareWriteFileLog()`                        | 🟠 P1    | 10min  | Testing    | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 7  | Verify coverage ≥85% after new tests                           | 🟠 P1    | 5min   | Quality    | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 8  | Replace `cockroachdb/errors` with stdlib                       | 🟠 P1    | 10min  | Arch       | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 9  | Fix `shouldSkipDir` to respect `WithIgnoreDirs` during walking | 🟠 P1    | 10min  | Bug        | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 10 | Fix `MiddlewareWriteFileLog` — cache file handle               | 🟠 P1    | 10min  | Bug        | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 11 | Add GitHub Actions CI pipeline                                 | 🟡 P2    | 10min  | Infra      | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 12 | Push 2 unpushed commits to origin                              | 🟡 P2    | 1min   | Infra      | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 13 | Tag v0.1.0 release                                             | 🟡 P2    | 2min   | Release    | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 14 | Fix `convertEvent` combined fsnotify ops                       | 🟡 P2    | 10min  | Bug        | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 15 | Add benchmark tests (debouncer, filters, middleware)           | 🟡 P2    | 10min  | Testing    | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 16 | Replace `log.Logger` with `slog` in `MiddlewareLogging`        | 🟡 P2    | 10min  | Arch       | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 17 | Fix `TestWatcher_Watch_Deletes` flakiness                      | 🟡 P2    | 10min  | Testing    | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 18 | Update README + CHANGELOG with all changes                     | 🟡 P2    | 10min  | Docs       | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 19 | Split `watcher.go` (548 lines) into focused files              | 🟢 P3    | 10min  | Arch       | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 20 | Add `CONTRIBUTING.md` + `CODEOWNERS`                           | 🟢 P3    | 10min  | Community  | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 21 | Extract `fsnotify.Watcher` behind internal interface           | 🟢 P3    | 10min  | Arch       | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 22 | Goreleaser configuration                                       | 🟢 P3    | 10min  | Infra      | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 23 | Remove dead artifacts (`report/`, empty `pkg/`)                | 🟢 P3    | 2min   | Cleanup    | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 24 | Stress tests (10k+ files)                                      | 🔵 P4    | 10min  | Testing    | Not started |~~ OPEN → TODO_LIST (large-tree stress harness)
+
+~~| 25 | Integrate into real projects for validation                    | 🔵 P4    | 60min  | Validation | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 

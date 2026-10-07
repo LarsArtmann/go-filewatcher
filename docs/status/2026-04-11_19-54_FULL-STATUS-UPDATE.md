@@ -76,58 +76,58 @@ We left ~75 style issues unresolved. Some are trivial (short variable names), ot
 
 ### Immediate (1-2 hours):
 
-1. **Go cache cleanup** — Fix corrupted cache: `rm -rf ~/Library/Caches/go-build/ ~/Library/Caches/golangci-lint/`
-2. **tparallel fixes** — Add `t.Parallel()` to filter subtests (6 issues, trivial)
-3. **varnamelen cleanup** — Rename ~40 short variables (tedious but mechanical)
+~~1. **Go cache cleanup** — Fix corrupted cache: `rm -rf ~/Library/Caches/go-build/ ~/Library/Caches/golangci-lint/`~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **tparallel fixes** — Add `t.Parallel()` to filter subtests (6 issues, trivial)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **varnamelen cleanup** — Rename ~40 short variables (tedious but mechanical)~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Short Term (half day):
 
-4. **testpackage migration** — Move 5 test files to `*_test` packages
-5. **noinlineerr refactor** — Split ~10 inline error handling blocks in tests
-6. **Race condition investigation** — Confirm if race is real or false positive
+~~4. **testpackage migration** — Move 5 test files to `*_test` packages~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. **noinlineerr refactor** — Split ~10 inline error handling blocks in tests~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. **Race condition investigation** — Confirm if race is real or false positive~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Medium Term (1-2 days):
 
-7. **Event.Path phantom type v2** — Breaking change, plan API carefully
-8. **Watcher struct split** — Breaking change, consider composition
-9. **Example documentation** — Add godoc comments to example programs
+~~7. **Event.Path phantom type v2** — Breaking change, plan API carefully~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **Watcher struct split** — Breaking change, consider composition~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **Example documentation** — Add godoc comments to example programs~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Long Term (feature work):
 
-10. **Polling fallback** — For NFS/network mounts that fsnotify can't watch
-11. **Event batching middleware** — Batch events over a time window
-12. **Deduplication middleware** — Drop duplicate events
-13. **Token bucket rate limiting** — Better than sleep-based rate limiting
+~~10. **Polling fallback** — For NFS/network mounts that fsnotify can't watch~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. **Event batching middleware** — Batch events over a time window~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. **Deduplication middleware** — Drop duplicate events~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~13. **Token bucket rate limiting** — Better than sleep-based rate limiting~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
 ## TOP #25 THINGS TO GET DONE NEXT
 
-1. Fix Go cache corruption manually (`rm -rf ~/Library/Caches/`)
-2. Run `go test -race` on base commit to confirm pre-existing race
-3. Add `t.Parallel()` to filter subtests
-4. Rename short variables (d→debouncer, w→watcher, f→filter, tt→tc)
-5. Move test files to `*_test` packages
-6. Refactor inline error handling in tests
-7. Design Event.Path phantom type for v2.0 with proper migration guide
-8. Plan Watcher struct composition split
-9. Add integration test for recursive directory watching
-10. Add integration test for per-path debounce correctness
-11. Add benchmark regression tests
-12. Document public API with godoc examples
-13. Add `WithRecursive(false)` option
-14. Add `WithPolling(fallback bool)` for NFS/network mounts
-15. Add `Event.ModTime()` field
-16. Add `Watcher.WatchOnce()` for one-shot mode
-17. Add `FilterMinAge()` for ignoring old files
-18. Add `MiddlewareRateBurst()` for token bucket rate limiting
-19. Add `MiddlewareDeduplicate()` to drop duplicate events
-20. Consider `Watcher.WatchChanges(ctx, targetState)` for idempotent sync
-21. Add `Event.Size()` field by stat'ing the file
-22. Add `FilterMaxSize()` complement to FilterMinSize
-23. Add `MiddlewareBatch()` to batch events over a window
-24. Consider `Watcher.AddRecursive(path)` for partial recursion
-25. Add `WithIgnorePatterns()` using glob patterns
+~~1. Fix Go cache corruption manually (`rm -rf ~/Library/Caches/`)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. Run `go test -race` on base commit to confirm pre-existing race~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. Add `t.Parallel()` to filter subtests~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. Rename short variables (d→debouncer, w→watcher, f→filter, tt→tc)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. Move test files to `*_test` packages~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. Refactor inline error handling in tests~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. Design Event.Path phantom type for v2.0 with proper migration guide~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. Plan Watcher struct composition split~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. Add integration test for recursive directory watching~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. Add integration test for per-path debounce correctness~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. Add benchmark regression tests~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. Document public API with godoc examples~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~13. Add `WithRecursive(false)` option~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. Add `WithPolling(fallback bool)` for NFS/network mounts~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~15. Add `Event.ModTime()` field~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~16. Add `Watcher.WatchOnce()` for one-shot mode~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~17. Add `FilterMinAge()` for ignoring old files~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~18. Add `MiddlewareRateBurst()` for token bucket rate limiting~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~19. Add `MiddlewareDeduplicate()` to drop duplicate events~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~20. Consider `Watcher.WatchChanges(ctx, targetState)` for idempotent sync~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~21. Add `Event.Size()` field by stat'ing the file~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~22. Add `FilterMaxSize()` complement to FilterMinSize~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~23. Add `MiddlewareBatch()` to batch events over a window~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~24. Consider `Watcher.AddRecursive(path)` for partial recursion~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~25. Add `WithIgnorePatterns()` using glob patterns~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 
@@ -187,8 +187,8 @@ This requires reading the depguard source code or documentation more carefully.
 
 - [x] Fix golangci config for examples
 - [x] Add benchmark helpers
-- [ ] Fix test package structure (not started)
-- [ ] Fix tparallel issues (not started)
+~~- [ ] Fix test package structure (not started)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] Fix tparallel issues (not started)~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 #### P3 Items — DEFERRED
 

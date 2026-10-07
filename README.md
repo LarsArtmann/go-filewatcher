@@ -523,7 +523,7 @@ nix run .#test           # Run tests with -race
 nix flake check          # Run all quality gates
 ```
 
-**Related docs:** [Features](./FEATURES.md) · [Roadmap](./ROADMAP.md) · [API Stability](./API_STABILITY.md) · [Troubleshooting](./Troubleshooting.md) · [Migration Guide](./MIGRATION.md) · [Changelog](./CHANGELOG.md)
+**Related docs:** [Features](./FEATURES.md) · [Roadmap](./ROADMAP.md) · [API Stability](./API_STABILITY.md) · [Migration Guide](https://filewatcher.lars.software/guides/migration-v23-to-v24/) · [Changelog](./CHANGELOG.md)
 
 ## Examples
 

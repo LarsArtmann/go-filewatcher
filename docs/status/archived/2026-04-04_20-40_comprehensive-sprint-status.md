@@ -239,7 +239,7 @@ brew install go
 | Public options          | 11 functional options                                                                                |
 | Public filters          | 12 filter constructors                                                                               |
 | Public middleware       | 7 middleware constructors                                                                            |
-| Sentinal errors         | 5                                                                                                    |
+| Sentinel errors         | 5                                                                                                    |
 
 ## Git State
 

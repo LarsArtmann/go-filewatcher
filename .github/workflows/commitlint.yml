@@ -10,7 +10,7 @@ permissions:
 jobs:
   lint-commits:
     name: Validate Commit Messages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # pinned for ubuntu-26.04 migration (2026-10-19 rollout)
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

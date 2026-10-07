@@ -11,7 +11,7 @@ permissions:
 jobs:
   release-please:
     name: Create Release PR
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # pinned for ubuntu-26.04 migration (2026-10-19 rollout)
     steps:
       - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         with:

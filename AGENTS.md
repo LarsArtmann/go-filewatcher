@@ -581,9 +581,16 @@ after master is fixed plus a branch update/re-run.
 remembered — a `Go Directive Floor` CI job asserts `go 1.26.7` and blocks the
 test matrix (`needs: go-directive`), and `nix flake check` runs the same
 assertion as the `go-directive` check. Intentional bumps must change go.mod
-AND both guards in one commit. The CI test matrix also carries a `1.27`
-entry alongside the `1.26` floor, so a floor-vs-future drift surfaces as a
-test failure too.
+AND both guards in one commit.
+
+**No go 1.27 CI leg (deliberate, 2026-10-07)**: a 1.27 matrix entry was
+tried and removed the same day — under the Go 1.27 toolchain,
+`encoding/json/v2` (imported in `event.go`) requires the go directive to be
+≥ 1.27, so the leg cannot build while the floor is pinned at 1.26.7 (CI run
+37581977239: "json.Marshal requires go1.27 or later (file is go1.26)").
+Re-adding the 1.27 leg REQUIRES the intentional floor bump to 1.27 — which
+also means revisiting the json/v2 usage or accepting the bump. This is
+recorded as a v3 decision (docs/research/v3-decisions.md).
 
 **Worktrees and nix**: flake evaluation IGNORES dirty state in linked
 worktrees (no `-dirty` drv suffix; it builds the COMMITTED go.mod). Commit the

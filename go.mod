@@ -1,6 +1,6 @@
 module github.com/larsartmann/go-filewatcher/v2
 
-go 1.26.7
+go 1.27
 
 require (
 	github.com/LarsArtmann/gogenfilter/v3 v3.6.1

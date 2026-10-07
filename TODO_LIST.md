@@ -135,6 +135,30 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       `/tmp/gomod-*.log`, `/tmp/bf-*.log`).
       (`src: 2026-10-07_06-00 §f34`)
 
+## Process debts (2026-10-07 docs sweep tail)
+
+- [ ] **Read + annotate `2026-10-07_03-10_pr-review-ci-recovery`** — the one
+      2026-10-07 report the sweep missed.
+      (`src: 2026-10-07_08-14 §b`)
+- [ ] **Run `check-rows.py` over all 86 archived files** — presence gate passed;
+      row-uniformity gate not yet proven.
+      (`src: 2026-10-07_08-14 §b`)
+- [ ] **Content-verify DOMAIN_LANGUAGE / API_STABILITY / Troubleshooting /
+      MIGRATION / ARCHITECTURE against code** (existence-checked only so far).
+      (`src: 2026-10-07_08-14 §c2`)
+- [ ] **Full `nix flake check` + verify second vendorHash (flake.nix:111)**.
+      (`src: 2026-10-07_06-00 §B6`)
+- [ ] **Status-dir index** (`docs/status/README.md`: active reports + archived
+      pointer) + CHANGELOG v2.4.0 cosmetic blank-line fix.
+      (`src: 2026-10-07_08-14 §c5/c6`)
+- [ ] **Cross-repo (crush-config):** commit `lessons.md` entry (instrument
+      writers before racing them) + fix buildflow skill DB path
+      (`buildflow.db`→`cache.db`) with fan-out verify.
+      (`src: 2026-10-07_05-17 §f10, 06-00 §f9`)
+- [ ] **v3 decision doc** — collect Q1/Q2/Q4/Q9 + micro-polish bundle into
+      `docs/research/v3-decisions.md`.
+      (`src: 2026-10-07_08-17 plan task 26`)
+
 ## v3 Candidates
 
 - [ ] **Phantom-typed `PathKey`** — `type PathKey string` for compile-time safety
@@ -163,7 +187,7 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 | Tests          | 100%  | ✅     |
 | Flaky tests    | 0     | ✅     |
 | Broken benches | 0     | ✅     |
-| Open items     | 29    | 🟡     |
+| Open items     | 36    | 🟡     |
 
 ---
 

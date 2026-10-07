@@ -565,6 +565,16 @@ EOF
 On PR merge, release-please creates the tag AND the GitHub Release directly. `release.yml`
 only fires for manually-pushed `v*` tags (GITHUB_TOKEN-created tags do not re-trigger workflows).
 
+### release-please is path-scoped — website/docs/.github never trigger releases
+
+`release-please.yml` runs in config-file mode (`release-please-config.json` +
+`.release-please-manifest.json`). The root package sets
+`exclude-paths: ["website", "docs", ".github"]`: commits touching ONLY those paths are
+skipped by release-please. Before this existed, a `fix(website)` commit shipped v2.4.1 —
+a Go patch release with zero Go changes (2026-10-07). Convention on top: use
+`chore(website)` / `docs(website)` / `build(website)` scopes for non-module changes,
+never `fix(website)` / `feat(website)`.
+
 ### golangci-lint version pin
 
 CI (`ci.yml`) and `release.yml` pin golangci-lint **v2.14.0** — the same version the Nix flake

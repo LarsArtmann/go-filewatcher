@@ -26,8 +26,8 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "node scripts/sync-changelog.mjs && astro dev",
+    "build": "node scripts/sync-changelog.mjs && astro build",
     "preview": "astro preview",
     "typecheck": "astro check",
     "clean": "rm -rf dist .astro node_modules/.cache",

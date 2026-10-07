@@ -11,3 +11,5 @@ minimumReleaseAgeExclude:
   - source-map-js@1.2.2
   - postcss-selector-parser@7.1.6
   - sharp@0.35.5
+overrides:
+  postcss-selector-parser@<7.1.6: ^7.1.6

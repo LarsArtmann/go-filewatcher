@@ -1,0 +1,4 @@
+[codespell]
+skip = pnpm-lock.yaml,package-lock.json,*.sum,vendor,dist,node_modules,website,reports
+ignore-words-list = caf,wronly,accreting
+quiet-level = 2

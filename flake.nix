@@ -117,12 +117,16 @@
             type = "app";
             program = "${
               pkgs.writeShellApplication {
-                inherit name text;
+                inherit name;
                 runtimeInputs = with pkgs; [
                   go_1_26
                   golangci-lint
                   gofumpt
                 ];
+                text = ''
+                  export GOEXPERIMENT="jsonv2"
+                ''
+                + text;
               }
             }/bin/${name}";
           };
@@ -132,11 +136,15 @@
             type = "app";
             program = "${
               pkgs.writeShellApplication {
-                inherit name text;
+                inherit name;
                 runtimeInputs = with pkgs; [
                   go_1_26
                   benchstat
                 ];
+                text = ''
+                  export GOEXPERIMENT="jsonv2"
+                ''
+                + text;
               }
             }/bin/${name}";
           };
@@ -154,6 +162,7 @@
           packages.default = pkgs.buildGoModule {
             pname = "go-filewatcher";
             inherit src version vendorHash;
+            env.GOEXPERIMENT = "jsonv2";
             doCheck = false;
             meta = {
               description = "High-performance, composable file system watcher for Go";
@@ -338,6 +347,7 @@
                       pkgs.go_1_26
                       pkgs.gcc
                     ];
+                    env.GOEXPERIMENT = "jsonv2";
                   }
                   ''
                     export GOWORK=off
@@ -355,6 +365,7 @@
                       pkgs.go_1_26
                       pkgs.golangci-lint
                     ];
+                    env.GOEXPERIMENT = "jsonv2";
                   }
                   ''
                     export GOWORK=off
@@ -372,6 +383,7 @@
                       pkgs.go_1_26
                       pkgs.gcc
                     ];
+                    env.GOEXPERIMENT = "jsonv2";
                   }
                   ''
                     export GOWORK=off
@@ -410,6 +422,7 @@
                       pkgs.go_1_26
                       pkgs.gcc
                     ];
+                    env.GOEXPERIMENT = "jsonv2";
                   }
                   ''
                     export GOWORK=off

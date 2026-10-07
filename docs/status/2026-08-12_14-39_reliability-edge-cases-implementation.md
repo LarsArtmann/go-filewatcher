@@ -132,11 +132,11 @@ The feedback document listed 14 testing scenarios. Status:
 
 | #            | Item                                                  | Reason Skipped                                                                                                                                                                                                                         |
 | ------------ | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2            | Polling dedup heuristic (`WithPollDeduplicate`)       | The "minimum" fix (documentation) was done. The "better" fix (per-path timestamp tracking with LRU) was not implemented — it's a significant new feature requiring careful design. Documented as a limitation in `Troubleshooting.md`. |
-| 3            | Poll loop rename detection (`WithPollDetectRenames`)  | Requires inode tracking (platform-specific syscall), significant new logic. Gated behind a new option. Not started.                                                                                                                    |
-| 20           | Deprecation warning for `MiddlewareWriteFileLog`      | Minor — the deprecation is already documented in the function's doc comment. A runtime `once.Do` warning was not added.                                                                                                                |
-| 21           | `Reset()` and `failedPaths` retention                 | The feedback document itself concludes this is a minor observation, not a real bug. No action taken.                                                                                                                                   |
-| 22           | `WatcherError.Stack` captures stack at error creation | The feedback document offers "document the current behavior" as a valid fix. Not acted on.                                                                                                                                             |
+~~| 2            | Polling dedup heuristic (`WithPollDeduplicate`)       | The "minimum" fix (documentation) was done. The "better" fix (per-path timestamp tracking with LRU) was not implemented — it's a significant new feature requiring careful design. Documented as a limitation in `Troubleshooting.md`. |~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~| 3            | Poll loop rename detection (`WithPollDetectRenames`)  | Requires inode tracking (platform-specific syscall), significant new logic. Gated behind a new option. Not started.                                                                                                                    |~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~| 20           | Deprecation warning for `MiddlewareWriteFileLog`      | Minor — the deprecation is already documented in the function's doc comment. A runtime `once.Do` warning was not added.                                                                                                                |~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~| 21           | `Reset()` and `failedPaths` retention                 | The feedback document itself concludes this is a minor observation, not a real bug. No action taken.                                                                                                                                   |~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~| 22           | `WatcherError.Stack` captures stack at error creation | The feedback document offers "document the current behavior" as a valid fix. Not acted on.                                                                                                                                             |~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
 | 24 (partial) | Docs for remaining edge cases                         | Most documented. The `WithPolling` option doc comment was not updated with the dedup limitation note (only `Troubleshooting.md` was updated).                                                                                          |
 
 ### Other not-started work:
@@ -209,47 +209,47 @@ documentation or tooling references it, those are now stale. The removal was cle
 
 ### Immediate (before release)
 
-1. **Add tests for the 5 coverage gaps** identified in Partially Done:
+~~1. **Add tests for the 5 coverage gaps** identified in Partially Done:~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
    - Batch timer flush error routing
    - `WithMaxWatchesSafetyFraction` effective limit
    - `DropOnFull` mode end-to-end
    - `WithWatchFilteredDirectories(false)` behavior
    - `FilterIgnoreDirsCaseInsensitive` unit test
 
-2. **Write CHANGELOG.md entry** for v2.4.0 with all behavioral changes called out,
+~~2. **Write CHANGELOG.md entry** for v2.4.0 with all behavioral changes called out,~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
    especially:
    - `MiddlewareBatch` no longer emits triggering event on full batch (behavioral change)
    - `eventsProcessed` semantics changed (now counts actual emissions, not nil returns)
    - Polling mode now respects exclusions (behavioral change)
 
-3. **Update `API_STABILITY.md`** with the new options and Stats fields.
+~~3. **Update `API_STABILITY.md`** with the new options and Stats fields.~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
 
-4. **Update website `api-reference.mdx`** with new `Stats` fields.
+~~4. **Update website `api-reference.mdx`** with new `Stats` fields.~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
 
 ### Architectural
 
-5. **The `emitEvent` method is now complex** — it handles debounce dispatch, middleware
+~~5. **The `emitEvent` method is now complex** — it handles debounce dispatch, middleware~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
    tracking, error handling, and drop counting all in one function. Consider extracting
    a `middlewareExecutor` type.
 
-6. **`walkDirFunc` is still long** even after extracting `handleFollowedSymlink`.
+~~6. **`walkDirFunc` is still long** even after extracting `handleFollowedSymlink`.~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
    Further extraction of the skip-check chain into a `shouldSkipPath` helper would help.
 
-7. **The `Stats` struct has grown to 15 fields** — consider grouping into sub-structs
+~~7. **The `Stats` struct has grown to 15 fields** — consider grouping into sub-structs~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
    (`EventStats`, `ErrorStats`, `WatchStats`) for readability.
 
-8. **Middleware drop tracking is heuristic-based** (atomic.Bool on emit). A more
+~~8. **Middleware drop tracking is heuristic-based** (atomic.Bool on emit). A more~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
    principled approach would be a `MiddlewareDropCallback` that middleware can call
    explicitly when dropping. This would be more accurate but requires API change.
 
 ### Process
 
-9. **I should have run bench-diff** to verify no performance regression from the
+~~9. **I should have run bench-diff** to verify no performance regression from the~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
    `emitEvent` refactor (atomic.Bool on every event) and the NFC normalization in
    `MiddlewareDeduplicate`. The feedback document itself warns about bench-diff
    methodology.
 
-10. **I should have checked `API_STABILITY.md` before adding new options** to ensure
+~~10. **I should have checked `API_STABILITY.md` before adding new options** to ensure~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
     naming consistency with established conventions.
 
 ---
@@ -258,74 +258,74 @@ documentation or tooling references it, those are now stale. The removal was cle
 
 ### Must-do before v2.4.0 release
 
-1. Write CHANGELOG.md entry for v2.4.0
-2. Add test: batch timer flush error routing to handleError
-3. Add test: `WithMaxWatchesSafetyFraction(0.75)` reduces effective limit
-4. Add test: `WithMaxWatchesSafetyFraction` clamping (0, negative, > 1.0)
-5. Add test: `DropOnFull` mode drops events + increments counter
-6. Add test: `WithWatchFilteredDirectories(false)` prevents directory watching
-7. Add test: `FilterIgnoreDirsCaseInsensitive` unit test
-8. Run bench-diff to verify no performance regression
-9. Update `API_STABILITY.md` with new options + Stats fields
-10. Update website `api-reference.mdx` Stats documentation
+~~1. Write CHANGELOG.md entry for v2.4.0~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~2. Add test: batch timer flush error routing to handleError~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~3. Add test: `WithMaxWatchesSafetyFraction(0.75)` reduces effective limit~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~4. Add test: `WithMaxWatchesSafetyFraction` clamping (0, negative, > 1.0)~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~5. Add test: `DropOnFull` mode drops events + increments counter~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~6. Add test: `WithWatchFilteredDirectories(false)` prevents directory watching~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~7. Add test: `FilterIgnoreDirsCaseInsensitive` unit test~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~8. Run bench-diff to verify no performance regression~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~9. Update `API_STABILITY.md` with new options + Stats fields~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~10. Update website `api-reference.mdx` Stats documentation~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
 
 ### Should-do (quality gaps)
 
-11. Add test: self-heal abandons permission-denied paths (item 14 integration test)
-12. Add test: symlink to already-watched real path dedup
-13. Update `WithPolling` option doc comment with dedup limitation note
-14. Add `WithContentHashMaxSize(bytes)` configurable option (item 19 complete)
-15. Add `WithErrorBufferSize(int)` to decouple error channel from event channel
-16. Add runtime deprecation warning for `MiddlewareWriteFileLog` (item 20)
-17. Document `WatcherError.Stack` behavior in doc comment (item 22)
-18. Consider extracting `middlewareExecutor` from `emitEvent`
-19. Consider extracting `shouldSkipPath` chain from `walkDirFunc`
+~~11. Add test: self-heal abandons permission-denied paths (item 14 integration test)~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~12. Add test: symlink to already-watched real path dedup~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~13. Update `WithPolling` option doc comment with dedup limitation note~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~14. Add `WithContentHashMaxSize(bytes)` configurable option (item 19 complete)~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~15. Add `WithErrorBufferSize(int)` to decouple error channel from event channel~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~16. Add runtime deprecation warning for `MiddlewareWriteFileLog` (item 20)~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~17. Document `WatcherError.Stack` behavior in doc comment (item 22)~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~18. Consider extracting `middlewareExecutor` from `emitEvent`~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~19. Consider extracting `shouldSkipPath` chain from `walkDirFunc`~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
 
 ### Feature backlog (from feedback, not started)
 
-20. Implement `WithPollDeduplicate(true)` — per-path native event timestamp tracking
-21. Implement `WithPollDetectRenames(true)` — inode-based rename detection in poll loop
-22. Add macOS CI matrix to `ci.yml`
-23. Add Windows CI matrix to `ci.yml`
-24. Consider `MiddlewareDropCallback` API for explicit drop notification
-25. Add `Stats.WatchBudgetCap` field showing computed cap after safety fraction
+~~20. Implement `WithPollDeduplicate(true)` — per-path native event timestamp tracking~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~21. Implement `WithPollDetectRenames(true)` — inode-based rename detection in poll loop~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~22. Add macOS CI matrix to `ci.yml`~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~23. Add Windows CI matrix to `ci.yml`~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~24. Consider `MiddlewareDropCallback` API for explicit drop notification~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~25. Add `Stats.WatchBudgetCap` field showing computed cap after safety fraction~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
 
 ### Polish and hardening
 
-26. Run fuzz testing on new filter functions (`FilterIgnoreDirsCaseInsensitive`,
+~~26. Run fuzz testing on new filter functions (`FilterIgnoreDirsCaseInsensitive`,~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
     `MiddlewareDeduplicateCaseInsensitive`)
-27. Add integration test: polling mode + exclusions + gitignore end-to-end
-28. Add integration test: symlink cycle with deeply nested structure
-29. Add integration test: DropOnFull with slow consumer simulation
-30. Add integration test: MiddlewareBatch with timer flush error + subsequent event
-31. Verify `Reset()` preserves `maxWatchesFraction` and `eventDropOnFull` config
-32. Add example for `WithEventChannelMode(DropOnFull)`
-33. Add example for `WithMaxWatchesSafetyFraction`
-34. Add example for `MiddlewareDeduplicateCaseInsensitive`
-35. Review all new option doc comments for consistency (parameter naming, examples)
-36. Consider `FilterIgnoreDirsCaseInsensitive` integration into `WithIgnoreDirs`
+~~27. Add integration test: polling mode + exclusions + gitignore end-to-end~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~28. Add integration test: symlink cycle with deeply nested structure~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~29. Add integration test: DropOnFull with slow consumer simulation~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~30. Add integration test: MiddlewareBatch with timer flush error + subsequent event~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~31. Verify `Reset()` preserves `maxWatchesFraction` and `eventDropOnFull` config~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~32. Add example for `WithEventChannelMode(DropOnFull)`~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~33. Add example for `WithMaxWatchesSafetyFraction`~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~34. Add example for `MiddlewareDeduplicateCaseInsensitive`~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~35. Review all new option doc comments for consistency (parameter naming, examples)~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~36. Consider `FilterIgnoreDirsCaseInsensitive` integration into `WithIgnoreDirs`~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
     auto-detection based on `CaseSensitivity`
-37. Consider adding `EventsDroppedByBackpressure` to PrometheusCollector
-38. Consider adding `EventsDroppedByMiddleware` to PrometheusCollector Gauges section
-39. Verify the `slog` import removal from middleware.go doesn't break anything (it's
+~~37. Consider adding `EventsDroppedByBackpressure` to PrometheusCollector~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~38. Consider adding `EventsDroppedByMiddleware` to PrometheusCollector Gauges section~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~39. Verify the `slog` import removal from middleware.go doesn't break anything (it's~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
     still used by `MiddlewareLogging`)
-40. Consider adding a `MiddlewareBatchFlushErrorHandler` callback option for explicit
+~~40. Consider adding a `MiddlewareBatchFlushErrorHandler` callback option for explicit~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
     error handling instead of the store-and-return-on-next-event pattern
 
 ### Documentation
 
-41. Update `FEATURES.md` with new features
-42. Update `README.md` if any user-facing behavior changed
-43. Add guide for polling mode best practices (when to use, limitations)
-44. Add guide for middleware observability (interpreting drop counters)
-45. Update `docs/guides/resilience.md` with new self-heal error classification
-46. Update `docs/guides/middleware.md` with new dedup variants and batch error handling
-47. Document the `emitEvent` refactor in an ADR (behavioral semantics of
+~~41. Update `FEATURES.md` with new features~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~42. Update `README.md` if any user-facing behavior changed~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~43. Add guide for polling mode best practices (when to use, limitations)~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~44. Add guide for middleware observability (interpreting drop counters)~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~45. Update `docs/guides/resilience.md` with new self-heal error classification~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~46. Update `docs/guides/middleware.md` with new dedup variants and batch error handling~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~47. Document the `emitEvent` refactor in an ADR (behavioral semantics of~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
     `eventsProcessed`)
-48. Review all existing examples for compatibility with new path validation
+~~48. Review all existing examples for compatibility with new path validation~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
     (any example using non-existent paths will now fail)
-49. Consider adding a migration guide for v2.3 → v2.4
-50. Archive the feedback document to `docs/feedback/done/` after all items are closed
+~~49. Consider adding a migration guide for v2.3 → v2.4~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
+~~50. Archive the feedback document to `docs/feedback/done/` after all items are closed~~ superseded — completed or routed by sessions 2-3 (15-44/19-22) and v2.4.0
 
 ---
 

@@ -135,12 +135,12 @@ No cleanup needed.
 
 | #  | Item                                       | Why deferred                                                        |
 | -- | ------------------------------------------ | ------------------------------------------------------------------- |
-| 17 | `FilterNFCNormalized(inner Filter)`        | `FilterCaseSensitive` already provides this (NFC without case-fold) |
-| 18 | FuzzPathKey overnight (8+ hours)           | Already ran 5min/68.6M execs/0 failures. Diminishing returns.       |
-| 20 | Commit bench-baseline.txt for CI           | Needs CI workflow design — separate concern                         |
-| 21 | `WithNormalizeUnicode(false)` escape hatch | YAGNI — NFC is zero-cost for ASCII                                  |
-| 22 | Trie-based excludePaths                    | Premature optimization — 100 paths = 3µs                            |
-| 23 | Phantom-typed `PathKey`                    | Significant refactor, defer for v3                                  |
-| 27 | `CaseSensitivityProbed` mode               | v3 feature — requires filesystem probing                            |
-| 28 | macOS/Windows CI matrix                    | Can't test locally, needs CI config                                 |
-| 48 | `pathKey` returning `(PathKey, error)`     | Significant API change, defer for v3                                |
+~~| 17 | `FilterNFCNormalized(inner Filter)`        | `FilterCaseSensitive` already provides this (NFC without case-fold) |~~ done — shipped in v2.4.0
+~~| 18 | FuzzPathKey overnight (8+ hours)           | Already ran 5min/68.6M execs/0 failures. Diminishing returns.       |~~ done — shipped in v2.4.0
+~~| 20 | Commit bench-baseline.txt for CI           | Needs CI workflow design — separate concern                         |~~ done — shipped in v2.4.0
+~~| 21 | `WithNormalizeUnicode(false)` escape hatch | YAGNI — NFC is zero-cost for ASCII                                  |~~ done — shipped in v2.4.0
+~~| 22 | Trie-based excludePaths                    | Premature optimization — 100 paths = 3µs                            |~~ done — shipped in v2.4.0
+~~| 23 | Phantom-typed `PathKey`                    | Significant refactor, defer for v3                                  |~~ done — shipped in v2.4.0
+~~| 27 | `CaseSensitivityProbed` mode               | v3 feature — requires filesystem probing                            |~~ done — shipped in v2.4.0
+~~| 28 | macOS/Windows CI matrix                    | Can't test locally, needs CI config                                 |~~ done — shipped in v2.4.0
+~~| 48 | `pathKey` returning `(PathKey, error)`     | Significant API change, defer for v3                                |~~ done — shipped in v2.4.0

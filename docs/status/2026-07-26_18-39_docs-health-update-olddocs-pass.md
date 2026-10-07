@@ -258,29 +258,29 @@ file-reference existence for every cited path.
 
 ### On this codebase
 
-1. **Verify the 4 broken benchmarks by running them.** Either reproduce the
+~~1. **Verify the 4 broken benchmarks by running them.** Either reproduce the~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
    deadlock (confirming the TODO HIGH item is real) or discover they were
    already fixed. Do not ship a HIGH-priority TODO on an unverified claim.
-2. **Recount `newTestWatcher` call sites and `art-dupl` clone groups** so the
+~~2. **Recount `newTestWatcher` call sites and `art-dupl` clone groups** so the~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
    CHANGELOG `[Unreleased]` numbers are evidence, not hearsay.
-3. **Run a DOMAIN_LANGUAGE.md freshness pass** — open it, grep each term
+~~3. **Run a DOMAIN_LANGUAGE.md freshness pass** — open it, grep each term~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
    against code, add the 5 candidate terms the prior self-review flagged.
-4. **Fetch `/sitemap-index.xml` and `/robots.txt`** from the live site to close
+~~4. **Fetch `/sitemap-index.xml` and `/robots.txt`** from the live site to close~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
    the two UNVERIFIED rows in the 2026-07-13 resolution tables.
-5. **Cross-check count claims** ("17+ filters", "18 middleware", "25 options",
+~~5. **Cross-check count claims** ("17+ filters", "18 middleware", "25 options",~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
    "11 sentinels") across README, FEATURES, and the website docs in one sweep.
 
 ### On my process
 
-6. **Show the score math, every time.** Never print a health score without the
+~~6. **Show the score math, every time.** Never print a health score without the~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
    `10 − 1·C − 0.5·M − 0.25·L` computation next to it. Never invent a baseline.
-7. **Write the per-doc job-fitness line first**, before any factual check. It
+~~7. **Write the per-doc job-fitness line first**, before any factual check. It~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
    is the guardrail that catches trophy-case decay and score dishonesty.
-8. **Verify behavioral claims, not just symbol existence.** "Exists" ≠ "works."
+~~8. **Verify behavioral claims, not just symbol existence.** "Exists" ≠ "works."~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
    "Exists" ≠ "broken." Run the thing.
-9. **Log every HARVEST routing decision** — a one-line "dropped: already done
+~~9. **Log every HARVEST routing decision** — a one-line "dropped: already done~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
    in commit X" / "dropped: low-value" per item, so the harvest is auditable.
-10. **Enumerate cross-file checks run vs. skipped** in every closing message.
+~~10. **Enumerate cross-file checks run vs. skipped** in every closing message.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
     "Clean" is a claim that requires a checklist, not an impression.
 
 ---
@@ -289,82 +289,82 @@ file-reference existence for every cited path.
 
 ### Fix mistakes from THIS session (do first)
 
-1. **Show the score math** in a follow-up note correcting the d1 violation.
-2. **Run the 4 `BenchmarkEmitEvent_*`** to confirm they break (or discover they
+~~1. **Show the score math** in a follow-up note correcting the d1 violation.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~2. **Run the 4 `BenchmarkEmitEvent_*`** to confirm they break (or discover they~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
    don't). `timeout 60 go test -run='^$' -bench='BenchmarkEmitEvent' -race`.
-3. **Recount `newTestWatcher`** call sites: `grep -rc 'newTestWatcher' *_test.go`.
-4. **Re-run `art-dupl -t 5`** (and `-t 1`) to confirm the clone-group claims.
-5. **Open `docs/DOMAIN_LANGUAGE.md`** and verify each term against code; add the
+~~3. **Recount `newTestWatcher`** call sites: `grep -rc 'newTestWatcher' *_test.go`.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~4. **Re-run `art-dupl -t 5`** (and `-t 1`) to confirm the clone-group claims.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~5. **Open `docs/DOMAIN_LANGUAGE.md`** and verify each term against code; add the~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
    5 candidate terms (`ContentHash`, `MatchResult`, `FilterWithMeta`,
    `ErrorCategory`, `CircuitBreaker` states).
-6. **Fetch `https://filewatcher.lars.software/sitemap-index.xml`** and
+~~6. **Fetch `https://filewatcher.lars.software/sitemap-index.xml`** and~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
    `/robots.txt`; update the two UNVERIFIED resolution rows.
-7. **Record the `drainEvents` disposition** in CHANGELOG (verified
+~~7. **Record the `drainEvents` disposition** in CHANGELOG (verified~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
    already-done / never-existed) instead of the silent drop.
-8. **Write the per-doc job-fitness lines** for TODO/ROADMAP/FEATURES/CHANGELOG.
+~~8. **Write the per-doc job-fitness lines** for TODO/ROADMAP/FEATURES/CHANGELOG.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ### Verify the unverified
 
-9. Run `nix flake check` (flake-level gate, not just `.#check`).
-10. Cross-check "17+ filters" across README, FEATURES, website.
-11. Cross-check "18 middleware" across README, FEATURES, website.
-12. Cross-check "25 options" / "24 options" across all files.
-13. Cross-check "11 sentinel errors" across README, FEATURES, errors.go.
-14. Verify every internal markdown link resolves (`grep -roE '\]\([^)]+\)' *.md docs/`).
-15. Verify every file path cited in AGENTS.md file-organization table exists.
-16. Verify CHANGELOG version/compare links match the repo URL pattern.
+~~9. Run `nix flake check` (flake-level gate, not just `.#check`).~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~10. Cross-check "17+ filters" across README, FEATURES, website.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~11. Cross-check "18 middleware" across README, FEATURES, website.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~12. Cross-check "25 options" / "24 options" across all files.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~13. Cross-check "11 sentinel errors" across README, FEATURES, errors.go.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~14. Verify every internal markdown link resolves (`grep -roE '\]\([^)]+\)' *.md docs/`).~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~15. Verify every file path cited in AGENTS.md file-organization table exists.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~16. Verify CHANGELOG version/compare links match the repo URL pattern.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ### Harvested items still worth routing (from the dedup §f lists)
 
-17. Add a `mustWatch` helper to `examples/demo` (TODO MEDIUM — already routed).
-18. Unit test for `resolveBatchDefaults` (TODO MEDIUM — already routed).
-19. Type-level assertion that `resolve*` helpers return the type they take.
-20. Audit all `//nolint` directives for accuracy (`nolintlint --explain`).
-21. Document the shared-vs-unique default-guard decision with a worked example.
-22. Add a `CONTRIBUTING.md` note that `newTestWatcher` is mandatory for new tests.
-23. Add a fuzz test for `resolveRateLimitDefaults` boundary behavior.
-24. Add a test asserting every middleware default const is used.
-25. Consider unifying `defaultThrottleEvents` and `defaultSlidingWindowEvents`
+~~17. Add a `mustWatch` helper to `examples/demo` (TODO MEDIUM — already routed).~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~18. Unit test for `resolveBatchDefaults` (TODO MEDIUM — already routed).~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~19. Type-level assertion that `resolve*` helpers return the type they take.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~20. Audit all `//nolint` directives for accuracy (`nolintlint --explain`).~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~21. Document the shared-vs-unique default-guard decision with a worked example.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~22. Add a `CONTRIBUTING.md` note that `newTestWatcher` is mandatory for new tests.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~23. Add a fuzz test for `resolveRateLimitDefaults` boundary behavior.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~24. Add a test asserting every middleware default const is used.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~25. Consider unifying `defaultThrottleEvents` and `defaultSlidingWindowEvents`~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
     (both 100) — same concept or not?
 
 ### Benchmark / performance hygiene
 
-26. Capture a benchmark baseline (`nix run .#bench > bench-baseline.txt`).
-27. Set `GOTMPDIR` to a disk-backed path in the devShell.
-28. Profile `MiddlewareCircuitBreaker` under load once EmitEvent is fixed.
-29. Add a `bench-short` nix app (fast, non-I/O benches only).
-30. Document why `BenchmarkEmitEvent_*` broke (zero-value Watcher) in a code
+~~26. Capture a benchmark baseline (`nix run .#bench > bench-baseline.txt`).~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~27. Set `GOTMPDIR` to a disk-backed path in the devShell.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~28. Profile `MiddlewareCircuitBreaker` under load once EmitEvent is fixed.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~29. Add a `bench-short` nix app (fast, non-I/O benches only).~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~30. Document why `BenchmarkEmitEvent_*` broke (zero-value Watcher) in a code~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
     comment if not fixed immediately.
 
 ### Documentation depth
 
-31. Expand website Filtering guide with multi-file examples.
-32. Expand website Middleware guide with an e2e walkthrough.
-33. Expand website Resilience guide with NFS/FUSE setup.
-34. Add a Troubleshooting docs page (ENOSPC, NFS, large monorepos).
-35. Add a "Migration from raw fsnotify" docs page.
-36. Add a "Migration from v1 to v2" docs page.
-37. Add a Performance Tuning guide.
-38. Add architecture diagrams (pipeline flow, middleware order).
-39. Create an OG image (1200x630) for social sharing.
-40. Create PNG favicon variants + apple-touch-icon.
+~~31. Expand website Filtering guide with multi-file examples.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~32. Expand website Middleware guide with an e2e walkthrough.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~33. Expand website Resilience guide with NFS/FUSE setup.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~34. Add a Troubleshooting docs page (ENOSPC, NFS, large monorepos).~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~35. Add a "Migration from raw fsnotify" docs page.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~36. Add a "Migration from v1 to v2" docs page.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~37. Add a Performance Tuning guide.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~38. Add architecture diagrams (pipeline flow, middleware order).~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~39. Create an OG image (1200x630) for social sharing.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~40. Create PNG favicon variants + apple-touch-icon.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ### Release / CI
 
-41. Decide on `v2.2.2` vs `v2.3.0` (21 commits ahead of `v2.2.1`).
-42. Wire `.goreleaser.yml` into `release.yml` (or delete it as dead config).
-43. Add a GitHub Actions workflow for auto-deploying the website.
-44. Add `art-dupl -t 5` to CI as a quality gate.
-45. Add a docs-freshness CI check (exported symbols vs README/FEATURES).
-46. Add a pre-commit hook running `nix run .#fmt`.
+~~41. Decide on `v2.2.2` vs `v2.3.0` (21 commits ahead of `v2.2.1`).~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~42. Wire `.goreleaser.yml` into `release.yml` (or delete it as dead config).~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~43. Add a GitHub Actions workflow for auto-deploying the website.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~44. Add `art-dupl -t 5` to CI as a quality gate.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~45. Add a docs-freshness CI check (exported symbols vs README/FEATURES).~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~46. Add a pre-commit hook running `nix run .#fmt`.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ### Process
 
-47. Formalize the `.md`-over-HTML status-report override (2nd time now).
-48. Add a `BENCHMARKS.md` to track perf over time.
-49. Sweep `docs/status/` (57 files) with update-old-docs — only the 5 July
+~~47. Formalize the `.md`-over-HTML status-report override (2nd time now).~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~48. Add a `BENCHMARKS.md` to track perf over time.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~49. Sweep `docs/status/` (57 files) with update-old-docs — only the 5 July~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
     files were annotated this session.
-50. Run the `full-code-review` skill on the refactored `middleware.go` /
+~~50. Run the `full-code-review` skill on the refactored `middleware.go` /~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
     `debouncer.go` for a fresh-eyes pass.
 
 ---

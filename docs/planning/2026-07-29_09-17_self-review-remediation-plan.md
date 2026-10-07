@@ -15,39 +15,39 @@ real gaps.
 
 Three items that close the biggest trust gaps from the self-review:
 
-1. **Document go-gitignore trailing-slash limitation** — I discovered that
+~~1. **Document go-gitignore trailing-slash limitation** — I discovered that~~ done — all 16 remediations shipped in v2.4.0
    `MatchesPath("Build") == false` for pattern `Build/` and then buried it in a
    status report. This is a real user-facing limitation that must be in living
    docs (AGENTS.md + Troubleshooting.md).
-2. **Fix `_` error discarding** — I changed `normalizePath` callers to use
+~~2. **Fix `_` error discarding** — I changed `normalizePath` callers to use~~ done — all 16 remediations shipped in v2.4.0
    `normalized, _ := normalizePath(p)`, silently swallowing errors. This violates
    the project principle "stop on first error." Even though the behavior is
    correct (normalizePath always returns a cleaned path), the `_` is a code smell.
-3. **Update API_STABILITY.md** — `WithCaseSensitivity`, `FilterCaseInsensitive`,
+~~3. **Update API_STABILITY.md** — `WithCaseSensitivity`, `FilterCaseInsensitive`,~~ done — all 16 remediations shipped in v2.4.0
    and `FilesystemCaseSensitivity` were added to the codebase but never registered
    in the stability contract. Users have no way to know if these are safe to use.
 
 ### 4% → 64% (missing measurements + architecture)
 
-4. **Recover pre-NFC baseline + run bench-diff** — I destroyed the pre-NFC
+~~4. **Recover pre-NFC baseline + run bench-diff** — I destroyed the pre-NFC~~ done — all 16 remediations shipped in v2.4.0
    benchmark baseline and never measured the regression delta. The absolute
    numbers prove NFC is cheap, but "how much slower than before" is unanswered.
-5. **Unify case-sensitivity gauge constants** — `caseSensitiveStr` (string,
+~~5. **Unify case-sensitivity gauge constants** — `caseSensitiveStr` (string,~~ done — all 16 remediations shipped in v2.4.0
    filesystem.go) and `gaugeCaseSensitive` (int, metrics.go) encode the same
    domain concept in two files. A single `GaugeValue()` method eliminates the
    split-brain.
-6. **Document phantom-event test platform limitation** — The test passes on
+~~6. **Document phantom-event test platform limitation** — The test passes on~~ done — all 16 remediations shipped in v2.4.0
    Linux for the wrong reason (timing, not canonicalization). Needs a `t.Log`
    explaining the ext4 limitation.
 
 ### 20% → 80% (polish + verification)
 
-7. **pathKey godoc NFD allocation note** — The godoc comment should mention that
+~~7. **pathKey godoc NFD allocation note** — The godoc comment should mention that~~ done — all 16 remediations shipped in v2.4.0
    NFD input allocates (~1µs, 3 allocs) so users on macOS know the cost.
-8. **Longer fuzz campaign** — 15s/577k was minimal. A 5-minute run exercises
+~~8. **Longer fuzz campaign** — 15s/577k was minimal. A 5-minute run exercises~~ done — all 16 remediations shipped in v2.4.0
    deeper Unicode edge cases.
-9. **shouldExcludePath benchmark** — The O(n) prefix scan has never been measured.
-10. **Plan doc + quality gate + commit.**
+~~9. **shouldExcludePath benchmark** — The O(n) prefix scan has never been measured.~~ done — all 16 remediations shipped in v2.4.0
+~~10. **Plan doc + quality gate + commit.**~~ done — all 16 remediations shipped in v2.4.0
 
 ---
 

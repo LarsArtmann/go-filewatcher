@@ -58,15 +58,15 @@ mode and gitignore-aware walking on macOS/Windows.
 
 | # | Item                                                          | Impact                                                                                                                                                                                                                  | Priority                               |
 | - | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| 1 | **Poll loop case-awareness** (`watcher_poll.go`)              | `pollDetectChanges` uses raw path strings as map keys in `snapshot`/`current`. On case-insensitive FS, rename `File.go` → `file.go` produces false Remove+Create instead of no-op. Also `pollWalkDir` stores raw paths. | **CRITICAL**                           |
-| 2 | **Gitignore matcher case-awareness** (`watcher_gitignore.go`) | `shouldSkipByGitignore` uses `strings.HasPrefix(path, prefix)` with raw strings. If gitignore dir and event path differ in case, prefix match fails, gitignore rules silently bypassed.                                 | **CRITICAL**                           |
-| 3 | **User-facing filters case-awareness** (`filter.go`)          | `FilterIgnoreDirs`, `FilterExcludePaths`, `FilterGlob` compare paths directly. `FilterExtensions` already lowercases extensions, proving the pattern exists.                                                            | **HIGH** (debatable — user-facing API) |
-| 4 | **CHANGELOG.md entry**                                        | No release note for the new `WithCaseSensitivity` option                                                                                                                                                                | MEDIUM                                 |
-| 5 | **doc.go package doc**                                        | No mention of case-sensitivity in package-level docs                                                                                                                                                                    | MEDIUM                                 |
-| 6 | **example_test.go**                                           | No runnable example for `WithCaseSensitivity`                                                                                                                                                                           | LOW                                    |
-| 7 | **Troubleshooting.md**                                        | No guidance for case-sensitivity issues                                                                                                                                                                                 | LOW                                    |
-| 8 | **DOMAIN_LANGUAGE.md**                                        | No entries for `FilesystemCaseSensitivity`, `pathKey`, `CaseSensitive`/`CaseInsensitive`                                                                                                                                | LOW                                    |
-| 9 | **Website docs**                                              | `website/src/content/docs/` not updated with case-sensitivity guide                                                                                                                                                     | LOW                                    |
+~~| 1 | **Poll loop case-awareness** (`watcher_poll.go`)              | `pollDetectChanges` uses raw path strings as map keys in `snapshot`/`current`. On case-insensitive FS, rename `File.go` → `file.go` produces false Remove+Create instead of no-op. Also `pollWalkDir` stores raw paths. | **CRITICAL**                           |~~ done — shipped in v2.4.0
+~~| 2 | **Gitignore matcher case-awareness** (`watcher_gitignore.go`) | `shouldSkipByGitignore` uses `strings.HasPrefix(path, prefix)` with raw strings. If gitignore dir and event path differ in case, prefix match fails, gitignore rules silently bypassed.                                 | **CRITICAL**                           |~~ done — shipped in v2.4.0
+~~| 3 | **User-facing filters case-awareness** (`filter.go`)          | `FilterIgnoreDirs`, `FilterExcludePaths`, `FilterGlob` compare paths directly. `FilterExtensions` already lowercases extensions, proving the pattern exists.                                                            | **HIGH** (debatable — user-facing API) |~~ done — shipped in v2.4.0
+~~| 4 | **CHANGELOG.md entry**                                        | No release note for the new `WithCaseSensitivity` option                                                                                                                                                                | MEDIUM                                 |~~ done — shipped in v2.4.0
+~~| 5 | **doc.go package doc**                                        | No mention of case-sensitivity in package-level docs                                                                                                                                                                    | MEDIUM                                 |~~ done — shipped in v2.4.0
+~~| 6 | **example_test.go**                                           | No runnable example for `WithCaseSensitivity`                                                                                                                                                                           | LOW                                    |~~ done — shipped in v2.4.0
+~~| 7 | **Troubleshooting.md**                                        | No guidance for case-sensitivity issues                                                                                                                                                                                 | LOW                                    |~~ done — shipped in v2.4.0
+~~| 8 | **DOMAIN_LANGUAGE.md**                                        | No entries for `FilesystemCaseSensitivity`, `pathKey`, `CaseSensitive`/`CaseInsensitive`                                                                                                                                | LOW                                    |~~ done — shipped in v2.4.0
+~~| 9 | **Website docs**                                              | `website/src/content/docs/` not updated with case-sensitivity guide                                                                                                                                                     | LOW                                    |~~ done — shipped in v2.4.0
 
 ---
 
@@ -88,44 +88,44 @@ renames in the poll loop.
 
 ### Architecture / Design
 
-1. **`pathKey` should be a free function, not a method.** Currently `pathKey` is a `*Watcher`
+~~1. **`pathKey` should be a free function, not a method.** Currently `pathKey` is a `*Watcher`~~ done — shipped in v2.4.0
    method, which means poll loop, gitignore, and filters can't easily call it without holding
    a watcher reference. The gitignore matcher and poll loop DO have `w *Watcher`, so this is
    not blocking, but making it a method on Watcher means the function signature implies it
    needs mutable state when it only reads one field.
 
-2. **The zero-value problem.** `effectiveCaseSensitivity` defaults to `CaseSensitivityAuto`
+~~2. **The zero-value problem.** `effectiveCaseSensitivity` defaults to `CaseSensitivityAuto`~~ done — shipped in v2.4.0
    (0) if someone constructs a bare `&Watcher{}` without `New()`. `pathKey()` only lowercases
    when `== CaseInsensitive`, so on a bare struct it's case-sensitive by default. This is
    safe but inconsistent with the "auto resolves to platform default" contract. Not a
    production issue (everyone uses `New()`), but a trap for tests.
 
-3. **No runtime detection of actual filesystem case-sensitivity.** `CaseSensitivityAuto`
+~~3. **No runtime detection of actual filesystem case-sensitivity.** `CaseSensitivityAuto`~~ done — shipped in v2.4.0
    resolves by `runtime.GOOS`, but you can mount a case-sensitive filesystem on macOS
    (case-sensitive APFS) or a case-insensitive filesystem on Linux (FAT/exFAT mounts). True
    detection would require probing the filesystem or reading `statvfs`/`pathconf`. This is a
    v3 feature, not a bug, but worth noting.
 
-4. **`watchListKeys` duplicates `watchList` as a parallel data structure.** Every add/remove
+~~4. **`watchListKeys` duplicates `watchList` as a parallel data structure.** Every add/remove~~ done — shipped in v2.4.0
    must update both. This is a maintenance risk — any future code path that adds to
    `watchList` without updating `watchListKeys` creates silent inconsistency. Consider a
    helper method `addWatch(path)` / `removeWatch(path)` that updates both atomically.
 
 ### Testing
 
-5. **No integration test for the actual scenario.** All tests use `withBackend(fb)` with
+~~5. **No integration test for the actual scenario.** All tests use `withBackend(fb)` with~~ done — shipped in v2.4.0
    fake backends. There's no test that creates files with different case on a real
    filesystem and verifies dedup. This is hard to test portably but at minimum the test
    should exist on Linux with `CaseInsensitive` mode forced.
 
-6. **Tests create bare `&Watcher{}` structs.** `TestPathKey_*` and `TestGetDebounceKey_*`
+~~6. **Tests create bare `&Watcher{}` structs.** `TestPathKey_*` and `TestGetDebounceKey_*`~~ done — shipped in v2.4.0
    construct `&Watcher{effectiveCaseSensitivity: CaseSensitive}` directly. This bypasses
    `New()` initialization. If the struct layout changes, these tests won't catch missing
    initialization.
 
 ### Process
 
-7. **I should have audited ALL path comparison sites before writing code.** I searched for
+~~7. **I should have audited ALL path comparison sites before writing code.** I searched for~~ done — shipped in v2.4.0
    `casefold`/`case-sensitive` keywords (found nothing), then implemented. A better approach
    would have been grepping for `strings.HasPrefix(path`, `strings.Contains(event.Path`,
    and map[ path keys to find every comparison site systematically.
@@ -136,74 +136,74 @@ renames in the poll loop.
 
 ### Critical (case-sensitivity completion)
 
-1. Wire `pathKey()` into `pollWalkDir` — use canonical keys in the snapshot map
-2. Wire `pathKey()` into `pollDetectChanges` — compare canonical keys, not raw paths
-3. Wire `pathKey()` into `shouldSkipByGitignore` — ancestor prefix check must be case-aware
-4. Wire `pathKey()` into `gitignoreCache.load` — matchers keyed by canonical dir
-5. Consider `FilterCaseInsensitive()` wrapper or built-in case-normalization in filters
-6. Wire case-awareness into `FilterIgnoreDirs` (path component matching)
-7. Wire case-awareness into `FilterExcludePaths` (exact path matching)
-8. Wire case-awareness into `FilterGlob` (filename matching)
+~~1. Wire `pathKey()` into `pollWalkDir` — use canonical keys in the snapshot map~~ done — shipped in v2.4.0
+~~2. Wire `pathKey()` into `pollDetectChanges` — compare canonical keys, not raw paths~~ done — shipped in v2.4.0
+~~3. Wire `pathKey()` into `shouldSkipByGitignore` — ancestor prefix check must be case-aware~~ done — shipped in v2.4.0
+~~4. Wire `pathKey()` into `gitignoreCache.load` — matchers keyed by canonical dir~~ done — shipped in v2.4.0
+~~5. Consider `FilterCaseInsensitive()` wrapper or built-in case-normalization in filters~~ done — shipped in v2.4.0
+~~6. Wire case-awareness into `FilterIgnoreDirs` (path component matching)~~ done — shipped in v2.4.0
+~~7. Wire case-awareness into `FilterExcludePaths` (exact path matching)~~ done — shipped in v2.4.0
+~~8. Wire case-awareness into `FilterGlob` (filename matching)~~ done — shipped in v2.4.0
 
 ### Testing
 
-9. Add integration test: create `File.go` and `file.go`, verify dedup with `CaseInsensitive`
-10. Add integration test: polling mode + case-only rename, verify no phantom events
-11. Add integration test: gitignore + case-insensitive, verify rules applied
-12. Add test for `watchListKeys` consistency after `Add` + `Remove` cycles
-13. Add fuzz test for `pathKey()` with unicode/edge-case paths
-14. Add test for `Reset()` preserving `caseSensitivity` config
-15. Add benchmark: `pathKey` overhead on large directory trees (case-sensitive mode)
-16. Add test: `WithCaseSensitivity` called after `New()` but before `Watch()`
+~~9. Add integration test: create `File.go` and `file.go`, verify dedup with `CaseInsensitive`~~ done — shipped in v2.4.0
+~~10. Add integration test: polling mode + case-only rename, verify no phantom events~~ done — shipped in v2.4.0
+~~11. Add integration test: gitignore + case-insensitive, verify rules applied~~ done — shipped in v2.4.0
+~~12. Add test for `watchListKeys` consistency after `Add` + `Remove` cycles~~ done — shipped in v2.4.0
+~~13. Add fuzz test for `pathKey()` with unicode/edge-case paths~~ done — shipped in v2.4.0
+~~14. Add test for `Reset()` preserving `caseSensitivity` config~~ done — shipped in v2.4.0
+~~15. Add benchmark: `pathKey` overhead on large directory trees (case-sensitive mode)~~ done — shipped in v2.4.0
+~~16. Add test: `WithCaseSensitivity` called after `New()` but before `Watch()`~~ done — shipped in v2.4.0
 
 ### Documentation
 
-17. Add CHANGELOG.md entry for `WithCaseSensitivity`
-18. Update `doc.go` package doc with case-sensitivity mention
-19. Add example in `example_test.go` for `WithCaseSensitivity`
-20. Update `Troubleshooting.md` with case-sensitivity guidance
-21. Update `docs/DOMAIN_LANGUAGE.md` with case-sensitivity terms
-22. Update website `guides/resilience.mdx` or create `guides/case-sensitivity.mdx`
-23. Update website `data/features.ts` with case-sensitivity feature
-24. Add API_STABILITY.md entry for `WithCaseSensitivity` (new additive option)
+~~17. Add CHANGELOG.md entry for `WithCaseSensitivity`~~ done — shipped in v2.4.0
+~~18. Update `doc.go` package doc with case-sensitivity mention~~ done — shipped in v2.4.0
+~~19. Add example in `example_test.go` for `WithCaseSensitivity`~~ done — shipped in v2.4.0
+~~20. Update `Troubleshooting.md` with case-sensitivity guidance~~ done — shipped in v2.4.0
+~~21. Update `docs/DOMAIN_LANGUAGE.md` with case-sensitivity terms~~ done — shipped in v2.4.0
+~~22. Update website `guides/resilience.mdx` or create `guides/case-sensitivity.mdx`~~ done — shipped in v2.4.0
+~~23. Update website `data/features.ts` with case-sensitivity feature~~ done — shipped in v2.4.0
+~~24. Add API_STABILITY.md entry for `WithCaseSensitivity` (new additive option)~~ done — shipped in v2.4.0
 
 ### Architecture / Refactoring
 
-25. Extract `addWatch(path string)` / `removeWatch(path string)` helpers that update both
+~~25. Extract `addWatch(path string)` / `removeWatch(path string)` helpers that update both~~ done — shipped in v2.4.0
     `watchList` and `watchListKeys` atomically
-26. Consider making `pathKey` a free function taking `FilesystemCaseSensitivity` as arg
-27. Add `FilesystemCaseSensitivity` to `Stats()` struct for observability
-28. Consider `WithCaseSensitivityDetect()` that probes the actual filesystem at runtime
-29. Document the interaction between `WithFollowSymlinks` and case-sensitivity (symlink
+~~26. Consider making `pathKey` a free function taking `FilesystemCaseSensitivity` as arg~~ done — shipped in v2.4.0
+~~27. Add `FilesystemCaseSensitivity` to `Stats()` struct for observability~~ done — shipped in v2.4.0
+~~28. Consider `WithCaseSensitivityDetect()` that probes the actual filesystem at runtime~~ done — shipped in v2.4.0
+~~29. Document the interaction between `WithFollowSymlinks` and case-sensitivity (symlink~~ done — shipped in v2.4.0
     targets may be on a different filesystem with different case semantics)
-30. Consider unicode normalization (NFC vs NFD) — macOS uses NFD, most others use NFC.
+~~30. Consider unicode normalization (NFC vs NFD) — macOS uses NFD, most others use NFC.~~ done — shipped in v2.4.0
     This is a separate but related issue to case sensitivity.
 
 ### From TODO_LIST.md (pre-existing, unrelated)
 
-31. Windows CI matrix job in `ci.yml`
-32. Expand fuzz tests (FilterAnd/FilterOr/FilterNot composition)
-33. Large-tree stress harness (100k directories)
-34. Shrink docs-consistency exemption list
-35. Resolve `.goreleaser.yml` dead-config open question
-36. Resolve benchmark baseline committed-vs-gitignored question
-37. Design `WatchChanges(ctx, targetState)` contract
+~~31. Windows CI matrix job in `ci.yml`~~ OPEN → TODO_LIST (Windows CI matrix)
+~~32. Expand fuzz tests (FilterAnd/FilterOr/FilterNot composition)~~ done — shipped in v2.4.0
+~~33. Large-tree stress harness (100k directories)~~ done — shipped in v2.4.0
+~~34. Shrink docs-consistency exemption list~~ done — shipped in v2.4.0
+~~35. Resolve `.goreleaser.yml` dead-config open question~~ done — shipped in v2.4.0
+~~36. Resolve benchmark baseline committed-vs-gitignored question~~ done — shipped in v2.4.0
+~~37. Design `WatchChanges(ctx, targetState)` contract~~ done — shipped in v2.4.0
 
 ### From ROADMAP.md (pre-existing, unrelated)
 
-38. macOS FSEvents edge case testing
-39. BSD/kqueue verification
-40. v3 planning — accumulated deprecations
-41. Streaming filter protocol (`(keep bool, err error)`)
-42. pprof endpoints for watcher introspection
-43. Zero-allocation event path investigation
-44. Race-detector CI statistical gate
-45. Cross-platform release artifacts via goreleaser
-46. Dependency freshness SLO codification
-47. Docs freshness gate auto-generation
-48. Benchmark freshness CI
-49. `FilterGeneratedCodeFull` documentation
-50. `FilterGeneratedCodeWithFilter` documentation
+~~38. macOS FSEvents edge case testing~~ done — shipped in v2.4.0
+~~39. BSD/kqueue verification~~ done — shipped in v2.4.0
+~~40. v3 planning — accumulated deprecations~~ done — shipped in v2.4.0
+~~41. Streaming filter protocol (`(keep bool, err error)`)~~ done — shipped in v2.4.0
+~~42. pprof endpoints for watcher introspection~~ done — shipped in v2.4.0
+~~43. Zero-allocation event path investigation~~ done — shipped in v2.4.0
+~~44. Race-detector CI statistical gate~~ done — shipped in v2.4.0
+~~45. Cross-platform release artifacts via goreleaser~~ done — shipped in v2.4.0
+~~46. Dependency freshness SLO codification~~ done — shipped in v2.4.0
+~~47. Docs freshness gate auto-generation~~ done — shipped in v2.4.0
+~~48. Benchmark freshness CI~~ done — shipped in v2.4.0
+~~49. `FilterGeneratedCodeFull` documentation~~ done — shipped in v2.4.0
+~~50. `FilterGeneratedCodeWithFilter` documentation~~ done — shipped in v2.4.0
 
 ---
 

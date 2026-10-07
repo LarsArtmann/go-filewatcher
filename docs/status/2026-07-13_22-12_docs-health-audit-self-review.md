@@ -158,16 +158,16 @@ The skill says "Code wins. When doc and code disagree, fix the doc." I verified 
 
 ### Critical
 
-1. **Fix the goreleaser classification** — Revert FEATURES.md from ✅ back to 🟡 PARTIALLY_FUNCTIONAL with note "release.yml exists but does not invoke goreleaser". Re-add a refined TODO item about wiring goreleaser into the release workflow.
-2. **Clean CHANGELOG [Unreleased]** — The [Unreleased] section describes released features. Either cut a new version or clear it.
-3. **Run the test suite** — `nix run .#test` or `go test -race ./...` to confirm nothing broke.
+~~1. **Fix the goreleaser classification** — Revert FEATURES.md from ✅ back to 🟡 PARTIALLY_FUNCTIONAL with note "release.yml exists but does not invoke goreleaser". Re-add a refined TODO item about wiring goreleaser into the release workflow.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~2. **Clean CHANGELOG [Unreleased]** — The [Unreleased] section describes released features. Either cut a new version or clear it.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~3. **Run the test suite** — `nix run .#test` or `go test -race ./...` to confirm nothing broke.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ### Quality
 
-4. **Enforce status vocabulary** — Convert FEATURES.md from emoji indicators to the skill's defined statuses (`FULLY_FUNCTIONAL`, etc.) or explicitly document the emoji mapping.
-5. **Verify DOMAIN_LANGUAGE.md terms** — Grep for each term to confirm code usage.
-6. **Check benchmark freshness** — Re-run benchmarks or mark them as "historical, may vary."
-7. **Cross-file duplication audit** — Systematically check that each fact has exactly one home.
+~~4. **Enforce status vocabulary** — Convert FEATURES.md from emoji indicators to the skill's defined statuses (`FULLY_FUNCTIONAL`, etc.) or explicitly document the emoji mapping.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~5. **Verify DOMAIN_LANGUAGE.md terms** — Grep for each term to confirm code usage.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~6. **Check benchmark freshness** — Re-run benchmarks or mark them as "historical, may vary."~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~7. **Cross-file duplication audit** — Systematically check that each fact has exactly one home.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ---
 
@@ -175,83 +175,83 @@ The skill says "Code wins. When doc and code disagree, fix the doc." I verified 
 
 ### Fix Mistakes From This Session (do first)
 
-1. Revert goreleaser status in FEATURES.md from ✅ to 🟡 with accurate note
-2. Re-add refined goreleaser TODO: "Wire `.goreleaser.yml` into `release.yml` workflow for cross-platform artifacts"
-3. Update ROADMAP.md goreleaser wording to clarify: release workflow exists, goreleaser invocation does not
-4. Recalculate and fix TODO_LIST.md status snapshot (HIGH = 2, MEDIUM = 12, LOW = 6)
-5. Clean CHANGELOG [Unreleased] section — remove released items
-6. Run `go test -race ./...` and confirm all tests pass
-7. Run `nix run .#check` for full quality gate
+~~1. Revert goreleaser status in FEATURES.md from ✅ to 🟡 with accurate note~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~2. Re-add refined goreleaser TODO: "Wire `.goreleaser.yml` into `release.yml` workflow for cross-platform artifacts"~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~3. Update ROADMAP.md goreleaser wording to clarify: release workflow exists, goreleaser invocation does not~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~4. Recalculate and fix TODO_LIST.md status snapshot (HIGH = 2, MEDIUM = 12, LOW = 6)~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~5. Clean CHANGELOG [Unreleased] section — remove released items~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~6. Run `go test -race ./...` and confirm all tests pass~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~7. Run `nix run .#check` for full quality gate~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ### Domain Language
 
-8. Grep each DOMAIN_LANGUAGE.md term against code to verify usage
-9. Add `ContentHash` as a domain term (used in filter and event)
-10. Add `MatchResult` / `FilterWithMeta` as domain terms (metadata-returning filters)
-11. Add `ErrorCategory` (transient/permanent) as a domain term
-12. Add `CircuitBreaker` states (closed/open/half-open) as domain concepts
+~~8. Grep each DOMAIN_LANGUAGE.md term against code to verify usage~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~9. Add `ContentHash` as a domain term (used in filter and event)~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~10. Add `MatchResult` / `FilterWithMeta` as domain terms (metadata-returning filters)~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~11. Add `ErrorCategory` (transient/permanent) as a domain term~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~12. Add `CircuitBreaker` states (closed/open/half-open) as domain concepts~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ### FEATURES.md
 
-13. Convert emoji statuses to skill-defined vocabulary OR add a legend mapping emojis to statuses
-14. Add `FilterGeneratedCodeFull` as a separate filter (distinct from `FilterGeneratedCode`)
-15. Add `IsWatching()` / `IsClosed()` state inspection methods to Core Watching section
-16. Add `WatchOnce()` to Core Watching section (currently only in CHANGELOG)
-17. Verify each "✅" feature claim by opening the cited code
-18. Add `examples/demo/` and `examples/filter-generated/` to FEATURES.md examples row
+~~13. Convert emoji statuses to skill-defined vocabulary OR add a legend mapping emojis to statuses~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~14. Add `FilterGeneratedCodeFull` as a separate filter (distinct from `FilterGeneratedCode`)~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~15. Add `IsWatching()` / `IsClosed()` state inspection methods to Core Watching section~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~16. Add `WatchOnce()` to Core Watching section (currently only in CHANGELOG)~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~17. Verify each "✅" feature claim by opening the cited code~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~18. Add `examples/demo/` and `examples/filter-generated/` to FEATURES.md examples row~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ### CHANGELOG.md
 
-19. Verify v0.2.1 entry against actual git diff (I wrote it from commit messages, not diffs)
-20. Verify v0.2.2 and v0.3.0 are correctly described as same-commit
-21. Decide whether to cut v2.3.0 or keep accumulating under [Unreleased]
-22. Add the website creation to CHANGELOG when next version is cut
+~~19. Verify v0.2.1 entry against actual git diff (I wrote it from commit messages, not diffs)~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~20. Verify v0.2.2 and v0.3.0 are correctly described as same-commit~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~21. Decide whether to cut v2.3.0 or keep accumulating under [Unreleased]~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~22. Add the website creation to CHANGELOG when next version is cut~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ### README.md
 
-23. Verify benchmark numbers are current or mark as "historical reference"
-24. Add MIGRATION.md to related docs links (currently missing)
-25. Consider adding "11 sentinel errors" cross-reference to errors.go
-26. Add `doc.go` to the file organization context in AGENTS.md
+~~23. Verify benchmark numbers are current or mark as "historical reference"~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~24. Add MIGRATION.md to related docs links (currently missing)~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~25. Consider adding "11 sentinel errors" cross-reference to errors.go~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~26. Add `doc.go` to the file organization context in AGENTS.md~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ### AGENTS.md
 
-27. Add `doc.go` to the file organization table
-28. Verify the `WithWatchedIgnoreDirs` deprecation note matches `options.go` exactly
-29. Add note about `filter_gogen.go` having its own test file
-30. Cross-reference phantom_types.go with `phantom_types_test.go`
-31. Add the website `nix run .#build` and `nix run .#deploy` commands to website section
-32. Add website `.node-version` (24) to conventions
+~~27. Add `doc.go` to the file organization table~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~28. Verify the `WithWatchedIgnoreDirs` deprecation note matches `options.go` exactly~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~29. Add note about `filter_gogen.go` having its own test file~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~30. Cross-reference phantom_types.go with `phantom_types_test.go`~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~31. Add the website `nix run .#build` and `nix run .#deploy` commands to website section~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~32. Add website `.node-version` (24) to conventions~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ### Cross-File Consistency
 
-33. Check that "17+ filters" count is consistent across README, FEATURES, and website docs
-34. Check that "18 middleware" count is consistent across all files
-35. Check that "24 options" count is consistent across all files
-36. Ensure ROADMAP ideas don't duplicate TODO_LIST items
-37. Ensure FEATURES.md planned items reference TODO_LIST.md correctly
+~~33. Check that "17+ filters" count is consistent across README, FEATURES, and website docs~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~34. Check that "18 middleware" count is consistent across all files~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~35. Check that "24 options" count is consistent across all files~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~36. Ensure ROADMAP ideas don't duplicate TODO_LIST items~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~37. Ensure FEATURES.md planned items reference TODO_LIST.md correctly~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ### Website Documentation Drift
 
-38. Check if `website/src/content/docs/` pages match current README API tables
-39. Verify website `features.ts` data matches FEATURES.md statuses
-40. Check if website `hero-code.ts` matches current API (e.g., correct import path)
-41. Verify website changelog.mdx matches CHANGELOG.md
+~~38. Check if `website/src/content/docs/` pages match current README API tables~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~39. Verify website `features.ts` data matches FEATURES.md statuses~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~40. Check if website `hero-code.ts` matches current API (e.g., correct import path)~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~41. Verify website changelog.mdx matches CHANGELOG.md~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ### Testing & CI
 
-42. Add a docs-freshness CI check (mentioned in TODO_LIST but not started)
-43. Consider a script that diffs exported symbols vs README/FEATURES mentions
-44. Verify `.github/workflows/ci.yml` 90% coverage threshold is actually enforced
+~~42. Add a docs-freshness CI check (mentioned in TODO_LIST but not started)~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~43. Consider a script that diffs exported symbols vs README/FEATURES mentions~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~44. Verify `.github/workflows/ci.yml` 90% coverage threshold is actually enforced~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ### Process
 
-45. Always run tests, not just build, after any changes
-46. Always grep before trusting a doc claim, even when the file "looks right"
-47. Never claim 10/10 — always leave room for what you missed
-48. When marking something DONE, open the actual code and verify, don't trust filenames
-49. Apply skill rules uniformly — don't skip Low severity items just because they're low
-50. After any audit, do a self-review pass before reporting results
+~~45. Always run tests, not just build, after any changes~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~46. Always grep before trusting a doc claim, even when the file "looks right"~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~47. Never claim 10/10 — always leave room for what you missed~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~48. When marking something DONE, open the actual code and verify, don't trust filenames~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~49. Apply skill rules uniformly — don't skip Low severity items just because they're low~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
+~~50. After any audit, do a self-review pass before reporting results~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ---
 

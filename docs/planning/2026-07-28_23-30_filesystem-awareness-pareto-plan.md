@@ -34,7 +34,7 @@ ship.
 
 | #     | Task                                         | Why                                                                                                                                                             | Effort |
 | ----- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| 1     | NFC normalization in `pathKey()` (above)     | The 1% → 51%                                                                                                                                                    | 30min  |
+~~| 1     | NFC normalization in `pathKey()` (above)     | The 1% → 51%                                                                                                                                                    | 30min  |~~ done — all 14 tasks shipped in v2.4.0
 | **2** | **`filepath.Clean()` in path normalization** | Prevents trailing-slash, `..`, and redundant-separator mismatches between `Add()`, `Remove()`, event paths, and exclude paths. One function, called everywhere. | 20min  |
 | **3** | **Wire `pathKey()` into poll loop**          | Closes the #1 gap in our case-sensitivity work. Poll loop uses raw paths as map keys — case-only renames produce phantom Create+Remove on macOS.                | 45min  |
 | **4** | **Wire `pathKey()` into gitignore matcher**  | Closes the #2 gap. Gitignore ancestor-prefix check uses raw `strings.HasPrefix` — case mismatch silently bypasses gitignore rules on macOS.                     | 30min  |

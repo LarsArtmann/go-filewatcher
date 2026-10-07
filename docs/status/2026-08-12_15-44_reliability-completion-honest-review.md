@@ -151,11 +151,11 @@ changelog for migration concerns have to read every bullet. A "Breaking" or
 
 | #  | Item                                                     | Status      | Reason                                                                           |
 | -- | -------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------- |
-| 2  | Poll dedup heuristic (`WithPollDeduplicate`)             | NOT STARTED | Large feature: per-path timestamp tracking with LRU. Documented as limitation.   |
-| 3  | Poll loop rename detection (`WithPollDetectRenames`)     | NOT STARTED | Large feature: platform-specific inode extraction.                               |
-| 20 | Runtime deprecation warning for `MiddlewareWriteFileLog` | NOT STARTED | Doc comment already warns. Runtime warning is v3 prep.                           |
-| 21 | `Reset()` and `failedPaths` retention                    | NOT STARTED | Feedback document itself concludes this is minor, not a real bug.                |
-| 22 | `WatcherError.Stack` behavior                            | NOT STARTED | Feedback document offers "document current behavior" as valid fix. Not acted on. |
+~~| 2  | Poll dedup heuristic (`WithPollDeduplicate`)             | NOT STARTED | Large feature: per-path timestamp tracking with LRU. Documented as limitation.   |~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~| 3  | Poll loop rename detection (`WithPollDetectRenames`)     | NOT STARTED | Large feature: platform-specific inode extraction.                               |~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~| 20 | Runtime deprecation warning for `MiddlewareWriteFileLog` | NOT STARTED | Doc comment already warns. Runtime warning is v3 prep.                           |~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~| 21 | `Reset()` and `failedPaths` retention                    | NOT STARTED | Feedback document itself concludes this is minor, not a real bug.                |~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~| 22 | `WatcherError.Stack` behavior                            | NOT STARTED | Feedback document offers "document current behavior" as valid fix. Not acted on. |~~ resolved by session 3 (19-22) or shipped v2.4.0
 
 ### From the prior session's "should-do" list:
 
@@ -247,64 +247,64 @@ verified the final CI pass. I should have waited.
 
 ### Architectural
 
-1. **The `emitEvent` function is 50+ lines and does too much.** It handles
+~~1. **The `emitEvent` function is 50+ lines and does too much.** It handles~~ resolved by session 3 (19-22) or shipped v2.4.0
    debounce dispatch, middleware drop tracking, channel send logic (blocking and
    non-blocking), error handling, and debug logging — all in one function. The
    `trackedEmit` closure alone is 20 lines. Consider extracting a
    `channelSender` type that encapsulates the send strategy.
 
-2. **Middleware drop tracking via `atomic.Bool` is a heuristic, not a contract.**
+~~2. **Middleware drop tracking via `atomic.Bool` is a heuristic, not a contract.**~~ resolved by session 3 (19-22) or shipped v2.4.0
    It detects "middleware returned nil without calling emit" — but what if a
    middleware legitimately calls emit zero times AND drops zero times? Or calls
    emit multiple times? The `atomic.Bool` only records the first call. A
    `MiddlewareDropCallback` API would be more correct but requires an API change.
 
-3. **The `Stats` struct has 15 fields.** It's becoming a god struct. Consider
+~~3. **The `Stats` struct has 15 fields.** It's becoming a god struct. Consider~~ resolved by session 3 (19-22) or shipped v2.4.0
    grouping into `EventStats`, `ErrorStats`, `WatchStats` sub-structs for
    readability and to make it easier to extend without breaking every struct
    literal in every test and metrics file.
 
-4. **The `maxWatchesExplicit` flag is a workaround.** The real problem is that
+~~4. **The `maxWatchesExplicit` flag is a workaround.** The real problem is that~~ resolved by session 3 (19-22) or shipped v2.4.0
    `maxWatches` serves double duty: "user's configured limit" and "effective
    limit after fraction." Consider splitting into `maxWatchesConfigured` (what
    the user set) and `maxWatchesEffective` (what the watcher uses). This
    eliminates the bool flag entirely.
 
-5. **The `WithPolling` dedup limitation is now documented but not solved.** The
+~~5. **The `WithPolling` dedup limitation is now documented but not solved.** The~~ resolved by session 3 (19-22) or shipped v2.4.0
    "better" fix (per-path native event timestamp tracking with LRU) would
    eliminate the double-fire problem. It's a real feature gap for polling users.
 
 ### Process
 
-6. **I should trace code paths before writing tests.** The
+~~6. **I should trace code paths before writing tests.** The~~ resolved by session 3 (19-22) or shipped v2.4.0
    `TestWatchFilteredDirectories_Disabled` failure was 100% preventable. I
    should have drawn the pipeline: `processEvent → passesFilters? →
    handleFilteredEvent (here!) → emitEvent → middleware`.
 
-7. **I should capture bench baselines before starting work** so I can isolate
+~~7. **I should capture bench baselines before starting work** so I can isolate~~ resolved by session 3 (19-22) or shipped v2.4.0
    my changes' performance impact.
 
-8. **I should verify struct field alignment and initialization immediately after
+~~8. **I should verify struct field alignment and initialization immediately after~~ resolved by session 3 (19-22) or shipped v2.4.0
    editing**, not rely on CI to catch formatting issues.
 
-9. **I should write status reports AFTER final CI passes**, not before.
+~~9. **I should write status reports AFTER final CI passes**, not before.~~ resolved by session 3 (19-22) or shipped v2.4.0
 
-10. **I should run `grep` for references BEFORE deleting functions**, not after.
+~~10. **I should run `grep` for references BEFORE deleting functions**, not after.~~ resolved by session 3 (19-22) or shipped v2.4.0
 
 ### Testing
 
-11. **The `TestDropOnFull` test doesn't verify exact drop counts.** It just
+~~11. **The `TestDropOnFull` test doesn't verify exact drop counts.** It just~~ resolved by session 3 (19-22) or shipped v2.4.0
     checks `> 0`. A precise test would fill the channel deterministically and
     verify the exact number of drops.
 
-12. **No test verifies `Reset()` preserves new config fields.** I added
+~~12. **No test verifies `Reset()` preserves new config fields.** I added~~ resolved by session 3 (19-22) or shipped v2.4.0
     `maxWatchesFraction`, `maxWatchesExplicit`, `eventDropOnFull`, and
     `watchFilteredDirs` but didn't test that they survive `Reset()`.
 
-13. **No test verifies `Reset()` does NOT re-detect when `maxWatchesExplicit`
+~~13. **No test verifies `Reset()` does NOT re-detect when `maxWatchesExplicit`~~ resolved by session 3 (19-22) or shipped v2.4.0
     is true.** My fix to `Reset()` is untested at the integration level.
 
-14. **The bench-diff is unreliable for ns/op** due to CPU contention. The
+~~14. **The bench-diff is unreliable for ns/op** due to CPU contention. The~~ resolved by session 3 (19-22) or shipped v2.4.0
     methodology note in AGENTS.md warns about this, but I still ran it without
     killing background processes first.
 
@@ -324,58 +324,58 @@ verified the final CI pass. I should have waited.
 8. ~~Run bench-diff~~ ✅ DONE
 9. ~~Update `API_STABILITY.md`~~ ✅ DONE
 10. ~~Update website `api-reference.mdx`~~ ✅ DONE
-11. Capture fresh bench baseline from current HEAD for future comparisons
-12. Verify `Reset()` preserves all new config fields (`maxWatchesFraction`,
+~~11. Capture fresh bench baseline from current HEAD for future comparisons~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~12. Verify `Reset()` preserves all new config fields (`maxWatchesFraction`,~~ resolved by session 3 (19-22) or shipped v2.4.0
     `maxWatchesExplicit`, `eventDropOnFull`, `watchFilteredDirs`) — write a test
-13. Run `nix flake check` (full flake validation, not just CI apps)
+~~13. Run `nix flake check` (full flake validation, not just CI apps)~~ resolved by session 3 (19-22) or shipped v2.4.0
 
 ### Should-do (quality gaps)
 
-14. Add test: `Reset()` does NOT re-detect when `maxWatchesExplicit` is true
-15. Add test: self-heal abandons permission-denied paths (item 14 integration)
-16. Add test: symlink to already-watched real path dedup
-17. Improve `TestDropOnFull` to verify exact drop count (deterministic, not "> 0")
-18. Improve `TestWatchFilteredDirectories_Disabled` to use fake backend and verify
+~~14. Add test: `Reset()` does NOT re-detect when `maxWatchesExplicit` is true~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~15. Add test: self-heal abandons permission-denied paths (item 14 integration)~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~16. Add test: symlink to already-watched real path dedup~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~17. Improve `TestDropOnFull` to verify exact drop count (deterministic, not "> 0")~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~18. Improve `TestWatchFilteredDirectories_Disabled` to use fake backend and verify~~ resolved by session 3 (19-22) or shipped v2.4.0
     `Add` was NOT called (instead of relying on WatchCount timing)
-19. Add `WithContentHashMaxSize(bytes)` configurable option
-20. Add `WithErrorBufferSize(int)` to decouple error channel from event channel
-21. Add runtime deprecation warning for `MiddlewareWriteFileLog`
-22. Document `WatcherError.Stack` behavior in doc comment
-23. Add `Stats.WatchBudgetCap` field showing computed cap after safety fraction
-24. Fuzz test `FilterIgnoreDirsCaseInsensitive` and `MiddlewareDeduplicateCaseInsensitive`
-25. Integration test: polling mode + exclusions + gitignore end-to-end
-26. Integration test: DropOnFull with slow consumer simulation (deterministic)
-27. Add examples for `WithEventChannelMode(DropOnFull)`
-28. Add example for `WithMaxWatchesSafetyFraction`
-29. Add example for `MiddlewareDeduplicateCaseInsensitive`
-30. Update `docs/guides/resilience.md` with new self-heal error classification
-31. Update `docs/guides/middleware.md` with new dedup variants and batch error handling
-32. Review all new option doc comments for consistency
-33. Consider `EventsDroppedByBackpressure` Prometheus metric (currently only
+~~19. Add `WithContentHashMaxSize(bytes)` configurable option~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~20. Add `WithErrorBufferSize(int)` to decouple error channel from event channel~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~21. Add runtime deprecation warning for `MiddlewareWriteFileLog`~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~22. Document `WatcherError.Stack` behavior in doc comment~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~23. Add `Stats.WatchBudgetCap` field showing computed cap after safety fraction~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~24. Fuzz test `FilterIgnoreDirsCaseInsensitive` and `MiddlewareDeduplicateCaseInsensitive`~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~25. Integration test: polling mode + exclusions + gitignore end-to-end~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~26. Integration test: DropOnFull with slow consumer simulation (deterministic)~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~27. Add examples for `WithEventChannelMode(DropOnFull)`~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~28. Add example for `WithMaxWatchesSafetyFraction`~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~29. Add example for `MiddlewareDeduplicateCaseInsensitive`~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~30. Update `docs/guides/resilience.md` with new self-heal error classification~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~31. Update `docs/guides/middleware.md` with new dedup variants and batch error handling~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~32. Review all new option doc comments for consistency~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~33. Consider `EventsDroppedByBackpressure` Prometheus metric (currently only~~ resolved by session 3 (19-22) or shipped v2.4.0
     `events_dropped_by_middleware_total` and `errors_dropped_total` are exposed)
-34. Consider splitting `maxWatches` into `maxWatchesConfigured` + `maxWatchesEffective`
-35. Consider `MiddlewareBatchFlushErrorHandler` callback option
-36. Consider splitting `Stats` struct into sub-structs
-37. Consider extracting `channelSender` type from `emitEvent`
-38. Add migration guide for v2.3 → v2.4
+~~34. Consider splitting `maxWatches` into `maxWatchesConfigured` + `maxWatchesEffective`~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~35. Consider `MiddlewareBatchFlushErrorHandler` callback option~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~36. Consider splitting `Stats` struct into sub-structs~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~37. Consider extracting `channelSender` type from `emitEvent`~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~38. Add migration guide for v2.3 → v2.4~~ resolved by session 3 (19-22) or shipped v2.4.0
 
 ### Feature backlog (from feedback, not started)
 
-39. Implement `WithPollDeduplicate(true)` — per-path native event timestamp tracking
-40. Implement `WithPollDetectRenames(true)` — inode-based rename detection
-41. Add macOS CI matrix to `ci.yml`
-42. Add Windows CI matrix to `ci.yml`
-43. Consider `MiddlewareDropCallback` API for explicit drop notification
-44. Integrate `FilterIgnoreDirsCaseInsensitive` into `WithIgnoreDirs` auto-detection
+~~39. Implement `WithPollDeduplicate(true)` — per-path native event timestamp tracking~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~40. Implement `WithPollDetectRenames(true)` — inode-based rename detection~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~41. Add macOS CI matrix to `ci.yml`~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~42. Add Windows CI matrix to `ci.yml`~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~43. Consider `MiddlewareDropCallback` API for explicit drop notification~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~44. Integrate `FilterIgnoreDirsCaseInsensitive` into `WithIgnoreDirs` auto-detection~~ resolved by session 3 (19-22) or shipped v2.4.0
 
 ### Documentation and cleanup
 
-45. Update `FEATURES.md` — verify all new features are listed (may have missed some)
-46. Update `README.md` if any user-facing behavior changed
-47. Add guide for polling mode best practices (when to use, limitations)
-48. Add guide for middleware observability (interpreting drop counters)
-49. Archive feedback document to `docs/feedback/done/` after all items closed
-50. Review all existing examples for compatibility with new path validation
+~~45. Update `FEATURES.md` — verify all new features are listed (may have missed some)~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~46. Update `README.md` if any user-facing behavior changed~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~47. Add guide for polling mode best practices (when to use, limitations)~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~48. Add guide for middleware observability (interpreting drop counters)~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~49. Archive feedback document to `docs/feedback/done/` after all items closed~~ resolved by session 3 (19-22) or shipped v2.4.0
+~~50. Review all existing examples for compatibility with new path validation~~ resolved by session 3 (19-22) or shipped v2.4.0
 
 ---
 

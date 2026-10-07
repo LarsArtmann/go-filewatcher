@@ -162,25 +162,25 @@ The entire `filesystem_poll_gitignore_test.go` has `//nolint:wsl_v5` at the file
 
 ### Architecture
 
-1. **`pathKey()` is called on every event, every debounce, every poll comparison** — NFC normalization allocates. Profile with `bench-diff` and cache results if hot.
-2. **`gitignoreCache.load()` signature change** from `(dir)` to `(dir, key)` is a leaky abstraction — the caller computes `pathKey` and passes it in. Consider making `load` a method on `*Watcher` instead of `*gitignoreCache`, or having the cache hold a reference to the key function.
-3. **`fileState.path` field** stores the original path in every snapshot entry — memory overhead in the poll loop. For directories with 100K+ files, this doubles the path-string memory footprint of the snapshot map.
+~~1. **`pathKey()` is called on every event, every debounce, every poll comparison** — NFC normalization allocates. Profile with `bench-diff` and cache results if hot.~~ done — shipped in v2.4.0
+~~2. **`gitignoreCache.load()` signature change** from `(dir)` to `(dir, key)` is a leaky abstraction — the caller computes `pathKey` and passes it in. Consider making `load` a method on `*Watcher` instead of `*gitignoreCache`, or having the cache hold a reference to the key function.~~ done — shipped in v2.4.0
+~~3. **`fileState.path` field** stores the original path in every snapshot entry — memory overhead in the poll loop. For directories with 100K+ files, this doubles the path-string memory footprint of the snapshot map.~~ done — shipped in v2.4.0
 
 ### Correctness
 
-4. **Symlink resolution and `pathKey`**: `walkDirFunc` resolves symlinks via `filepath.EvalSymlinks` BEFORE calling `tryAddPath`. The resolved path is then canonicalized. But if the symlink target is on a different mount with different case-sensitivity (e.g., symlink from ext4 to NTFS), the `pathKey` mode is wrong for that subtree.
-5. **`shouldExcludePath` iterates the excludePaths map** to check prefix relationships. This is O(n) in the number of excluded paths. For large exclude sets, this should use a trie or prefix map.
+~~4. **Symlink resolution and `pathKey`**: `walkDirFunc` resolves symlinks via `filepath.EvalSymlinks` BEFORE calling `tryAddPath`. The resolved path is then canonicalized. But if the symlink target is on a different mount with different case-sensitivity (e.g., symlink from ext4 to NTFS), the `pathKey` mode is wrong for that subtree.~~ done — shipped in v2.4.0
+~~5. **`shouldExcludePath` iterates the excludePaths map** to check prefix relationships. This is O(n) in the number of excluded paths. For large exclude sets, this should use a trie or prefix map.~~ done — shipped in v2.4.0
 
 ### Testing
 
-6. **No fuzz tests** for `pathKey()` — Unicode edge cases (combining marks, zero-width joiners, emoji sequences) could expose normalization bugs. The existing fuzz_test.go doesn't exercise pathKey.
-7. **No macOS/Windows CI verification** — all case-insensitive behavior is tested on Linux where the filesystem is case-sensitive. The tests verify the LOGIC (canonical keys) but not the ACTUAL behavior on real case-insensitive filesystems.
-8. **`rebuildWatchListKeys()` is O(n)** — called on every `Remove()`. For watchers with thousands of paths, removing a single subtree path triggers a full rebuild. Should iterate only the removed paths and delete their keys.
+~~6. **No fuzz tests** for `pathKey()` — Unicode edge cases (combining marks, zero-width joiners, emoji sequences) could expose normalization bugs. The existing fuzz_test.go doesn't exercise pathKey.~~ done — shipped in v2.4.0
+~~7. **No macOS/Windows CI verification** — all case-insensitive behavior is tested on Linux where the filesystem is case-sensitive. The tests verify the LOGIC (canonical keys) but not the ACTUAL behavior on real case-insensitive filesystems.~~ done — shipped in v2.4.0
+~~8. **`rebuildWatchListKeys()` is O(n)** — called on every `Remove()`. For watchers with thousands of paths, removing a single subtree path triggers a full rebuild. Should iterate only the removed paths and delete their keys.~~ done — shipped in v2.4.0
 
 ### Documentation
 
-9. **README.md is stale** — no mention of case-sensitivity, NFC, or `FilterCaseInsensitive`. This is the #1 user-facing doc.
-10. **`API_STABILITY.md` not checked** — the `Stats` struct gained a new field. If there's a stability contract around the struct, this should be documented.
+~~9. **README.md is stale** — no mention of case-sensitivity, NFC, or `FilterCaseInsensitive`. This is the #1 user-facing doc.~~ done — shipped in v2.4.0
+~~10. **`API_STABILITY.md` not checked** — the `Stats` struct gained a new field. If there's a stability contract around the struct, this should be documented.~~ done — shipped in v2.4.0
 
 ---
 
@@ -188,69 +188,69 @@ The entire `filesystem_poll_gitignore_test.go` has `//nolint:wsl_v5` at the file
 
 ### High Priority (correctness + observability)
 
-1. Run `nix run .#bench-baseline` + `nix run .#bench-diff` to measure NFC normalization performance impact
-2. Write fuzz test for `pathKey()` with Unicode edge cases (combining marks, surrogate pairs, emoji)
-3. Add `FilterCaseInsensitive` to `FEATURES.md` filter table
-4. Add case-sensitivity awareness section to `README.md`
-5. Make `rebuildWatchListKeys()` incremental — delete only removed keys instead of full rebuild
-6. Fix `normalizePath` fallback: apply `filepath.Clean` to raw path even when `Abs` fails
-7. Add `pathKey()` benchmark to `benchmark_test.go` — measure NFC on ASCII vs Unicode paths
-8. Write test that verifies `Remove()` actually removes subtree keys from `watchListKeys` (not just `watchList`)
-9. Add CI matrix entry for macOS (or at least document that case-insensitive tests are logic-only on Linux CI)
-10. Add `normalizePath` call to `Add()` path in `withResolvedPath` — verify ALL entry points use it
+~~1. Run `nix run .#bench-baseline` + `nix run .#bench-diff` to measure NFC normalization performance impact~~ done — shipped in v2.4.0
+~~2. Write fuzz test for `pathKey()` with Unicode edge cases (combining marks, surrogate pairs, emoji)~~ done — shipped in v2.4.0
+~~3. Add `FilterCaseInsensitive` to `FEATURES.md` filter table~~ done — shipped in v2.4.0
+~~4. Add case-sensitivity awareness section to `README.md`~~ done — shipped in v2.4.0
+~~5. Make `rebuildWatchListKeys()` incremental — delete only removed keys instead of full rebuild~~ done — shipped in v2.4.0
+~~6. Fix `normalizePath` fallback: apply `filepath.Clean` to raw path even when `Abs` fails~~ done — shipped in v2.4.0
+~~7. Add `pathKey()` benchmark to `benchmark_test.go` — measure NFC on ASCII vs Unicode paths~~ done — shipped in v2.4.0
+~~8. Write test that verifies `Remove()` actually removes subtree keys from `watchListKeys` (not just `watchList`)~~ done — shipped in v2.4.0
+~~9. Add CI matrix entry for macOS (or at least document that case-insensitive tests are logic-only on Linux CI)~~ done — shipped in v2.4.0
+~~10. Add `normalizePath` call to `Add()` path in `withResolvedPath` — verify ALL entry points use it~~ done — shipped in v2.4.0
 
 ### Medium Priority (polish + robustness)
 
-11. Cache `norm.NFC.String()` result if the same path is seen repeatedly (sync.Map or LRU)
-12. Consider `pathKey` accepting a pre-normalized path to avoid double-normalization in hot paths
-13. Replace `//nolint:wsl_v5` file-level suppression with targeted `//nolint:wsl_v5` on specific lines
-14. Add `FilterCaseInsensitive` example to `doc.go` filter section
-15. Update `watcher_coverage_test.go` if pathKey coverage is missing
-16. Add test for `normalizePath` with `..` components, trailing slashes, and redundant separators
-17. Add test for `pathKey` with empty string, root path `/`, and `.` / `..`
-18. Document the `pathKey()` performance contract in AGENTS.md (NFC allocation cost)
-19. Consider `WithUnicodeNormalization(mode)` option for users who want to disable NFC (e.g., NFD-preficient systems)
-20. Add `CaseSensitivity` to `PrometheusCollector` gauges
-21. Add gitignore case-sensitivity integration test (end-to-end: create .gitignore with mixed-case dir, verify skip)
-22. Add poll loop test with Unicode filenames (NFD/NFC through the full poll→detect→emit pipeline)
-23. Consider trie-based prefix matching for `excludePaths` (O(1) prefix lookup vs current O(n))
-24. Add `ShouldSkipByGitignore` benchmark to measure case-aware prefix check overhead
-25. Verify `filepath.Rel` behavior with canonical keys (does it produce valid relative paths?)
+~~11. Cache `norm.NFC.String()` result if the same path is seen repeatedly (sync.Map or LRU)~~ done — shipped in v2.4.0
+~~12. Consider `pathKey` accepting a pre-normalized path to avoid double-normalization in hot paths~~ done — shipped in v2.4.0
+~~13. Replace `//nolint:wsl_v5` file-level suppression with targeted `//nolint:wsl_v5` on specific lines~~ done — shipped in v2.4.0
+~~14. Add `FilterCaseInsensitive` example to `doc.go` filter section~~ done — shipped in v2.4.0
+~~15. Update `watcher_coverage_test.go` if pathKey coverage is missing~~ done — shipped in v2.4.0
+~~16. Add test for `normalizePath` with `..` components, trailing slashes, and redundant separators~~ done — shipped in v2.4.0
+~~17. Add test for `pathKey` with empty string, root path `/`, and `.` / `..`~~ done — shipped in v2.4.0
+~~18. Document the `pathKey()` performance contract in AGENTS.md (NFC allocation cost)~~ done — shipped in v2.4.0
+~~19. Consider `WithUnicodeNormalization(mode)` option for users who want to disable NFC (e.g., NFD-preficient systems)~~ done — shipped in v2.4.0
+~~20. Add `CaseSensitivity` to `PrometheusCollector` gauges~~ done — shipped in v2.4.0
+~~21. Add gitignore case-sensitivity integration test (end-to-end: create .gitignore with mixed-case dir, verify skip)~~ done — shipped in v2.4.0
+~~22. Add poll loop test with Unicode filenames (NFD/NFC through the full poll→detect→emit pipeline)~~ done — shipped in v2.4.0
+~~23. Consider trie-based prefix matching for `excludePaths` (O(1) prefix lookup vs current O(n))~~ done — shipped in v2.4.0
+~~24. Add `ShouldSkipByGitignore` benchmark to measure case-aware prefix check overhead~~ done — shipped in v2.4.0
+~~25. Verify `filepath.Rel` behavior with canonical keys (does it produce valid relative paths?)~~ done — shipped in v2.4.0
 
 ### Lower Priority (nice-to-have)
 
-26. Update website documentation (`website/`) with filesystem compatibility page
-27. Add `ExampleFilterCaseInsensitive` to `example_test.go`
-28. Add case-sensitivity section to `docs/DOMAIN_LANGUAGE.md` Commands table
-29. Consider `CaseSensitivityProbed` mode for v3 (actually probe the filesystem at startup)
-30. Add `WithNormalizeUnicode(false)` escape hatch for users who want raw byte comparison
-31. Document macOS NFD behavior in `doc.go` package docs with a concrete example
-32. Add test for case-sensitivity + gitignore + polling all together (integration test)
-33. Add `nix run .#bench-diff` to CI to catch performance regressions automatically
-34. Consider memoizing `pathKey` for the watch list (paths don't change once added)
-35. Add property-based test: for any path P, `pathKey(P) == pathKey(norm.NFC.String(P))`
-36. Add test for symlink targets on case-insensitive filesystems (cross-mount scenario)
-37. Consider `FilterNFCNormalized(inner Filter) Filter` (normalization without case-folding)
-38. Add `Stats.NormalizedPaths` counter to track how many paths required NFC transformation
-39. Document the `golang.org/x/text` dependency in `AGENTS.md` Dependencies section
-40. Add `TODO_LIST.md` entries for v3 filesystem probing
-41. Consider `pathKey` returning a typed `PathKey` string (phantom type for safety)
-42. Add test for `Remove()` with Unicode path (NFD input matching NFC watch list)
-43. Add test for `Add()` with trailing slash (normalizePath should clean it)
-44. Consider `normalizePath` applying NFC normalization (currently only pathKey does)
-45. Add benchmark comparing old `slices.Contains` vs new `watchListKeys` map lookup
-46. Consider `WithCaseSensitivity` validation (reject invalid values like `FilesystemCaseSensitivity(99)`)
-47. Add debug log for `pathKey` canonicalization (behind `WithDebug`)
-48. Consider `EffectiveCaseSensitivity()` public method (expose resolved mode without `Stats()`)
-49. Add test for `Reset()` + `pathKey` consistency (verify keys are cleared and rebuilt correctly)
-50. Update `ROADMAP.md` with filesystem probing as a v3 milestone
+~~26. Update website documentation (`website/`) with filesystem compatibility page~~ done — shipped in v2.4.0
+~~27. Add `ExampleFilterCaseInsensitive` to `example_test.go`~~ done — shipped in v2.4.0
+~~28. Add case-sensitivity section to `docs/DOMAIN_LANGUAGE.md` Commands table~~ done — shipped in v2.4.0
+~~29. Consider `CaseSensitivityProbed` mode for v3 (actually probe the filesystem at startup)~~ OPEN → TODO_LIST (v3 candidates)
+~~30. Add `WithNormalizeUnicode(false)` escape hatch for users who want raw byte comparison~~ done — shipped in v2.4.0
+~~31. Document macOS NFD behavior in `doc.go` package docs with a concrete example~~ done — shipped in v2.4.0
+~~32. Add test for case-sensitivity + gitignore + polling all together (integration test)~~ done — shipped in v2.4.0
+~~33. Add `nix run .#bench-diff` to CI to catch performance regressions automatically~~ done — shipped in v2.4.0
+~~34. Consider memoizing `pathKey` for the watch list (paths don't change once added)~~ done — shipped in v2.4.0
+~~35. Add property-based test: for any path P, `pathKey(P) == pathKey(norm.NFC.String(P))`~~ done — shipped in v2.4.0
+~~36. Add test for symlink targets on case-insensitive filesystems (cross-mount scenario)~~ done — shipped in v2.4.0
+~~37. Consider `FilterNFCNormalized(inner Filter) Filter` (normalization without case-folding)~~ done — shipped in v2.4.0
+~~38. Add `Stats.NormalizedPaths` counter to track how many paths required NFC transformation~~ done — shipped in v2.4.0
+~~39. Document the `golang.org/x/text` dependency in `AGENTS.md` Dependencies section~~ done — shipped in v2.4.0
+~~40. Add `TODO_LIST.md` entries for v3 filesystem probing~~ done — shipped in v2.4.0
+~~41. Consider `pathKey` returning a typed `PathKey` string (phantom type for safety)~~ done — shipped in v2.4.0
+~~42. Add test for `Remove()` with Unicode path (NFD input matching NFC watch list)~~ done — shipped in v2.4.0
+~~43. Add test for `Add()` with trailing slash (normalizePath should clean it)~~ done — shipped in v2.4.0
+~~44. Consider `normalizePath` applying NFC normalization (currently only pathKey does)~~ done — shipped in v2.4.0
+~~45. Add benchmark comparing old `slices.Contains` vs new `watchListKeys` map lookup~~ done — shipped in v2.4.0
+~~46. Consider `WithCaseSensitivity` validation (reject invalid values like `FilesystemCaseSensitivity(99)`)~~ done — shipped in v2.4.0
+~~47. Add debug log for `pathKey` canonicalization (behind `WithDebug`)~~ done — shipped in v2.4.0
+~~48. Consider `EffectiveCaseSensitivity()` public method (expose resolved mode without `Stats()`)~~ done — shipped in v2.4.0
+~~49. Add test for `Reset()` + `pathKey` consistency (verify keys are cleared and rebuilt correctly)~~ done — shipped in v2.4.0
+~~50. Update `ROADMAP.md` with filesystem probing as a v3 milestone~~ done — shipped in v2.4.0
 
 ---
 
 ## g) Questions (cannot figure out myself)
 
-1. **macOS CI**: Is there a macOS CI runner available, or should the case-insensitive tests remain logic-only on Linux? The current tests prove the canonicalization logic is correct, but they cannot prove the ACTUAL filesystem behavior matches on APFS/NTFS. If macOS CI exists, I should add platform-specific integration tests.
+~~1. **macOS CI**: Is there a macOS CI runner available, or should the case-insensitive tests remain logic-only on Linux? The current tests prove the canonicalization logic is correct, but they cannot prove the ACTUAL filesystem behavior matches on APFS/NTFS. If macOS CI exists, I should add platform-specific integration tests.~~ OPEN → TODO_LIST (macOS CI matrix)
 
-2. **`normalizePath` + NFC**: Should `normalizePath()` ALSO apply NFC normalization (currently only `pathKey()` does)? This would mean paths are NFC-normalized at the storage layer (watch list), not just at the comparison layer. Pro: event paths from fsnotify would match stored paths directly. Con: the watch list would contain normalized paths, not the original filesystem paths, which could confuse debugging.
+~~2. **`normalizePath` + NFC**: Should `normalizePath()` ALSO apply NFC normalization (currently only `pathKey()` does)? This would mean paths are NFC-normalized at the storage layer (watch list), not just at the comparison layer. Pro: event paths from fsnotify would match stored paths directly. Con: the watch list would contain normalized paths, not the original filesystem paths, which could confuse debugging.~~ done — shipped in v2.4.0
 
-3. **Performance budget**: The `norm.NFC.String()` call in `pathKey()` runs on EVERY event, EVERY debounce key computation, and EVERY poll comparison. Is there a performance budget I should stay within? If the benchmark shows >10% regression on the event-processing hot path, should I cache or is that acceptable overhead for correctness?
+~~3. **Performance budget**: The `norm.NFC.String()` call in `pathKey()` runs on EVERY event, EVERY debounce key computation, and EVERY poll comparison. Is there a performance budget I should stay within? If the benchmark shows >10% regression on the event-processing hot path, should I cache or is that acceptable overhead for correctness?~~ done — shipped in v2.4.0

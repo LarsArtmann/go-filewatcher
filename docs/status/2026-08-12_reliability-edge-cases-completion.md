@@ -23,13 +23,13 @@ documentation (CHANGELOG, API_STABILITY, FEATURES, website, AGENTS.md).
 
 | #  | Gap                                       | Test Added                                               | File                 |
 | -- | ----------------------------------------- | -------------------------------------------------------- | -------------------- |
-| 1  | Batch timer flush error routing           | `TestMiddlewareBatch_TimerFlushErrorReturnedOnNextEvent` | `middleware_test.go` |
-| 2  | `WithMaxWatchesSafetyFraction` clamping   | `TestWithMaxWatchesSafetyFraction_Clamping`              | `options_test.go`    |
+~~| 1  | Batch timer flush error routing           | `TestMiddlewareBatch_TimerFlushErrorReturnedOnNextEvent` | `middleware_test.go` |~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
+~~| 2  | `WithMaxWatchesSafetyFraction` clamping   | `TestWithMaxWatchesSafetyFraction_Clamping`              | `options_test.go`    |~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
 | 2b | `applyMaxWatchesFraction` effective limit | `TestApplyMaxWatchesFraction_ReducesAutoDetectedLimit`   | `options_test.go`    |
 | 2c | Explicit limits not affected              | `TestApplyMaxWatchesFraction_DoesNotAffectExplicitLimit` | `options_test.go`    |
-| 3  | DropOnFull mode drops + counts            | `TestDropOnFull_DropsEventsAndCounts`                    | `watcher_test.go`    |
-| 4  | `WithWatchFilteredDirectories(false)`     | `TestWatchFilteredDirectories_Disabled`                  | `watcher_test.go`    |
-| 5  | `FilterIgnoreDirsCaseInsensitive`         | `TestFilterIgnoreDirsCaseInsensitive`                    | `filter_test.go`     |
+~~| 3  | DropOnFull mode drops + counts            | `TestDropOnFull_DropsEventsAndCounts`                    | `watcher_test.go`    |~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
+~~| 4  | `WithWatchFilteredDirectories(false)`     | `TestWatchFilteredDirectories_Disabled`                  | `watcher_test.go`    |~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
+~~| 5  | `FilterIgnoreDirsCaseInsensitive`         | `TestFilterIgnoreDirsCaseInsensitive`                    | `filter_test.go`     |~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
 
 ### Key discovery: WithWatchFilteredDirectories test needed Filter, not Middleware
 
@@ -119,15 +119,15 @@ contention. Allocation data is deterministic and reliable:
 
 The prior session posed 3 questions. Decisions:
 
-1. **`eventsProcessed` semantics change** → Treated as a bug fix. The new
+~~1. **`eventsProcessed` semantics change** → Treated as a bug fix. The new~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
    semantics (increment when event reaches channel, not when middleware returns
    nil) are more correct. Documented in CHANGELOG under "Changed".
 
-2. **`WithMaxWatchesSafetyFraction` default** → Kept at 1.0 (no reduction).
+~~2. **`WithMaxWatchesSafetyFraction` default** → Kept at 1.0 (no reduction).~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
    Backward compatibility is more important than safety-by-default. Users on
    shared machines can opt in to 0.75.
 
-3. **Items 2+3 (poll dedup + rename detection)** → Deferred to future work.
+~~3. **Items 2+3 (poll dedup + rename detection)** → Deferred to future work.~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
    These are significant features requiring per-path timestamp tracking and
    inode-based detection respectively. The polling dedup limitation is now
    documented in the `WithPolling` doc comment and Troubleshooting guide.
@@ -138,12 +138,12 @@ The prior session posed 3 questions. Decisions:
 
 | Item                                                     | Reason                                                                         |
 | -------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Items 2+3: Poll dedup + rename detection                 | Large features requiring new design (LRU timestamp tracking, inode extraction) |
-| macOS/Windows CI matrix                                  | CI infrastructure change, requires cross-platform testing strategy             |
-| `WithContentHashMaxSize` configurable option             | The hardcoded 10 MiB cap works; configurable option is polish                  |
-| `WithErrorBufferSize` option                             | Error channel decoupling is a nice-to-have, not urgent                         |
-| Runtime deprecation warning for `MiddlewareWriteFileLog` | Doc comment already warns; runtime warning is v3 prep                          |
-| `MiddlewareDropCallback` API                             | Would be more accurate than `atomic.Bool` heuristic but requires API change    |
+~~| Items 2+3: Poll dedup + rename detection                 | Large features requiring new design (LRU timestamp tracking, inode extraction) |~~ OPEN → ROADMAP (v2.5+/v3 feature backlog)
+~~| macOS/Windows CI matrix                                  | CI infrastructure change, requires cross-platform testing strategy             |~~ OPEN → TODO_LIST (CI matrices)
+~~| `WithContentHashMaxSize` configurable option             | The hardcoded 10 MiB cap works; configurable option is polish                  |~~ done — shipped v2.4.0 (options.go)
+~~| `WithErrorBufferSize` option                             | Error channel decoupling is a nice-to-have, not urgent                         |~~ done — shipped v2.4.0 (options.go)
+~~| Runtime deprecation warning for `MiddlewareWriteFileLog` | Doc comment already warns; runtime warning is v3 prep                          |~~ OPEN → v3 prep (ROADMAP API evolution)
+~~| `MiddlewareDropCallback` API                             | Would be more accurate than `atomic.Bool` heuristic but requires API change    |~~ OPEN → v3 candidate (ROADMAP)
 
 ---
 

@@ -76,7 +76,7 @@ We left ~75 style issues unresolved. Some are trivial (short variable names), ot
 
 ### Immediate (1-2 hours):
 
-~~1. **Go cache cleanup** — Fix corrupted cache: `rm -rf ~/Library/Caches/go-build/ ~/Library/Caches/golangci-lint/`~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~1. **Go cache cleanup** — Fix corrupted cache: `rm -rf ~/Library/Caches/go-build/ ~/Library/Caches/golangci-lint/`~~ OBSOLETE — transient env issue
 ~~2. **tparallel fixes** — Add `t.Parallel()` to filter subtests (6 issues, trivial)~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~3. **varnamelen cleanup** — Rename ~40 short variables (tedious but mechanical)~~ done — shipped ≤v2.1.0, verified v2.4.1
 
@@ -103,7 +103,7 @@ We left ~75 style issues unresolved. Some are trivial (short variable names), ot
 
 ## TOP #25 THINGS TO GET DONE NEXT
 
-~~1. Fix Go cache corruption manually (`rm -rf ~/Library/Caches/`)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~1. Fix Go cache corruption manually (`rm -rf ~/Library/Caches/`)~~ OBSOLETE — transient env issue
 ~~2. Run `go test -race` on base commit to confirm pre-existing race~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~3. Add `t.Parallel()` to filter subtests~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~4. Rename short variables (d→debouncer, w→watcher, f→filter, tt→tc)~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -122,7 +122,7 @@ We left ~75 style issues unresolved. Some are trivial (short variable names), ot
 ~~17. Add `FilterMinAge()` for ignoring old files~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~18. Add `MiddlewareRateBurst()` for token bucket rate limiting~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~19. Add `MiddlewareDeduplicate()` to drop duplicate events~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~20. Consider `Watcher.WatchChanges(ctx, targetState)` for idempotent sync~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~20. Consider `Watcher.WatchChanges(ctx, targetState)` for idempotent sync~~ OPEN → research contract + TODO_LIST open Q3
 ~~21. Add `Event.Size()` field by stat'ing the file~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~22. Add `FilterMaxSize()` complement to FilterMinSize~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~23. Add `MiddlewareBatch()` to batch events over a window~~ done — shipped ≤v2.1.0, verified v2.4.1

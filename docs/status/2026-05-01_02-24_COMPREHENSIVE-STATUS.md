@@ -56,41 +56,41 @@ None. Project is in healthy state.
 
 ## What We Should Improve
 
-1. **Release tagging** - v0.1.0 and v2.0.0 tags mentioned in TODO but never created
-2. **gogenfilter dependency** - API changed significantly; verify behavior matches expectations
-3. **Test coverage plateaus** - At exactly 90%, CI enforces this but no headroom
-4. **Documentation drift** - Status reports touched frequently but content not fully reviewed
-5. **Flaky tests remain** - `TestWatcher_Stats_Metrics` and `TestWatcher_Watch_WithMiddleware` noted as timing-sensitive
+~~1. **Release tagging** - v0.1.0 and v2.0.0 tags mentioned in TODO but never created~~ 111
+~~2. **gogenfilter dependency** - API changed significantly; verify behavior matches expectations~~ 111
+~~3. **Test coverage plateaus** - At exactly 90%, CI enforces this but no headroom~~ 111
+~~4. **Documentation drift** - Status reports touched frequently but content not fully reviewed~~ 111
+~~5. **Flaky tests remain** - `TestWatcher_Stats_Metrics` and `TestWatcher_Watch_WithMiddleware` noted as timing-sensitive~~ 111
 
 ---
 
 ## Top #25 Things To Get Done Next
 
-1. **Tag v0.1.0 release** - It's been ready for weeks
-2. **Tag v2.0.0 release** - Major version with breaking changes
-3. **Verify gogenfilter v0.2.0 behavior** - Ensure new API works identically
-4. **Add `Watcher.WatchOnce()` for one-shot mode** - HIGH priority in TODO
-5. **Add `WithPolling(fallback bool)` for NFS/network mounts** - Network edge case
-6. **Implement exponential backoff for errors** - Reliability improvement
-7. **Add symlink following support** - Feature gap
-8. **Add `Event.ModTime()` field** - Missing metadata
-9. **Add file content hashing option** - Security/change detection
-10. **Add `WithIgnorePatterns()` using glob patterns** - Filtering enhancement
-11. **Expose `convertEvent` for testing** - Testability improvement
-12. **Add `MiddlewareRateBurst()` for token bucket rate limiting** - Rate limiting enhancement
-13. **Add integration test for recursive directory watching** - Coverage gap
-14. **Add integration test for per-path debounce correctness** - Coverage gap
-15. **Add benchmark regression tests** - Performance safety
-16. **Add issue templates** - Contributor experience
-17. **Document public API with godoc examples** - DX improvement
-18. **Create standalone CLI tool** - Usability
-19. **Write Troubleshooting.md** - Support improvement
-20. **Add Prometheus metrics export** - Observability
-21. **Create debug mode with verbose structured logging** - Debugging aid
-22. **Add `just coverage` target** - Developer experience
-23. **Add stack traces to `WatcherError`** - Error debugging
-24. **Write migration guide for ErrorHandler signature change** - Upgrade path
-25. **Configure semantic-release** - Release automation
+~~1. **Tag v0.1.0 release** - It's been ready for weeks~~ 111
+~~2. **Tag v2.0.0 release** - Major version with breaking changes~~ 111
+~~3. **Verify gogenfilter v0.2.0 behavior** - Ensure new API works identically~~ 111
+~~4. **Add `Watcher.WatchOnce()` for one-shot mode** - HIGH priority in TODO~~ 111
+~~5. **Add `WithPolling(fallback bool)` for NFS/network mounts** - Network edge case~~ 111
+~~6. **Implement exponential backoff for errors** - Reliability improvement~~ 111
+~~7. **Add symlink following support** - Feature gap~~ 111
+~~8. **Add `Event.ModTime()` field** - Missing metadata~~ 111
+~~9. **Add file content hashing option** - Security/change detection~~ 111
+~~10. **Add `WithIgnorePatterns()` using glob patterns** - Filtering enhancement~~ 111
+~~11. **Expose `convertEvent` for testing** - Testability improvement~~ 111
+~~12. **Add `MiddlewareRateBurst()` for token bucket rate limiting** - Rate limiting enhancement~~ 111
+~~13. **Add integration test for recursive directory watching** - Coverage gap~~ 111
+~~14. **Add integration test for per-path debounce correctness** - Coverage gap~~ 111
+~~15. **Add benchmark regression tests** - Performance safety~~ 111
+~~16. **Add issue templates** - Contributor experience~~ 111
+~~17. **Document public API with godoc examples** - DX improvement~~ 111
+~~18. **Create standalone CLI tool** - Usability~~ 111
+~~19. **Write Troubleshooting.md** - Support improvement~~ 111
+~~20. **Add Prometheus metrics export** - Observability~~ 111
+~~21. **Create debug mode with verbose structured logging** - Debugging aid~~ 111
+~~22. **Add `just coverage` target** - Developer experience~~ 111
+~~23. **Add stack traces to `WatcherError`** - Error debugging~~ 111
+~~24. **Write migration guide for ErrorHandler signature change** - Upgrade path~~ 111
+~~25. **Configure semantic-release** - Release automation~~ 111
 
 ---
 

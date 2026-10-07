@@ -259,11 +259,11 @@ func StructuredErrorHandler(logger *slog.Logger) ErrorHandler {
 ### Lower Priority (P2 - Nice to Have)
 
 ~~16. **Error sanitization** - Remove sensitive paths from errors~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~17. **Localizable error messages** - i18n support~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~17. **Localizable error messages** - i18n support~~ OBSOLETE — untracked; ROADMAP-adjacent idea
 ~~18. **Error code constants** - Machine-readable error identifiers~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~19. **OpenTelemetry integration** - Error spans and traces~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~20. **Dead letter queue** - Persist unhandled errors~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~21. **Error analytics** - Track most common error types~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~20. **Dead letter queue** - Persist unhandled errors~~ OBSOLETE — untracked, YAGNI
+~~21. **Error analytics** - Track most common error types~~ OBSOLETE — untracked, YAGNI
 ~~22. **Self-healing watcher** - Auto-restart on permanent errors~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~23. **Error simulation testing** - Chaos engineering for error paths~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~24. **Performance impact analysis** - Measure error handling overhead~~ done — shipped ≤v2.1.0, verified v2.4.1

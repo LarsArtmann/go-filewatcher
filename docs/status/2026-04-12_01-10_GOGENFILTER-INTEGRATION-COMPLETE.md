@@ -138,7 +138,7 @@ github.com/LarsArtmann/gogenfilter v0.1.0
    - **Impact:** Cannot confirm integration works
    - **Solution:** Fix build issues, run full test suite
 
-~~4. **EXAMPLE COMPILATION** - LSP shows import errors in filter-generated example~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~4. **EXAMPLE COMPILATION** - LSP shows import errors in filter-generated example~~ OBSOLETE — stale LSP diagnostics
    - **Impact:** Example may not compile
    - **Solution:** Verify example compiles and runs correctly
 
@@ -203,9 +203,9 @@ github.com/LarsArtmann/gogenfilter v0.1.0
 ### Nice to Have (Backlog)
 
 ~~21. Visualize filter statistics~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~22. CLI tool for testing filters~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~22. CLI tool for testing filters~~ OBSOLETE — library-only scope
 ~~23. Integration with popular frameworks (Gin, Echo)~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~24. Web dashboard for watcher stats~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~24. Web dashboard for watcher stats~~ OBSOLETE — untracked
 ~~25. Automatic generator detection (no config needed)~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---

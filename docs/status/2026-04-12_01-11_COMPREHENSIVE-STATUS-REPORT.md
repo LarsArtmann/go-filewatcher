@@ -162,17 +162,17 @@ Previous write at 0x00c0004aa008 by goroutine 266:
 ### Immediate (P0 - This Week)
 
 ~~1. **Fix Test Race Condition** - Unblock CI/CD~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~2. **Add `OpString` Phantom Type** - Critical violation~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Add `OpString` Phantom Type** - Critical violation~~ OBSOLETE — rejected; plain string types kept
 ~~3. **Add `RootString` Phantom Type** - 2 critical violations~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~4. **Fix `handleNewDirectory` Race** - Production bug~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Short-term (P1 - Next 2 Weeks)
 
 ~~5. Implement error context wrapping (10 issues)~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~6. Add `Event.Path` phantom type (breaking for v2.0)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. Add `Event.Path` phantom type (breaking for v2.0)~~ OBSOLETE — rejected; Event.Path kept string
 ~~7. Create integration test suite~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~8. Add property-based tests (fuzzing)~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~9. Split Watcher struct (config vs state)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. Split Watcher struct (config vs state)~~ OBSOLETE — rejected; struct intentionally unsplit
 
 ### Medium-term (P2 - This Month)
 
@@ -182,7 +182,7 @@ Previous write at 0x00c0004aa008 by goroutine 266:
 ~~13. Implement exponential backoff for errors~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~14. Add `Event.ModTime()` field~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~15. Add `Event.Name` (just filename)~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~16. Create standalone CLI tool~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~16. Create standalone CLI tool~~ OBSOLETE — library-only scope
 ~~17. Add Prometheus metrics export~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~18. Implement circuit breaker middleware~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~19. Add `MiddlewareBatch()` for event batching~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -191,7 +191,7 @@ Previous write at 0x00c0004aa008 by goroutine 266:
 ### Long-term (P3 - Future)
 
 ~~21. v2.0 Release with breaking changes~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~22. Windows-specific edge case tests~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~22. Windows-specific edge case tests~~ OPEN → TODO_LIST (Windows CI matrix)
 ~~23. Goreleaser configuration~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~24. Semantic-release automation~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~25. Benchmark regression detection in CI~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -203,22 +203,22 @@ Previous write at 0x00c0004aa008 by goroutine 266:
 | #  | Task                                            | Priority | Effort | Impact          |
 | -- | ----------------------------------------------- | -------- | ------ | --------------- |
 ~~| 1  | Fix `TestWatcher_Watch_WithDebounce` race       | P0       | 2h     | Unblock CI      |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 2  | Create `OpString` phantom type                  | P0       | 15m    | -1 critical     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 2  | Create `OpString` phantom type                  | P0       | 15m    | -1 critical     |~~ OBSOLETE — rejected; plain string types kept
 ~~| 3  | Create `RootString` phantom type                | P0       | 20m    | -2 critical     |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 4  | Fix `handleNewDirectory` race (production)      | P0       | 1h     | Fix bug         |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 5  | Fix `shouldSkipDir` to respect `WithIgnoreDirs` | P1       | 30m    | Bug fix         |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 6  | Error context wrapping (10 locations)           | P1       | 1h     | DX              |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 7  | Add `Event.Path` phantom type                   | P1       | 2h     | Type safety     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 7  | Add `Event.Path` phantom type                   | P1       | 2h     | Type safety     |~~ OBSOLETE — rejected; Event.Path kept string
 ~~| 8  | Integration tests (Watch→Event→Close)           | P1       | 4h     | Quality         |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 9  | Property-based tests (fuzzing)                  | P1       | 3h     | Reliability     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 10 | Split Watcher struct                            | P1       | 3h     | Maintainability |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 10 | Split Watcher struct                            | P1       | 3h     | Maintainability |~~ OBSOLETE — rejected; struct intentionally unsplit
 ~~| 11 | Add `IsClosed()` public method                  | P1       | 15m    | API             |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 12 | Fix `TestWatcher_Watch_Deletes` flakiness       | P1       | 1h     | CI stability    |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 13 | Implement `Watcher.WatchOnce()`                 | P2       | 2h     | Feature         |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 14 | Add `WithPolling()` for network mounts          | P2       | 3h     | Feature         |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 15 | Add symlink following                           | P2       | 2h     | Feature         |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 16 | Add `Event.ModTime()`                           | P2       | 1h     | Feature         |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 17 | Create standalone CLI tool                      | P2       | 4h     | Usability       |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 17 | Create standalone CLI tool                      | P2       | 4h     | Usability       |~~ OBSOLETE — library-only scope
 ~~| 18 | Add Prometheus metrics                          | P2       | 3h     | Observability   |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 19 | Circuit breaker middleware                      | P2       | 3h     | Resilience      |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 20 | `MiddlewareBatch()` for event batching          | P2       | 3h     | Performance     |~~ done — shipped ≤v2.1.0, verified v2.4.1

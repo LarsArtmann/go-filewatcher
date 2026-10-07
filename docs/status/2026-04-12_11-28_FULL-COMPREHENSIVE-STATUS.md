@@ -205,7 +205,7 @@ The go-filewatcher project is in **excellent condition**. All tests pass, the bu
    - `TestErrorHandler_DefaultWithoutPath`
    - `TestWatcher_handleError_Default`
 
-~~2. **Clear LSP diagnostic cache**~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Clear LSP diagnostic cache**~~ OBSOLETE — gopls env issue
    - Restart gopls to resolve false import errors
 
 ~~3. **Document pre-existing race condition**~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -256,7 +256,7 @@ The go-filewatcher project is in **excellent condition**. All tests pass, the bu
 ~~13. **Plugin system**~~ done — shipped ≤v2.1.0, verified v2.4.1
     - Dynamic filter/middleware loading
 
-~~14. **Distributed watching**~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. **Distributed watching**~~ OBSOLETE — out of scope
     - Multi-node coordination
     - Kubernetes operator
 
@@ -269,7 +269,7 @@ The go-filewatcher project is in **excellent condition**. All tests pass, the bu
 | # | Task                                                 | File/Area              | Effort | Customer Value       |
 | - | ---------------------------------------------------- | ---------------------- | ------ | -------------------- |
 ~~| 1 | Add nolint:paralleltest for intentional serial tests | errors_test.go:330,360 | 5 min  | Clean linter output  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 2 | Fix gopls diagnostic cache                           | LSP restart            | 2 min  | Developer experience |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 2 | Fix gopls diagnostic cache                           | LSP restart            | 2 min  | Developer experience |~~ OBSOLETE — gopls env issue
 ~~| 3 | Document pre-existing debouncer race                 | docs/adr/              | 15 min | Transparency         |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 4 | Complete filter_gogen.go tests                       | filter_gogen_test.go   | 45 min | Quality assurance    |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 5 | Fix examples/filter-generated linter issues          | examples/              | 20 min | Code quality         |~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -284,7 +284,7 @@ The go-filewatcher project is in **excellent condition**. All tests pass, the bu
 ~~| 9  | Create Architecture.md           | Documentation   | 1 hour  |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 10 | Add benchmark results to README  | Marketing       | 30 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 11 | Implement WithOnError() option   | API enhancement | 20 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 12 | Add stress tests                 | Reliability     | 2 hours |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 12 | Add stress tests                 | Reliability     | 2 hours |~~ OPEN → TODO_LIST (large-tree stress harness)
 ~~| 13 | Fix remaining linter issues      | Quality         | 1 hour  |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 14 | Create CONTRIBUTING.md           | Community       | 30 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 15 | Add fuzz tests for filters       | Robustness      | 1 hour  |~~ done — shipped ≤v2.1.0, verified v2.4.1

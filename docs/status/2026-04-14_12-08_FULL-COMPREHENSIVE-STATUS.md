@@ -121,7 +121,7 @@ The project has evolved from a basic file watcher to a sophisticated, well-docum
 
 ### High Priority
 
-~~1. **Integration Stress Tests** - 10k+ file operations~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~1. **Integration Stress Tests** - 10k+ file operations~~ OPEN → TODO_LIST (large-tree stress harness)
 ~~2. **Fuzz Testing** - For filter functions and edge cases~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~3. **Symlink Following** - Support for symbolic links~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~4. **Polling Fallback** - For NFS/network filesystems~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -135,8 +135,8 @@ The project has evolved from a basic file watcher to a sophisticated, well-docum
 
 ### Low Priority
 
-~~9. **Windows-specific optimizations** - Current implementation works but could be optimized~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~10. **macOS FSEvents backend** - Currently uses fsnotify (kqueue)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **Windows-specific optimizations** - Current implementation works but could be optimized~~ OPEN → TODO_LIST (Windows CI matrix)
+~~10. **macOS FSEvents backend** - Currently uses fsnotify (kqueue)~~ OBSOLETE — fsnotify+polling retained
 ~~11. **Plugin system** - Dynamic filter/middleware loading~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~12. **Web Dashboard** - Real-time monitoring UI~~ done — shipped ≤v2.1.0, verified v2.4.1
 
@@ -170,7 +170,7 @@ All critical issues have been resolved:
 
 ### Critical (Do Next)
 
-~~1. **Add Integration Stress Tests**~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~1. **Add Integration Stress Tests**~~ OPEN → TODO_LIST (large-tree stress harness)
    - 10,000+ file create/modify/delete operations
    - Concurrent watcher operations
    - Memory pressure testing
@@ -230,7 +230,7 @@ All critical issues have been resolved:
 
 | #  | Priority    | Task                                      | Effort | Impact |
 | -- | ----------- | ----------------------------------------- | ------ | ------ |
-~~| 1  | 🔴 CRITICAL | Add integration stress tests (10k+ files) | 4h     | HIGH   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 1  | 🔴 CRITICAL | Add integration stress tests (10k+ files) | 4h     | HIGH   |~~ OPEN → TODO_LIST (large-tree stress harness)
 ~~| 2  | 🔴 CRITICAL | Increase test coverage to 90%+            | 3h     | HIGH   |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 3  | 🔴 CRITICAL | Implement symlink following               | 3h     | MEDIUM |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 4  | 🟠 HIGH     | Add fuzz testing for filters              | 2h     | MEDIUM |~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -242,10 +242,10 @@ All critical issues have been resolved:
 ~~| 10 | 🟡 MEDIUM   | Add Prometheus metrics                    | 2h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 11 | 🟡 MEDIUM   | OpenTelemetry tracing                     | 3h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 12 | 🟡 MEDIUM   | File content deduplication                | 2h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 13 | 🟢 LOW      | Windows-specific optimizations            | 2h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 14 | 🟢 LOW      | macOS FSEvents backend                    | 4h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 13 | 🟢 LOW      | Windows-specific optimizations            | 2h     | LOW    |~~ OPEN → TODO_LIST (Windows CI matrix)
+~~| 14 | 🟢 LOW      | macOS FSEvents backend                    | 4h     | LOW    |~~ OBSOLETE — fsnotify+polling retained
 ~~| 15 | 🟢 LOW      | Plugin system for filters                 | 4h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 16 | 🟢 LOW      | Web dashboard for monitoring              | 6h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 16 | 🟢 LOW      | Web dashboard for monitoring              | 6h     | LOW    |~~ OBSOLETE — untracked
 ~~| 17 | 🟢 LOW      | Add more benchmark scenarios              | 2h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 18 | 🟢 LOW      | CONTRIBUTING.md guide                     | 1h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 19 | 🟢 LOW      | Security policy                           | 1h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1

@@ -81,7 +81,7 @@ The project is in a **transitional state** - core functionality is solid, but te
 ### Critical Features for v2.0
 
 ~~1. **Event.Path Phantom Type** - `type FilePath string` for core API~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~2. **Watcher Large Struct** - Split into `WatcherConfig` and `WatcherState`~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Watcher Large Struct** - Split into `WatcherConfig` and `WatcherState`~~ OBSOLETE — rejected; struct intentionally unsplit
 ~~3. **Error Context Wrapping** - 10 locations need better error context~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~4. **DebounceEntry Mixin** - Refactor shared fields between `debounceEntry` and `GlobalDebouncer`~~ done — shipped ≤v2.1.0, verified v2.4.1
 
@@ -89,7 +89,7 @@ The project is in a **transitional state** - core functionality is solid, but te
 
 ~~5. **Coverage Target** - Currently ~77%, need 90%+~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~6. **Integration Tests** - Full Watch→Event→Close lifecycle tests missing~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~7. **Stress Tests** - 10k+ file scenarios not tested~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~7. **Stress Tests** - 10k+ file scenarios not tested~~ OPEN → TODO_LIST (large-tree stress harness)
 ~~8. **Fuzz Testing** - Not implemented for filters~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Features & Enhancements
@@ -127,7 +127,7 @@ The project is in a **transitional state** - core functionality is solid, but te
    - Root cause: fsnotify event loops + parallel test contention
      **Impact:** CI/CD will fail
 
-~~3. **LSP Diagnostic Cache Corruption**~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **LSP Diagnostic Cache Corruption**~~ OBSOLETE — gopls env issue
    - gopls reporting stale errors
      **Impact:** Development friction
 
@@ -152,7 +152,7 @@ The project is in a **transitional state** - core functionality is solid, but te
    - Separate unit tests (parallel) from integration tests (serial)
    - Add timeout guards to prevent hanging
 
-~~3. **Restart LSP**~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~3. **Restart LSP**~~ OBSOLETE — gopls env issue
    ```bash
    gopls version  # Check if needed
    # Kill and restart editor LSP client
@@ -194,7 +194,7 @@ The project is in a **transitional state** - core functionality is solid, but te
 | - | --------------------- | -------------------------- | ------ |
 ~~| 1 | Fix compilation error | `filter_gogen_test.go:233` | 2 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 2 | Fix test timeouts     | `*_test.go`                | 30 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 3 | Restart LSP           | gopls                      | 5 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 3 | Restart LSP           | gopls                      | 5 min  |~~ OBSOLETE — gopls env issue
 ~~| 4 | Verify all tests pass | `go test ./...`            | 10 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 5 | Commit fixes          | git                        | 5 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
@@ -219,10 +219,10 @@ The project is in a **transitional state** - core functionality is solid, but te
 | -- | ----------------------------- | ------------- | ------ |
 ~~| 16 | Implement event batching      | Performance   | 4h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 17 | Add symlink following         | Feature       | 3h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 18 | Create standalone CLI tool    | Usability     | 6h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 18 | Create standalone CLI tool    | Usability     | 6h     |~~ OBSOLETE — library-only scope
 ~~| 19 | Write Architecture.md         | Documentation | 4h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 20 | Write Troubleshooting.md      | Documentation | 3h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 21 | Add stress tests (10k+ files) | Reliability   | 4h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 21 | Add stress tests (10k+ files) | Reliability   | 4h     |~~ OPEN → TODO_LIST (large-tree stress harness)
 ~~| 22 | Optimize convertEvent os.Stat | Performance   | 2h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 23 | Add prometheus metrics        | Observability | 3h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 24 | Create CONTRIBUTING.md        | Community     | 1h     |~~ done — shipped ≤v2.1.0, verified v2.4.1

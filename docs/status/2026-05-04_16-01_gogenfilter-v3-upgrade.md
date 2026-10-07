@@ -121,23 +121,23 @@ Nothing. The upgrade went cleanly. One notable issue:
 
 ### Codebase Quality
 
-1. **Pre-existing linter warning**: `watcher_coverage_test.go:1` has an unused `modernize` nolint directive. Low priority but adds noise.
+~~1. **Pre-existing linter warning**: `watcher_coverage_test.go:1` has an unused `modernize` nolint directive. Low priority but adds noise.~~ 200
 
-2. **Flaky tests**: `TestWatcher_Stats_Metrics` and `TestWatcher_Watch_WithMiddleware` are timing-sensitive. These have been documented but not fixed.
+~~2. **Flaky tests**: `TestWatcher_Stats_Metrics` and `TestWatcher_Watch_WithMiddleware` are timing-sensitive. These have been documented but not fixed.~~ 200
 
-3. **Binary artifacts in root**: `.gitignore` should catch compiled binaries from all examples (e.g., add `filter-generated` pattern or broader `examples/*/` binary pattern).
+~~3. **Binary artifacts in root**: `.gitignore` should catch compiled binaries from all examples (e.g., add `filter-generated` pattern or broader `examples/*/` binary pattern).~~ 200
 
 ### Dependency Hygiene
 
-4. **Module path problem**: The replace directive is fragile. If gogenfilter v3.0.1 fixes the module path, we should update immediately. If not, we need a go.work file or documented setup instructions for contributors.
+~~4. **Module path problem**: The replace directive is fragile. If gogenfilter v3.0.1 fixes the module path, we should update immediately. If not, we need a go.work file or documented setup instructions for contributors.~~ 200
 
-5. **Transitive dependencies**: The upgrade pulled in ginkgo/gomega (test deps from gogenfilter) into go.sum. These aren't imported by go-filewatcher but exist in the checksum file. `go mod tidy` handles this correctly.
+~~5. **Transitive dependencies**: The upgrade pulled in ginkgo/gomega (test deps from gogenfilter) into go.sum. These aren't imported by go-filewatcher but exist in the checksum file. `go mod tidy` handles this correctly.~~ 200
 
 ### Documentation
 
-6. **README not updated**: README.md still references the old gogenfilter API patterns. Should be updated to reflect v3.
+~~6. **README not updated**: README.md still references the old gogenfilter API patterns. Should be updated to reflect v3.~~ 200
 
-7. **CHANGELOG missing**: No CHANGELOG.md exists for go-filewatcher. The gogenfilter upgrade should be recorded.
+~~7. **CHANGELOG missing**: No CHANGELOG.md exists for go-filewatcher. The gogenfilter upgrade should be recorded.~~ 200
 
 ---
 
@@ -147,41 +147,41 @@ Nothing. The upgrade went cleanly. One notable issue:
 
 | # | Task                                                                  | Impact                  | Effort  |
 | - | --------------------------------------------------------------------- | ----------------------- | ------- |
-| 1 | Fix gogenfilter module path (`/v3`) and remove replace directive      | Unblocks publishing     | Medium  |
-| 2 | Add `filter-generated` (and similar example binaries) to `.gitignore` | Prevents binary commits | Trivial |
-| 3 | Update README.md with v3 API examples                                 | User-facing docs        | Low     |
-| 4 | Fix unused `modernize` nolint in `watcher_coverage_test.go`           | Linter hygiene          | Trivial |
-| 5 | Create CHANGELOG.md and record v3 upgrade                             | Project history         | Low     |
+~~| 1 | Fix gogenfilter module path (`/v3`) and remove replace directive      | Unblocks publishing     | Medium  |~~ 200
+~~| 2 | Add `filter-generated` (and similar example binaries) to `.gitignore` | Prevents binary commits | Trivial |~~ 200
+~~| 3 | Update README.md with v3 API examples                                 | User-facing docs        | Low     |~~ 200
+~~| 4 | Fix unused `modernize` nolint in `watcher_coverage_test.go`           | Linter hygiene          | Trivial |~~ 200
+~~| 5 | Create CHANGELOG.md and record v3 upgrade                             | Project history         | Low     |~~ 200
 
 ### Medium Impact (P2)
 
 | #  | Task                                                                          | Impact               | Effort  |
 | -- | ----------------------------------------------------------------------------- | -------------------- | ------- |
-| 6  | Update example comments to mention new generators (Oapi, Deepcopy, Wire, Moq) | Discoverability      | Trivial |
-| 7  | Fix flaky `TestWatcher_Stats_Metrics` test                                    | CI reliability       | Medium  |
-| 8  | Fix flaky `TestWatcher_Watch_WithMiddleware` test                             | CI reliability       | Medium  |
-| 9  | Leverage `DetectReasonReader` in `FilterGeneratedCodeFull`                    | Memory efficiency    | Low     |
-| 10 | Expose `FilterStats.FilteredFiles()` through our API                          | Richer introspection | Low     |
-| 11 | Add integration test for all v3 generators (including new ones)               | Test coverage        | Medium  |
-| 12 | Document contributor setup (local gogenfilter checkout needed)                | Onboarding           | Low     |
-| 13 | Consider go.work for multi-module local development                           | DX improvement       | Medium  |
+~~| 6  | Update example comments to mention new generators (Oapi, Deepcopy, Wire, Moq) | Discoverability      | Trivial |~~ 200
+~~| 7  | Fix flaky `TestWatcher_Stats_Metrics` test                                    | CI reliability       | Medium  |~~ 200
+~~| 8  | Fix flaky `TestWatcher_Watch_WithMiddleware` test                             | CI reliability       | Medium  |~~ 200
+~~| 9  | Leverage `DetectReasonReader` in `FilterGeneratedCodeFull`                    | Memory efficiency    | Low     |~~ 200
+~~| 10 | Expose `FilterStats.FilteredFiles()` through our API                          | Richer introspection | Low     |~~ 200
+~~| 11 | Add integration test for all v3 generators (including new ones)               | Test coverage        | Medium  |~~ 200
+~~| 12 | Document contributor setup (local gogenfilter checkout needed)                | Onboarding           | Low     |~~ 200
+~~| 13 | Consider go.work for multi-module local development                           | DX improvement       | Medium  |~~ 200
 
 ### Lower Impact (P3-P4)
 
 | #  | Task                                                                              | Impact                 | Effort  |
 | -- | --------------------------------------------------------------------------------- | ---------------------- | ------- |
-| 14 | Review `buildGogenFilterOptions` — is it still needed at all?                     | Simplification         | Trivial |
-| 15 | Add example for `FilterGeneratedCodeWithFilter` with v3 patterns                  | Documentation          | Low     |
-| 16 | Clean up old status reports in `docs/status/` (41 files)                          | Housekeeping           | Trivial |
-| 17 | Add `.editorconfig` or formatting consistency check                               | Code style             | Trivial |
-| 18 | Review if `ContentCheckMode` type could use v3's `fs.FS` abstraction              | API consistency        | Medium  |
-| 19 | Audit all nolint directives for continued necessity                               | Linter hygiene         | Low     |
-| 20 | Add benchmark tests for v3 detection performance                                  | Performance validation | Medium  |
-| 21 | Review `depguard` rules — gogenfilter still uses old path (no `/v3`)              | Config accuracy        | Trivial |
-| 22 | Add version compatibility test matrix                                             | Future-proofing        | Medium  |
-| 23 | Consider error wrapping in `FilterGeneratedCodeWithFilter` when `Filter()` errors | Error handling         | Trivial |
-| 24 | Update `docs/adr/` if architecture decisions exist                                | Documentation          | Low     |
-| 25 | Verify all examples compile and run with v3                                       | Correctness            | Trivial |
+~~| 14 | Review `buildGogenFilterOptions` — is it still needed at all?                     | Simplification         | Trivial |~~ 200
+~~| 15 | Add example for `FilterGeneratedCodeWithFilter` with v3 patterns                  | Documentation          | Low     |~~ 200
+~~| 16 | Clean up old status reports in `docs/status/` (41 files)                          | Housekeeping           | Trivial |~~ 200
+~~| 17 | Add `.editorconfig` or formatting consistency check                               | Code style             | Trivial |~~ 200
+~~| 18 | Review if `ContentCheckMode` type could use v3's `fs.FS` abstraction              | API consistency        | Medium  |~~ 200
+~~| 19 | Audit all nolint directives for continued necessity                               | Linter hygiene         | Low     |~~ 200
+~~| 20 | Add benchmark tests for v3 detection performance                                  | Performance validation | Medium  |~~ 200
+~~| 21 | Review `depguard` rules — gogenfilter still uses old path (no `/v3`)              | Config accuracy        | Trivial |~~ 200
+~~| 22 | Add version compatibility test matrix                                             | Future-proofing        | Medium  |~~ 200
+~~| 23 | Consider error wrapping in `FilterGeneratedCodeWithFilter` when `Filter()` errors | Error handling         | Trivial |~~ 200
+~~| 24 | Update `docs/adr/` if architecture decisions exist                                | Documentation          | Low     |~~ 200
+~~| 25 | Verify all examples compile and run with v3                                       | Correctness            | Trivial |~~ 200
 
 ---
 

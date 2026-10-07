@@ -115,14 +115,14 @@ None. Migration was clean and successful.
 ~~2. **Update CI/CD:** Replace `just` commands with direct Go commands in `.github/workflows/ci.yml`~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~3. **Test Flake:** Complete `nix develop` and `nix flake check` verification~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~4. **Update README:** Add Nix installation and usage instructions~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~5. **Add CHANGELOG Entry:** Document breaking change (justfile removal)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. **Add CHANGELOG Entry:** Document breaking change (justfile removal)~~ done — CHANGELOG.md records justfile removal
 
 ### High Priority
 
 ~~6. **Fix 5 Critical Phantom Types** (from branching-flow-analysis-plan)~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~7. **Create Wrapper Scripts:** Optional scripts for users who prefer commands over `go ...`~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~8. **Add Nix to CI:** Install Nix in GitHub Actions for consistency~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~9. **Update TODO_LIST:** Mark justfile-related tasks as completed~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **Update TODO_LIST:** Mark justfile-related tasks as completed~~ done — TODO_LIST rewritten since
 ~~10. **Test direnv:** Verify `.envrc` works correctly with direnv~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Medium Priority
@@ -147,7 +147,7 @@ None. Migration was clean and successful.
 ~~22. **Add integration tests** for full Watch→Event→Close lifecycle~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~23. **Add benchmark regression** tests~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~24. **Fix flaky tests** (TestWatcher_Watch_Deletes, middleware tests)~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~25. **Add stress tests** (10k+ files)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~25. **Add stress tests** (10k+ files)~~ OPEN → TODO_LIST (large-tree stress harness)
 
 ---
 

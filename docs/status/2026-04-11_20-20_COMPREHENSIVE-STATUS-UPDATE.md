@@ -79,7 +79,7 @@ The go-filewatcher project has reached a **mature, production-ready state** with
 - [x] Good error messages
 - [x] Clear API design
 ~~- [ ] Debug mode with verbose logging (partial)~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~- [ ] No interactive CLI tool~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~- [ ] No interactive CLI tool~~ OBSOLETE — library-only scope (ROADMAP Non-Goals)
 
 ---
 
@@ -164,17 +164,17 @@ All known issues have been resolved:
 
 ~~11. Implement event batching with configurable window~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~12. Add file content hashing option~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~13. Create standalone CLI tool~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~13. Create standalone CLI tool~~ OBSOLETE — library-only scope (ROADMAP Non-Goals)
 ~~14. Add symlink following support~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~15. Implement exponential backoff for errors~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~16. Add Prometheus metrics export~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~17. Create debug mode with verbose structured logging~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~18. Add plugin system for dynamic extensions~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~18. Add plugin system for dynamic extensions~~ OBSOLETE — never tracked
 
 ### Testing & Quality (19-22)
 
 ~~19. Add fuzz tests for filter functions~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~20. Create stress tests for high-load scenarios~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~20. Create stress tests for high-load scenarios~~ OPEN → TODO_LIST (large-tree stress harness)
 ~~21. Add integration tests with docker containers~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~22. Set up code coverage reporting in CI~~ done — shipped ≤v2.1.0, verified v2.4.1
 

@@ -140,8 +140,8 @@
 
 | # | Task                                   | File               | Effort |
 | - | -------------------------------------- | ------------------ | ------ |
-~~| 1 | Fix Go build cache corruption          | -                  | 10 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 2 | Implement `OpString` phantom type      | errors.go:102      | 5 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 1 | Fix Go build cache corruption          | -                  | 10 min |~~ OBSOLETE — transient env issue
+~~| 2 | Implement `OpString` phantom type      | errors.go:102      | 5 min  |~~ OBSOLETE — rejected; plain string types kept
 ~~| 3 | Implement `RootString` phantom type    | watcher_walk.go:23 | 5 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 4 | Implement `RootString` phantom type    | watcher_walk.go:37 | 5 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 5 | Run full test suite with race detector | -                  | 5 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -155,7 +155,7 @@
 ~~| 8  | Create benchmark regression suite        | Performance     | 20 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 9  | Add integration tests with real fsnotify | Quality         | 45 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 10 | Document all phantom types               | Maintainability | 15 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 11 | Add `PathString` phantom type (breaking) | Type Safety     | 30 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 11 | Add `PathString` phantom type (breaking) | Type Safety     | 30 min |~~ OBSOLETE — rejected; Event.Path kept string
 ~~| 12 | Optimize `Watcher` struct (split)        | Memory          | 45 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 13 | Add pre-commit hooks                     | Quality Gates   | 15 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 14 | Create migration guide for v2.0          | Adoption        | 30 min |~~ done — shipped ≤v2.1.0, verified v2.4.1

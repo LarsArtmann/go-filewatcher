@@ -156,7 +156,7 @@ The go-filewatcher project is in **ACTIVE DEVELOPMENT** with significant recent 
 
 ### High Priority
 
-~~1. **Fix LSP false positives** - Investigate test package configuration~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~1. **Fix LSP false positives** - Investigate test package configuration~~ OBSOLETE — gopls env issue
 ~~2. **Complete gogenfilter documentation** - Add to README with examples~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~3. **Add integration tests** for filter_gogen.go~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~4. **Review API surface** - Document any breaking changes from bool→flags~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -170,9 +170,9 @@ The go-filewatcher project is in **ACTIVE DEVELOPMENT** with significant recent 
 
 ### Low Priority
 
-~~9. **WebSocket output** - Alternative event transport~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~9. **WebSocket output** - Alternative event transport~~ OBSOLETE — out of scope
 ~~10. **Docker multi-stage build** - Smaller production images~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~11. **gRPC interface** - For remote watching~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. **gRPC interface** - For remote watching~~ OBSOLETE — out of scope
 ~~12. **Plugin system** - Dynamic filter loading~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
@@ -189,7 +189,7 @@ The go-filewatcher project is in **ACTIVE DEVELOPMENT** with significant recent 
 
 ### This Week
 
-~~6. 📋 Fix LSP configuration for test files~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. 📋 Fix LSP configuration for test files~~ OBSOLETE — gopls env issue
 ~~7. 📋 Add benchmark for filter functions~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~8. 📋 Review and document all exported API changes~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~9. 📋 Create changelog entry for recent changes~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -198,22 +198,22 @@ The go-filewatcher project is in **ACTIVE DEVELOPMENT** with significant recent 
 ### This Month
 
 ~~11. 📋 Implement event batching for high throughput~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~12. 📋 Add memory pool for Event objects~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. 📋 Add memory pool for Event objects~~ OBSOLETE — untracked
 ~~13. 📋 Create Git ignore pattern filter~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~14. 📋 Add file size-based filtering~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~15. 📋 Implement configuration file loading~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~16. 📋 Add metrics collection interface~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~17. 📋 Create Docker example with optimal settings~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~17. 📋 Create Docker example with optimal settings~~ OBSOLETE — untracked
 ~~18. 📋 Write advanced usage documentation~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~19. 📋 Add fuzzing tests for event processing~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~20. 📋 Create performance comparison document~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Future
 
-~~21. 📋 gRPC interface for remote monitoring~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~22. 📋 WebSocket output adapter~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~21. 📋 gRPC interface for remote monitoring~~ OBSOLETE — out of scope
+~~22. 📋 WebSocket output adapter~~ OBSOLETE — out of scope
 ~~23. 📋 Plugin system architecture design~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~24. 📋 Distributed watching support~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~24. 📋 Distributed watching support~~ OBSOLETE — out of scope
 ~~25. 📋 Kubernetes operator for cluster-wide watching~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---

@@ -88,10 +88,10 @@ The go-filewatcher project is in a **PRODUCTION-READY** state with a minor test 
 ~~2. **Symlink Following** — Optional symlink resolution~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~3. **File Content Hashing** — Detect actual content changes vs metadata~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~4. **Plugin System** — Allow custom middleware plugins~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~5. **WebSocket Bridge** — Real-time event streaming over WS~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~5. **WebSocket Bridge** — Real-time event streaming over WS~~ OBSOLETE — app-layer, out of scope
 ~~6. **Prometheus Metrics** — Built-in instrumentation middleware~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~7. **Configuration File** — YAML/TOML config support~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~8. **Windows Service Mode** — Run as Windows service~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~8. **Windows Service Mode** — Run as Windows service~~ OBSOLETE — app-layer, out of scope
 ~~9. **Docker Health Checks** — Built-in health endpoint~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~10. **Event Persistence** — Replay events from log~~ done — shipped ≤v2.1.0, verified v2.4.1
 
@@ -118,7 +118,7 @@ The go-filewatcher project is in a **PRODUCTION-READY** state with a minor test 
 
 ### Immediate (This Week)
 
-~~1. **Clear LSP Diagnostics Cache** — Restart gopls to clear stale errors~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~1. **Clear LSP Diagnostics Cache** — Restart gopls to clear stale errors~~ OBSOLETE — stale gopls cache, env-only
 ~~2. **Add Integration Tests** — Test actual filesystem watching across platforms~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~3. **Benchmark Suite** — Measure performance under load~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~4. **Fuzz Testing** — For filter and middleware edge cases~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -126,7 +126,7 @@ The go-filewatcher project is in a **PRODUCTION-READY** state with a minor test 
 ### Short Term (Next Month)
 
 ~~5. **Event Batching** — Configurable batch window for high-frequency changes~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~6. **Adaptive Debouncing** — Dynamic delay based on event frequency~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. **Adaptive Debouncing** — Dynamic delay based on event frequency~~ OBSOLETE — untracked
 ~~7. **Metrics Export** — Prometheus/OpenTelemetry middleware~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~8. **Documentation Site** — GitHub Pages with examples~~ done — shipped ≤v2.1.0, verified v2.4.1
 
@@ -134,7 +134,7 @@ The go-filewatcher project is in a **PRODUCTION-READY** state with a minor test 
 
 ~~9. **Plugin Architecture** — Dynamic middleware loading~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~10. **Cross-Platform Optimizations** — Platform-specific backends~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~11. **Distributed Watching** — Multi-node coordination~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. **Distributed Watching** — Multi-node coordination~~ OBSOLETE — out of scope
 ~~12. **Event Sourcing** — Persistent event log with replay~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Code Quality Improvements
@@ -150,7 +150,7 @@ The go-filewatcher project is in a **PRODUCTION-READY** state with a minor test 
 
 ### Priority 1: Critical 🔥
 
-~~1. [ ] Clear LSP diagnostic cache (restart gopls)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~1. [ ] Clear LSP diagnostic cache (restart gopls)~~ OBSOLETE — stale gopls cache, env-only
 ~~2. [ ] Add integration test for recursive watching~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~3. [ ] Verify all test files compile and pass~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~4. [ ] Add test for `handleError` with ErrorContext~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -158,7 +158,7 @@ The go-filewatcher project is in a **PRODUCTION-READY** state with a minor test 
 ### Priority 2: High 📈
 
 ~~5. [ ] Implement event batching API (`WithBatchWindow(duration)`)~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~6. [ ] Add adaptive debouncing (dynamic delay)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~6. [ ] Add adaptive debouncing (dynamic delay)~~ OBSOLETE — untracked
 ~~7. [ ] Create Prometheus metrics middleware~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~8. [ ] Add fsnotify backend abstraction~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~9. [ ] Implement symlink following option~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -171,7 +171,7 @@ The go-filewatcher project is in a **PRODUCTION-READY** state with a minor test 
 ~~13. [ ] Implement chaos testing (random failures)~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~14. [ ] Add property-based tests~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~15. [ ] Create benchmark comparison with raw fsnotify~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~16. [ ] Add Windows-specific optimizations~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~16. [ ] Add Windows-specific optimizations~~ OPEN → TODO_LIST (Windows CI matrix)
 ~~17. [ ] Implement configuration file support (YAML)~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~18. [ ] Add Docker health check endpoint~~ done — shipped ≤v2.1.0, verified v2.4.1
 
@@ -182,8 +182,8 @@ The go-filewatcher project is in a **PRODUCTION-READY** state with a minor test 
 ~~21. [ ] Add benchmarking to CI pipeline~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~22. [ ] Create contributor guidelines~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~23. [ ] Add issue templates~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~24. [ ] Implement plugin system~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~25. [ ] Create distributed watching prototype~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~24. [ ] Implement plugin system~~ OBSOLETE — never tracked
+~~25. [ ] Create distributed watching prototype~~ OBSOLETE — out of scope
 
 ---
 

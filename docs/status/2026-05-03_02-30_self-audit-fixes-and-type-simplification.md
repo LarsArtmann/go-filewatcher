@@ -36,18 +36,18 @@
 
 | #  | Item                                           | Priority |
 | -- | ---------------------------------------------- | -------- |
-| 1  | `WithPolling(fallback)` for NFS/network mounts | Medium   |
-| 2  | Exponential backoff for errors                 | Medium   |
-| 3  | Symlink following support                      | Medium   |
-| 4  | `Event.ModTime()` field                        | Medium   |
-| 5  | File content hashing option                    | Medium   |
-| 6  | Prometheus metrics export                      | Medium   |
-| 7  | OpenTelemetry integration                      | Medium   |
-| 8  | Self-healing watcher                           | Medium   |
-| 9  | Circuit breaker middleware                     | Medium   |
-| 10 | Goreleaser configuration                       | Medium   |
-| 11 | CLI tool                                       | Medium   |
-| 12 | Fuzz testing                                   | Backlog  |
+~~| 1  | `WithPolling(fallback)` for NFS/network mounts | Medium   |~~ 114
+~~| 2  | Exponential backoff for errors                 | Medium   |~~ 114
+~~| 3  | Symlink following support                      | Medium   |~~ 114
+~~| 4  | `Event.ModTime()` field                        | Medium   |~~ 114
+~~| 5  | File content hashing option                    | Medium   |~~ 114
+~~| 6  | Prometheus metrics export                      | Medium   |~~ 114
+~~| 7  | OpenTelemetry integration                      | Medium   |~~ 114
+~~| 8  | Self-healing watcher                           | Medium   |~~ 114
+~~| 9  | Circuit breaker middleware                     | Medium   |~~ 114
+~~| 10 | Goreleaser configuration                       | Medium   |~~ 114
+~~| 11 | CLI tool                                       | Medium   |~~ 114
+~~| 12 | Fuzz testing                                   | Backlog  |~~ 114
 
 ## d) TOTALLY FUCKED UP
 
@@ -59,43 +59,43 @@
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **Ghost `testing_helpers.go`** — Delete it (it's been renamed to `_test.go`)
-2. **LSP warnings in tests** — Fix noinlineerr, modernize, gosec warnings in `watcher_coverage_test.go`
-3. **Flaky tests** — `TestWatcher_Stats_Metrics` and `TestWatcher_Watch_WithMiddleware` remain timing-sensitive
-4. **Watcher struct size** — 24 fields is large; reconsider sub-structs if the library grows
-5. **Event.Path is `string`** — Still not using `EventPath` phantom type internally; filters and middleware all use raw strings
-6. **Pre-commit hook not executable** — Every commit warns about this
-7. **Version tagging** — v0.1.0 and v2.0.0 releases still not tagged
+~~1. **Ghost `testing_helpers.go`** — Delete it (it's been renamed to `_test.go`)~~ 114
+~~2. **LSP warnings in tests** — Fix noinlineerr, modernize, gosec warnings in `watcher_coverage_test.go`~~ 114
+~~3. **Flaky tests** — `TestWatcher_Stats_Metrics` and `TestWatcher_Watch_WithMiddleware` remain timing-sensitive~~ 114
+~~4. **Watcher struct size** — 24 fields is large; reconsider sub-structs if the library grows~~ 114
+~~5. **Event.Path is `string`** — Still not using `EventPath` phantom type internally; filters and middleware all use raw strings~~ 114
+~~6. **Pre-commit hook not executable** — Every commit warns about this~~ 114
+~~7. **Version tagging** — v0.1.0 and v2.0.0 releases still not tagged~~ 114
 
 ## f) Top 25 Things to Do Next
 
 | #  | Item                                                          | Impact | Effort |
 | -- | ------------------------------------------------------------- | ------ | ------ |
-| 1  | Tag v0.2.0 release                                            | High   | Low    |
-| 2  | Delete ghost `testing_helpers.go`                             | Medium | Low    |
-| 3  | Fix pre-commit hook permissions                               | Medium | Low    |
-| 4  | Fix LSP warnings in test files                                | Medium | Low    |
-| 5  | Add `WithPolling(fallback bool)` for NFS                      | High   | Medium |
-| 6  | Add exponential backoff for errors                            | High   | Medium |
-| 7  | Add `Event.ModTime` field                                     | Medium | Low    |
-| 8  | Add self-healing watcher (re-add lost paths)                  | High   | High   |
-| 9  | Add symlink following support                                 | Medium | Medium |
-| 10 | Add circuit breaker middleware                                | Medium | Medium |
-| 11 | Prometheus/OpenTelemetry integration                          | High   | Medium |
-| 12 | Goreleaser configuration                                      | Medium | Medium |
-| 13 | Standalone CLI tool                                           | High   | High   |
-| 14 | Address flaky tests (Stats, Middleware)                       | Medium | Medium |
-| 15 | Fuzz testing for event parsing                                | Medium | Medium |
-| 16 | Windows-specific edge case tests                              | Medium | Medium |
-| 17 | File content hashing option                                   | Medium | Medium |
-| 18 | Document DI integration patterns                              | Low    | Low    |
-| 19 | Add `CODE_OF_CONDUCT.md`                                      | Low    | Low    |
-| 20 | Add PR template                                               | Low    | Low    |
-| 21 | Write Troubleshooting.md                                      | Medium | Medium |
-| 22 | Add `FilterGeneratedCodeFull` test for edge cases             | Medium | Low    |
-| 23 | Consider `WatchChanges(ctx, targetState)` for idempotent sync | Medium | High   |
-| 24 | Dead letter queue for dropped events                          | Medium | Medium |
-| 25 | Error correlation IDs                                         | Low    | Medium |
+~~| 1  | Tag v0.2.0 release                                            | High   | Low    |~~ 114
+~~| 2  | Delete ghost `testing_helpers.go`                             | Medium | Low    |~~ 114
+~~| 3  | Fix pre-commit hook permissions                               | Medium | Low    |~~ 114
+~~| 4  | Fix LSP warnings in test files                                | Medium | Low    |~~ 114
+~~| 5  | Add `WithPolling(fallback bool)` for NFS                      | High   | Medium |~~ 114
+~~| 6  | Add exponential backoff for errors                            | High   | Medium |~~ 114
+~~| 7  | Add `Event.ModTime` field                                     | Medium | Low    |~~ 114
+~~| 8  | Add self-healing watcher (re-add lost paths)                  | High   | High   |~~ 114
+~~| 9  | Add symlink following support                                 | Medium | Medium |~~ 114
+~~| 10 | Add circuit breaker middleware                                | Medium | Medium |~~ 114
+~~| 11 | Prometheus/OpenTelemetry integration                          | High   | Medium |~~ 114
+~~| 12 | Goreleaser configuration                                      | Medium | Medium |~~ 114
+~~| 13 | Standalone CLI tool                                           | High   | High   |~~ 114
+~~| 14 | Address flaky tests (Stats, Middleware)                       | Medium | Medium |~~ 114
+~~| 15 | Fuzz testing for event parsing                                | Medium | Medium |~~ 114
+~~| 16 | Windows-specific edge case tests                              | Medium | Medium |~~ 114
+~~| 17 | File content hashing option                                   | Medium | Medium |~~ 114
+~~| 18 | Document DI integration patterns                              | Low    | Low    |~~ 114
+~~| 19 | Add `CODE_OF_CONDUCT.md`                                      | Low    | Low    |~~ 114
+~~| 20 | Add PR template                                               | Low    | Low    |~~ 114
+~~| 21 | Write Troubleshooting.md                                      | Medium | Medium |~~ 114
+~~| 22 | Add `FilterGeneratedCodeFull` test for edge cases             | Medium | Low    |~~ 114
+~~| 23 | Consider `WatchChanges(ctx, targetState)` for idempotent sync | Medium | High   |~~ 114
+~~| 24 | Dead letter queue for dropped events                          | Medium | Medium |~~ 114
+~~| 25 | Error correlation IDs                                         | Low    | Medium |~~ 114
 
 ## g) Top Question I Cannot Figure Out Myself
 

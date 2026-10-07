@@ -201,7 +201,7 @@ Pre-existing race conditions detected in `TestWatcher_Watch_WithDebounce` and re
 ### P0: Critical (Breaking Changes for v2.0)
 
 ~~1. **Event.Path as FilePath** - Add phantom type to core API~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~2. **Watcher struct split** - Separate config from state~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~2. **Watcher struct split** - Separate config from state~~ OBSOLETE — Watcher intentionally unsplit
 ~~3. **Boolean bit flags** - Optimize memory with WatcherFlags~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~4. **Path type everywhere** - Consistent FilePath/RootPath usage~~ done — shipped ≤v2.1.0, verified v2.4.1
 

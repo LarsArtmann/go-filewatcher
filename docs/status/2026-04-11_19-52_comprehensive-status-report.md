@@ -135,7 +135,7 @@ These are LOW PRIORITY — they don't affect correctness, only style.
 
 ### High Value (Should Do)
 
-~~1. **Go cache cleanup** — Fix corrupted cache to enable fast incremental builds~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~1. **Go cache cleanup** — Fix corrupted cache to enable fast incremental builds~~ OBSOLETE — transient env issue
 ~~2. **Race condition investigation** — Run `go test -race` on base commit to confirm pre-existing race~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~3. **tparallel fixes** — Add `t.Parallel()` to filter subtests (6 issues, easy fix)~~ done — shipped ≤v2.1.0, verified v2.4.1
 
@@ -197,7 +197,7 @@ HEAD -> master (ahead of origin by 3 commits)
 
 ## Top 25 Action Items (Future Work)
 
-~~1. Fix Go cache corruption manually (`rm -rf ~/Library/Caches/`)~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~1. Fix Go cache corruption manually (`rm -rf ~/Library/Caches/`)~~ OBSOLETE — transient env issue
 ~~2. Investigate race condition in TestWatcher_Watch_WithDebounce~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~3. Add t.Parallel() to filter subtests~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~4. Move test files to `*_test` packages~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -215,7 +215,7 @@ HEAD -> master (ahead of origin by 3 commits)
 ~~16. Consider `FilterMinAge()` for ignoring old files~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~17. Add `MiddlewareRateBurst()` for token bucket rate limiting~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~18. Add `MiddlewareDeduplicate()` to drop duplicate events~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~19. Consider `Watcher.WatchChanges(ctx, targetState)` for idempotent sync~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~19. Consider `Watcher.WatchChanges(ctx, targetState)` for idempotent sync~~ OPEN → research contract + TODO_LIST open Q3
 ~~20. Add `Event.Size()` field by stat'ing the file~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~21. Add `FilterMaxSize()` complement to FilterMinSize~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~22. Add `MiddlewareBatch()` to batch events over a window~~ done — shipped ≤v2.1.0, verified v2.4.1

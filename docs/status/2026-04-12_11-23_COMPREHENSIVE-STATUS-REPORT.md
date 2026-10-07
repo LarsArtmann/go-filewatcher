@@ -142,7 +142,7 @@ The go-filewatcher project is in **excellent condition** with all tests passing,
 
 ### Critical Issues
 
-~~1. **gopls Diagnostic Cache Corruption** 🔴~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~1. **gopls Diagnostic Cache Corruption** 🔴~~ OBSOLETE — gopls env issue
    - **Location:** `filter_gogen_test.go:233`
    - **Error:** "no new variables on left side of :="
    - **Reality:** Code uses `err =` (assignment), not `:=` (declaration)
@@ -172,7 +172,7 @@ The `examples/filter-generated/main.go` has accumulated technical debt:
 
 ### Immediate (This Week)
 
-~~1. **Fix gopls Diagnostic Issue**~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~1. **Fix gopls Diagnostic Issue**~~ OBSOLETE — gopls env issue
    - Restart gopls or clear cache
    - Verify LSP diagnostics match actual compilation
 
@@ -232,7 +232,7 @@ The `examples/filter-generated/main.go` has accumulated technical debt:
 
 ### P0: Critical (Do Now)
 
-~~1. **Restart gopls / Clear LSP Cache** - False positive diagnostic blocking IDE experience~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~1. **Restart gopls / Clear LSP Cache** - False positive diagnostic blocking IDE experience~~ OBSOLETE — gopls env issue
 ~~2. **Fix Examples Linter Issues** - 14 violations in examples/filter-generated/main.go~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~3. **Complete Error Context Wrapping in watcher.go** - Better error messages for debugging~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~4. **Complete Error Context Wrapping in watcher_walk.go** - Path context for walk errors~~ done — shipped ≤v2.1.0, verified v2.4.1

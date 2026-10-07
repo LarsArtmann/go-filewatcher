@@ -177,7 +177,7 @@ The go-filewatcher library has reached a mature, production-ready state with **8
 ### Documentation Items
 
 ~~9. **CONTRIBUTING.md** - Contribution guidelines~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~10. **CODEOWNERS** - Code ownership~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~10. **CODEOWNERS** - Code ownership~~ OBSOLETE — solo maintainer, absent
 ~~11. **CODE_OF_CONDUCT.md** - Community standards~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~12. **PR Template** - Standardized PR format~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~13. **Troubleshooting.md** - Common issues and solutions~~ done — shipped ≤v2.1.0, verified v2.4.1
@@ -254,11 +254,11 @@ The codebase is in excellent shape. No critical issues identified.
     - Configuration file support
     - Plugin system
 
-~~11. **WebSocket API**~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~11. **WebSocket API**~~ OBSOLETE — out of scope
     - Real-time event streaming
     - Browser integration
 
-~~12. **Distributed Watching**~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~12. **Distributed Watching**~~ OBSOLETE — out of scope
     - Watch across multiple nodes
     - Event synchronization
 
@@ -285,7 +285,7 @@ The codebase is in excellent shape. No critical issues identified.
 ~~| 8  | Coverage threshold CI           | High   | Low    | Quality gate        |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 9  | Add test for handleError stderr | Medium | Low    | Coverage gap        |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 10 | CONTRIBUTING.md                 | Medium | Low    | Community           |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 11 | CODEOWNERS                      | Low    | Low    | Code ownership      |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 11 | CODEOWNERS                      | Low    | Low    | Code ownership      |~~ OBSOLETE — solo maintainer, absent
 ~~| 12 | CODE_OF_CONDUCT.md              | Low    | Low    | Community           |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 13 | PR template                     | Low    | Low    | Process             |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
@@ -306,7 +306,7 @@ The codebase is in excellent shape. No critical issues identified.
 
 | #  | Task              | Impact | Effort | Why            |
 | -- | ----------------- | ------ | ------ | -------------- |
-~~| 22 | Dead letter queue | Low    | Medium | Error handling |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 22 | Dead letter queue | Low    | Medium | Error handling |~~ OBSOLETE — untracked, YAGNI
 ~~| 23 | Goreleaser config | Low    | Low    | Releases       |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 24 | Dependabot config | Low    | Low    | Maintenance    |~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~| 25 | Semantic-release  | Low    | Medium | Automation     |~~ done — shipped ≤v2.1.0, verified v2.4.1

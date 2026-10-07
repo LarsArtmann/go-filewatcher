@@ -279,7 +279,7 @@ Multiple parallel tests manipulate the global `os.Stderr` variable:
 ~~11. **Benchmark performance analysis** - Performance visibility~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~12. **Review debouncer for race conditions** - Core component~~ done — shipped ≤v2.1.0, verified v2.4.1
 ~~13. **Implement retry logic for transient errors** - Resilience~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~14. **Add stress tests for concurrent event handling** - Robustness~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~14. **Add stress tests for concurrent event handling** - Robustness~~ OPEN → TODO_LIST (large-tree stress harness)
 ~~15. **Document error handling best practices** - Developer experience~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Lower Priority (Next Month)

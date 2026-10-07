@@ -1,0 +1,6 @@
+# go.mod's `go 1.26.7` patch floor is documented policy (AGENTS.md: matches the
+# encoding/json/v2 toolchain requirement and the CI matrix). go-version-auto-
+# configure wants a major.minor-only directive and fights go-mod-update, which
+# flip-flopped the line 3 times in 20 commits. Skip until dispositions align.
+skip_steps:
+  - go-version-auto-configure

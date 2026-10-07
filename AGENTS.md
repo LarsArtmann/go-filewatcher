@@ -614,3 +614,12 @@ they diverge. Never assume your last local commit is still HEAD.
 ### Website build (pnpm 11) build-script approvals
 
 Build-script approvals live in `website/pnpm-workspace.yaml` under `allowBuilds:` (`esbuild: true`) — pnpm v11 ignores `pnpm.*` in `package.json` and silently skips unapproved postinstall scripts, so `astro build` then fails on a missing esbuild binary. A placeholder value (e.g. `esbuild: set this to true or false`) silently disables the whole key (cmdguard incident, fixed 2026-09-19).
+
+### Nix sandbox needs GOEXPERIMENT=jsonv2
+
+`event.go` imports `encoding/json/v2` (GOEXPERIMENT-gated). CI sets `GOEXPERIMENT: jsonv2` workflow-wide (ci.yml) and direnv exports it locally, but nix sandbox derivations receive neither, so every Go target fails with "build constraints exclude all Go files in .../encoding/json/v2". The flake sets it wherever Go compiles: `packages.default` and the four `runCommand` checks via `env.GOEXPERIMENT`, and every `mkApp`/`mkBenchApp` script exports it (apps run outside direnv). Any new Go-building derivation or app must set it too (fixed 2026-10-07).
+
+### buildflow nix-hash-fix cannot repair this flake
+
+`nix-hash-fix` has failed 15+/15 runs here: after a hash mismatch it reports "the stale hash was not found verbatim in any .nix file" even when `vendorHash = "sha256-…"` sits verbatim in flake.nix (BuildFlow repo bug; the 2026-10-07 fix was hand-applied after the fixer gave up). Until fixed upstream, update the `vendorHash` in flake.nix to the `got:` hash from `nix build` output by hand, then verify with `nix build`. Consequence: do NOT extract vendorHash into a separate file (the nix-checker suggestion) — it would break the one manual repair path that works.
+

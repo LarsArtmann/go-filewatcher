@@ -56,21 +56,28 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 
 ## CI & Release Hardening
 
-- [ ] **CI guard: go-directive floor** — fail the build if `go.mod`'s `go`
-      directive ≠ `1.26.7` (or exceeds the CI matrix version). Three incidents
-      (2026-09-29, 2026-10-07 ×2) were caused by silent bumps; the buildflow
-      skip-list is name-fragile, a CI check is structural.
+- [x] **CI guard: go-directive floor** — DONE 2026-10-07 (PR #38): `go-directive`
+      CI job asserts `go 1.26.7` and gates the test matrix; `nix flake check`
+      runs the same assertion as the `go-directive` check. Structural, not
+      skip-list-fragile.
       (`src: 2026-10-07_02-24 §f8, 05-17 §f36, 06-00 §f4/C5`)
-- [ ] **Go 1.27 in the CI test matrix** — add alongside the 1.26 floor; pairs
-      with the fleet Go-strategy decision (see open questions).
+- [x] **Go 1.27 in the CI test matrix** — RESOLVED AS STRUCTURALLY BLOCKED
+      2026-10-07 (PR #38): `encoding/json/v2` requires the `go` directive ≥ 1.27
+      while the pinned floor is 1.26.7, so a 1.27 leg cannot build. Revisit only
+      as part of an intentional floor bump (pairs with the fleet Go-strategy
+      decision; see open questions and the v3 decision doc).
       (`src: 2026-10-07_02-24 §f9, 04-34 §f22`)
-- [ ] **Required status checks on master + release PRs** — the v2.4.0 release
-      PR merged while master was red; nothing structurally prevents that.
+- [x] **Required status checks on master + release PRs** — DONE 2026-10-07: 8
+      required contexts live (floor guard, tests on 24.04/26.04, examples,
+      lint, commitlint, drift check, exported symbols) with linear history +
+      enforce-admins; proven by six same-day PR merges, all gated.
       (`src: 2026-10-07_02-24 §f10/c7`)
-- [ ] **`release.yml` `workflow_dispatch` trigger** — the workflow is dead code
-      for GITHUB_TOKEN-created tags (they don't re-trigger workflows); the
-      manual path needs a trigger or its test+lint should fold into
-      release-please flow.
+- [x] **`release.yml` `workflow_dispatch` trigger** — DONE 2026-10-07 (PRs
+      #38, #43): trigger added with `tag` input; dry-run dispatched twice on
+      v2.4.2. First run exposed a missing `GOEXPERIMENT=jsonv2` (tests could
+      not compile `encoding/json/v2`) — fixed; second run verified checkout of
+      `inputs.tag`, tests, lint, and that the release step refuses an existing
+      release (published v2.4.2 untouched).
       (`src: 2026-10-07_02-24 §f12/b3`)
 - [ ] **BuildFlow binary upgrade + skip-list re-verify** — binary is `202b114`,
       BuildFlow HEAD moved past it; after upgrade re-run the pipeline and

@@ -11,6 +11,7 @@ from [ROADMAP.md](../../ROADMAP.md) where relevant to long-term planning.
 
 | Document                                                                           | Date       | Topic                                                                | Decision                                               |
 | ---------------------------------------------------------------------------------- | ---------- | -------------------------------------------------------------------- | ------------------------------------------------------ |
+| [v3-decisions.md](./v3-decisions.md)                                               | 2026-10-07 | Ledger of v3 constraints and decisions (json/v2 floor-bump coupling first) | Live constraint list for the v3 cut                    |
 | [watchchanges-contract.md](./watchchanges-contract.md)                             | 2026-07-26 | Event-contract analysis for the `Watch` → `Events` channel semantics | Informs v3 API evolution                               |
 | [semantic-release-evaluation.md](./semantic-release-evaluation.md)                 | 2026-07-26 | Tradeoff analysis: semantic-release vs release-please vs manual      | Pending decision; release-please currently wired in CI |
 | [go-filewatcher-vs-ro-fsnotify.md](./go-filewatcher-vs-ro-fsnotify.md)             | 2026-06-08 | Competitive comparison with `fsnotify` wrapper libraries             | Positioning reference                                  |

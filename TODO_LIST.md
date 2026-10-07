@@ -191,9 +191,22 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 - [ ] **Consumer sweep** — check no dependent repos' CI keyed off red-master
       windows (the go.mod incidents).
       (`src: 2026-10-07_03-10 §f39`)
-- [ ] **Content-verify DOMAIN_LANGUAGE / API_STABILITY / Troubleshooting /
-      MIGRATION / ARCHITECTURE against code** (existence-checked only so far).
+- [x] **Content-verify DOMAIN_LANGUAGE / API_STABILITY / Troubleshooting /
+      MIGRATION / ARCHITECTURE against code** — DONE 2026-10-07: API_STABILITY
+      verified (all three deprecated symbols exist with `// Deprecated:`
+      markers); DOMAIN_LANGUAGE verified (Op/enum/option terms all in code).
+      FINDINGS: `Troubleshooting.md`, `MIGRATION.md`, `ARCHITECTURE.md` never
+      existed — README's related-docs row linked two of them (dead links,
+      fixed: migration now points at the live website guide, verified URL);
+      ARCHITECTURE.md is only referenced inside historical CHANGELOG entries
+      (left as history). Troubleshooting content remains unbuilt (ROADMAP
+      mentions a guide that has no page).
       (`src: 2026-10-07_08-14 §c2`)
+- [ ] **Starlight editLink + lastUpdated** — neither configured in
+      website/astro.config.mjs; both are Starlight built-ins (`editLink.baseUrl`,
+      `lastUpdated: true`). Decide whether stale lastUpdated dates on old pages
+      are acceptable before enabling.
+      (`src: 2026-10-07_02-24 §f14`)
 - [ ] **Full `nix flake check` + verify second vendorHash (flake.nix:111)**.
       (`src: 2026-10-07_06-00 §B6`)
 - [ ] **Status-dir index** (`docs/status/README.md`: active reports + archived

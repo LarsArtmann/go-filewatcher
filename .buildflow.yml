@@ -4,3 +4,8 @@
 # flip-flopped the line 3 times in 20 commits. Skip until dispositions align.
 skip_steps:
   - go-version-auto-configure
+  # go-mod-update minor mode bumps the go directive to the latest Go release
+  # (1.27), breaking the CI matrix floor and the vendorHash FOD; patch mode
+  # fails outright ("can't query version patch ... no existing version is
+  # required"). Run dependency updates explicitly via `buildflow update`.
+  - go-mod-update

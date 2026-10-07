@@ -426,7 +426,15 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 		go w.pollLoop(ctx, eventCh, &chUsers)
 	}
 
+	// The closer joins w.wg so Close()'s wg.Wait() also awaits it — Reset()
+	// reassigns closeEventChOnce, and it is only safe to touch the old Once
+	// (and the field) when no goroutine can still be doing so. The drain in
+	// cancelAndDrain-style callers unblocks when this closes the channel.
+	w.wg.Add(1)
+
 	go func() {
+		defer w.wg.Done()
+
 		chUsers.Wait()
 		w.closeEventChOnce.Do(func() { close(eventCh) })
 	}()

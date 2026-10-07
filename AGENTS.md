@@ -576,6 +576,14 @@ land on origin even when you ran no go commands (daemon commits) — check the
 `go` line whenever the daemon commits go.mod; dependent PR CI recovers only
 after master is fixed plus a branch update/re-run.
 
+**Structural guard (added 2026-10-07)**: the floor is now enforced, not just
+remembered — a `Go Directive Floor` CI job asserts `go 1.26.7` and blocks the
+test matrix (`needs: go-directive`), and `nix flake check` runs the same
+assertion as the `go-directive` check. Intentional bumps must change go.mod
+AND both guards in one commit. The CI test matrix also carries a `1.27`
+entry alongside the `1.26` floor, so a floor-vs-future drift surfaces as a
+test failure too.
+
 **Worktrees and nix**: flake evaluation IGNORES dirty state in linked
 worktrees (no `-dirty` drv suffix; it builds the COMMITTED go.mod). Commit the
 floor before any worktree proof run.

@@ -340,6 +340,22 @@
               format = config.treefmt.build.check self;
               build = config.packages.default;
 
+              go-directive =
+                pkgs.runCommand "go-directive"
+                  { }
+                  ''
+                    expected="go 1.26.7"
+                    actual=$(grep -E '^go [0-9]+(\.[0-9]+){0,2}$' "${self}/go.mod" | head -1)
+                    if [ "$actual" != "$expected" ]; then
+                      echo "go.mod go-directive drifted: expected '$expected', found '$actual'"
+                      echo "Three incidents (2026-09-29, 2026-10-07 x2) came from silent bumps of this line."
+                      echo "Restore go.mod, or bump it deliberately in BOTH go.mod and this guard (flake.nix + .github/workflows/ci.yml)."
+                      exit 1
+                    fi
+                    echo "go-directive OK: $actual"
+                    touch "$out"
+                  '';
+
               test =
                 pkgs.runCommand "test"
                   {

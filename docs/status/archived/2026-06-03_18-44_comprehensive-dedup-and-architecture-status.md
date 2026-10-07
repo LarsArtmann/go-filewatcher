@@ -223,31 +223,32 @@ Sorted by **impact × effort** (highest first):
 
 | #  | Item | Impact                                                                                  | Effort   | Category |
 | -- | ---- | --------------------------------------------------------------------------------------- | -------- | -------- |
-| ~~ | 1    | Fix ENOSPC CI reliability (increase inotify limits in CI or mock fsnotify)              | Critical | Medium   |
-| ~~ | 2    | Create FEATURES.md (auto-generated feature inventory with honest status)                | High     | Low      |
-| ~~ | 3    | Replace `watchList []string` with `map[string]struct{}` for O(1) lookups                | High     | Low      |
-| ~~ | 4    | Split `Watcher` into config+state structs for cache-friendly layout                     | Medium   | Medium   |
-| ~~ | 5    | Fix error channel + handler dual dispatch semantics (document or make configurable)     | Medium   | Low      |
-| ~~ | 6    | Remove deprecated `WithWatchedIgnoreDirs` for v3 planning                               | Medium   | Trivial  |
-| ~~ | 7    | Add `WithMiddlewareChain()` that applies in written order                               | Medium   | Low      |
-| ~~ | 8    | Fix pre-commit BuildFlow TODO check (ignore NOTE comments)                              | Medium   | Low      |
-| ~~ | 9    | Wire Goreleaser configuration end-to-end (verify release workflow)                      | Medium   | Medium   |
-| ~~ | 10   | Add `Watcher.AddedPaths()` method to return paths successfully added                    | Medium   | Low      |
-| ~~ | 11   | Integrate into one downstream project (e.g., auto-deduplicate) as real-world validation | High     | High     |
-| ~~ | 12   | Add table-driven benchmark suite for filter performance                                 | Medium   | Low      |
-| ~~ | 13   | Document error handler dual dispatch behavior in godoc                                  | Medium   | Trivial  |
-| ~~ | 14   | Add `FilterRegexCompiled(re *regexp.Regexp)` for pre-validated regexes                  | Medium   | Low      |
-| ~~ | 15   | Consider `errors.Join` for multi-error accumulation in batch middleware                 | Low      | Low      |
-| ~~ | 16   | Add macOS CI runner (GitHub Actions)                                                    | Medium   | Medium   |
-| ~~ | 17   | Generate phantom type boilerplate (stringer-like tool)                                  | Low      | Medium   |
-| ~~ | 18   | Shared gitignore matcher interface (walk-time + filter-time)                            | Low      | Medium   |
-| ~~ | 19   | Expand fuzz corpus with adversarial inputs                                              | Low      | Low      |
-| ~~ | 20   | Add `WithMiddlewarePosition(name string, mw Middleware)` for explicit ordering          | Low      | Medium   |
-| ~~ | 21   | Localizable error messages (fmt.Sprintf + message IDs)                                  | Low      | Medium   |
-| ~~ | 22   | Add `Watcher.WatchChanges(ctx, targetState)` for idempotent sync                        | Low      | Medium   |
-| ~~ | 23   | Windows-specific edge case tests                                                        | Low      | High     |
-| ~~ | 24   | Extract shared test utilities to testutil sub-package                                   | Low      | Medium   |
-| ~~ | 25   | Semantic release automation                                                             | Low      | Medium   |
+| ~~ | ~~1~~ | ~~Fix ENOSPC CI reliability (increase inotify limits in CI or mock fsnotify)~~ | ~~Critical~~ | ~~Medium~~ |
+| ~~ | ~~2~~ | ~~Create FEATURES.md (auto-generated feature inventory with honest status)~~ | ~~High~~ | ~~Low~~ |
+| ~~ | ~~3~~ | ~~Replace `watchList []string` with `map[string]struct{}` for O(1) lookups~~ | ~~High~~ | ~~Low~~ |
+| ~~ | ~~4~~ | ~~Split `Watcher` into config+state structs for cache-friendly layout~~ | ~~Medium~~ | ~~Medium~~ |
+| ~~ | ~~5~~ | ~~Fix error channel + handler dual dispatch semantics (document or make configurable)~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~6~~ | ~~Remove deprecated `WithWatchedIgnoreDirs` for v3 planning~~ | ~~Medium~~ | ~~Trivial~~ |
+| ~~ | ~~7~~ | ~~Add `WithMiddlewareChain()` that applies in written order~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~8~~ | ~~Fix pre-commit BuildFlow TODO check (ignore NOTE comments)~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~9~~ | ~~Wire Goreleaser configuration end-to-end (verify release workflow)~~ | ~~Medium~~ | ~~Medium~~ |
+| ~~ | ~~10~~ | ~~Add `Watcher.AddedPaths()` method to return paths successfully added~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~11~~ | ~~Integrate into one downstream project (e.g., auto-deduplicate) as real-world validation~~ | ~~High~~ | ~~High~~ |
+| ~~ | ~~12~~ | ~~Add table-driven benchmark suite for filter performance~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~13~~ | ~~Document error handler dual dispatch behavior in godoc~~ | ~~Medium~~ | ~~Trivial~~ |
+| ~~ | ~~14~~ | ~~Add `FilterRegexCompiled(re *regexp.Regexp)` for pre-validated regexes~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~15~~ | ~~Consider `errors.Join` for multi-error accumulation in batch middleware~~ | ~~Low~~ | ~~Low~~ |
+| ~~ | ~~16~~ | ~~Add macOS CI runner (GitHub Actions)~~ | ~~Medium~~ | ~~Medium~~ |
+| ~~ | ~~17~~ | ~~Generate phantom type boilerplate (stringer-like tool)~~ | ~~Low~~ | ~~Medium~~ |
+| ~~ | ~~18~~ | ~~Shared gitignore matcher interface (walk-time + filter-time)~~ | ~~Low~~ | ~~Medium~~ |
+| ~~ | ~~19~~ | ~~Expand fuzz corpus with adversarial inputs~~ | ~~Low~~ | ~~Low~~ |
+| ~~ | ~~20~~ | ~~Add `WithMiddlewarePosition(name string, mw Middleware)` for explicit ordering~~ | ~~Low~~ | ~~Medium~~ |
+| ~~ | ~~21~~ | ~~Localizable error messages (fmt.Sprintf + message IDs)~~ | ~~Low~~ | ~~Medium~~ |
+| ~~ | ~~22~~ | ~~Add `Watcher.WatchChanges(ctx, targetState)` for idempotent sync~~ | ~~Low~~ | ~~Medium~~ |
+| ~~ | ~~23~~ | ~~Windows-specific edge case tests~~ | ~~Low~~ | ~~High~~ |
+| ~~ | ~~24~~ | ~~Extract shared test utilities to testutil sub-package~~ | ~~Low~~ | ~~Medium~~ |
+| ~~ | ~~25~~ | ~~Semantic release automation~~ | ~~Low~~ | ~~Medium~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ---
 

@@ -37,6 +37,11 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 - [ ] **Large-tree stress harness** — synthetic 100k-directory fixture that
       validates batched registration, budget enforcement, and self-heal under
       load.
+- [ ] **Investigate the July 6-hour Benchmark hang** — PR #14's Benchmark job ran
+      02:23→08:24 UTC (6h, killed at runner timeout): possible benchmark/watcher
+      deadlock. Timeout caps now bound the blast radius (`b2caf11`); root cause
+      still unknown.
+      (`src: 2026-10-07_03-10 §b5/f4`)
 - [ ] **Test: `WithContentHashing()` + `WithContentHashMaxSize(0)` interaction** —
       pin the (currently undocumented) semantics of combining both options;
       the interaction is debatable and should be a tested decision.
@@ -78,6 +83,10 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 - [ ] **Re-capture benchmark baseline post-v2.4.x** — `nix run .#bench-baseline`
       on a quiet machine (AGENTS.md bench discipline: no parallel load).
       (`src: 2026-10-07_02-24 §f16, 03-09 §f17`)
+- [ ] **Post-release smoke-test script** — after each release-please merge, assert
+      tag + GitHub Release exist and the changelog section matches the merge
+      (done manually on v2.4.0/v2.4.1).
+      (`src: 2026-10-07_03-10 §f23`)
 
 ## Documentation
 
@@ -116,6 +125,10 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       postcss-nested; document the override's existence; redeploy after dep
       updates; spot-check sharp 0.35.5 rendering on an image-heavy page.
       (`src: 2026-10-07_06-00 §f5/#22/#23/#24/#36/#37/B4`)
+- [ ] **Commit the pnpm `minimumReleaseAge` window** — only the excludes list is
+      in `pnpm-workspace.yaml`; the actual age window lives in a machine-local
+      global config nobody else can see.
+      (`src: 2026-10-07_03-10 §f17`)
 - [ ] **Website small items** — add `editLink`/`lastUpdated` to astro.config if
       missing; consider gitignoring `changelog.mdx` (committed build artifact);
       check the OG image renders on social cards.
@@ -137,12 +150,18 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 
 ## Process debts (2026-10-07 docs sweep tail)
 
-- [ ] **Read + annotate `2026-10-07_03-10_pr-review-ci-recovery`** — the one
-      2026-10-07 report the sweep missed.
-      (`src: 2026-10-07_08-14 §b`)
-- [ ] **Run `check-rows.py` over all 86 archived files** — presence gate passed;
-      row-uniformity gate not yet proven.
-      (`src: 2026-10-07_08-14 §b`)
+- [ ] **Audit the 292 marker-free tables in archived files** — check-rows now
+      passes (86/86 uniform), but tables with zero `~~` anywhere were left as
+      non-task data tables or potentially-open items; one bounded pass should
+      classify them (data vs open task).
+      (`src: 2026-10-07 docs/sweep-followups pass`)
+- [ ] **Overnight merge-ownership protocol for release PRs** — define who/what may
+      merge a release PR while other sessions push to master (v2.4.1 race window
+      was seconds-wide).
+      (`src: 2026-10-07_03-10 §f32`)
+- [ ] **Consumer sweep** — check no dependent repos' CI keyed off red-master
+      windows (the go.mod incidents).
+      (`src: 2026-10-07_03-10 §f39`)
 - [ ] **Content-verify DOMAIN_LANGUAGE / API_STABILITY / Troubleshooting /
       MIGRATION / ARCHITECTURE against code** (existence-checked only so far).
       (`src: 2026-10-07_08-14 §c2`)
@@ -187,7 +206,7 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 | Tests          | 100%  | ✅     |
 | Flaky tests    | 0     | ✅     |
 | Broken benches | 0     | ✅     |
-| Open items     | 36    | 🟡     |
+| Open items     | 39    | 🟡     |
 
 ---
 
@@ -243,10 +262,24 @@ checklist above.
 8. **Are the 7 new `minimumReleaseAgeExclude` entries an acceptable standing
    supply-chain tradeoff** (trusting same-day patched releases), and when
    should they be pruned?
-   (`src: 2026-10-07_06-00 §g Q3/B4`)
+   (`src: 2026-10-07_06-00 §g Q3/B4`) Also: Dependabot can propose versions
+   younger than the window (bot cadence vs supply-chain policy mismatch —
+   devalue 5.9.4 merged within hours of existing).
+   (`src: 2026-10-07_03-10 §f27`)
 
 9. **Changelog policy for releases** — should future releases block tagging on
    curated changelog content (curate inside the release PR before merge), or is
    the tag-gets-stub/master-gets-curation split acceptable (as shipped for
    v2.4.0)?
+
+10. **Keep or retract v2.4.1?** It shipped as a Go patch release whose only
+    change is website CSS (pre-path-scoping incident). Published and
+    pkg.go.dev-indexed; retraction means deleting the release + tag. The
+    policy call is yours. (`src: 2026-10-07_03-10 §g1`)
+
+11. **May the auto-commit daemon ignore dependency manifests** (`go.mod`,
+    `go.sum`, lockfiles)? The daemon committed a `go 1.27` bump once (the
+    war class). A daemon-side ignore list is implementable; whether the
+    daemon should ever commit manifests is your decision.
+    (`src: 2026-10-07_03-10 §g2`)
    (`src: 2026-10-07_02-24 §g Q3`)

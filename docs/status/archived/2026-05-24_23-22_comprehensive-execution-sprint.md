@@ -225,31 +225,32 @@ Tasks fully implemented, tested, linted, and verified:
 
 | Priority | #  | Task | Effort                                                                  | Impact |
 | -------- | -- | ---- | ----------------------------------------------------------------------- | ------ |
-| ~~       | 1  | —    | **Implement polling goroutine** (wire WithPolling to actual fs polling) | 30min  |
-| ~~       | 2  | —    | **Implement debug logging** (wire WithDebug to actual log calls)        | 15min  |
-| ~~       | 3  | 42   | Implement exponential backoff for errors                                | 20min  |
-| ~~       | 4  | 43   | Add symlink following support                                           | 30min  |
-| ~~       | 5  | 64   | Configure Goreleaser                                                    | 20min  |
-| ~~       | 6  | 74   | Test examples/ in CI pipeline                                           | 15min  |
-| ~~       | 7  | 73   | Add fuzz testing                                                        | 45min  |
-| ~~       | 8  | 53   | Circuit breaker middleware                                              | 30min  |
-| ~~       | 9  | 52   | Error rate limiting middleware                                          | 20min  |
-| ~~       | 10 | 55   | Error recovery strategies                                               | 20min  |
-| ~~       | 11 | 56   | Batch error handling                                                    | 15min  |
-| ~~       | 12 | 57   | Error correlation IDs                                                   | 15min  |
-| ~~       | 13 | 58   | Error sanitization                                                      | 15min  |
-| ~~       | 14 | 45   | Filter func return match metadata                                       | 20min  |
-| ~~       | 15 | 47   | Watcher.AddRecursive for partial recursion                              | 20min  |
-| ~~       | 16 | 62   | OpenTelemetry integration                                               | 45min  |
-| ~~       | 17 | 49   | Prometheus metrics export                                               | 30min  |
-| ~~       | 18 | 65   | Configure semantic-release                                              | 20min  |
-| ~~       | 19 | 66   | Create standalone CLI tool                                              | 60min  |
-| ~~       | 20 | 72   | Windows-specific edge case tests                                        | 30min  |
-| ~~       | 21 | 61   | Self-healing watcher                                                    | 45min  |
-| ~~       | 22 | 60   | Dead letter queue                                                       | 30min  |
-| ~~       | 23 | 71   | Extract drainEvents to testutil package                                 | 20min  |
-| ~~       | 24 | 78   | Migrate CI to Nix (Phase 3)                                             | 60min  |
-| ~~       | 25 | —    | Update AGENTS.md with new features                                      | 10min  |
+| ~~       | ~~1~~ | ~~—~~ | ~~**Implement polling goroutine** (wire WithPolling to actual fs polling)~~ | ~~30min~~ |
+| ~~       | ~~2~~ | ~~—~~ | ~~**Implement debug logging** (wire WithDebug to actual log calls)~~ | ~~15min~~ |
+| ~~       | ~~3~~ | ~~42~~ | ~~Implement exponential backoff for errors~~ | ~~20min~~ |
+| ~~       | ~~4~~ | ~~43~~ | ~~Add symlink following support~~ | ~~30min~~ |
+| ~~       | ~~5~~ | ~~64~~ | ~~Configure Goreleaser~~ | ~~20min~~ |
+| ~~       | ~~6~~ | ~~74~~ | ~~Test examples/ in CI pipeline~~ | ~~15min~~ |
+| ~~       | ~~7~~ | ~~73~~ | ~~Add fuzz testing~~ | ~~45min~~ |
+| ~~       | ~~8~~ | ~~53~~ | ~~Circuit breaker middleware~~ | ~~30min~~ |
+| ~~       | ~~9~~ | ~~52~~ | ~~Error rate limiting middleware~~ | ~~20min~~ |
+| ~~       | ~~10~~ | ~~55~~ | ~~Error recovery strategies~~ | ~~20min~~ |
+| ~~       | ~~11~~ | ~~56~~ | ~~Batch error handling~~ | ~~15min~~ |
+| ~~       | ~~12~~ | ~~57~~ | ~~Error correlation IDs~~ | ~~15min~~ |
+| ~~       | ~~13~~ | ~~58~~ | ~~Error sanitization~~ | ~~15min~~ |
+| ~~       | ~~14~~ | ~~45~~ | ~~Filter func return match metadata~~ | ~~20min~~ |
+| ~~       | ~~15~~ | ~~47~~ | ~~Watcher.AddRecursive for partial recursion~~ | ~~20min~~ |
+| ~~       | ~~16~~ | ~~62~~ | ~~OpenTelemetry integration~~ | ~~45min~~ |
+| ~~       | ~~17~~ | ~~49~~ | ~~Prometheus metrics export~~ | ~~30min~~ |
+| ~~       | ~~18~~ | ~~65~~ | ~~Configure semantic-release~~ | ~~20min~~ |
+| ~~       | ~~19~~ | ~~66~~ | ~~Create standalone CLI tool~~ | ~~60min~~ |
+| ~~       | ~~20~~ | ~~72~~ | ~~Windows-specific edge case tests~~ | ~~30min~~ |
+| ~~       | ~~21~~ | ~~61~~ | ~~Self-healing watcher~~ | ~~45min~~ |
+| ~~       | ~~22~~ | ~~60~~ | ~~Dead letter queue~~ | ~~30min~~ |
+| ~~       | ~~23~~ | ~~71~~ | ~~Extract drainEvents to testutil package~~ | ~~20min~~ |
+| ~~       | ~~24~~ | ~~78~~ | ~~Migrate CI to Nix (Phase 3)~~ | ~~60min~~ |
+| ~~       | ~~25~~ | ~~—~~ | ~~Update AGENTS.md with new features~~ | ~~10min~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ---
 

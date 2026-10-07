@@ -71,30 +71,31 @@
 
 | #  | Task | Effort                                           |
 | -- | ---- | ------------------------------------------------ |
-| ~~ | 42   | Exponential backoff middleware                   |
-| ~~ | 45   | Filter func return match metadata                |
-| ~~ | 48   | `WatchChanges(ctx, targetState)` idempotent sync |
-| ~~ | 49   | Prometheus metrics export                        |
-| ~~ | 60   | Dead letter queue middleware                     |
-| ~~ | 61   | Self-healing watcher                             |
-| ~~ | 62   | OpenTelemetry integration                        |
-| ~~ | 63   | Error analytics                                  |
-| ~~ | 66   | Standalone CLI tool                              |
-| ~~ | 67   | Localizable error messages                       |
-| ~~ | 68   | Explore fsnotify v2 API changes                  |
-| ~~ | 69   | DebounceEntry Mixin phantom type                 |
+| ~~ | ~~42~~ | ~~Exponential backoff middleware~~ |
+| ~~ | ~~45~~ | ~~Filter func return match metadata~~ |
+| ~~ | ~~48~~ | ~~`WatchChanges(ctx, targetState)` idempotent sync~~ |
+| ~~ | ~~49~~ | ~~Prometheus metrics export~~ |
+| ~~ | ~~60~~ | ~~Dead letter queue middleware~~ |
+| ~~ | ~~61~~ | ~~Self-healing watcher~~ |
+| ~~ | ~~62~~ | ~~OpenTelemetry integration~~ |
+| ~~ | ~~63~~ | ~~Error analytics~~ |
+| ~~ | ~~66~~ | ~~Standalone CLI tool~~ |
+| ~~ | ~~67~~ | ~~Localizable error messages~~ |
+| ~~ | ~~68~~ | ~~Explore fsnotify v2 API changes~~ |
+| ~~ | ~~69~~ | ~~DebounceEntry Mixin phantom type~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ### Infrastructure
 
 | #     | Task                               | Effort                            |
 | ----- | ---------------------------------- | --------------------------------- |
-| ~~    | 65                                 | Configure semantic-release        |
-| ~~    | 71                                 | Extract `drainEvents` to testutil |
-| ~~    | 72                                 | Windows edge case tests           |
-| ~~    | 74                                 | Test `examples/` in CI            |
-| ~~    | 78                                 | Migrate CI to Nix                 |
-| ~~    | 79                                 | Add Cachix for binary caching     |
-| 76-77 | Integrate into downstream projects | 120min                            |
+| ~~    | ~~65~~ | ~~Configure semantic-release~~ |
+| ~~    | ~~71~~ | ~~Extract `drainEvents` to testutil~~ |
+| ~~    | ~~72~~ | ~~Windows edge case tests~~ |
+| ~~    | ~~74~~ | ~~Test `examples/` in CI~~ |
+| ~~    | ~~78~~ | ~~Migrate CI to Nix~~ |
+| ~~    | ~~79~~ | ~~Add Cachix for binary caching~~ |
+| ~~76-77~~ | ~~Integrate into downstream projects~~ | ~~120min~~ |
 
 ---
 
@@ -173,31 +174,31 @@ Sorted by **Pareto: highest impact × lowest effort**.
 
 | #  | Task | Effort                                                                    | Impact | Rationale |
 | -- | ---- | ------------------------------------------------------------------------- | ------ | --------- |
-| ~~ | 1    | **Add `MiddlewareRateLimit` default-value tests** (75%→100%)              | 5min   | HIGH      |
-| ~~ | 2    | **Add `MiddlewareSlidingWindowRateLimit` default-value tests** (71%→100%) | 5min   | HIGH      |
-| ~~ | 3    | **Add `AddRecursive` depth=0 test** (61.9%→higher)                        | 10min  | HIGH      |
-| ~~ | 4    | **Add `pollEmitEvent` integration test** (0%→higher)                      | 15min  | HIGH      |
-| ~~ | 5    | **Add `walkDirFunc` symlink error branch test** (52.2%→higher)            | 10min  | MEDIUM    |
-| ~~ | 6    | **Implement exponential backoff middleware (#42)**                        | 20min  | HIGH      |
-| ~~ | 7    | **Consolidate `MiddlewareBatch`/`MiddlewareErrorBatch`** generic batcher  | 25min  | MEDIUM    |
-| ~~ | 8    | **Configure semantic-release (#65)**                                      | 20min  | MEDIUM    |
-| ~~ | 9    | **Test `examples/` in CI (#74)**                                          | 15min  | MEDIUM    |
-| ~~ | 10   | **Remove unused `testpackage` nolint directives** (9 files)               | 10min  | LOW       |
-| ~~ | 11   | **Extract `filepath.Abs` helper**                                         | 10min  | LOW       |
-| ~~ | 12   | **Make `NewWatcherError` stack capture opt-in**                           | 10min  | MEDIUM    |
-| ~~ | 13   | **Consolidate error code mapping**                                        | 15min  | MEDIUM    |
-| ~~ | 14   | **Dead letter queue middleware (#60)**                                    | 30min  | MEDIUM    |
-| ~~ | 15   | **Filter func return match metadata (#45)**                               | 20min  | MEDIUM    |
-| ~~ | 16   | **Remove duplicate filter test runners**                                  | 15min  | LOW       |
-| ~~ | 17   | **Remove stale `result` binary**                                          | 5min   | LOW       |
-| ~~ | 18   | **Windows edge case tests (#72)**                                         | 30min  | MEDIUM    |
-| ~~ | 19   | **Extract `drainEvents` to testutil (#71)**                               | 20min  | LOW       |
-| ~~ | 20   | **Prometheus metrics export (#49)**                                       | 30min  | MEDIUM    |
-| ~~ | 21   | **Consolidate `docs/status/`**                                            | 15min  | LOW       |
-| ~~ | 22   | **`filterFileStat` named result struct**                                  | 10min  | LOW       |
-| ~~ | 23   | **`FilterGeneratedCodeFull` coverage** (64.3%→higher)                     | 15min  | LOW       |
-| ~~ | 24   | **WatchChanges idempotent sync (#48)**                                    | 25min  | MEDIUM    |
-| ~~ | 25   | **Self-healing watcher (#61)**                                            | 45min  | MEDIUM    |
+| ~~ | ~~1~~ | ~~**Add `MiddlewareRateLimit` default-value tests** (75%→100%)~~ | ~~5min~~ | ~~HIGH~~ |
+| ~~ | ~~2~~ | ~~**Add `MiddlewareSlidingWindowRateLimit` default-value tests** (71%→100%)~~ | ~~5min~~ | ~~HIGH~~ |
+| ~~ | ~~3~~ | ~~**Add `AddRecursive` depth=0 test** (61.9%→higher)~~ | ~~10min~~ | ~~HIGH~~ |
+| ~~ | ~~4~~ | ~~**Add `pollEmitEvent` integration test** (0%→higher)~~ | ~~15min~~ | ~~HIGH~~ |
+| ~~ | ~~5~~ | ~~**Add `walkDirFunc` symlink error branch test** (52.2%→higher)~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~ | ~~6~~ | ~~**Implement exponential backoff middleware (#42)**~~ | ~~20min~~ | ~~HIGH~~ |
+| ~~ | ~~7~~ | ~~**Consolidate `MiddlewareBatch`/`MiddlewareErrorBatch`** generic batcher~~ | ~~25min~~ | ~~MEDIUM~~ |
+| ~~ | ~~8~~ | ~~**Configure semantic-release (#65)**~~ | ~~20min~~ | ~~MEDIUM~~ |
+| ~~ | ~~9~~ | ~~**Test `examples/` in CI (#74)**~~ | ~~15min~~ | ~~MEDIUM~~ |
+| ~~ | ~~10~~ | ~~**Remove unused `testpackage` nolint directives** (9 files)~~ | ~~10min~~ | ~~LOW~~ |
+| ~~ | ~~11~~ | ~~**Extract `filepath.Abs` helper**~~ | ~~10min~~ | ~~LOW~~ |
+| ~~ | ~~12~~ | ~~**Make `NewWatcherError` stack capture opt-in**~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~ | ~~13~~ | ~~**Consolidate error code mapping**~~ | ~~15min~~ | ~~MEDIUM~~ |
+| ~~ | ~~14~~ | ~~**Dead letter queue middleware (#60)**~~ | ~~30min~~ | ~~MEDIUM~~ |
+| ~~ | ~~15~~ | ~~**Filter func return match metadata (#45)**~~ | ~~20min~~ | ~~MEDIUM~~ |
+| ~~ | ~~16~~ | ~~**Remove duplicate filter test runners**~~ | ~~15min~~ | ~~LOW~~ |
+| ~~ | ~~17~~ | ~~**Remove stale `result` binary**~~ | ~~5min~~ | ~~LOW~~ |
+| ~~ | ~~18~~ | ~~**Windows edge case tests (#72)**~~ | ~~30min~~ | ~~MEDIUM~~ |
+| ~~ | ~~19~~ | ~~**Extract `drainEvents` to testutil (#71)**~~ | ~~20min~~ | ~~LOW~~ |
+| ~~ | ~~20~~ | ~~**Prometheus metrics export (#49)**~~ | ~~30min~~ | ~~MEDIUM~~ |
+| ~~ | ~~21~~ | ~~**Consolidate `docs/status/`**~~ | ~~15min~~ | ~~LOW~~ |
+| ~~ | ~~22~~ | ~~**`filterFileStat` named result struct**~~ | ~~10min~~ | ~~LOW~~ |
+| ~~ | ~~23~~ | ~~**`FilterGeneratedCodeFull` coverage** (64.3%→higher)~~ | ~~15min~~ | ~~LOW~~ |
+| ~~ | ~~24~~ | ~~**WatchChanges idempotent sync (#48)**~~ | ~~25min~~ | ~~MEDIUM~~ |
+| ~~ | ~~25~~ | ~~**Self-healing watcher (#61)**~~ | ~~45min~~ | ~~MEDIUM~~ |
 
 ---
 

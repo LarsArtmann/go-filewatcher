@@ -91,36 +91,37 @@ The go-filewatcher project has reached a **major milestone with v0.1.0 release**
 
 | #  | Task | Why Important                  | Est. Effort                         |
 | -- | ---- | ------------------------------ | ----------------------------------- |
-| ~~ | 1    | **CLI tool**                   | Standalone utility for non-Go users |
-| ~~ | 2    | **Troubleshooting.md**         | User support documentation          |
-| ~~ | 3    | **Coverage enforcement (90%)** | CI quality gate                     |
-| ~~ | 4    | **testutil package**           | Extract shared test helpers         |
-| ~~ | 5    | **Prometheus metrics**         | Production observability            |
+| ~~ | ~~1~~ | ~~**CLI tool**~~ | ~~Standalone utility for non-Go users~~ |
+| ~~ | ~~2~~ | ~~**Troubleshooting.md**~~ | ~~User support documentation~~ |
+| ~~ | ~~3~~ | ~~**Coverage enforcement (90%)**~~ | ~~CI quality gate~~ |
+| ~~ | ~~4~~ | ~~**testutil package**~~ | ~~Extract shared test helpers~~ |
+| ~~ | ~~5~~ | ~~**Prometheus metrics**~~ | ~~Production observability~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ### MEDIUM PRIORITY
 
 | #  | Task | Why Important                             | Est. Effort          |
 | -- | ---- | ----------------------------------------- | -------------------- |
-| ~~ | 6    | Polling fallback for NFS/network mounts   | Enterprise use cases |
-| ~~ | 7    | Symlink following support                 | Feature completeness |
-| ~~ | 8    | File content hashing option               | Change detection     |
-| ~~ | 9    | `Event.Size` and `Event.ModTime()` fields | Richer event data    |
-| ~~ | 10   | Goreleaser configuration                  | Automated releases   |
+| ~~ | ~~6~~ | ~~Polling fallback for NFS/network mounts~~ | ~~Enterprise use cases~~ |
+| ~~ | ~~7~~ | ~~Symlink following support~~ | ~~Feature completeness~~ |
+| ~~ | ~~8~~ | ~~File content hashing option~~ | ~~Change detection~~ |
+| ~~ | ~~9~~ | ~~`Event.Size` and `Event.ModTime()` fields~~ | ~~Richer event data~~ |
+| ~~ | ~~10~~ | ~~Goreleaser configuration~~ | ~~Automated releases~~ |
 
 ### LOW PRIORITY / BACKLOG
 
 | #  | Task | Context                          |
 | -- | ---- | -------------------------------- |
-| ~~ | 11   | Circuit breaker middleware       |
-| ~~ | 12   | OpenTelemetry integration        |
-| ~~ | 13   | Fuzz testing                     |
-| ~~ | 14   | Windows-specific edge cases      |
-| ~~ | 15   | Benchmark regression CI          |
-| ~~ | 16   | Dependabot configuration         |
-| ~~ | 17   | PR templates                     |
-| ~~ | 18   | API stability doc                |
-| ~~ | 19   | Integration into other projects  |
-| ~~ | 20   | Filter composition with generics |
+| ~~ | ~~11~~ | ~~Circuit breaker middleware~~ |
+| ~~ | ~~12~~ | ~~OpenTelemetry integration~~ |
+| ~~ | ~~13~~ | ~~Fuzz testing~~ |
+| ~~ | ~~14~~ | ~~Windows-specific edge cases~~ |
+| ~~ | ~~15~~ | ~~Benchmark regression CI~~ |
+| ~~ | ~~16~~ | ~~Dependabot configuration~~ |
+| ~~ | ~~17~~ | ~~PR templates~~ |
+| ~~ | ~~18~~ | ~~API stability doc~~ |
+| ~~ | ~~19~~ | ~~Integration into other projects~~ |
+| ~~ | ~~20~~ | ~~Filter composition with generics~~ |
 
 ---
 
@@ -214,41 +215,41 @@ var eventPool = sync.Pool{
 
 | Rank | Task | Impact                             | Effort | Owner |
 | ---- | ---- | ---------------------------------- | ------ | ----- |
-| ~~   | 1    | **CLI tool**                       | High   | 6h    |
-| ~~   | 2    | **Coverage enforcement (90%)**     | High   | 1h    |
-| ~~   | 3    | **Troubleshooting.md**             | Medium | 2h    |
-| ~~   | 4    | Add test for `addPath` error paths | Medium | 2h    |
-| ~~   | 5    | **Goreleaser configuration**       | Medium | 2h    |
+| ~~   | ~~1~~ | ~~**CLI tool**~~ | ~~High~~ | ~~6h~~ |
+| ~~   | ~~2~~ | ~~**Coverage enforcement (90%)**~~ | ~~High~~ | ~~1h~~ |
+| ~~   | ~~3~~ | ~~**Troubleshooting.md**~~ | ~~Medium~~ | ~~2h~~ |
+| ~~   | ~~4~~ | ~~Add test for `addPath` error paths~~ | ~~Medium~~ | ~~2h~~ |
+| ~~   | ~~5~~ | ~~**Goreleaser configuration**~~ | ~~Medium~~ | ~~2h~~ |
 
 ### SHORT-TERM (Next 2 Weeks)
 
 | Rank | Task | Impact                                  | Effort |
 | ---- | ---- | --------------------------------------- | ------ |
-| ~~   | 6    | testutil package extraction             | Medium |
-| ~~   | 7    | Prometheus metrics export               | Medium |
-| ~~   | 8    | Polling fallback for NFS                | High   |
-| ~~   | 9    | Add `Event.Size` field                  | Low    |
-| ~~   | 10   | Symlink following support               | Medium |
-| ~~   | 11   | File content hashing option             | Medium |
-| ~~   | 12   | CONTRIBUTING.md + PR templates          | Low    |
-| ~~   | 13   | Dependabot configuration                | Low    |
-| ~~   | 14   | Benchmark regression CI                 | Medium |
-| ~~   | 15   | Integration test for recursive watching | Medium |
+| ~~   | ~~6~~ | ~~testutil package extraction~~ | ~~Medium~~ |
+| ~~   | ~~7~~ | ~~Prometheus metrics export~~ | ~~Medium~~ |
+| ~~   | ~~8~~ | ~~Polling fallback for NFS~~ | ~~High~~ |
+| ~~   | ~~9~~ | ~~Add `Event.Size` field~~ | ~~Low~~ |
+| ~~   | ~~10~~ | ~~Symlink following support~~ | ~~Medium~~ |
+| ~~   | ~~11~~ | ~~File content hashing option~~ | ~~Medium~~ |
+| ~~   | ~~12~~ | ~~CONTRIBUTING.md + PR templates~~ | ~~Low~~ |
+| ~~   | ~~13~~ | ~~Dependabot configuration~~ | ~~Low~~ |
+| ~~   | ~~14~~ | ~~Benchmark regression CI~~ | ~~Medium~~ |
+| ~~   | ~~15~~ | ~~Integration test for recursive watching~~ | ~~Medium~~ |
 
 ### MEDIUM-TERM (Next Month)
 
 | Rank | Task | Impact                              | Effort |
 | ---- | ---- | ----------------------------------- | ------ |
-| ~~   | 16   | Circuit breaker middleware          | Medium |
-| ~~   | 17   | OpenTelemetry integration           | Medium |
-| ~~   | 18   | Fuzz testing setup                  | Medium |
-| ~~   | 19   | Windows edge case tests             | Low    |
-| ~~   | 20   | `Watcher.WatchOnce()` mode          | Medium |
-| ~~   | 21   | Self-healing watcher (auto-restart) | High   |
-| ~~   | 22   | Batch error handling improvements   | Medium |
-| ~~   | 23   | Error correlation IDs               | Low    |
-| ~~   | 24   | Dead letter queue for failed events | Medium |
-| ~~   | 25   | Generic filter composition          | Low    |
+| ~~   | ~~16~~ | ~~Circuit breaker middleware~~ | ~~Medium~~ |
+| ~~   | ~~17~~ | ~~OpenTelemetry integration~~ | ~~Medium~~ |
+| ~~   | ~~18~~ | ~~Fuzz testing setup~~ | ~~Medium~~ |
+| ~~   | ~~19~~ | ~~Windows edge case tests~~ | ~~Low~~ |
+| ~~   | ~~20~~ | ~~`Watcher.WatchOnce()` mode~~ | ~~Medium~~ |
+| ~~   | ~~21~~ | ~~Self-healing watcher (auto-restart)~~ | ~~High~~ |
+| ~~   | ~~22~~ | ~~Batch error handling improvements~~ | ~~Medium~~ |
+| ~~   | ~~23~~ | ~~Error correlation IDs~~ | ~~Low~~ |
+| ~~   | ~~24~~ | ~~Dead letter queue for failed events~~ | ~~Medium~~ |
+| ~~   | ~~25~~ | ~~Generic filter composition~~ | ~~Low~~ |
 
 ---
 

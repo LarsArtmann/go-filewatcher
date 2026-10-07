@@ -38,18 +38,19 @@
 
 | #  | Item | Priority                                       |
 | -- | ---- | ---------------------------------------------- |
-| ~~ | 1    | `WithPolling(fallback)` for NFS/network mounts |
-| ~~ | 2    | Exponential backoff for errors                 |
-| ~~ | 3    | Symlink following support                      |
-| ~~ | 4    | `Event.ModTime()` field                        |
-| ~~ | 5    | File content hashing option                    |
-| ~~ | 6    | Prometheus metrics export                      |
-| ~~ | 7    | OpenTelemetry integration                      |
-| ~~ | 8    | Self-healing watcher                           |
-| ~~ | 9    | Circuit breaker middleware                     |
-| ~~ | 10   | Goreleaser configuration                       |
-| ~~ | 11   | CLI tool                                       |
-| ~~ | 12   | Fuzz testing                                   |
+| ~~ | ~~1~~ | ~~`WithPolling(fallback)` for NFS/network mounts~~ |
+| ~~ | ~~2~~ | ~~Exponential backoff for errors~~ |
+| ~~ | ~~3~~ | ~~Symlink following support~~ |
+| ~~ | ~~4~~ | ~~`Event.ModTime()` field~~ |
+| ~~ | ~~5~~ | ~~File content hashing option~~ |
+| ~~ | ~~6~~ | ~~Prometheus metrics export~~ |
+| ~~ | ~~7~~ | ~~OpenTelemetry integration~~ |
+| ~~ | ~~8~~ | ~~Self-healing watcher~~ |
+| ~~ | ~~9~~ | ~~Circuit breaker middleware~~ |
+| ~~ | ~~10~~ | ~~Goreleaser configuration~~ |
+| ~~ | ~~11~~ | ~~CLI tool~~ |
+| ~~ | ~~12~~ | ~~Fuzz testing~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ## d) TOTALLY FUCKED UP
 
@@ -73,31 +74,31 @@
 
 | #  | Item | Impact                                                        | Effort |
 | -- | ---- | ------------------------------------------------------------- | ------ |
-| ~~ | 1    | Tag v0.2.0 release                                            | High   |
-| ~~ | 2    | Delete ghost `testing_helpers.go`                             | Medium |
-| ~~ | 3    | Fix pre-commit hook permissions                               | Medium |
-| ~~ | 4    | Fix LSP warnings in test files                                | Medium |
-| ~~ | 5    | Add `WithPolling(fallback bool)` for NFS                      | High   |
-| ~~ | 6    | Add exponential backoff for errors                            | High   |
-| ~~ | 7    | Add `Event.ModTime` field                                     | Medium |
-| ~~ | 8    | Add self-healing watcher (re-add lost paths)                  | High   |
-| ~~ | 9    | Add symlink following support                                 | Medium |
-| ~~ | 10   | Add circuit breaker middleware                                | Medium |
-| ~~ | 11   | Prometheus/OpenTelemetry integration                          | High   |
-| ~~ | 12   | Goreleaser configuration                                      | Medium |
-| ~~ | 13   | Standalone CLI tool                                           | High   |
-| ~~ | 14   | Address flaky tests (Stats, Middleware)                       | Medium |
-| ~~ | 15   | Fuzz testing for event parsing                                | Medium |
-| ~~ | 16   | Windows-specific edge case tests                              | Medium |
-| ~~ | 17   | File content hashing option                                   | Medium |
-| ~~ | 18   | Document DI integration patterns                              | Low    |
-| ~~ | 19   | Add `CODE_OF_CONDUCT.md`                                      | Low    |
-| ~~ | 20   | Add PR template                                               | Low    |
-| ~~ | 21   | Write Troubleshooting.md                                      | Medium |
-| ~~ | 22   | Add `FilterGeneratedCodeFull` test for edge cases             | Medium |
-| ~~ | 23   | Consider `WatchChanges(ctx, targetState)` for idempotent sync | Medium |
-| ~~ | 24   | Dead letter queue for dropped events                          | Medium |
-| ~~ | 25   | Error correlation IDs                                         | Low    |
+| ~~ | ~~1~~ | ~~Tag v0.2.0 release~~ | ~~High~~ |
+| ~~ | ~~2~~ | ~~Delete ghost `testing_helpers.go`~~ | ~~Medium~~ |
+| ~~ | ~~3~~ | ~~Fix pre-commit hook permissions~~ | ~~Medium~~ |
+| ~~ | ~~4~~ | ~~Fix LSP warnings in test files~~ | ~~Medium~~ |
+| ~~ | ~~5~~ | ~~Add `WithPolling(fallback bool)` for NFS~~ | ~~High~~ |
+| ~~ | ~~6~~ | ~~Add exponential backoff for errors~~ | ~~High~~ |
+| ~~ | ~~7~~ | ~~Add `Event.ModTime` field~~ | ~~Medium~~ |
+| ~~ | ~~8~~ | ~~Add self-healing watcher (re-add lost paths)~~ | ~~High~~ |
+| ~~ | ~~9~~ | ~~Add symlink following support~~ | ~~Medium~~ |
+| ~~ | ~~10~~ | ~~Add circuit breaker middleware~~ | ~~Medium~~ |
+| ~~ | ~~11~~ | ~~Prometheus/OpenTelemetry integration~~ | ~~High~~ |
+| ~~ | ~~12~~ | ~~Goreleaser configuration~~ | ~~Medium~~ |
+| ~~ | ~~13~~ | ~~Standalone CLI tool~~ | ~~High~~ |
+| ~~ | ~~14~~ | ~~Address flaky tests (Stats, Middleware)~~ | ~~Medium~~ |
+| ~~ | ~~15~~ | ~~Fuzz testing for event parsing~~ | ~~Medium~~ |
+| ~~ | ~~16~~ | ~~Windows-specific edge case tests~~ | ~~Medium~~ |
+| ~~ | ~~17~~ | ~~File content hashing option~~ | ~~Medium~~ |
+| ~~ | ~~18~~ | ~~Document DI integration patterns~~ | ~~Low~~ |
+| ~~ | ~~19~~ | ~~Add `CODE_OF_CONDUCT.md`~~ | ~~Low~~ |
+| ~~ | ~~20~~ | ~~Add PR template~~ | ~~Low~~ |
+| ~~ | ~~21~~ | ~~Write Troubleshooting.md~~ | ~~Medium~~ |
+| ~~ | ~~22~~ | ~~Add `FilterGeneratedCodeFull` test for edge cases~~ | ~~Medium~~ |
+| ~~ | ~~23~~ | ~~Consider `WatchChanges(ctx, targetState)` for idempotent sync~~ | ~~Medium~~ |
+| ~~ | ~~24~~ | ~~Dead letter queue for dropped events~~ | ~~Medium~~ |
+| ~~ | ~~25~~ | ~~Error correlation IDs~~ | ~~Low~~ |
 
 ## g) Top Question I Cannot Figure Out Myself
 

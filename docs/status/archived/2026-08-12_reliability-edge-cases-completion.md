@@ -25,13 +25,14 @@ documentation (CHANGELOG, API_STABILITY, FEATURES, website, AGENTS.md).
 
 | #  | Gap                                       | Test Added                                               | File                                                     |
 | -- | ----------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------- |
-| ~~ | 1                                         | Batch timer flush error routing                          | `TestMiddlewareBatch_TimerFlushErrorReturnedOnNextEvent` |
-| ~~ | 2                                         | `WithMaxWatchesSafetyFraction` clamping                  | `TestWithMaxWatchesSafetyFraction_Clamping`              |
-| 2b | `applyMaxWatchesFraction` effective limit | `TestApplyMaxWatchesFraction_ReducesAutoDetectedLimit`   | `options_test.go`                                        |
-| 2c | Explicit limits not affected              | `TestApplyMaxWatchesFraction_DoesNotAffectExplicitLimit` | `options_test.go`                                        |
-| ~~ | 3                                         | DropOnFull mode drops + counts                           | `TestDropOnFull_DropsEventsAndCounts`                    |
-| ~~ | 4                                         | `WithWatchFilteredDirectories(false)`                    | `TestWatchFilteredDirectories_Disabled`                  |
-| ~~ | 5                                         | `FilterIgnoreDirsCaseInsensitive`                        | `TestFilterIgnoreDirsCaseInsensitive`                    |
+| ~~ | ~~1~~ | ~~Batch timer flush error routing~~ | ~~`TestMiddlewareBatch_TimerFlushErrorReturnedOnNextEvent`~~ |
+| ~~ | ~~2~~ | ~~`WithMaxWatchesSafetyFraction` clamping~~ | ~~`TestWithMaxWatchesSafetyFraction_Clamping`~~ |
+| ~~2b~~ | ~~`applyMaxWatchesFraction` effective limit~~ | ~~`TestApplyMaxWatchesFraction_ReducesAutoDetectedLimit`~~ | ~~`options_test.go`~~ |
+| ~~2c~~ | ~~Explicit limits not affected~~ | ~~`TestApplyMaxWatchesFraction_DoesNotAffectExplicitLimit`~~ | ~~`options_test.go`~~ |
+| ~~ | ~~3~~ | ~~DropOnFull mode drops + counts~~ | ~~`TestDropOnFull_DropsEventsAndCounts`~~ |
+| ~~ | ~~4~~ | ~~`WithWatchFilteredDirectories(false)`~~ | ~~`TestWatchFilteredDirectories_Disabled`~~ |
+| ~~ | ~~5~~ | ~~`FilterIgnoreDirsCaseInsensitive`~~ | ~~`TestFilterIgnoreDirsCaseInsensitive`~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ### Key discovery: WithWatchFilteredDirectories test needed Filter, not Middleware
 
@@ -140,12 +141,12 @@ documented in the `WithPolling` doc comment and Troubleshooting guide.
 
 | Item | Reason                                                   |
 | ---- | -------------------------------------------------------- |
-| ~~   | Items 2+3: Poll dedup + rename detection                 |
-| ~~   | macOS/Windows CI matrix                                  |
-| ~~   | `WithContentHashMaxSize` configurable option             |
-| ~~   | `WithErrorBufferSize` option                             |
-| ~~   | Runtime deprecation warning for `MiddlewareWriteFileLog` |
-| ~~   | `MiddlewareDropCallback` API                             |
+| ~~   | ~~Items 2+3: Poll dedup + rename detection~~ |
+| ~~   | ~~macOS/Windows CI matrix~~ |
+| ~~   | ~~`WithContentHashMaxSize` configurable option~~ |
+| ~~   | ~~`WithErrorBufferSize` option~~ |
+| ~~   | ~~Runtime deprecation warning for `MiddlewareWriteFileLog`~~ |
+| ~~   | ~~`MiddlewareDropCallback` API~~ |
 
 ---
 

@@ -12,18 +12,19 @@
 
 | #  | Task | Time                                    | Priority | Depends On |
 | -- | ---- | --------------------------------------- | -------- | ---------- |
-| ~~ | 1    | Remove emitWg field from Watcher struct | 5min     | CRITICAL   |
-| ~~ | 2    | Remove emitWg initialization in New()   | 5min     | CRITICAL   |
-| ~~ | 3    | Remove emitWg.Add/Done from emitEvent   | 5min     | CRITICAL   |
-| ~~ | 4    | Revert watchLoop defer to close eventCh | 5min     | CRITICAL   |
-| ~~ | 5    | Add defer/recover in buildEmitFunc      | 5min     | CRITICAL   |
-| ~~ | 6    | Remove eventCh field from Watcher       | 5min     | CRITICAL   |
-| ~~ | 7    | Remove eventCh assignment in Watch()    | 5min     | CRITICAL   |
-| ~~ | 8    | Simplify Close() remove eventCh close   | 5min     | CRITICAL   |
-| ~~ | 9    | Build to check compilation              | 3min     | CRITICAL   |
-| ~~ | 10   | Run tests without -race                 | 5min     | CRITICAL   |
-| ~~ | 11   | Run tests with -race                    | 10min    | CRITICAL   |
-| ~~ | 12   | Commit race fix                         | 5min     | CRITICAL   |
+| ~~ | ~~1~~ | ~~Remove emitWg field from Watcher struct~~ | ~~5min~~ | ~~CRITICAL~~ |
+| ~~ | ~~2~~ | ~~Remove emitWg initialization in New()~~ | ~~5min~~ | ~~CRITICAL~~ |
+| ~~ | ~~3~~ | ~~Remove emitWg.Add/Done from emitEvent~~ | ~~5min~~ | ~~CRITICAL~~ |
+| ~~ | ~~4~~ | ~~Revert watchLoop defer to close eventCh~~ | ~~5min~~ | ~~CRITICAL~~ |
+| ~~ | ~~5~~ | ~~Add defer/recover in buildEmitFunc~~ | ~~5min~~ | ~~CRITICAL~~ |
+| ~~ | ~~6~~ | ~~Remove eventCh field from Watcher~~ | ~~5min~~ | ~~CRITICAL~~ |
+| ~~ | ~~7~~ | ~~Remove eventCh assignment in Watch()~~ | ~~5min~~ | ~~CRITICAL~~ |
+| ~~ | ~~8~~ | ~~Simplify Close() remove eventCh close~~ | ~~5min~~ | ~~CRITICAL~~ |
+| ~~ | ~~9~~ | ~~Build to check compilation~~ | ~~3min~~ | ~~CRITICAL~~ |
+| ~~ | ~~10~~ | ~~Run tests without -race~~ | ~~5min~~ | ~~CRITICAL~~ |
+| ~~ | ~~11~~ | ~~Run tests with -race~~ | ~~10min~~ | ~~CRITICAL~~ |
+| ~~ | ~~12~~ | ~~Commit race fix~~ | ~~5min~~ | ~~CRITICAL~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 **Table 1 Total:** ~53 minutes
 
@@ -45,13 +46,13 @@
 
 | #  | Task | Time                                 | Priority | Depends On |
 | -- | ---- | ------------------------------------ | -------- | ---------- |
-| ~~ | 19   | Update TODO_LIST.md with completions | 5min     | HIGH       |
-| ~~ | 20   | Run linter to verify 0 issues        | 5min     | HIGH       |
-| ~~ | 21   | Review git status                    | 3min     | MEDIUM     |
-| ~~ | 22   | Write v0.1.0 release notes           | 10min    | HIGH       |
-| ~~ | 23   | Create v0.1.0 tag                    | 5min     | HIGH       |
-| ~~ | 24   | Push tags to origin                  | 2min     | HIGH       |
-| ~~ | 25   | Verify release on GitHub             | 5min     | MEDIUM     |
+| ~~ | ~~19~~ | ~~Update TODO_LIST.md with completions~~ | ~~5min~~ | ~~HIGH~~ |
+| ~~ | ~~20~~ | ~~Run linter to verify 0 issues~~ | ~~5min~~ | ~~HIGH~~ |
+| ~~ | ~~21~~ | ~~Review git status~~ | ~~3min~~ | ~~MEDIUM~~ |
+| ~~ | ~~22~~ | ~~Write v0.1.0 release notes~~ | ~~10min~~ | ~~HIGH~~ |
+| ~~ | ~~23~~ | ~~Create v0.1.0 tag~~ | ~~5min~~ | ~~HIGH~~ |
+| ~~ | ~~24~~ | ~~Push tags to origin~~ | ~~2min~~ | ~~HIGH~~ |
+| ~~ | ~~25~~ | ~~Verify release on GitHub~~ | ~~5min~~ | ~~MEDIUM~~ |
 
 **Table 3 Total:** ~35 minutes
 
@@ -61,16 +62,16 @@
 
 | #  | Task | Time                                    | Priority | Depends On |
 | -- | ---- | --------------------------------------- | -------- | ---------- |
-| ~~ | 26   | Add Size field to Event struct          | 5min     | MEDIUM     |
-| ~~ | 27   | Update convertEvent to populate Size    | 10min    | MEDIUM     |
-| ~~ | 28   | Test Event.Size with unit tests         | 5min     | MEDIUM     |
-| ~~ | 29   | Commit Event.Size                       | 5min     | MEDIUM     |
-| ~~ | 30   | Add ModTime field to Event struct       | 5min     | MEDIUM     |
-| ~~ | 31   | Update convertEvent to populate ModTime | 5min     | MEDIUM     |
-| ~~ | 32   | Test Event.ModTime                      | 5min     | MEDIUM     |
-| ~~ | 33   | Commit Event.ModTime                    | 5min     | MEDIUM     |
-| ~~ | 34   | Update README with new fields           | 10min    | MEDIUM     |
-| ~~ | 35   | Commit README update                    | 5min     | MEDIUM     |
+| ~~ | ~~26~~ | ~~Add Size field to Event struct~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~27~~ | ~~Update convertEvent to populate Size~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~ | ~~28~~ | ~~Test Event.Size with unit tests~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~29~~ | ~~Commit Event.Size~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~30~~ | ~~Add ModTime field to Event struct~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~31~~ | ~~Update convertEvent to populate ModTime~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~32~~ | ~~Test Event.ModTime~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~33~~ | ~~Commit Event.ModTime~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~34~~ | ~~Update README with new fields~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~ | ~~35~~ | ~~Commit README update~~ | ~~5min~~ | ~~MEDIUM~~ |
 
 **Table 4 Total:** ~55 minutes
 
@@ -80,19 +81,19 @@
 
 | #  | Task | Time                            | Priority | Depends On |
 | -- | ---- | ------------------------------- | -------- | ---------- |
-| ~~ | 36   | Add FilterExcludePaths function | 10min    | MEDIUM     |
-| ~~ | 37   | Test FilterExcludePaths         | 5min     | MEDIUM     |
-| ~~ | 38   | Commit FilterExcludePaths       | 5min     | MEDIUM     |
-| ~~ | 39   | Add FilterMinAge function       | 10min    | MEDIUM     |
-| ~~ | 40   | Test FilterMinAge               | 5min     | MEDIUM     |
-| ~~ | 41   | Commit FilterMinAge             | 5min     | MEDIUM     |
-| ~~ | 42   | Add FilterMaxSize function      | 10min    | MEDIUM     |
-| ~~ | 43   | Test FilterMaxSize              | 5min     | MEDIUM     |
-| ~~ | 44   | Commit FilterMaxSize            | 5min     | MEDIUM     |
-| ~~ | 45   | Update filter documentation     | 10min    | MEDIUM     |
-| ~~ | 46   | Commit filter docs              | 5min     | MEDIUM     |
-| ~~ | 47   | Run all tests                   | 5min     | MEDIUM     |
-| ~~ | 48   | Commit any test fixes           | 5min     | MEDIUM     |
+| ~~ | ~~36~~ | ~~Add FilterExcludePaths function~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~ | ~~37~~ | ~~Test FilterExcludePaths~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~38~~ | ~~Commit FilterExcludePaths~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~39~~ | ~~Add FilterMinAge function~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~ | ~~40~~ | ~~Test FilterMinAge~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~41~~ | ~~Commit FilterMinAge~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~42~~ | ~~Add FilterMaxSize function~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~ | ~~43~~ | ~~Test FilterMaxSize~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~44~~ | ~~Commit FilterMaxSize~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~45~~ | ~~Update filter documentation~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~ | ~~46~~ | ~~Commit filter docs~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~47~~ | ~~Run all tests~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~48~~ | ~~Commit any test fixes~~ | ~~5min~~ | ~~MEDIUM~~ |
 
 **Table 5 Total:** ~75 minutes
 
@@ -102,13 +103,13 @@
 
 | #  | Task | Time                              | Priority | Depends On |
 | -- | ---- | --------------------------------- | -------- | ---------- |
-| ~~ | 49   | Add WithPolling option skeleton   | 5min     | MEDIUM     |
-| ~~ | 50   | Research fsnotify polling support | 10min    | MEDIUM     |
-| ~~ | 51   | Implement polling fallback        | 10min    | MEDIUM     |
-| ~~ | 52   | Test WithPolling                  | 5min     | MEDIUM     |
-| ~~ | 53   | Commit WithPolling                | 5min     | MEDIUM     |
-| ~~ | 54   | Add symlink following support     | 10min    | MEDIUM     |
-| ~~ | 55   | Test symlink following            | 5min     | MEDIUM     |
+| ~~ | ~~49~~ | ~~Add WithPolling option skeleton~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~50~~ | ~~Research fsnotify polling support~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~ | ~~51~~ | ~~Implement polling fallback~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~ | ~~52~~ | ~~Test WithPolling~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~53~~ | ~~Commit WithPolling~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~54~~ | ~~Add symlink following support~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~ | ~~55~~ | ~~Test symlink following~~ | ~~5min~~ | ~~MEDIUM~~ |
 
 **Table 6 Total:** ~50 minutes
 
@@ -118,11 +119,11 @@
 
 | #  | Task | Time                         | Priority | Depends On |
 | -- | ---- | ---------------------------- | -------- | ---------- |
-| ~~ | 56   | Add MiddlewareDeduplicate    | 10min    | MEDIUM     |
-| ~~ | 57   | Test MiddlewareDeduplicate   | 5min     | MEDIUM     |
-| ~~ | 58   | Commit MiddlewareDeduplicate | 5min     | MEDIUM     |
-| ~~ | 59   | Add Watcher.WatchOnce()      | 10min    | MEDIUM     |
-| ~~ | 60   | Test WatchOnce               | 5min     | MEDIUM     |
+| ~~ | ~~56~~ | ~~Add MiddlewareDeduplicate~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~ | ~~57~~ | ~~Test MiddlewareDeduplicate~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~58~~ | ~~Commit MiddlewareDeduplicate~~ | ~~5min~~ | ~~MEDIUM~~ |
+| ~~ | ~~59~~ | ~~Add Watcher.WatchOnce()~~ | ~~10min~~ | ~~MEDIUM~~ |
+| ~~ | ~~60~~ | ~~Test WatchOnce~~ | ~~5min~~ | ~~MEDIUM~~ |
 
 **Table 7 Total:** ~35 minutes
 

@@ -243,26 +243,27 @@ var (
 
 | #  | Feature | Priority                                       | Effort |
 | -- | ------- | ---------------------------------------------- | ------ |
-| ~~ | 1       | `Remove(path string)` method                   | P1     |
-| ~~ | 2       | `WatchList() []string` method                  | P1     |
-| ~~ | 3       | `Stats()` method (event counts, uptime)        | P2     |
-| ~~ | 4       | `FilterRegex(pattern)` filter                  | P2     |
-| ~~ | 5       | `WithBuffer(size int)` option                  | P2     |
-| ~~ | 6       | `FilterMinSize(size int64)` filter             | P3     |
-| ~~ | 7       | `FilterCustom(fn func(Event) bool)` alias      | P3     |
-| ~~ | 8       | `WithOnAdd(fn func(path string))` callback     | P3     |
-| ~~ | 9       | `examples/` directory with standalone programs | P2     |
-| ~~ | 10      | Benchmark tests for debouncer/middleware       | P2     |
-| ~~ | 11      | Stress tests (10k+ files)                      | P3     |
-| ~~ | 12      | `io.Closer` formalization                      | P3     |
+| ~~ | ~~1~~ | ~~`Remove(path string)` method~~ | ~~P1~~ |
+| ~~ | ~~2~~ | ~~`WatchList() []string` method~~ | ~~P1~~ |
+| ~~ | ~~3~~ | ~~`Stats()` method (event counts, uptime)~~ | ~~P2~~ |
+| ~~ | ~~4~~ | ~~`FilterRegex(pattern)` filter~~ | ~~P2~~ |
+| ~~ | ~~5~~ | ~~`WithBuffer(size int)` option~~ | ~~P2~~ |
+| ~~ | ~~6~~ | ~~`FilterMinSize(size int64)` filter~~ | ~~P3~~ |
+| ~~ | ~~7~~ | ~~`FilterCustom(fn func(Event) bool)` alias~~ | ~~P3~~ |
+| ~~ | ~~8~~ | ~~`WithOnAdd(fn func(path string))` callback~~ | ~~P3~~ |
+| ~~ | ~~9~~ | ~~`examples/` directory with standalone programs~~ | ~~P2~~ |
+| ~~ | ~~10~~ | ~~Benchmark tests for debouncer/middleware~~ | ~~P2~~ |
+| ~~ | ~~11~~ | ~~Stress tests (10k+ files)~~ | ~~P3~~ |
+| ~~ | ~~12~~ | ~~`io.Closer` formalization~~ | ~~P3~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ### CI/CD
 
 | #  | Task | Priority                          |
 | -- | ---- | --------------------------------- |
-| ~~ | 1    | GitHub Actions workflow           |
-| ~~ | 2    | Automated release with goreleaser |
-| ~~ | 3    | Coverage reporting to codecov     |
+| ~~ | ~~1~~ | ~~GitHub Actions workflow~~ |
+| ~~ | ~~2~~ | ~~Automated release with goreleaser~~ |
+| ~~ | ~~3~~ | ~~Coverage reporting to codecov~~ |
 
 ---
 
@@ -278,22 +279,22 @@ var (
 
 | #  | Task | Effort                                          | Impact |
 | -- | ---- | ----------------------------------------------- | ------ |
-| ~~ | 1    | Document combined-op priority in `convertEvent` | 5min   |
-| ~~ | 2    | Add `Example*` test functions for godoc         | 20min  |
-| ~~ | 3    | Add benchmark tests                             | 30min  |
-| ~~ | 4    | Create `examples/` directory                    | 30min  |
-| ~~ | 5    | Add GitHub Actions CI                           | 20min  |
+| ~~ | ~~1~~ | ~~Document combined-op priority in `convertEvent`~~ | ~~5min~~ |
+| ~~ | ~~2~~ | ~~Add `Example*` test functions for godoc~~ | ~~20min~~ |
+| ~~ | ~~3~~ | ~~Add benchmark tests~~ | ~~30min~~ |
+| ~~ | ~~4~~ | ~~Create `examples/` directory~~ | ~~30min~~ |
+| ~~ | ~~5~~ | ~~Add GitHub Actions CI~~ | ~~20min~~ |
 
 ### Before v1.0.0 (Future Roadmap)
 
 | #  | Task | Effort                               |
 | -- | ---- | ------------------------------------ |
-| ~~ | 1    | `Remove(path)` method                |
-| ~~ | 2    | `WatchList() []string` inspection    |
-| ~~ | 3    | `Stats()` observability              |
-| ~~ | 4    | `FilterRegex()` for pattern matching |
-| ~~ | 5    | Stress testing with large file sets  |
-| ~~ | 6    | Windows-specific edge case handling  |
+| ~~ | ~~1~~ | ~~`Remove(path)` method~~ |
+| ~~ | ~~2~~ | ~~`WatchList() []string` inspection~~ |
+| ~~ | ~~3~~ | ~~`Stats()` observability~~ |
+| ~~ | ~~4~~ | ~~`FilterRegex()` for pattern matching~~ |
+| ~~ | ~~5~~ | ~~Stress testing with large file sets~~ |
+| ~~ | ~~6~~ | ~~Windows-specific edge case handling~~ |
 
 ~~| 7 | Fuzz testing for filters | 30min |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
@@ -303,33 +304,33 @@ var (
 
 | #  | Task | Priority                                        | Effort | Status |
 | -- | ---- | ----------------------------------------------- | ------ | ------ |
-| ~~ | 1    | Tag v0.1.0 release                              | P0     | 2min   |
-| ~~ | 2    | Add GitHub Actions CI                           | P1     | 20min  |
-| ~~ | 3    | Add `Remove(path)` method                       | P1     | 15min  |
-| ~~ | 4    | Add `WatchList() []string` method               | P1     | 10min  |
-| ~~ | 5    | Add `FilterRegex(pattern)` filter               | P2     | 10min  |
-| ~~ | 6    | Add `WithBuffer(size int)` option               | P2     | 5min   |
-| ~~ | 7    | Add `Stats()` method                            | P2     | 20min  |
-| ~~ | 8    | Add benchmark tests                             | P2     | 30min  |
-| ~~ | 9    | Create `examples/` directory                    | P2     | 30min  |
-| ~~ | 10   | Add `Example*` test functions                   | P2     | 20min  |
-| ~~ | 11   | Document combined-op priority                   | P3     | 5min   |
-| ~~ | 12   | Add `FilterMinSize(size int64)`                 | P3     | 10min  |
-| ~~ | 13   | Add `FilterCustom(fn)` escape hatch             | P3     | 5min   |
-| ~~ | 14   | Add `WithOnAdd(fn)` callback                    | P3     | 10min  |
-| ~~ | 15   | Add `io.Closer` formalization                   | P3     | 2min   |
-| ~~ | 16   | Add `Event.IsDir` field for directory detection | P3     | 5min   |
-| ~~ | 17   | Stress test with 10k+ files                     | P3     | 1hr    |
-| ~~ | 18   | Add fuzz tests for filters                      | P3     | 30min  |
-| ~~ | 19   | Improve README with advanced examples           | P3     | 30min  |
-| ~~ | 20   | Add goreleaser configuration                    | P3     | 20min  |
-| ~~ | 21   | Add codecov integration                         | P3     | 15min  |
-| ~~ | 22   | Add security scanning (gosec)                   | P3     | 10min  |
-| ~~ | 23   | Add dependabot configuration                    | P3     | 5min   |
-| ~~ | 24   | Add contribution guidelines                     | P3     | 20min  |
-| ~~ | 25   | Add code of conduct                             | P3     | 10min  |
-| ~~ | 26   | Add issue templates                             | P3     | 15min  |
-| ~~ | 27   | Add PR template                                 | P3     | 10min  |
+| ~~ | ~~1~~ | ~~Tag v0.1.0 release~~ | ~~P0~~ | ~~2min~~ |
+| ~~ | ~~2~~ | ~~Add GitHub Actions CI~~ | ~~P1~~ | ~~20min~~ |
+| ~~ | ~~3~~ | ~~Add `Remove(path)` method~~ | ~~P1~~ | ~~15min~~ |
+| ~~ | ~~4~~ | ~~Add `WatchList() []string` method~~ | ~~P1~~ | ~~10min~~ |
+| ~~ | ~~5~~ | ~~Add `FilterRegex(pattern)` filter~~ | ~~P2~~ | ~~10min~~ |
+| ~~ | ~~6~~ | ~~Add `WithBuffer(size int)` option~~ | ~~P2~~ | ~~5min~~ |
+| ~~ | ~~7~~ | ~~Add `Stats()` method~~ | ~~P2~~ | ~~20min~~ |
+| ~~ | ~~8~~ | ~~Add benchmark tests~~ | ~~P2~~ | ~~30min~~ |
+| ~~ | ~~9~~ | ~~Create `examples/` directory~~ | ~~P2~~ | ~~30min~~ |
+| ~~ | ~~10~~ | ~~Add `Example*` test functions~~ | ~~P2~~ | ~~20min~~ |
+| ~~ | ~~11~~ | ~~Document combined-op priority~~ | ~~P3~~ | ~~5min~~ |
+| ~~ | ~~12~~ | ~~Add `FilterMinSize(size int64)`~~ | ~~P3~~ | ~~10min~~ |
+| ~~ | ~~13~~ | ~~Add `FilterCustom(fn)` escape hatch~~ | ~~P3~~ | ~~5min~~ |
+| ~~ | ~~14~~ | ~~Add `WithOnAdd(fn)` callback~~ | ~~P3~~ | ~~10min~~ |
+| ~~ | ~~15~~ | ~~Add `io.Closer` formalization~~ | ~~P3~~ | ~~2min~~ |
+| ~~ | ~~16~~ | ~~Add `Event.IsDir` field for directory detection~~ | ~~P3~~ | ~~5min~~ |
+| ~~ | ~~17~~ | ~~Stress test with 10k+ files~~ | ~~P3~~ | ~~1hr~~ |
+| ~~ | ~~18~~ | ~~Add fuzz tests for filters~~ | ~~P3~~ | ~~30min~~ |
+| ~~ | ~~19~~ | ~~Improve README with advanced examples~~ | ~~P3~~ | ~~30min~~ |
+| ~~ | ~~20~~ | ~~Add goreleaser configuration~~ | ~~P3~~ | ~~20min~~ |
+| ~~ | ~~21~~ | ~~Add codecov integration~~ | ~~P3~~ | ~~15min~~ |
+| ~~ | ~~22~~ | ~~Add security scanning (gosec)~~ | ~~P3~~ | ~~10min~~ |
+| ~~ | ~~23~~ | ~~Add dependabot configuration~~ | ~~P3~~ | ~~5min~~ |
+| ~~ | ~~24~~ | ~~Add contribution guidelines~~ | ~~P3~~ | ~~20min~~ |
+| ~~ | ~~25~~ | ~~Add code of conduct~~ | ~~P3~~ | ~~10min~~ |
+| ~~ | ~~26~~ | ~~Add issue templates~~ | ~~P3~~ | ~~15min~~ |
+| ~~ | ~~27~~ | ~~Add PR template~~ | ~~P3~~ | ~~10min~~ |
 
 ---
 

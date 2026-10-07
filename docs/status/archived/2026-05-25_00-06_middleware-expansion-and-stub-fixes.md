@@ -75,8 +75,9 @@
 
 | #  | Task | What's Done                  | What's Missing                         |
 | -- | ---- | ---------------------------- | -------------------------------------- |
-| ~~ | 28   | Error simulation testing     | Indirect tests via `handleError` calls |
-| ~~ | 37   | examples/ vs example_test.go | Documented in TODO_LIST.md             |
+| ~~ | ~~28~~ | ~~Error simulation testing~~ | ~~Indirect tests via `handleError` calls~~ |
+| ~~ | ~~37~~ | ~~examples/ vs example_test.go~~ | ~~Documented in TODO_LIST.md~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ---
 
@@ -175,31 +176,31 @@
 
 | Priority | #  | Task | Effort                                                            | Impact |
 | -------- | -- | ---- | ----------------------------------------------------------------- | ------ |
-| ~~       | 1  | —    | **Raise coverage back to ≥90%** (polling + middleware edge cases) | 30min  |
-| ~~       | 2  | 42   | Implement exponential backoff for errors                          | 20min  |
-| ~~       | 3  | 65   | Configure semantic-release                                        | 20min  |
-| ~~       | 4  | 74   | Test examples/ in CI pipeline                                     | 15min  |
-| ~~       | 5  | 45   | Filter func return match metadata                                 | 20min  |
-| ~~       | 6  | 72   | Windows-specific edge case tests                                  | 30min  |
-| ~~       | 7  | 48   | Watch.WatchChanges(ctx, targetState) idempotent sync              | 25min  |
-| ~~       | 8  | 60   | Dead letter queue                                                 | 30min  |
-| ~~       | 9  | 61   | Self-healing watcher                                              | 45min  |
-| ~~       | 10 | 71   | Extract drainEvents to testutil package                           | 20min  |
-| ~~       | 11 | 49   | Prometheus metrics export                                         | 30min  |
-| ~~       | 12 | 62   | OpenTelemetry integration                                         | 45min  |
-| ~~       | 13 | 63   | Error analytics                                                   | 30min  |
-| ~~       | 14 | 66   | Create standalone CLI tool                                        | 60min  |
-| ~~       | 15 | 28   | Error simulation / fault injection testing                        | 45min  |
-| ~~       | 16 | 67   | Localizable error messages                                        | 20min  |
-| ~~       | 17 | 68   | Explore fsnotify v2 API changes                                   | 30min  |
-| ~~       | 18 | 69   | Implement DebounceEntry Mixin phantom type                        | 15min  |
-| ~~       | 19 | 78   | Migrate CI to Nix (Phase 3)                                       | 60min  |
-| ~~       | 20 | 79   | Add Cachix for binary caching                                     | 20min  |
-| ~~       | 21 | 37   | Write ADR for examples/ decision                                  | 10min  |
-| ~~       | 22 | 76   | Integrate into file-and-image-renamer                             | 60min  |
-| ~~       | 23 | 77   | Integrate into dynamic-markdown-site                              | 60min  |
-| ~~       | 24 | —    | Consolidate docs/status/ (remove stale files)                     | 15min  |
-| ~~       | 25 | —    | Add polling integration test with filter verification             | 15min  |
+| ~~       | ~~1~~ | ~~—~~ | ~~**Raise coverage back to ≥90%** (polling + middleware edge cases)~~ | ~~30min~~ |
+| ~~       | ~~2~~ | ~~42~~ | ~~Implement exponential backoff for errors~~ | ~~20min~~ |
+| ~~       | ~~3~~ | ~~65~~ | ~~Configure semantic-release~~ | ~~20min~~ |
+| ~~       | ~~4~~ | ~~74~~ | ~~Test examples/ in CI pipeline~~ | ~~15min~~ |
+| ~~       | ~~5~~ | ~~45~~ | ~~Filter func return match metadata~~ | ~~20min~~ |
+| ~~       | ~~6~~ | ~~72~~ | ~~Windows-specific edge case tests~~ | ~~30min~~ |
+| ~~       | ~~7~~ | ~~48~~ | ~~Watch.WatchChanges(ctx, targetState) idempotent sync~~ | ~~25min~~ |
+| ~~       | ~~8~~ | ~~60~~ | ~~Dead letter queue~~ | ~~30min~~ |
+| ~~       | ~~9~~ | ~~61~~ | ~~Self-healing watcher~~ | ~~45min~~ |
+| ~~       | ~~10~~ | ~~71~~ | ~~Extract drainEvents to testutil package~~ | ~~20min~~ |
+| ~~       | ~~11~~ | ~~49~~ | ~~Prometheus metrics export~~ | ~~30min~~ |
+| ~~       | ~~12~~ | ~~62~~ | ~~OpenTelemetry integration~~ | ~~45min~~ |
+| ~~       | ~~13~~ | ~~63~~ | ~~Error analytics~~ | ~~30min~~ |
+| ~~       | ~~14~~ | ~~66~~ | ~~Create standalone CLI tool~~ | ~~60min~~ |
+| ~~       | ~~15~~ | ~~28~~ | ~~Error simulation / fault injection testing~~ | ~~45min~~ |
+| ~~       | ~~16~~ | ~~67~~ | ~~Localizable error messages~~ | ~~20min~~ |
+| ~~       | ~~17~~ | ~~68~~ | ~~Explore fsnotify v2 API changes~~ | ~~30min~~ |
+| ~~       | ~~18~~ | ~~69~~ | ~~Implement DebounceEntry Mixin phantom type~~ | ~~15min~~ |
+| ~~       | ~~19~~ | ~~78~~ | ~~Migrate CI to Nix (Phase 3)~~ | ~~60min~~ |
+| ~~       | ~~20~~ | ~~79~~ | ~~Add Cachix for binary caching~~ | ~~20min~~ |
+| ~~       | ~~21~~ | ~~37~~ | ~~Write ADR for examples/ decision~~ | ~~10min~~ |
+| ~~       | ~~22~~ | ~~76~~ | ~~Integrate into file-and-image-renamer~~ | ~~60min~~ |
+| ~~       | ~~23~~ | ~~77~~ | ~~Integrate into dynamic-markdown-site~~ | ~~60min~~ |
+| ~~       | ~~24~~ | ~~—~~ | ~~Consolidate docs/status/ (remove stale files)~~ | ~~15min~~ |
+| ~~       | ~~25~~ | ~~—~~ | ~~Add polling integration test with filter verification~~ | ~~15min~~ |
 
 ---
 

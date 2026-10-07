@@ -191,11 +191,12 @@ preserved but don't check the `maxWatchesDetected` value for auto-detected limit
 
 | #  | Item | Status                                                   | Reason                                            |
 | -- | ---- | -------------------------------------------------------- | ------------------------------------------------- |
-| ~~ | 2    | Poll dedup heuristic (`WithPollDeduplicate`)             | NOT STARTED                                       |
-| ~~ | 3    | Poll loop rename detection (`WithPollDetectRenames`)     | NOT STARTED                                       |
-| ~~ | 20   | Runtime deprecation warning for `MiddlewareWriteFileLog` | NOT STARTED                                       |
-| ~~ | 21   | `Reset()` and `failedPaths` retention                    | NOT STARTED                                       |
-| ~~ | 22   | `WatcherError.Stack` behavior                            | DONE via doc comment + `NewWatcherErrorWithStack` |
+| ~~ | ~~2~~ | ~~Poll dedup heuristic (`WithPollDeduplicate`)~~ | ~~NOT STARTED~~ |
+| ~~ | ~~3~~ | ~~Poll loop rename detection (`WithPollDetectRenames`)~~ | ~~NOT STARTED~~ |
+| ~~ | ~~20~~ | ~~Runtime deprecation warning for `MiddlewareWriteFileLog`~~ | ~~NOT STARTED~~ |
+| ~~ | ~~21~~ | ~~`Reset()` and `failedPaths` retention~~ | ~~NOT STARTED~~ |
+| ~~ | ~~22~~ | ~~`WatcherError.Stack` behavior~~ | ~~DONE via doc comment + `NewWatcherErrorWithStack`~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ### From prior sessions' should-do lists:
 

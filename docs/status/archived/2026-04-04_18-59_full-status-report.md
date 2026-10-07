@@ -160,37 +160,38 @@ Present and functional but could use:
 
 | #  | Task | Priority                          | Effort |
 | -- | ---- | --------------------------------- | ------ |
-| ~~ | 1    | GitHub Actions workflow           | P1     |
-| ~~ | 2    | Automated release with goreleaser | P2     |
-| ~~ | 3    | Coverage reporting to codecov     | P3     |
-| ~~ | 4    | Dependabot configuration          | P3     |
+| ~~ | ~~1~~ | ~~GitHub Actions workflow~~ | ~~P1~~ |
+| ~~ | ~~2~~ | ~~Automated release with goreleaser~~ | ~~P2~~ |
+| ~~ | ~~3~~ | ~~Coverage reporting to codecov~~ | ~~P3~~ |
+| ~~ | ~~4~~ | ~~Dependabot configuration~~ | ~~P3~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ### Testing & Quality
 
 | #  | Task | Priority                                        | Effort |
 | -- | ---- | ----------------------------------------------- | ------ |
-| ~~ | 5    | Benchmark tests (debouncer, middleware, filter) | P2     |
-| ~~ | 6    | Stress tests (10k+ files)                       | P3     |
-| ~~ | 7    | Fuzz tests for filters                          | P3     |
+| ~~ | ~~5~~ | ~~Benchmark tests (debouncer, middleware, filter)~~ | ~~P2~~ |
+| ~~ | ~~6~~ | ~~Stress tests (10k+ files)~~ | ~~P3~~ |
+| ~~ | ~~7~~ | ~~Fuzz tests for filters~~ | ~~P3~~ |
 
 ### Documentation & Community
 
 | #  | Task | Priority                 | Effort |
 | -- | ---- | ------------------------ | ------ |
-| ~~ | 8    | Advanced README examples | P3     |
-| ~~ | 9    | CONTRIBUTING.md          | P3     |
-| ~~ | 10   | CODE_OF_CONDUCT.md       | P3     |
-| ~~ | 11   | Issue templates          | P3     |
-| ~~ | 12   | PR template              | P3     |
+| ~~ | ~~8~~ | ~~Advanced README examples~~ | ~~P3~~ |
+| ~~ | ~~9~~ | ~~CONTRIBUTING.md~~ | ~~P3~~ |
+| ~~ | ~~10~~ | ~~CODE_OF_CONDUCT.md~~ | ~~P3~~ |
+| ~~ | ~~11~~ | ~~Issue templates~~ | ~~P3~~ |
+| ~~ | ~~12~~ | ~~PR template~~ | ~~P3~~ |
 
 ### Potential Features (v0.2.0+)
 
 | #  | Task | Priority                                        | Effort |
 | -- | ---- | ----------------------------------------------- | ------ |
-| ~~ | 13   | `WithPollInterval(d)` for fspoll fallback       | P3     |
-| ~~ | 14   | `Event.Size` field for file size on change      | P3     |
-| ~~ | 15   | `FilterModifiedSince(t)` time-based filter      | P3     |
-| ~~ | 16   | Batch event mode (collect N events, emit slice) | P3     |
+| ~~ | ~~13~~ | ~~`WithPollInterval(d)` for fspoll fallback~~ | ~~P3~~ |
+| ~~ | ~~14~~ | ~~`Event.Size` field for file size on change~~ | ~~P3~~ |
+| ~~ | ~~15~~ | ~~`FilterModifiedSince(t)` time-based filter~~ | ~~P3~~ |
+| ~~ | ~~16~~ | ~~Batch event mode (collect N events, emit slice)~~ | ~~P3~~ |
 
 ---
 
@@ -242,31 +243,31 @@ The only concern is the **1 unpushed commit** on master — should push when rea
 
 | #  | Task | Priority                                               | Effort | Category |
 | -- | ---- | ------------------------------------------------------ | ------ | -------- |
-| ~~ | 1    | Push 1 unpushed commit to origin                       | P0     | 1min     |
-| ~~ | 2    | Add GitHub Actions CI workflow                         | P1     | 20min    |
-| ~~ | 3    | Tag v0.1.0 release                                     | P1     | 2min     |
-| ~~ | 4    | Fix example linter warnings (exitAfterDefer, errcheck) | P1     | 10min    |
-| ~~ | 5    | Add benchmark tests for debouncer                      | P2     | 15min    |
-| ~~ | 6    | Add benchmark tests for middleware                     | P2     | 15min    |
-| ~~ | 7    | Add benchmark tests for filters                        | P2     | 15min    |
-| ~~ | 8    | Improve watcher error path test coverage               | P2     | 30min    |
-| ~~ | 9    | Add advanced examples to README                        | P2     | 30min    |
-| ~~ | 10   | Add goreleaser configuration                           | P2     | 30min    |
-| ~~ | 11   | Add CONTRIBUTING.md                                    | P2     | 20min    |
-| ~~ | 12   | Add GitHub issue templates                             | P2     | 15min    |
-| ~~ | 13   | Add PR template                                        | P2     | 10min    |
-| ~~ | 14   | Add stress tests (10k+ files)                          | P3     | 1hr      |
-| ~~ | 15   | Add fuzz tests for filters                             | P3     | 30min    |
-| ~~ | 16   | Add dependabot config                                  | P3     | 5min     |
-| ~~ | 17   | Add codecov integration                                | P3     | 15min    |
-| ~~ | 18   | Add CODE_OF_CONDUCT.md                                 | P3     | 10min    |
-| ~~ | 19   | Add `WithPollInterval` fallback option                 | P3     | 1hr      |
-| ~~ | 20   | Add `Event.Size` field                                 | P3     | 15min    |
-| ~~ | 21   | Add `FilterModifiedSince(t)` filter                    | P3     | 15min    |
-| ~~ | 22   | Add batch event mode                                   | P3     | 30min    |
-| ~~ | 23   | Add performance comparison vs raw fsnotify             | P3     | 1hr      |
-| ~~ | 24   | Add Windows-specific edge case tests                   | P3     | 2hr      |
-| ~~ | 25   | Add `WatchWithRetry` auto-reconnection                 | P3     | 1hr      |
+| ~~ | ~~1~~ | ~~Push 1 unpushed commit to origin~~ | ~~P0~~ | ~~1min~~ |
+| ~~ | ~~2~~ | ~~Add GitHub Actions CI workflow~~ | ~~P1~~ | ~~20min~~ |
+| ~~ | ~~3~~ | ~~Tag v0.1.0 release~~ | ~~P1~~ | ~~2min~~ |
+| ~~ | ~~4~~ | ~~Fix example linter warnings (exitAfterDefer, errcheck)~~ | ~~P1~~ | ~~10min~~ |
+| ~~ | ~~5~~ | ~~Add benchmark tests for debouncer~~ | ~~P2~~ | ~~15min~~ |
+| ~~ | ~~6~~ | ~~Add benchmark tests for middleware~~ | ~~P2~~ | ~~15min~~ |
+| ~~ | ~~7~~ | ~~Add benchmark tests for filters~~ | ~~P2~~ | ~~15min~~ |
+| ~~ | ~~8~~ | ~~Improve watcher error path test coverage~~ | ~~P2~~ | ~~30min~~ |
+| ~~ | ~~9~~ | ~~Add advanced examples to README~~ | ~~P2~~ | ~~30min~~ |
+| ~~ | ~~10~~ | ~~Add goreleaser configuration~~ | ~~P2~~ | ~~30min~~ |
+| ~~ | ~~11~~ | ~~Add CONTRIBUTING.md~~ | ~~P2~~ | ~~20min~~ |
+| ~~ | ~~12~~ | ~~Add GitHub issue templates~~ | ~~P2~~ | ~~15min~~ |
+| ~~ | ~~13~~ | ~~Add PR template~~ | ~~P2~~ | ~~10min~~ |
+| ~~ | ~~14~~ | ~~Add stress tests (10k+ files)~~ | ~~P3~~ | ~~1hr~~ |
+| ~~ | ~~15~~ | ~~Add fuzz tests for filters~~ | ~~P3~~ | ~~30min~~ |
+| ~~ | ~~16~~ | ~~Add dependabot config~~ | ~~P3~~ | ~~5min~~ |
+| ~~ | ~~17~~ | ~~Add codecov integration~~ | ~~P3~~ | ~~15min~~ |
+| ~~ | ~~18~~ | ~~Add CODE_OF_CONDUCT.md~~ | ~~P3~~ | ~~10min~~ |
+| ~~ | ~~19~~ | ~~Add `WithPollInterval` fallback option~~ | ~~P3~~ | ~~1hr~~ |
+| ~~ | ~~20~~ | ~~Add `Event.Size` field~~ | ~~P3~~ | ~~15min~~ |
+| ~~ | ~~21~~ | ~~Add `FilterModifiedSince(t)` filter~~ | ~~P3~~ | ~~15min~~ |
+| ~~ | ~~22~~ | ~~Add batch event mode~~ | ~~P3~~ | ~~30min~~ |
+| ~~ | ~~23~~ | ~~Add performance comparison vs raw fsnotify~~ | ~~P3~~ | ~~1hr~~ |
+| ~~ | ~~24~~ | ~~Add Windows-specific edge case tests~~ | ~~P3~~ | ~~2hr~~ |
+| ~~ | ~~25~~ | ~~Add `WatchWithRetry` auto-reconnection~~ | ~~P3~~ | ~~1hr~~ |
 
 ---
 

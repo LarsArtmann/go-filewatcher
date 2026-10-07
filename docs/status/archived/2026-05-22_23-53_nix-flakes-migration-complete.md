@@ -163,31 +163,32 @@ But there are annoyances:
 
 | #  | Item | Priority                                                                   | Effort   | Category |
 | -- | ---- | -------------------------------------------------------------------------- | -------- | -------- |
-| ~~ | 1    | **Migrate `ci.yml` to use Nix**                                            | CRITICAL | 1h       |
-| ~~ | 2    | **Update MIGRATION_TO_NIX_FLAKES_PROPOSAL.md** to mark complete            | HIGH     | 15min    |
-| ~~ | 3    | **Update TODO_LIST.md** — check off done items                             | HIGH     | 15min    |
-| ~~ | 4    | **Fix forbidigo lint in examples**                                         | HIGH     | 30min    |
-| ~~ | 5    | **Tag v2.0.0 release**                                                     | HIGH     | 30min    |
-| ~~ | 6    | **Add `//nolint:forbidigo` to examples** or configure golangci.yml exclude | MEDIUM   | 15min    |
-| ~~ | 7    | **Document vendorHash update procedure** in AGENTS.md                      | MEDIUM   | 15min    |
-| ~~ | 8    | **Add Cachix for binary caching**                                          | MEDIUM   | 30min    |
-| ~~ | 9    | **Fix flaky tests** (TestWatcher_Stats_Metrics)                            | MEDIUM   | 1-2h     |
-| ~~ | 10   | **Add issue/PR templates** (.github/)                                      | MEDIUM   | 30min    |
-| ~~ | 11   | **Add Godoc examples** (Example\* functions)                               | MEDIUM   | 2-3h     |
-| ~~ | 12   | **Add `Event.ModTime()` field**                                            | MEDIUM   | 30min    |
-| ~~ | 13   | **Add `WithPolling(fallback bool)`**                                       | MEDIUM   | 2-4h     |
-| ~~ | 14   | **Recursive directory integration test**                                   | MEDIUM   | 1h       |
-| ~~ | 15   | **Benchmark regression tests**                                             | MEDIUM   | 2h       |
-| ~~ | 16   | **Integration into file-and-image-renamer**                                | MEDIUM   | 4-8h     |
-| ~~ | 17   | **Standalone CLI tool**                                                    | MEDIUM   | 4-8h     |
-| ~~ | 18   | **Troubleshooting.md**                                                     | MEDIUM   | 1h       |
-| ~~ | 19   | **Goreleaser config**                                                      | MEDIUM   | 2-3h     |
-| ~~ | 20   | **Self-healing watcher**                                                   | MEDIUM   | 2-4h     |
-| ~~ | 21   | **Circuit breaker middleware**                                             | MEDIUM   | 1-2h     |
-| ~~ | 22   | **OpenTelemetry integration**                                              | LOW      | 3-4h     |
-| ~~ | 23   | **Race safety review for parallel tests**                                  | LOW      | 2h       |
-| ~~ | 24   | **Fuzz testing**                                                           | LOW      | 2-3h     |
-| ~~ | 25   | **Windows CI + tests**                                                     | LOW      | 2-3h     |
+| ~~ | ~~1~~ | ~~**Migrate `ci.yml` to use Nix**~~ | ~~CRITICAL~~ | ~~1h~~ |
+| ~~ | ~~2~~ | ~~**Update MIGRATION_TO_NIX_FLAKES_PROPOSAL.md** to mark complete~~ | ~~HIGH~~ | ~~15min~~ |
+| ~~ | ~~3~~ | ~~**Update TODO_LIST.md** — check off done items~~ | ~~HIGH~~ | ~~15min~~ |
+| ~~ | ~~4~~ | ~~**Fix forbidigo lint in examples**~~ | ~~HIGH~~ | ~~30min~~ |
+| ~~ | ~~5~~ | ~~**Tag v2.0.0 release**~~ | ~~HIGH~~ | ~~30min~~ |
+| ~~ | ~~6~~ | ~~**Add `//nolint:forbidigo` to examples** or configure golangci.yml exclude~~ | ~~MEDIUM~~ | ~~15min~~ |
+| ~~ | ~~7~~ | ~~**Document vendorHash update procedure** in AGENTS.md~~ | ~~MEDIUM~~ | ~~15min~~ |
+| ~~ | ~~8~~ | ~~**Add Cachix for binary caching**~~ | ~~MEDIUM~~ | ~~30min~~ |
+| ~~ | ~~9~~ | ~~**Fix flaky tests** (TestWatcher_Stats_Metrics)~~ | ~~MEDIUM~~ | ~~1-2h~~ |
+| ~~ | ~~10~~ | ~~**Add issue/PR templates** (.github/)~~ | ~~MEDIUM~~ | ~~30min~~ |
+| ~~ | ~~11~~ | ~~**Add Godoc examples** (Example\* functions)~~ | ~~MEDIUM~~ | ~~2-3h~~ |
+| ~~ | ~~12~~ | ~~**Add `Event.ModTime()` field**~~ | ~~MEDIUM~~ | ~~30min~~ |
+| ~~ | ~~13~~ | ~~**Add `WithPolling(fallback bool)`**~~ | ~~MEDIUM~~ | ~~2-4h~~ |
+| ~~ | ~~14~~ | ~~**Recursive directory integration test**~~ | ~~MEDIUM~~ | ~~1h~~ |
+| ~~ | ~~15~~ | ~~**Benchmark regression tests**~~ | ~~MEDIUM~~ | ~~2h~~ |
+| ~~ | ~~16~~ | ~~**Integration into file-and-image-renamer**~~ | ~~MEDIUM~~ | ~~4-8h~~ |
+| ~~ | ~~17~~ | ~~**Standalone CLI tool**~~ | ~~MEDIUM~~ | ~~4-8h~~ |
+| ~~ | ~~18~~ | ~~**Troubleshooting.md**~~ | ~~MEDIUM~~ | ~~1h~~ |
+| ~~ | ~~19~~ | ~~**Goreleaser config**~~ | ~~MEDIUM~~ | ~~2-3h~~ |
+| ~~ | ~~20~~ | ~~**Self-healing watcher**~~ | ~~MEDIUM~~ | ~~2-4h~~ |
+| ~~ | ~~21~~ | ~~**Circuit breaker middleware**~~ | ~~MEDIUM~~ | ~~1-2h~~ |
+| ~~ | ~~22~~ | ~~**OpenTelemetry integration**~~ | ~~LOW~~ | ~~3-4h~~ |
+| ~~ | ~~23~~ | ~~**Race safety review for parallel tests**~~ | ~~LOW~~ | ~~2h~~ |
+| ~~ | ~~24~~ | ~~**Fuzz testing**~~ | ~~LOW~~ | ~~2-3h~~ |
+| ~~ | ~~25~~ | ~~**Windows CI + tests**~~ | ~~LOW~~ | ~~2-3h~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ---
 

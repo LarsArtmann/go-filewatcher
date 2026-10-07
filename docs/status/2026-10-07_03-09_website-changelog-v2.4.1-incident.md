@@ -24,13 +24,13 @@
 
 | Item                              | Done                              | Missing                                                                                                                                                                                                  |
 | --------------------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Verify v2.4.1 on the module proxy | tag/release exist, merged by user | never checked `go list -m @v2.4.1` / proxy serves it (it's a no-Go-changes release, so impact is nil, but unverified)                                                                                    |
+| Verify v2.4.1 on the module proxy | tag/release exist, merged by user | ~~never checked `go list -m @v2.4.1` / proxy serves it (it's a no-Go-changes release, so impact is nil, but unverified)~~ VERIFIED 2026-10-07: proxy.golang.org `@v/list` serves v2.4.1 |
 | Website build reproducibility     | pnpm workspace/lockfile committed | `node_modules` is still machine-local; no CI job builds the website, so drift/`astro: command not found`-class failures are only caught at manual deploy time (hit once this session)                    |
-| AGENTS.md accuracy                | gotchas added                     | the "Release / CI Gotchas" section is accreting entries from parallel sessions (go.mod recurrence, release-PR startup failures, mine) — correct but increasingly a wall of text; could use consolidation |
+| AGENTS.md accuracy                | gotchas added                     | ~~the "Release / CI Gotchas" section is accreting entries from parallel sessions (go.mod recurrence, release-PR startup failures, mine) — correct but increasingly a wall of text; could use consolidation~~ CONSOLIDATED 2026-10-07: six subsections collapsed into a gotchas table + one dense go.mod subsection |
 
 ## c) NOT STARTED
 
-1. pkg.go.dev verification for v2.4.0/v2.4.1.
+1. ~~pkg.go.dev verification for v2.4.0/v2.4.1.~~ PARTIAL 2026-10-07: proxy serves both (verified via proxy @v/list); pkg.go.dev crawl itself not re-checked.
 2. FEATURES.md / TODO_LIST.md / ROADMAP.md / README.md refresh for v2.4.x.
 3. Dependabot PRs #31, #32, #14.
 4. CI guard for go-directive drift; Go 1.27 in the matrix (carried over from previous report).
@@ -61,8 +61,8 @@
 5. Document the deploy runbook in AGENTS.md (install → build → deploy via flake apps, `trailingSlash: false` quirk, cleanUrls).
 6. pkg.go.dev check for v2.4.0/2.4.1; request crawl if stale.
 7. FEATURES.md: mark v2.4.x shipped features DONE.
-8. TODO_LIST.md harvest + ROADMAP refresh.
-9. README staleness pass (Go version, feature bullets, v2.4 links).
+8. ~~TODO_LIST.md harvest + ROADMAP refresh.~~ done 2026-10-07 (docs-health AUDIT pass: TODO_LIST rebuilt to 29 items + 9 open questions; ROADMAP v2.4.x + v3 backlog refreshed).
+9. ~~README staleness pass (Go version, feature bullets, v2.4 links).~~ done 2026-10-07: Go 1.26.7, gogenfilter v3.6.1 + x/text dependency, sqlc v3.6 semantics note.
 10. CI guard: fail if go.mod `go` directive > matrix Go version.
 11. Add Go 1.27 to the test matrix.
 12. Required status checks on master/release PRs.
@@ -73,10 +73,10 @@
 17. Benchmark baseline re-capture post-v2.4.x.
 18. Consider exposing gogenfilter sqlc output-dir config (recover deliberate `models.go` filtering).
 19. README/website API docs: document gogenfilter v3.6 weak-filename semantics.
-20. Consolidate the "Release / CI Gotchas" AGENTS.md section (parallel sessions stacked 5 subsections; tighten into a table).
+20. ~~Consolidate the "Release / CI Gotchas" AGENTS.md section (parallel sessions stacked 5 subsections; tighten into a table).~~ done 2026-10-07 (table + single go.mod subsection + BuildFlow machine notes).
 21. Daemon: exclude `.github/`, `go.mod`, `release-please*.json`, `website/flake.nix` from auto-commits (cross-repo tooling — needs your buy-in).
 22. Ubuntu 26 runner migration audit (**deadline 2026-10-12**, warnings already in every run log — was Oct 19 in the log text; treat the earlier date as the safe target).
-23. Sweep `docs/status/` — mark items done by this session (website link, changelog sync, release-please scoping, v2.4.1 annotation).
+23. ~~Sweep `docs/status/` — mark items done by this session (website link, changelog sync, release-please scoping, v2.4.1 annotation).~~ done 2026-10-07: full docs-health sweep — 86 reports annotated inline and archived to `docs/status/archived/` + `docs/planning/archived/` with manifests.
 24. Star/OG image check: does the new og image actually render on social cards (added by a parallel session)? Unverified.
 25. Add `editLink`/`lastUpdated` to astro.config (website-launch skill retrofit list) — check if already on.
 26. Demo video on the landing page (skill default; site currently has none) — bigger item, needs your call.

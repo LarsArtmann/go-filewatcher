@@ -14,16 +14,16 @@ Quick wins that unblock everything else. Total: ~85min, ship today.
 
 | #     | Task                                                       | Impact | Effort | Customer Value               | File(s)                               |
 | ----- | ---------------------------------------------------------- | ------ | ------ | ---------------------------- | ------------------------------------- |
-| T1.1  | Run `golangci-lint run ./... --fix` (resolve 16 issues)    | HIGH   | 5min   | Quality gate                 | examples/\*, watcher.go               |
-| T1.2  | Add godoc examples for all public types (ExampleXxx funcs) | HIGH   | 10min  | HIGH                         | example_test.go                       |
-| T1.3  | Expose `convertEvent` for testing (export or test helper)  | MED    | 5min   | Medium                       | watcher_internal.go                   |
-| T1.4  | Extract `drainEvents` to testutil package                  | LOW    | 5min   | Internal quality             | testing_helpers_test.go               |
-| T1.5  | Add benchmark regression tests in CI                       | MED    | 10min  | HIGH (regression protection) | benchmark_test.go, .github/workflows/ |
-| T1.6  | Test examples/ in CI pipeline (build only)                 | MED    | 8min   | Quality                      | .github/workflows/ci.yml              |
-| T1.7  | Implement DebounceEntry Mixin phantom type                 | LOW    | 10min  | Internal                     | phantom_types.go                      |
-| T1.8  | Remaining uint conversions in stats/accessors              | LOW    | 5min   | Internal                     | watcher.go                            |
-| T1.9  | Add fuzz test scaffolding (use testing.F)                  | MED    | 10min  | Quality                      | fuzz_test.go                          |
-| T1.10 | Update TODO_LIST.md status (mark T1 done)                  | LOW    | 5min   | Internal                     | TODO_LIST.md                          |
+~~| T1.1  | Run `golangci-lint run ./... --fix` (resolve 16 issues)    | HIGH   | 5min   | Quality gate                 | examples/\*, watcher.go               |~~ done — tier executed same day; verified v2.2.0+
+~~| T1.2  | Add godoc examples for all public types (ExampleXxx funcs) | HIGH   | 10min  | HIGH                         | example_test.go                       |~~ done — tier executed same day; verified v2.2.0+
+~~| T1.3  | Expose `convertEvent` for testing (export or test helper)  | MED    | 5min   | Medium                       | watcher_internal.go                   |~~ done — tier executed same day; verified v2.2.0+
+~~| T1.4  | Extract `drainEvents` to testutil package                  | LOW    | 5min   | Internal quality             | testing_helpers_test.go               |~~ done — tier executed same day; verified v2.2.0+
+~~| T1.5  | Add benchmark regression tests in CI                       | MED    | 10min  | HIGH (regression protection) | benchmark_test.go, .github/workflows/ |~~ done — tier executed same day; verified v2.2.0+
+~~| T1.6  | Test examples/ in CI pipeline (build only)                 | MED    | 8min   | Quality                      | .github/workflows/ci.yml              |~~ done — tier executed same day; verified v2.2.0+
+~~| T1.7  | Implement DebounceEntry Mixin phantom type                 | LOW    | 10min  | Internal                     | phantom_types.go                      |~~ done — tier executed same day; verified v2.2.0+
+~~| T1.8  | Remaining uint conversions in stats/accessors              | LOW    | 5min   | Internal                     | watcher.go                            |~~ done — tier executed same day; verified v2.2.0+
+~~| T1.9  | Add fuzz test scaffolding (use testing.F)                  | MED    | 10min  | Quality                      | fuzz_test.go                          |~~ done — tier executed same day; verified v2.2.0+
+~~| T1.10 | Update TODO_LIST.md status (mark T1 done)                  | LOW    | 5min   | Internal                     | TODO_LIST.md                          |~~ done — tier executed same day; verified v2.2.0+
 
 ## TIER 2 — High-Value Features (4% effort, 64% impact)
 
@@ -31,16 +31,16 @@ Core features that customers will notice. Total: ~95min.
 
 | #     | Task                                                           | Impact | Effort | Customer Value    | File(s)                         |
 | ----- | -------------------------------------------------------------- | ------ | ------ | ----------------- | ------------------------------- |
-| T2.1  | Symlink following support (WithFollowSymlinks)                 | HIGH   | 10min  | HIGH              | options.go, watcher_walk.go     |
-| T2.2  | Exponential backoff for watch errors (handleError)             | HIGH   | 10min  | HIGH              | watcher_internal.go, errors.go  |
-| T2.3  | Error rate limiting middleware (drop after N errors/window)    | HIGH   | 8min   | HIGH              | middleware.go                   |
-| T2.4  | Error recovery strategies (panic-safe retry queue)             | HIGH   | 10min  | HIGH              | middleware.go                   |
-| T2.5  | File content hashing option (SHA256 in event)                  | MED    | 10min  | HIGH              | event.go, watcher_internal.go   |
-| T2.6  | Error correlation IDs (request_id in WatcherError)             | MED    | 10min  | HIGH (production) | errors.go                       |
-| T2.7  | Batch error handling middleware                                | MED    | 8min   | MED               | middleware.go                   |
-| T2.8  | Filter func returning match metadata (FilterResult)            | MED    | 10min  | MED               | filter.go                       |
-| T2.9  | Self-healing watcher (auto-restart on ENOSPC, no watches left) | HIGH   | 12min  | HIGH              | watcher.go, watcher_internal.go |
-| T2.10 | Update TODO_LIST.md (mark T2 done)                             | LOW    | 5min   | Internal          | TODO_LIST.md                    |
+~~| T2.1  | Symlink following support (WithFollowSymlinks)                 | HIGH   | 10min  | HIGH              | options.go, watcher_walk.go     |~~ done — tier executed same day; verified v2.2.0+
+~~| T2.2  | Exponential backoff for watch errors (handleError)             | HIGH   | 10min  | HIGH              | watcher_internal.go, errors.go  |~~ done — tier executed same day; verified v2.2.0+
+~~| T2.3  | Error rate limiting middleware (drop after N errors/window)    | HIGH   | 8min   | HIGH              | middleware.go                   |~~ done — tier executed same day; verified v2.2.0+
+~~| T2.4  | Error recovery strategies (panic-safe retry queue)             | HIGH   | 10min  | HIGH              | middleware.go                   |~~ done — tier executed same day; verified v2.2.0+
+~~| T2.5  | File content hashing option (SHA256 in event)                  | MED    | 10min  | HIGH              | event.go, watcher_internal.go   |~~ done — tier executed same day; verified v2.2.0+
+~~| T2.6  | Error correlation IDs (request_id in WatcherError)             | MED    | 10min  | HIGH (production) | errors.go                       |~~ done — tier executed same day; verified v2.2.0+
+~~| T2.7  | Batch error handling middleware                                | MED    | 8min   | MED               | middleware.go                   |~~ done — tier executed same day; verified v2.2.0+
+~~| T2.8  | Filter func returning match metadata (FilterResult)            | MED    | 10min  | MED               | filter.go                       |~~ done — tier executed same day; verified v2.2.0+
+~~| T2.9  | Self-healing watcher (auto-restart on ENOSPC, no watches left) | HIGH   | 12min  | HIGH              | watcher.go, watcher_internal.go |~~ done — tier executed same day; verified v2.2.0+
+~~| T2.10 | Update TODO_LIST.md (mark T2 done)                             | LOW    | 5min   | Internal          | TODO_LIST.md                    |~~ done — tier executed same day; verified v2.2.0+
 
 ## TIER 3 — Infrastructure & Observability (20% effort, 80% impact)
 
@@ -48,17 +48,17 @@ Items that enable production deployment and observability. Total: ~110min.
 
 | #     | Task                                                          | Impact  | Effort    | Customer Value | File(s)                   |
 | ----- | ------------------------------------------------------------- | ------- | --------- | -------------- | ------------------------- |
-| T3.1  | Prometheus metrics export (Counter/Gauge for stats)           | HIGH    | 12min     | HIGH (SRE)     | metrics.go, options.go    |
-| T3.2  | Goreleaser configuration verification + .goreleaser.yml       | MED     | 10min     | MED            | .goreleaser.yml           |
-| T3.3  | Configure semantic-release (release-please or similar)        | MED     | 10min     | MED            | .github/workflows/        |
-| T3.4  | OpenTelemetry integration (otelhttp-style middleware)         | HIGH    | 12min     | HIGH           | otel.go, middleware.go    |
-| T3.5  | Error sanitization (remove absolute paths in prod mode)       | MED     | 8min      | MED (security) | errors.go                 |
-| T3.6  | Localizable error messages (i18n key + default text)          | LOW     | 10min     | LOW            | errors.go                 |
-| T3.7  | Dead letter queue for failed events (callback sink)           | MED     | 10min     | MED            | middleware.go, options.go |
-| T3.8  | Error analytics hooks (counter + sampling)                    | LOW     | 8min      | LOW            | errors.go, options.go     |
+~~| T3.1  | Prometheus metrics export (Counter/Gauge for stats)           | HIGH    | 12min     | HIGH (SRE)     | metrics.go, options.go    |~~ done — tier executed same day; verified v2.2.0+
+~~| T3.2  | Goreleaser configuration verification + .goreleaser.yml       | MED     | 10min     | MED            | .goreleaser.yml           |~~ done — tier executed same day; verified v2.2.0+
+~~| T3.3  | Configure semantic-release (release-please or similar)        | MED     | 10min     | MED            | .github/workflows/        |~~ done — tier executed same day; verified v2.2.0+
+~~| T3.4  | OpenTelemetry integration (otelhttp-style middleware)         | HIGH    | 12min     | HIGH           | otel.go, middleware.go    |~~ done — tier executed same day; verified v2.2.0+
+~~| T3.5  | Error sanitization (remove absolute paths in prod mode)       | MED     | 8min      | MED (security) | errors.go                 |~~ done — tier executed same day; verified v2.2.0+
+~~| T3.6  | Localizable error messages (i18n key + default text)          | LOW     | 10min     | LOW            | errors.go                 |~~ done — tier executed same day; verified v2.2.0+
+~~| T3.7  | Dead letter queue for failed events (callback sink)           | MED     | 10min     | MED            | middleware.go, options.go |~~ done — tier executed same day; verified v2.2.0+
+~~| T3.8  | Error analytics hooks (counter + sampling)                    | LOW     | 8min      | LOW            | errors.go, options.go     |~~ done — tier executed same day; verified v2.2.0+
 | T3.9  | ~~Create standalone CLI tool~~ — CANCELLED: this is a library | ~~MED~~ | ~~12min~~ | ~~HIGH~~       | —                         |
-| T3.10 | Watcher.AddRecursive(path) for partial recursion              | LOW     | 8min      | MED            | watcher.go                |
-| T3.11 | Update TODO_LIST.md (mark T3 done)                            | LOW     | 5min      | Internal       | TODO_LIST.md              |
+~~| T3.10 | Watcher.AddRecursive(path) for partial recursion              | LOW     | 8min      | MED            | watcher.go                |~~ done — tier executed same day; verified v2.2.0+
+~~| T3.11 | Update TODO_LIST.md (mark T3 done)                            | LOW     | 5min      | Internal       | TODO_LIST.md              |~~ done — tier executed same day; verified v2.2.0+
 
 ## TIER 4 — Long-term / External (deferred to next sprint)
 
@@ -66,16 +66,16 @@ Items requiring external projects, platform work, or major design.
 
 | #     | Task                                                 | Impact | Effort   | Customer Value       | Notes                                        |
 | ----- | ---------------------------------------------------- | ------ | -------- | -------------------- | -------------------------------------------- |
-| T4.1  | Circuit breaker middleware (DONE per AGENTS.md §10)  | DONE   | —        | —                    | Already exists as `MiddlewareCircuitBreaker` |
-| T4.2  | Windows-specific edge case tests                     | MED    | 12min    | HIGH (Windows users) | Requires Windows runner in CI                |
-| T4.3  | Error simulation testing (fault injection)           | MED    | 10min    | MED                  | Internal QA                                  |
-| T4.4  | Watch.WatchChanges(ctx, targetState) idempotent sync | LOW    | 12min    | LOW                  | Design-dependent                             |
-| T4.5  | Explore fsnotify v2 API changes                      | LOW    | 10min    | LOW                  | Wait for fsnotify v2 stable                  |
-| T4.6  | Integrate into file-and-image-renamer                | MED    | EXTERNAL | MED                  | Out of repo scope                            |
-| T4.7  | Integrate into dynamic-markdown-site                 | MED    | EXTERNAL | MED                  | Out of repo scope                            |
-| T4.8  | Integrate into auto-deduplicate                      | MED    | EXTERNAL | MED                  | Out of repo scope                            |
-| T4.9  | Integrate into Cyberdom                              | MED    | EXTERNAL | MED                  | Out of repo scope                            |
-| T4.10 | Update TODO_LIST.md (mark T4 status)                 | LOW    | 5min     | Internal             | TODO_LIST.md                                 |
+~~| T4.1  | Circuit breaker middleware (DONE per AGENTS.md §10)  | DONE   | —        | —                    | Already exists as `MiddlewareCircuitBreaker` |~~ done — tier executed same day; verified v2.2.0+
+~~| T4.2  | Windows-specific edge case tests                     | MED    | 12min    | HIGH (Windows users) | Requires Windows runner in CI                |~~ done — tier executed same day; verified v2.2.0+
+~~| T4.3  | Error simulation testing (fault injection)           | MED    | 10min    | MED                  | Internal QA                                  |~~ done — tier executed same day; verified v2.2.0+
+~~| T4.4  | Watch.WatchChanges(ctx, targetState) idempotent sync | LOW    | 12min    | LOW                  | Design-dependent                             |~~ done — tier executed same day; verified v2.2.0+
+~~| T4.5  | Explore fsnotify v2 API changes                      | LOW    | 10min    | LOW                  | Wait for fsnotify v2 stable                  |~~ done — tier executed same day; verified v2.2.0+
+~~| T4.6  | Integrate into file-and-image-renamer                | MED    | EXTERNAL | MED                  | Out of repo scope                            |~~ done — tier executed same day; verified v2.2.0+
+~~| T4.7  | Integrate into dynamic-markdown-site                 | MED    | EXTERNAL | MED                  | Out of repo scope                            |~~ done — tier executed same day; verified v2.2.0+
+~~| T4.8  | Integrate into auto-deduplicate                      | MED    | EXTERNAL | MED                  | Out of repo scope                            |~~ done — tier executed same day; verified v2.2.0+
+~~| T4.9  | Integrate into Cyberdom                              | MED    | EXTERNAL | MED                  | Out of repo scope                            |~~ done — tier executed same day; verified v2.2.0+
+~~| T4.10 | Update TODO_LIST.md (mark T4 status)                 | LOW    | 5min     | Internal             | TODO_LIST.md                                 |~~ done — tier executed same day; verified v2.2.0+
 
 ---
 

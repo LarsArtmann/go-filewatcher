@@ -82,20 +82,20 @@ Sorted by impact (P0 first), then effort (low first within same priority).
 
 | ID  | Priority | Task                                           | Files                                                  | Effort | Impact                                            | Customer Value          |
 | --- | -------- | ---------------------------------------------- | ------------------------------------------------------ | ------ | ------------------------------------------------- | ----------------------- |
-| T1  | 🔴 P0    | NFC normalization in `pathKey()`               | `filesystem.go`, `go.mod`                              | 30min  | Fixes #1 macOS correctness bug                    | All macOS users         |
-| T2  | 🔴 P0    | `filepath.Clean()` in path normalization       | `filesystem.go` or `watcher.go`                        | 20min  | Fixes path comparison bugs (trailing slash, `..`) | All platforms           |
-| T3  | 🟡 P1    | Wire `pathKey()` into poll loop snapshot       | `watcher_poll.go`                                      | 45min  | Closes case-sensitivity gap in polling            | macOS + polling users   |
-| T4  | 🟡 P1    | Wire `pathKey()` into gitignore matcher        | `watcher_gitignore.go`                                 | 30min  | Closes case-sensitivity gap in gitignore          | macOS + gitignore users |
-| T5  | 🟡 P1    | Extract `addWatch()` / `removeWatch()` helpers | `watcher_walk.go`, `watcher.go`, `watcher_selfheal.go` | 45min  | Prevents watchList/watchListKeys desync           | All users (maintenance) |
-| T6  | 🟡 P1    | Tests: NFC + unicode normalization             | `filesystem_test.go`                                   | 30min  | Verifies macOS fix works                          | Developers              |
-| T7  | 🟢 P2    | Tests: Poll loop case-awareness                | `watcher_poll_test.go` (new or existing)               | 20min  | Verifies poll fix                                 | Developers              |
-| T8  | 🟢 P2    | Tests: Gitignore case-awareness                | `watcher_gitignore_test.go`                            | 20min  | Verifies gitignore fix                            | Developers              |
-| T9  | 🟢 P2    | Documentation: CHANGELOG + AGENTS + FEATURES   | `CHANGELOG.md`, `AGENTS.md`, `FEATURES.md`             | 30min  | Records what shipped                              | All readers             |
-| T10 | 🟢 P2    | `Stats()` expose case-sensitivity mode         | `watcher.go` (Stats struct)                            | 15min  | Observability for debugging                       | Operators               |
-| T11 | 🟢 P2    | `FilterCaseInsensitive()` wrapper filter       | `filter.go`                                            | 20min  | Non-breaking opt-in for filters                   | Cross-platform users    |
-| T12 | ⚪ P3    | `doc.go` + `DOMAIN_LANGUAGE.md` updates        | `doc.go`, `docs/DOMAIN_LANGUAGE.md`                    | 15min  | Package-level docs                                | New users               |
-| T13 | ⚪ P3    | `example_test.go` + `Troubleshooting.md`       | `example_test.go`, `Troubleshooting.md`                | 30min  | Runnable examples + troubleshooting               | New users               |
-| T14 | ⚪ P3    | Reset() verification + lint check + final test | various                                                | 20min  | QA gate                                           | Developers              |
+~~| T1  | 🔴 P0    | NFC normalization in `pathKey()`               | `filesystem.go`, `go.mod`                              | 30min  | Fixes #1 macOS correctness bug                    | All macOS users         |~~ done — shipped in v2.4.0
+~~| T2  | 🔴 P0    | `filepath.Clean()` in path normalization       | `filesystem.go` or `watcher.go`                        | 20min  | Fixes path comparison bugs (trailing slash, `..`) | All platforms           |~~ done — shipped in v2.4.0
+~~| T3  | 🟡 P1    | Wire `pathKey()` into poll loop snapshot       | `watcher_poll.go`                                      | 45min  | Closes case-sensitivity gap in polling            | macOS + polling users   |~~ done — shipped in v2.4.0
+~~| T4  | 🟡 P1    | Wire `pathKey()` into gitignore matcher        | `watcher_gitignore.go`                                 | 30min  | Closes case-sensitivity gap in gitignore          | macOS + gitignore users |~~ done — shipped in v2.4.0
+~~| T5  | 🟡 P1    | Extract `addWatch()` / `removeWatch()` helpers | `watcher_walk.go`, `watcher.go`, `watcher_selfheal.go` | 45min  | Prevents watchList/watchListKeys desync           | All users (maintenance) |~~ done — shipped in v2.4.0
+~~| T6  | 🟡 P1    | Tests: NFC + unicode normalization             | `filesystem_test.go`                                   | 30min  | Verifies macOS fix works                          | Developers              |~~ done — shipped in v2.4.0
+~~| T7  | 🟢 P2    | Tests: Poll loop case-awareness                | `watcher_poll_test.go` (new or existing)               | 20min  | Verifies poll fix                                 | Developers              |~~ done — shipped in v2.4.0
+~~| T8  | 🟢 P2    | Tests: Gitignore case-awareness                | `watcher_gitignore_test.go`                            | 20min  | Verifies gitignore fix                            | Developers              |~~ done — shipped in v2.4.0
+~~| T9  | 🟢 P2    | Documentation: CHANGELOG + AGENTS + FEATURES   | `CHANGELOG.md`, `AGENTS.md`, `FEATURES.md`             | 30min  | Records what shipped                              | All readers             |~~ done — shipped in v2.4.0
+~~| T10 | 🟢 P2    | `Stats()` expose case-sensitivity mode         | `watcher.go` (Stats struct)                            | 15min  | Observability for debugging                       | Operators               |~~ done — shipped in v2.4.0
+~~| T11 | 🟢 P2    | `FilterCaseInsensitive()` wrapper filter       | `filter.go`                                            | 20min  | Non-breaking opt-in for filters                   | Cross-platform users    |~~ done — shipped in v2.4.0
+~~| T12 | ⚪ P3    | `doc.go` + `DOMAIN_LANGUAGE.md` updates        | `doc.go`, `docs/DOMAIN_LANGUAGE.md`                    | 15min  | Package-level docs                                | New users               |~~ done — shipped in v2.4.0
+~~| T13 | ⚪ P3    | `example_test.go` + `Troubleshooting.md`       | `example_test.go`, `Troubleshooting.md`                | 30min  | Runnable examples + troubleshooting               | New users               |~~ done — shipped in v2.4.0
+~~| T14 | ⚪ P3    | Reset() verification + lint check + final test | various                                                | 20min  | QA gate                                           | Developers              |~~ done — shipped in v2.4.0
 
 **Total: ~5.5h (with buffer for testing: ~7h)**
 
@@ -107,50 +107,50 @@ Each Phase 1 task broken into micro-steps. Sorted by dependency, then impact.
 
 | Micro-ID  | Parent | Task                                                                                         | Effort |
 | --------- | ------ | -------------------------------------------------------------------------------------------- | ------ |
-| **T1.1**  | T1     | Add `golang.org/x/text` to `go.mod` (`go get golang.org/x/text/unicode/norm`)                | 2min   |
-| **T1.2**  | T1     | Add NFC import + normalization to `pathKey()` in `filesystem.go`                             | 5min   |
-| **T1.3**  | T1     | Verify `go build ./...` compiles                                                             | 1min   |
-| **T1.4**  | T1     | Update `vendorHash` in `flake.nix` if needed                                                 | 5min   |
-| **T2.1**  | T2     | Add `normalizePath()` helper with `filepath.Clean(filepath.Abs(path))`                       | 5min   |
-| **T2.2**  | T2     | Replace `filepath.Abs` calls in `New()` and `withResolvedPath()` with `normalizePath()`      | 5min   |
-| **T2.3**  | T2     | Replace `filepath.Abs` in `FilterExcludePaths` and `WithExcludePaths` with `normalizePath()` | 3min   |
-| **T2.4**  | T2     | Verify build + existing tests pass                                                           | 2min   |
-| **T3.1**  | T3     | Add `w.pathKey(path)` to `pollWalkDir` when storing into snapshot map                        | 5min   |
-| **T3.2**  | T3     | Add `w.pathKey(path)` to `pollDetectChanges` when building `current` map                     | 5min   |
-| **T3.3**  | T3     | Update removed-file detection loop to use pathKey for snapshot lookup                        | 5min   |
-| **T3.4**  | T3     | Verify poll tests pass                                                                       | 2min   |
-| **T4.1**  | T4     | Normalize gitignoreDir keys in `gitignoreCache.load()` with `pathKey`                        | 5min   |
-| **T4.2**  | T4     | Update `shouldSkipByGitignore` ancestor-prefix check to use `pathKey`                        | 5min   |
-| **T4.3**  | T4     | Verify gitignore tests pass                                                                  | 2min   |
-| **T5.1**  | T5     | Create `addToWatchList(path string)` method that updates both `watchList` + `watchListKeys`  | 5min   |
-| **T5.2**  | T5     | Create `removeFromWatchList(path string)` method that updates both                           | 5min   |
-| **T5.3**  | T5     | Replace direct `w.watchList = append(...)` in `tryAddPath` with `addToWatchList`             | 2min   |
-| **T5.4**  | T5     | Replace direct append in `walkAndAddPaths` root tracking with `addToWatchList`               | 2min   |
-| **T5.5**  | T5     | Replace direct append in `appendToWatchList` (self-heal) with `addToWatchList`               | 2min   |
-| **T5.6**  | T5     | Replace direct manipulation in `Remove()` with `removeFromWatchList`                         | 5min   |
-| **T5.7**  | T5     | Verify all tests pass with `-race`                                                           | 2min   |
-| **T6.1**  | T6     | Write test: NFC path vs NFD path produce same `pathKey`                                      | 5min   |
-| **T6.2**  | T6     | Write test: Unicode exclude path matches NFD event path                                      | 5min   |
-| **T6.3**  | T6     | Write test: Unicode debounce key collision (NFC vs NFD)                                      | 5min   |
-| **T7.1**  | T7     | Write test: Poll snapshot uses canonical keys (case-insensitive)                             | 5min   |
-| **T7.2**  | T7     | Write test: Case-only rename in poll mode doesn't produce phantom events                     | 5min   |
-| **T8.1**  | T8     | Write test: Gitignore ancestor-prefix match is case-aware                                    | 5min   |
-| **T8.2**  | T8     | Write test: Gitignore rule applies with different-case directory                             | 5min   |
-| **T9.1**  | T9     | Add CHANGELOG.md entry for NFC normalization + case-awareness fixes                          | 5min   |
-| **T9.2**  | T9     | Update AGENTS.md gotcha #18 with NFC normalization note                                      | 3min   |
-| **T9.3**  | T9     | Update FEATURES.md: add NFC normalization row                                                | 3min   |
-| **T10.1** | T10    | Add `CaseSensitivity string` field to `Stats` struct                                         | 3min   |
-| **T10.2** | T10    | Populate it in `Stats()` method from `effectiveCaseSensitivity.String()`                     | 3min   |
-| **T10.3** | T10    | Add test: `Stats().CaseSensitivity` reflects configured mode                                 | 3min   |
-| **T11.1** | T11    | Write `FilterCaseInsensitive(inner Filter) Filter` wrapper in `filter.go`                    | 5min   |
-| **T11.2** | T11    | Write test for `FilterCaseInsensitive`                                                       | 5min   |
-| **T12.1** | T12    | Update `doc.go` with case-sensitivity + NFC mention                                          | 5min   |
-| **T12.2** | T12    | Add `FilesystemCaseSensitivity`, `pathKey`, `NFC` to DOMAIN_LANGUAGE.md                      | 5min   |
-| **T13.1** | T13    | Add `ExampleWithCaseSensitivity` to `example_test.go`                                        | 10min  |
-| **T13.2** | T13    | Add "Filesystem Compatibility" section to Troubleshooting.md                                 | 10min  |
-| **T14.1** | T14    | Write test: `Reset()` preserves `caseSensitivity` config                                     | 5min   |
-| **T14.2** | T14    | Run `nix run .#check` — fix any lint/test issues                                             | 5min   |
-| **T14.3** | T14    | Final `nix run .#check` verification                                                         | 2min   |
+~~| **T1.1**  | T1     | Add `golang.org/x/text` to `go.mod` (`go get golang.org/x/text/unicode/norm`)                | 2min   |~~ done — shipped in v2.4.0
+~~| **T1.2**  | T1     | Add NFC import + normalization to `pathKey()` in `filesystem.go`                             | 5min   |~~ done — shipped in v2.4.0
+~~| **T1.3**  | T1     | Verify `go build ./...` compiles                                                             | 1min   |~~ done — shipped in v2.4.0
+~~| **T1.4**  | T1     | Update `vendorHash` in `flake.nix` if needed                                                 | 5min   |~~ done — shipped in v2.4.0
+~~| **T2.1**  | T2     | Add `normalizePath()` helper with `filepath.Clean(filepath.Abs(path))`                       | 5min   |~~ done — shipped in v2.4.0
+~~| **T2.2**  | T2     | Replace `filepath.Abs` calls in `New()` and `withResolvedPath()` with `normalizePath()`      | 5min   |~~ done — shipped in v2.4.0
+~~| **T2.3**  | T2     | Replace `filepath.Abs` in `FilterExcludePaths` and `WithExcludePaths` with `normalizePath()` | 3min   |~~ done — shipped in v2.4.0
+~~| **T2.4**  | T2     | Verify build + existing tests pass                                                           | 2min   |~~ done — shipped in v2.4.0
+~~| **T3.1**  | T3     | Add `w.pathKey(path)` to `pollWalkDir` when storing into snapshot map                        | 5min   |~~ done — shipped in v2.4.0
+~~| **T3.2**  | T3     | Add `w.pathKey(path)` to `pollDetectChanges` when building `current` map                     | 5min   |~~ done — shipped in v2.4.0
+~~| **T3.3**  | T3     | Update removed-file detection loop to use pathKey for snapshot lookup                        | 5min   |~~ done — shipped in v2.4.0
+~~| **T3.4**  | T3     | Verify poll tests pass                                                                       | 2min   |~~ done — shipped in v2.4.0
+~~| **T4.1**  | T4     | Normalize gitignoreDir keys in `gitignoreCache.load()` with `pathKey`                        | 5min   |~~ done — shipped in v2.4.0
+~~| **T4.2**  | T4     | Update `shouldSkipByGitignore` ancestor-prefix check to use `pathKey`                        | 5min   |~~ done — shipped in v2.4.0
+~~| **T4.3**  | T4     | Verify gitignore tests pass                                                                  | 2min   |~~ done — shipped in v2.4.0
+~~| **T5.1**  | T5     | Create `addToWatchList(path string)` method that updates both `watchList` + `watchListKeys`  | 5min   |~~ done — shipped in v2.4.0
+~~| **T5.2**  | T5     | Create `removeFromWatchList(path string)` method that updates both                           | 5min   |~~ done — shipped in v2.4.0
+~~| **T5.3**  | T5     | Replace direct `w.watchList = append(...)` in `tryAddPath` with `addToWatchList`             | 2min   |~~ done — shipped in v2.4.0
+~~| **T5.4**  | T5     | Replace direct append in `walkAndAddPaths` root tracking with `addToWatchList`               | 2min   |~~ done — shipped in v2.4.0
+~~| **T5.5**  | T5     | Replace direct append in `appendToWatchList` (self-heal) with `addToWatchList`               | 2min   |~~ done — shipped in v2.4.0
+~~| **T5.6**  | T5     | Replace direct manipulation in `Remove()` with `removeFromWatchList`                         | 5min   |~~ done — shipped in v2.4.0
+~~| **T5.7**  | T5     | Verify all tests pass with `-race`                                                           | 2min   |~~ done — shipped in v2.4.0
+~~| **T6.1**  | T6     | Write test: NFC path vs NFD path produce same `pathKey`                                      | 5min   |~~ done — shipped in v2.4.0
+~~| **T6.2**  | T6     | Write test: Unicode exclude path matches NFD event path                                      | 5min   |~~ done — shipped in v2.4.0
+~~| **T6.3**  | T6     | Write test: Unicode debounce key collision (NFC vs NFD)                                      | 5min   |~~ done — shipped in v2.4.0
+~~| **T7.1**  | T7     | Write test: Poll snapshot uses canonical keys (case-insensitive)                             | 5min   |~~ done — shipped in v2.4.0
+~~| **T7.2**  | T7     | Write test: Case-only rename in poll mode doesn't produce phantom events                     | 5min   |~~ done — shipped in v2.4.0
+~~| **T8.1**  | T8     | Write test: Gitignore ancestor-prefix match is case-aware                                    | 5min   |~~ done — shipped in v2.4.0
+~~| **T8.2**  | T8     | Write test: Gitignore rule applies with different-case directory                             | 5min   |~~ done — shipped in v2.4.0
+~~| **T9.1**  | T9     | Add CHANGELOG.md entry for NFC normalization + case-awareness fixes                          | 5min   |~~ done — shipped in v2.4.0
+~~| **T9.2**  | T9     | Update AGENTS.md gotcha #18 with NFC normalization note                                      | 3min   |~~ done — shipped in v2.4.0
+~~| **T9.3**  | T9     | Update FEATURES.md: add NFC normalization row                                                | 3min   |~~ done — shipped in v2.4.0
+~~| **T10.1** | T10    | Add `CaseSensitivity string` field to `Stats` struct                                         | 3min   |~~ done — shipped in v2.4.0
+~~| **T10.2** | T10    | Populate it in `Stats()` method from `effectiveCaseSensitivity.String()`                     | 3min   |~~ done — shipped in v2.4.0
+~~| **T10.3** | T10    | Add test: `Stats().CaseSensitivity` reflects configured mode                                 | 3min   |~~ done — shipped in v2.4.0
+~~| **T11.1** | T11    | Write `FilterCaseInsensitive(inner Filter) Filter` wrapper in `filter.go`                    | 5min   |~~ done — shipped in v2.4.0
+~~| **T11.2** | T11    | Write test for `FilterCaseInsensitive`                                                       | 5min   |~~ done — shipped in v2.4.0
+~~| **T12.1** | T12    | Update `doc.go` with case-sensitivity + NFC mention                                          | 5min   |~~ done — shipped in v2.4.0
+~~| **T12.2** | T12    | Add `FilesystemCaseSensitivity`, `pathKey`, `NFC` to DOMAIN_LANGUAGE.md                      | 5min   |~~ done — shipped in v2.4.0
+~~| **T13.1** | T13    | Add `ExampleWithCaseSensitivity` to `example_test.go`                                        | 10min  |~~ done — shipped in v2.4.0
+~~| **T13.2** | T13    | Add "Filesystem Compatibility" section to Troubleshooting.md                                 | 10min  |~~ done — shipped in v2.4.0
+~~| **T14.1** | T14    | Write test: `Reset()` preserves `caseSensitivity` config                                     | 5min   |~~ done — shipped in v2.4.0
+~~| **T14.2** | T14    | Run `nix run .#check` — fix any lint/test issues                                             | 5min   |~~ done — shipped in v2.4.0
+~~| **T14.3** | T14    | Final `nix run .#check` verification                                                         | 2min   |~~ done — shipped in v2.4.0
 
 **Total micro-tasks: 43 tasks, ~3.5h of focused work (with context-switching overhead: ~5h)**
 

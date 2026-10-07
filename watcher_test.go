@@ -1483,6 +1483,78 @@ func TestWatcher_Watch_WithPolling_FileModification(t *testing.T) {
 	}
 }
 
+// TestWatcher_Polling_ContextCancel_ChannelClosesWithoutRace is the regression
+// test for the close-vs-send data race (CI run 37585089337): the fsnotify loop
+// used to close the shared event channel while the poll loop was still inside
+// its trackedEmit select. The closer now waits for every channel-sending
+// goroutine to exit (per-Watch WaitGroup), so cancelling the context while the
+// poller is mid-emit must drain cleanly to a closed channel — with -race as
+// the judge.
+func TestWatcher_Polling_ContextCancel_ChannelClosesWithoutRace(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	testFile := filepath.Join(tmpDir, "churn.txt")
+
+	err := os.WriteFile(testFile, []byte("initial"), testFilePermission)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w := newTestWatcher(
+		t,
+		tmpDir,
+		WithPolling(true),
+		WithPollInterval(5*time.Millisecond),
+		WithBuffer(1),
+	)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	events, err := w.Watch(ctx)
+	if err != nil {
+		t.Fatalf("Watch failed: %v", err)
+	}
+
+	stopWriting := make(chan struct{})
+	writerDone := make(chan struct{})
+
+	go func() {
+		defer close(writerDone)
+
+		for i := 0; ; i++ {
+			select {
+			case <-stopWriting:
+				return
+			default:
+			}
+
+			writeErr := os.WriteFile(testFile, []byte(strconv.Itoa(i)), testFilePermission)
+			if writeErr != nil {
+				return
+			}
+		}
+	}()
+
+	time.Sleep(100 * time.Millisecond)
+
+	cancel()
+
+	// The event channel MUST close once the sending loops have exited —
+	// under -race, any close/send overlap fails the whole test run here.
+	for range events {
+	}
+
+	close(stopWriting)
+	<-writerDone
+
+	if err := w.Close(); err != nil {
+		t.Errorf("Close failed: %v", err)
+	}
+}
+
 func TestWatcher_Watch_WithPolling_FileRemoval(t *testing.T) {
 	t.Parallel()
 

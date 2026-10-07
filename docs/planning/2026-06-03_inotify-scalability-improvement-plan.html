@@ -581,26 +581,26 @@
 
       <h4>Files Changed</h4>
       <table>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td><code>watcher_walk.go</code></td>
           <td>
             Load gitignore in <code>walkDirFunc</code>, check before
             <code>Add()</code>
           </td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td><code>options.go</code></td>
           <td>Add <code>WithGitignore(bool)</code></td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td><code>watcher.go</code></td>
           <td>Add <code>gitignoreCache</code> field to <code>Watcher</code></td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td><code>filter.go</code></td>
           <td>Add <code>FilterGitignore()</code> for event-level filtering</td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td><code>go.mod</code></td>
           <td>Add gitignore library dependency</td>
         </tr>
@@ -955,7 +955,7 @@ if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
 
     <table>
       <thead>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <th>ID</th>
           <th>Item</th>
           <th>Impact</th>
@@ -965,7 +965,7 @@ if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>W2</td>
           <td>Graceful ENOSPC handling</td>
           <td>Unblocks PMA immediately</td>
@@ -973,7 +973,7 @@ if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
           <td><span class="badge badge-critical">P0</span></td>
           <td>None</td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>W3</td>
           <td>Path-level exclusions</td>
           <td>−30k watches</td>
@@ -981,7 +981,7 @@ if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
           <td><span class="badge badge-critical">P0</span></td>
           <td>None</td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>W1</td>
           <td>Gitignore-aware walking</td>
           <td>−50-70% watches</td>
@@ -989,7 +989,7 @@ if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
           <td><span class="badge badge-high">P1</span></td>
           <td>None</td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>W4</td>
           <td>Batched watch registration</td>
           <td>Startup latency fix</td>
@@ -997,7 +997,7 @@ if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
           <td><span class="badge badge-high">P1</span></td>
           <td>W2</td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>W5</td>
           <td>Inotify budget awareness</td>
           <td>Deterministic limits</td>
@@ -1005,7 +1005,7 @@ if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
           <td><span class="badge badge-medium">P2</span></td>
           <td>W2, W4</td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>W6</td>
           <td>Remove() subdirectory cleanup</td>
           <td>Watch leak fix</td>
@@ -1013,7 +1013,7 @@ if w.maxWatches > 0 && len(w.watchList) >= w.maxWatches {
           <td><span class="badge badge-medium">P2</span></td>
           <td>None</td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>W7</td>
           <td>Reset() method</td>
           <td>Consumer ergonomics</td>
@@ -1134,14 +1134,14 @@ func (w *Watcher) Reset() error</code></pre>
 
     <table>
       <thead>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <th>Decision</th>
           <th>Chosen</th>
           <th>Alternatives Considered</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>Gitignore library</td>
           <td>Start with <code>sabhiram/go-gitignore</code> (zero deps)</td>
           <td>
@@ -1149,7 +1149,7 @@ func (w *Watcher) Reset() error</code></pre>
             transitive deps)
           </td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>Gitignore loading timing</td>
           <td>Load during walk (<code>walkDirFunc</code>)</td>
           <td>
@@ -1157,17 +1157,17 @@ func (w *Watcher) Reset() error</code></pre>
             startup, more accurate)
           </td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>ENOSPC behavior</td>
           <td>Log warning + continue walking</td>
           <td>Return error (current), fail-open (ignore completely), panic</td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>Watch batching strategy</td>
           <td>Background goroutine with batches</td>
           <td>Lazy on-demand watching (edge cases with nested dirs)</td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>Inotify limit source</td>
           <td>
             Read from <code>/proc/sys/fs/inotify/max_user_watches</code> on
@@ -1175,7 +1175,7 @@ func (w *Watcher) Reset() error</code></pre>
           </td>
           <td>Require user to pass it, auto-detect via syscall</td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>Path exclusion semantics</td>
           <td>Prefix match on absolute paths</td>
           <td>Glob patterns (more flexible but slower), exact match only</td>
@@ -1223,13 +1223,13 @@ func (w *Watcher) Reset() error</code></pre>
 
     <table>
       <thead>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <th>Work Item</th>
           <th>Test Cases</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>W1: Gitignore</td>
           <td>
             <ul>
@@ -1247,7 +1247,7 @@ func (w *Watcher) Reset() error</code></pre>
             </ul>
           </td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>W2: ENOSPC</td>
           <td>
             <ul>
@@ -1260,7 +1260,7 @@ func (w *Watcher) Reset() error</code></pre>
             </ul>
           </td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>W3: ExcludePaths</td>
           <td>
             <ul>
@@ -1271,7 +1271,7 @@ func (w *Watcher) Reset() error</code></pre>
             </ul>
           </td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>W4: Batched</td>
           <td>
             <ul>
@@ -1282,7 +1282,7 @@ func (w *Watcher) Reset() error</code></pre>
             </ul>
           </td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>W5: Budget</td>
           <td>
             <ul>
@@ -1292,7 +1292,7 @@ func (w *Watcher) Reset() error</code></pre>
             </ul>
           </td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>W6: Remove</td>
           <td>
             <ul>
@@ -1302,7 +1302,7 @@ func (w *Watcher) Reset() error</code></pre>
             </ul>
           </td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>W7: Reset</td>
           <td>
             <ul>
@@ -1321,7 +1321,7 @@ func (w *Watcher) Reset() error</code></pre>
 
     <table>
       <thead>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <th>Risk</th>
           <th>Likelihood</th>
           <th>Impact</th>
@@ -1329,7 +1329,7 @@ func (w *Watcher) Reset() error</code></pre>
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>Gitignore library has bugs or edge cases</td>
           <td>Medium</td>
           <td>Medium</td>
@@ -1338,7 +1338,7 @@ func (w *Watcher) Reset() error</code></pre>
             <code>WithGitignore(false)</code> escape hatch.
           </td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>Batched registration misses early events</td>
           <td>Low</td>
           <td>Low</td>
@@ -1348,7 +1348,7 @@ func (w *Watcher) Reset() error</code></pre>
             acceptable for PMA's use case.
           </td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>Performance regression from gitignore matching</td>
           <td>Low</td>
           <td>Medium</td>
@@ -1357,7 +1357,7 @@ func (w *Watcher) Reset() error</code></pre>
             gitignore on systems where inotify is unlimited.
           </td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>Breaking change from default gitignore behavior</td>
           <td>Low</td>
           <td>High</td>
@@ -1375,7 +1375,7 @@ func (w *Watcher) Reset() error</code></pre>
 
     <table>
       <thead>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <th>Metric</th>
           <th>Current</th>
           <th>Target (Phase 1)</th>
@@ -1383,25 +1383,25 @@ func (w *Watcher) Reset() error</code></pre>
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>Inotify watches used</td>
           <td>~76,000</td>
           <td>~46,000 (W3)</td>
           <td>~8,000 (W1 + W3)</td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>Watch startup time</td>
           <td>~20s (estimated)</td>
           <td>~15s</td>
           <td>&lt;2s (W4 batched)</td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>ENOSPC failures</td>
           <td>100% (watcher fails to start)</td>
           <td>0% (W2 graceful)</td>
           <td>0%</td>
         </tr>
-        <tr>
+        <tr><!--done: shipped in v2.2.0-->
           <td>PMA functional</td>
           <td>Partially broken</td>
           <td>Fully working</td>

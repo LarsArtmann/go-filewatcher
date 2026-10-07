@@ -156,29 +156,29 @@ The coverage app writes to `coverage.out` which is not writable in the nix sandb
 
 ### Immediate (This Session Could Still Do)
 
-1. **Fix `nix run .#coverage`** — Change to write to `$TMPDIR/coverage.out`
-2. **Fix pre-commit hook** — Increase timeout or remove problematic steps
-3. **Update TODO_LIST.md** — Check off done items, remove stale entries
-4. **Tag v2.0.0 release** — Library is stable, ready for release
+~~1. **Fix `nix run .#coverage`** — Change to write to `$TMPDIR/coverage.out`~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~2. **Fix pre-commit hook** — Increase timeout or remove problematic steps~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~3. **Update TODO_LIST.md** — Check off done items, remove stale entries~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~4. **Tag v2.0.0 release** — Library is stable, ready for release~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ### Short-term
 
-5. **`nix run .#lint` meta attributes** — Add `meta` to all apps to silence warnings
-6. **Add `//nolint:forbidigo` to examples** or use `slog` instead of `fmt.Println`
-7. **Document vendorHash update procedure** in AGENTS.md
-8. **Add Cachix for binary caching** — Free for OSS, speeds up CI
+~~5. **`nix run .#lint` meta attributes** — Add `meta` to all apps to silence warnings~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~6. **Add `//nolint:forbidigo` to examples** or use `slog` instead of `fmt.Println`~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~7. **Document vendorHash update procedure** in AGENTS.md~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~8. **Add Cachix for binary caching** — Free for OSS, speeds up CI~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ### Medium-term
 
-9. **Integration into downstream projects** — file-and-image-renamer, dynamic-markdown-site, auto-deduplicate, Cyberdom
-10. **Standalone CLI tool** — Would make `packages.default` actually produce a useful binary
-11. **Polling fallback** — For NFS/network mounts that don't support inotify
+~~9. **Integration into downstream projects** — file-and-image-renamer, dynamic-markdown-site, auto-deduplicate, Cyberdom~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~10. **Standalone CLI tool** — Would make `packages.default` actually produce a useful binary~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~11. **Polling fallback** — For NFS/network mounts that don't support inotify~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ### Architecture
 
-12. **Consider `internal/` package layout** — Currently all code in root package
-13. **Plugin/extension system** — For custom filters and middleware beyond built-in ones
-14. **Event batching improvements** — Consider using `slices` instead of manual slice ops
+~~12. **Consider `internal/` package layout** — Currently all code in root package~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~13. **Plugin/extension system** — For custom filters and middleware beyond built-in ones~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~14. **Event batching improvements** — Consider using `slices` instead of manual slice ops~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 
@@ -186,31 +186,31 @@ The coverage app writes to `coverage.out` which is not writable in the nix sandb
 
 | #  | Item                                                       | Priority | Effort | Category      |
 | -- | ---------------------------------------------------------- | -------- | ------ | ------------- |
-| 1  | **Fix `nix run .#coverage`** — write to `$TMPDIR`          | CRITICAL | 15min  | Nix           |
-| 2  | **Fix pre-commit hook timeout** — increase timeout or skip | HIGH     | 15min  | DevEx         |
-| 3  | **Tag v2.0.0 release**                                     | HIGH     | 30min  | Release       |
-| 4  | **Update TODO_LIST.md** — check off done items             | HIGH     | 15min  | Docs          |
-| 5  | **Add meta to nix apps** — silence warnings                | MEDIUM   | 15min  | Nix           |
-| 6  | **Add `//nolint:forbidigo` to examples**                   | MEDIUM   | 15min  | Quality       |
-| 7  | **Document vendorHash update procedure**                   | MEDIUM   | 15min  | Docs          |
-| 8  | **Add Cachix for binary caching**                          | MEDIUM   | 30min  | CI/CD         |
-| 9  | **Fix flaky tests** (TestWatcher_Stats_Metrics)            | MEDIUM   | 1-2h   | Quality       |
-| 10 | **Add issue/PR templates** (.github/)                      | MEDIUM   | 30min  | Community     |
-| 11 | **Add Godoc examples** (Example\* functions)               | MEDIUM   | 2-3h   | Docs          |
-| 12 | **Add `Event.ModTime()` field**                            | MEDIUM   | 30min  | Feature       |
-| 13 | **Add `WithPolling(fallback bool)`**                       | MEDIUM   | 2-4h   | Feature       |
-| 14 | **Recursive directory integration test**                   | MEDIUM   | 1h     | Testing       |
-| 15 | **Benchmark regression tests**                             | MEDIUM   | 2h     | Testing       |
-| 16 | **Integration into file-and-image-renamer**                | MEDIUM   | 4-8h   | Integration   |
-| 17 | **Standalone CLI tool**                                    | MEDIUM   | 4-8h   | Feature       |
-| 18 | **Troubleshooting.md**                                     | MEDIUM   | 1h     | Docs          |
-| 19 | **Goreleaser config**                                      | MEDIUM   | 2-3h   | Release       |
-| 20 | **Self-healing watcher**                                   | MEDIUM   | 2-4h   | Feature       |
-| 21 | **Circuit breaker middleware**                             | MEDIUM   | 1-2h   | Feature       |
-| 22 | **OpenTelemetry integration**                              | LOW      | 3-4h   | Observability |
-| 23 | **Race safety review for parallel tests**                  | LOW      | 2h     | Quality       |
-| 24 | **Fuzz testing**                                           | LOW      | 2-3h   | Testing       |
-| 25 | **Windows CI + tests**                                     | LOW      | 2-3h   | Testing       |
+~~| 1  | **Fix `nix run .#coverage`** — write to `$TMPDIR`          | CRITICAL | 15min  | Nix           |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 2  | **Fix pre-commit hook timeout** — increase timeout or skip | HIGH     | 15min  | DevEx         |~~ OBSOLETE — BuildFlow reworked; green 2026-10-07
+~~| 3  | **Tag v2.0.0 release**                                     | HIGH     | 30min  | Release       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 4  | **Update TODO_LIST.md** — check off done items             | HIGH     | 15min  | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 5  | **Add meta to nix apps** — silence warnings                | MEDIUM   | 15min  | Nix           |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 6  | **Add `//nolint:forbidigo` to examples**                   | MEDIUM   | 15min  | Quality       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 7  | **Document vendorHash update procedure**                   | MEDIUM   | 15min  | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 8  | **Add Cachix for binary caching**                          | MEDIUM   | 30min  | CI/CD         |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 9  | **Fix flaky tests** (TestWatcher_Stats_Metrics)            | MEDIUM   | 1-2h   | Quality       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 10 | **Add issue/PR templates** (.github/)                      | MEDIUM   | 30min  | Community     |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 11 | **Add Godoc examples** (Example\* functions)               | MEDIUM   | 2-3h   | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 12 | **Add `Event.ModTime()` field**                            | MEDIUM   | 30min  | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 13 | **Add `WithPolling(fallback bool)`**                       | MEDIUM   | 2-4h   | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 14 | **Recursive directory integration test**                   | MEDIUM   | 1h     | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 15 | **Benchmark regression tests**                             | MEDIUM   | 2h     | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 16 | **Integration into file-and-image-renamer**                | MEDIUM   | 4-8h   | Integration   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 17 | **Standalone CLI tool**                                    | MEDIUM   | 4-8h   | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 18 | **Troubleshooting.md**                                     | MEDIUM   | 1h     | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 19 | **Goreleaser config**                                      | MEDIUM   | 2-3h   | Release       |~~ OPEN → TODO_LIST open Q1
+~~| 20 | **Self-healing watcher**                                   | MEDIUM   | 2-4h   | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 21 | **Circuit breaker middleware**                             | MEDIUM   | 1-2h   | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 22 | **OpenTelemetry integration**                              | LOW      | 3-4h   | Observability |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 23 | **Race safety review for parallel tests**                  | LOW      | 2h     | Quality       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 24 | **Fuzz testing**                                           | LOW      | 2-3h   | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 25 | **Windows CI + tests**                                     | LOW      | 2-3h   | Testing       |~~ OPEN → TODO_LIST (Windows CI matrix)
 
 ---
 

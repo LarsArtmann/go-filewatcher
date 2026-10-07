@@ -98,21 +98,21 @@ go-filewatcher is a **production-ready, high-performance file system watcher** f
 
 ## e) WHAT WE SHOULD IMPROVE 📈
 
-~~1. **Fix the `Add()` double-append bug** — watchList returns duplicate entries for recursively added paths~~ 155
-~~2. **Align flake.nix Go version** — `go_1_24` → `go_1_26` to match CI and linter config~~ 155
-~~3. **Extract `testing_helpers.go`** — Move to `testing_helpers_test.go` or add build tag; 306 lines shouldn't ship to consumers~~ 155
-~~4. **Cut v0.3.0 release** — 3 commits on top of v0.2.0 including gogenfilter v0.2.0 migration, benchmark improvements, MIT license~~ 155
-~~5. **Populate CHANGELOG.md** — Add versioned entries for v0.1.0 and v0.2.0 releases~~ 155
-~~6. **Add nix build/test/lint commands** — `nix run .#test`, `nix run .#lint` in flake.nix~~ 155
-~~7. **Fix `MiddlewareBatch` error swallowing** — Log or propagate timer-flush errors instead of `_ =`~~ 155
-~~8. **Fix `handleNewDirectory` error swallowing** — At minimum log the error; consider retry~~ 155
-~~9. **Add rename event integration test** — Only Create/Write/Remove are tested end-to-end~~ 155
-~~10. **Add multi-directory initialization test** — `New([]string{dir1, dir2, dir3})` is untested~~ 155
-~~11. **Close coverage gap** — Push `addPath` (83.3%) and `walkDirFunc` (84.6%) above 90%~~ 155
-~~12. **Replace hand-rolled `MarshalJSON`** — Use `json.Marshal(op.String())` for robustness~~ 155
-~~13. **Protect `DefaultIgnoreDirs`** — Return a copy or use an accessor function~~ 155
-~~14. **Add `CONTRIBUTING.md`** — Now that the project is MIT-licensed, external contributions are possible~~ 155
-~~15. **Ring buffer for `SlidingWindowRateLimit`** — Reduce per-event allocations~~ 155
+~~1. **Fix the `Add()` double-append bug** — watchList returns duplicate entries for recursively added paths~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~2. **Align flake.nix Go version** — `go_1_24` → `go_1_26` to match CI and linter config~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~3. **Extract `testing_helpers.go`** — Move to `testing_helpers_test.go` or add build tag; 306 lines shouldn't ship to consumers~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~4. **Cut v0.3.0 release** — 3 commits on top of v0.2.0 including gogenfilter v0.2.0 migration, benchmark improvements, MIT license~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~5. **Populate CHANGELOG.md** — Add versioned entries for v0.1.0 and v0.2.0 releases~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~6. **Add nix build/test/lint commands** — `nix run .#test`, `nix run .#lint` in flake.nix~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~7. **Fix `MiddlewareBatch` error swallowing** — Log or propagate timer-flush errors instead of `_ =`~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~8. **Fix `handleNewDirectory` error swallowing** — At minimum log the error; consider retry~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~9. **Add rename event integration test** — Only Create/Write/Remove are tested end-to-end~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~10. **Add multi-directory initialization test** — `New([]string{dir1, dir2, dir3})` is untested~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~11. **Close coverage gap** — Push `addPath` (83.3%) and `walkDirFunc` (84.6%) above 90%~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~12. **Replace hand-rolled `MarshalJSON`** — Use `json.Marshal(op.String())` for robustness~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~13. **Protect `DefaultIgnoreDirs`** — Return a copy or use an accessor function~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~14. **Add `CONTRIBUTING.md`** — Now that the project is MIT-licensed, external contributions are possible~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~15. **Ring buffer for `SlidingWindowRateLimit`** — Reduce per-event allocations~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 
@@ -120,31 +120,31 @@ go-filewatcher is a **production-ready, high-performance file system watcher** f
 
 | #  | Item                                                   | Impact           | Effort |
 | -- | ------------------------------------------------------ | ---------------- | ------ |
-~~| 1  | Commit MIT license change                              | 🔴 Critical      | 1 min  |~~ 155
-~~| 2  | Fix `Add()` double-append bug in `watchList`           | 🔴 Bug fix       | 15 min |~~ 155
-~~| 3  | Align flake.nix Go version to 1.26                     | 🔴 Toolchain     | 5 min  |~~ 155
-~~| 4  | Cut v0.3.0 release (tag + CHANGELOG)                   | 🔴 Release       | 20 min |~~ 155
-~~| 5  | Move `testing_helpers.go` to test package or build-tag | 🟡 Ship quality  | 15 min |~~ 155
-~~| 6  | Fix `MiddlewareBatch` timer error swallowing           | 🟡 Robustness    | 10 min |~~ 155
-~~| 7  | Fix `handleNewDirectory` error swallowing              | 🟡 Robustness    | 10 min |~~ 155
-~~| 8  | Add rename event integration test                      | 🟡 Coverage      | 15 min |~~ 155
-~~| 9  | Add multi-directory initialization test                | 🟡 Coverage      | 10 min |~~ 155
-~~| 10 | Close coverage gaps in `addPath`/`walkDirFunc`         | 🟡 Quality       | 20 min |~~ 155
-~~| 11 | Replace hand-rolled `Op.MarshalJSON`                   | 🟢 Robustness    | 5 min  |~~ 155
-~~| 12 | Protect `DefaultIgnoreDirs` from mutation              | 🟢 Safety        | 5 min  |~~ 155
-~~| 13 | Populate CHANGELOG for v0.1.0 and v0.2.0               | 🟢 Docs          | 15 min |~~ 155
-~~| 14 | Add `nix run .#test` and `nix run .#lint` to flake.nix | 🟢 DX            | 20 min |~~ 155
-~~| 15 | Add `CONTRIBUTING.md` (now MIT-licensed)               | 🟢 Community     | 20 min |~~ 155
-~~| 16 | Ring buffer for `SlidingWindowRateLimit`               | 🟢 Perf          | 20 min |~~ 155
-~~| 17 | Add buffer overflow / backpressure test                | 🟡 Coverage      | 15 min |~~ 155
-~~| 18 | Add concurrent Add/Remove during watching test         | 🟡 Coverage      | 15 min |~~ 155
-~~| 19 | Implement `WatchOnce()`                                | 🔵 Feature       | 1 hr   |~~ 155
-~~| 20 | Implement symlink following support                    | 🔵 Feature       | 2 hr   |~~ 155
-~~| 21 | Implement polling fallback for NFS                     | 🔵 Feature       | 3 hr   |~~ 155
-~~| 22 | Add `Event.Size` / `Event.ModTime()` fields            | 🔵 Feature       | 1 hr   |~~ 155
-~~| 23 | Implement `MiddlewareThrottle`                         | 🔵 Feature       | 1 hr   |~~ 155
-~~| 24 | Set up GoReleaser pipeline                             | 🔵 Infra         | 1 hr   |~~ 155
-~~| 25 | OpenTelemetry integration                              | 🔵 Observability | 2 hr   |~~ 155
+~~| 1  | Commit MIT license change                              | 🔴 Critical      | 1 min  |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 2  | Fix `Add()` double-append bug in `watchList`           | 🔴 Bug fix       | 15 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 3  | Align flake.nix Go version to 1.26                     | 🔴 Toolchain     | 5 min  |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 4  | Cut v0.3.0 release (tag + CHANGELOG)                   | 🔴 Release       | 20 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 5  | Move `testing_helpers.go` to test package or build-tag | 🟡 Ship quality  | 15 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 6  | Fix `MiddlewareBatch` timer error swallowing           | 🟡 Robustness    | 10 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 7  | Fix `handleNewDirectory` error swallowing              | 🟡 Robustness    | 10 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 8  | Add rename event integration test                      | 🟡 Coverage      | 15 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 9  | Add multi-directory initialization test                | 🟡 Coverage      | 10 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 10 | Close coverage gaps in `addPath`/`walkDirFunc`         | 🟡 Quality       | 20 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 11 | Replace hand-rolled `Op.MarshalJSON`                   | 🟢 Robustness    | 5 min  |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 12 | Protect `DefaultIgnoreDirs` from mutation              | 🟢 Safety        | 5 min  |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 13 | Populate CHANGELOG for v0.1.0 and v0.2.0               | 🟢 Docs          | 15 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 14 | Add `nix run .#test` and `nix run .#lint` to flake.nix | 🟢 DX            | 20 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 15 | Add `CONTRIBUTING.md` (now MIT-licensed)               | 🟢 Community     | 20 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 16 | Ring buffer for `SlidingWindowRateLimit`               | 🟢 Perf          | 20 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 17 | Add buffer overflow / backpressure test                | 🟡 Coverage      | 15 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 18 | Add concurrent Add/Remove during watching test         | 🟡 Coverage      | 15 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 19 | Implement `WatchOnce()`                                | 🔵 Feature       | 1 hr   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 20 | Implement symlink following support                    | 🔵 Feature       | 2 hr   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 21 | Implement polling fallback for NFS                     | 🔵 Feature       | 3 hr   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 22 | Add `Event.Size` / `Event.ModTime()` fields            | 🔵 Feature       | 1 hr   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 23 | Implement `MiddlewareThrottle`                         | 🔵 Feature       | 1 hr   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 24 | Set up GoReleaser pipeline                             | 🔵 Infra         | 1 hr   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 25 | OpenTelemetry integration                              | 🔵 Observability | 2 hr   |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 

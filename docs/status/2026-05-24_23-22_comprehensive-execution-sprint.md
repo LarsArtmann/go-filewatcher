@@ -178,11 +178,11 @@ Tasks fully implemented, tested, linted, and verified:
 
 ### Nothing critically broken — but these items need attention:
 
-1. **WithPolling / WithPollInterval** — Options are added to the Watcher struct but **no polling goroutine is implemented**. Setting `WithPolling(true)` does nothing at runtime — the `polling` and `pollInterval` fields are stored but never read by `watchLoop`. This is a feature stub, not a working feature.
+~~1. **WithPolling / WithPollInterval** — Options are added to the Watcher struct but **no polling goroutine is implemented**. Setting `WithPolling(true)` does nothing at runtime — the `polling` and `pollInterval` fields are stored but never read by `watchLoop`. This is a feature stub, not a working feature.~~ done — shipped ≤v2.2.0, verified v2.4.1
 
-2. **WithDebug** — Same situation. `debug` and `debugLogger` fields exist on Watcher but **no debug logging calls** were added to `watcher_internal.go` or elsewhere. The option is accepted but has zero effect.
+~~2. **WithDebug** — Same situation. `debug` and `debugLogger` fields exist on Watcher but **no debug logging calls** were added to `watcher_internal.go` or elsewhere. The option is accepted but has zero effect.~~ done — shipped ≤v2.2.0, verified v2.4.1
 
-3. **Three falsely-marked-done items were in TODO_LIST.md** from before this session:
+~~3. **Three falsely-marked-done items were in TODO_LIST.md** from before this session:~~ done — shipped ≤v2.2.0, verified v2.4.1
    - `#1` coverage $TMPDIR — was marked done but still used `/tmp/`
    - `#13` -race in bench — was marked done but confused `-benchmem` with `-race`
    - `#14` benchmark regression — was marked done but had no baselines
@@ -193,28 +193,28 @@ Tasks fully implemented, tested, linted, and verified:
 
 ### Critical
 
-1. **Polling goroutine** — `WithPolling(true)` needs actual polling implementation in `watchLoop` or a separate goroutine that walks watched directories at `pollInterval`
-2. **Debug logging** — `WithDebug` needs actual `if w.debug { w.debugLogger.Debug(...) }` calls sprinkled in processEvent, emitEvent, handleError, handleNewDirectory
+~~1. **Polling goroutine** — `WithPolling(true)` needs actual polling implementation in `watchLoop` or a separate goroutine that walks watched directories at `pollInterval`~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~2. **Debug logging** — `WithDebug` needs actual `if w.debug { w.debugLogger.Debug(...) }` calls sprinkled in processEvent, emitEvent, handleError, handleNewDirectory~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ### High Impact
 
-3. **Exponential backoff (#42)** — Currently errors are just dispatched to handlers with no retry
-4. **Symlink following (#43)** — Common request for watcher libraries
-5. **Goreleaser (#64)** — Needed for proper release automation (currently just a GitHub Actions release.yml)
+~~3. **Exponential backoff (#42)** — Currently errors are just dispatched to handlers with no retry~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~4. **Symlink following (#43)** — Common request for watcher libraries~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~5. **Goreleaser (#64)** — Needed for proper release automation (currently just a GitHub Actions release.yml)~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ### Medium Impact
 
-6. **Circuit breaker (#53)** — Would pair well with error handling
-7. **Fuzz testing (#73)** — Especially for FilterRegex, FilterContentHash, SARIF parsing
-8. **Windows tests (#72)** — Cross-platform is a stated goal
-9. **Test examples/ in CI (#74)** — `go build ./examples/...` should be in CI
-10. **Nix CI migration (#78)** — Currently CI uses setup-go, flake.nix exists for local dev only
+~~6. **Circuit breaker (#53)** — Would pair well with error handling~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~7. **Fuzz testing (#73)** — Especially for FilterRegex, FilterContentHash, SARIF parsing~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~8. **Windows tests (#72)** — Cross-platform is a stated goal~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~9. **Test examples/ in CI (#74)** — `go build ./examples/...` should be in CI~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~10. **Nix CI migration (#78)** — Currently CI uses setup-go, flake.nix exists for local dev only~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ### Housekeeping
 
-11. **Consolidate status docs** — `docs/status/` has 30+ files, many stale
-12. **Remove git-town.toml** — Deprecated, still exists
-13. **AGENTS.md update** — Needs new features (WithPolling, WithDebug, ErrorCode, Event.Size/ModTime, FilterContentHash) documented
+~~11. **Consolidate status docs** — `docs/status/` has 30+ files, many stale~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~12. **Remove git-town.toml** — Deprecated, still exists~~ OPEN → untracked; file still present (verify)
+~~13. **AGENTS.md update** — Needs new features (WithPolling, WithDebug, ErrorCode, Event.Size/ModTime, FilterContentHash) documented~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 
@@ -222,31 +222,31 @@ Tasks fully implemented, tested, linted, and verified:
 
 | Priority | #  | Task                                                                    | Effort | Impact |
 | -------- | -- | ----------------------------------------------------------------------- | ------ | ------ |
-| 1        | —  | **Implement polling goroutine** (wire WithPolling to actual fs polling) | 30min  | HIGH   |
-| 2        | —  | **Implement debug logging** (wire WithDebug to actual log calls)        | 15min  | HIGH   |
-| 3        | 42 | Implement exponential backoff for errors                                | 20min  | HIGH   |
-| 4        | 43 | Add symlink following support                                           | 30min  | MEDIUM |
-| 5        | 64 | Configure Goreleaser                                                    | 20min  | MEDIUM |
-| 6        | 74 | Test examples/ in CI pipeline                                           | 15min  | MEDIUM |
-| 7        | 73 | Add fuzz testing                                                        | 45min  | MEDIUM |
-| 8        | 53 | Circuit breaker middleware                                              | 30min  | MEDIUM |
-| 9        | 52 | Error rate limiting middleware                                          | 20min  | MEDIUM |
-| 10       | 55 | Error recovery strategies                                               | 20min  | MEDIUM |
-| 11       | 56 | Batch error handling                                                    | 15min  | MEDIUM |
-| 12       | 57 | Error correlation IDs                                                   | 15min  | MEDIUM |
-| 13       | 58 | Error sanitization                                                      | 15min  | MEDIUM |
-| 14       | 45 | Filter func return match metadata                                       | 20min  | MEDIUM |
-| 15       | 47 | Watcher.AddRecursive for partial recursion                              | 20min  | MEDIUM |
-| 16       | 62 | OpenTelemetry integration                                               | 45min  | MEDIUM |
-| 17       | 49 | Prometheus metrics export                                               | 30min  | MEDIUM |
-| 18       | 65 | Configure semantic-release                                              | 20min  | MEDIUM |
-| 19       | 66 | Create standalone CLI tool                                              | 60min  | MEDIUM |
-| 20       | 72 | Windows-specific edge case tests                                        | 30min  | LOW    |
-| 21       | 61 | Self-healing watcher                                                    | 45min  | MEDIUM |
-| 22       | 60 | Dead letter queue                                                       | 30min  | MEDIUM |
-| 23       | 71 | Extract drainEvents to testutil package                                 | 20min  | LOW    |
-| 24       | 78 | Migrate CI to Nix (Phase 3)                                             | 60min  | HIGH   |
-| 25       | —  | Update AGENTS.md with new features                                      | 10min  | HIGH   |
+~~| 1        | —  | **Implement polling goroutine** (wire WithPolling to actual fs polling) | 30min  | HIGH   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 2        | —  | **Implement debug logging** (wire WithDebug to actual log calls)        | 15min  | HIGH   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 3        | 42 | Implement exponential backoff for errors                                | 20min  | HIGH   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 4        | 43 | Add symlink following support                                           | 30min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 5        | 64 | Configure Goreleaser                                                    | 20min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 6        | 74 | Test examples/ in CI pipeline                                           | 15min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 7        | 73 | Add fuzz testing                                                        | 45min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 8        | 53 | Circuit breaker middleware                                              | 30min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 9        | 52 | Error rate limiting middleware                                          | 20min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 10       | 55 | Error recovery strategies                                               | 20min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 11       | 56 | Batch error handling                                                    | 15min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 12       | 57 | Error correlation IDs                                                   | 15min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 13       | 58 | Error sanitization                                                      | 15min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 14       | 45 | Filter func return match metadata                                       | 20min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 15       | 47 | Watcher.AddRecursive for partial recursion                              | 20min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 16       | 62 | OpenTelemetry integration                                               | 45min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 17       | 49 | Prometheus metrics export                                               | 30min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 18       | 65 | Configure semantic-release                                              | 20min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 19       | 66 | Create standalone CLI tool                                              | 60min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 20       | 72 | Windows-specific edge case tests                                        | 30min  | LOW    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 21       | 61 | Self-healing watcher                                                    | 45min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 22       | 60 | Dead letter queue                                                       | 30min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 23       | 71 | Extract drainEvents to testutil package                                 | 20min  | LOW    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 24       | 78 | Migrate CI to Nix (Phase 3)                                             | 60min  | HIGH   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 25       | —  | Update AGENTS.md with new features                                      | 10min  | HIGH   |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 

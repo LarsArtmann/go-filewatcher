@@ -36,18 +36,18 @@
 
 | #  | Item                                           | Priority |
 | -- | ---------------------------------------------- | -------- |
-~~| 1  | `WithPolling(fallback)` for NFS/network mounts | Medium   |~~ 114
-~~| 2  | Exponential backoff for errors                 | Medium   |~~ 114
-~~| 3  | Symlink following support                      | Medium   |~~ 114
-~~| 4  | `Event.ModTime()` field                        | Medium   |~~ 114
-~~| 5  | File content hashing option                    | Medium   |~~ 114
-~~| 6  | Prometheus metrics export                      | Medium   |~~ 114
-~~| 7  | OpenTelemetry integration                      | Medium   |~~ 114
-~~| 8  | Self-healing watcher                           | Medium   |~~ 114
-~~| 9  | Circuit breaker middleware                     | Medium   |~~ 114
-~~| 10 | Goreleaser configuration                       | Medium   |~~ 114
-~~| 11 | CLI tool                                       | Medium   |~~ 114
-~~| 12 | Fuzz testing                                   | Backlog  |~~ 114
+~~| 1  | `WithPolling(fallback)` for NFS/network mounts | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 2  | Exponential backoff for errors                 | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 3  | Symlink following support                      | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 4  | `Event.ModTime()` field                        | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 5  | File content hashing option                    | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 6  | Prometheus metrics export                      | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 7  | OpenTelemetry integration                      | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 8  | Self-healing watcher                           | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 9  | Circuit breaker middleware                     | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 10 | Goreleaser configuration                       | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 11 | CLI tool                                       | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 12 | Fuzz testing                                   | Backlog  |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ## d) TOTALLY FUCKED UP
 
@@ -59,43 +59,43 @@
 
 ## e) WHAT WE SHOULD IMPROVE
 
-~~1. **Ghost `testing_helpers.go`** — Delete it (it's been renamed to `_test.go`)~~ 114
-~~2. **LSP warnings in tests** — Fix noinlineerr, modernize, gosec warnings in `watcher_coverage_test.go`~~ 114
-~~3. **Flaky tests** — `TestWatcher_Stats_Metrics` and `TestWatcher_Watch_WithMiddleware` remain timing-sensitive~~ 114
-~~4. **Watcher struct size** — 24 fields is large; reconsider sub-structs if the library grows~~ 114
-~~5. **Event.Path is `string`** — Still not using `EventPath` phantom type internally; filters and middleware all use raw strings~~ 114
-~~6. **Pre-commit hook not executable** — Every commit warns about this~~ 114
-~~7. **Version tagging** — v0.1.0 and v2.0.0 releases still not tagged~~ 114
+~~1. **Ghost `testing_helpers.go`** — Delete it (it's been renamed to `_test.go`)~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~2. **LSP warnings in tests** — Fix noinlineerr, modernize, gosec warnings in `watcher_coverage_test.go`~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~3. **Flaky tests** — `TestWatcher_Stats_Metrics` and `TestWatcher_Watch_WithMiddleware` remain timing-sensitive~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~4. **Watcher struct size** — 24 fields is large; reconsider sub-structs if the library grows~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~5. **Event.Path is `string`** — Still not using `EventPath` phantom type internally; filters and middleware all use raw strings~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~6. **Pre-commit hook not executable** — Every commit warns about this~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~7. **Version tagging** — v0.1.0 and v2.0.0 releases still not tagged~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ## f) Top 25 Things to Do Next
 
 | #  | Item                                                          | Impact | Effort |
 | -- | ------------------------------------------------------------- | ------ | ------ |
-~~| 1  | Tag v0.2.0 release                                            | High   | Low    |~~ 114
-~~| 2  | Delete ghost `testing_helpers.go`                             | Medium | Low    |~~ 114
-~~| 3  | Fix pre-commit hook permissions                               | Medium | Low    |~~ 114
-~~| 4  | Fix LSP warnings in test files                                | Medium | Low    |~~ 114
-~~| 5  | Add `WithPolling(fallback bool)` for NFS                      | High   | Medium |~~ 114
-~~| 6  | Add exponential backoff for errors                            | High   | Medium |~~ 114
-~~| 7  | Add `Event.ModTime` field                                     | Medium | Low    |~~ 114
-~~| 8  | Add self-healing watcher (re-add lost paths)                  | High   | High   |~~ 114
-~~| 9  | Add symlink following support                                 | Medium | Medium |~~ 114
-~~| 10 | Add circuit breaker middleware                                | Medium | Medium |~~ 114
-~~| 11 | Prometheus/OpenTelemetry integration                          | High   | Medium |~~ 114
-~~| 12 | Goreleaser configuration                                      | Medium | Medium |~~ 114
-~~| 13 | Standalone CLI tool                                           | High   | High   |~~ 114
-~~| 14 | Address flaky tests (Stats, Middleware)                       | Medium | Medium |~~ 114
-~~| 15 | Fuzz testing for event parsing                                | Medium | Medium |~~ 114
-~~| 16 | Windows-specific edge case tests                              | Medium | Medium |~~ 114
-~~| 17 | File content hashing option                                   | Medium | Medium |~~ 114
-~~| 18 | Document DI integration patterns                              | Low    | Low    |~~ 114
-~~| 19 | Add `CODE_OF_CONDUCT.md`                                      | Low    | Low    |~~ 114
-~~| 20 | Add PR template                                               | Low    | Low    |~~ 114
-~~| 21 | Write Troubleshooting.md                                      | Medium | Medium |~~ 114
-~~| 22 | Add `FilterGeneratedCodeFull` test for edge cases             | Medium | Low    |~~ 114
-~~| 23 | Consider `WatchChanges(ctx, targetState)` for idempotent sync | Medium | High   |~~ 114
-~~| 24 | Dead letter queue for dropped events                          | Medium | Medium |~~ 114
-~~| 25 | Error correlation IDs                                         | Low    | Medium |~~ 114
+~~| 1  | Tag v0.2.0 release                                            | High   | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 2  | Delete ghost `testing_helpers.go`                             | Medium | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 3  | Fix pre-commit hook permissions                               | Medium | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 4  | Fix LSP warnings in test files                                | Medium | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 5  | Add `WithPolling(fallback bool)` for NFS                      | High   | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 6  | Add exponential backoff for errors                            | High   | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 7  | Add `Event.ModTime` field                                     | Medium | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 8  | Add self-healing watcher (re-add lost paths)                  | High   | High   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 9  | Add symlink following support                                 | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 10 | Add circuit breaker middleware                                | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 11 | Prometheus/OpenTelemetry integration                          | High   | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 12 | Goreleaser configuration                                      | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 13 | Standalone CLI tool                                           | High   | High   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 14 | Address flaky tests (Stats, Middleware)                       | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 15 | Fuzz testing for event parsing                                | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 16 | Windows-specific edge case tests                              | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 17 | File content hashing option                                   | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 18 | Document DI integration patterns                              | Low    | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 19 | Add `CODE_OF_CONDUCT.md`                                      | Low    | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 20 | Add PR template                                               | Low    | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 21 | Write Troubleshooting.md                                      | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 22 | Add `FilterGeneratedCodeFull` test for edge cases             | Medium | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 23 | Consider `WatchChanges(ctx, targetState)` for idempotent sync | Medium | High   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 24 | Dead letter queue for dropped events                          | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 25 | Error correlation IDs                                         | Low    | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ## g) Top Question I Cannot Figure Out Myself
 

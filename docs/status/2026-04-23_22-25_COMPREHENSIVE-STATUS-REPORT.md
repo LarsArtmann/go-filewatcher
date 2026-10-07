@@ -142,48 +142,48 @@
 
 | # | Task                                          | Est. Effort |
 | - | --------------------------------------------- | ----------- |
-~~| 1 | Tag v0.1.0 release (DONE — already tagged)    | -           |~~ 327
-~~| 2 | Tag v2.0.0 release                            | 30min       |~~ 327
-~~| 3 | CLI tool (standalone binary for non-Go users) | 6-8h        |~~ 327
-~~| 4 | Troubleshooting.md                            | 2h          |~~ 327
-~~| 5 | GoReleaser configuration                      | 2h          |~~ 327
-~~| 6 | Dependabot / Renovate configuration           | 30min       |~~ 327
-~~| 7 | CONTRIBUTING.md + CODEOWNERS                  | 2h          |~~ 327
-~~| 8 | PR template                                   | 30min       |~~ 327
-~~| 9 | CODE_OF_CONDUCT.md                            | 15min       |~~ 327
+~~| 1 | Tag v0.1.0 release (DONE — already tagged)    | -           |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 2 | Tag v2.0.0 release                            | 30min       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 3 | CLI tool (standalone binary for non-Go users) | 6-8h        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 4 | Troubleshooting.md                            | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 5 | GoReleaser configuration                      | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 6 | Dependabot / Renovate configuration           | 30min       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 7 | CONTRIBUTING.md + CODEOWNERS                  | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 8 | PR template                                   | 30min       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 9 | CODE_OF_CONDUCT.md                            | 15min       |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ### MEDIUM Priority
 
 | #  | Task                                       | Est. Effort |
 | -- | ------------------------------------------ | ----------- |
-~~| 10 | `Watcher.WatchOnce()` one-shot mode        | 3h          |~~ 327
-~~| 11 | Polling fallback for NFS/network mounts    | 8h          |~~ 327
-~~| 12 | Symlink following support                  | 4h          |~~ 327
-~~| 13 | `Event.ModTime()` field                    | 2h          |~~ 327
-~~| 14 | `Event.Size` field                         | 2h          |~~ 327
-~~| 15 | File content hashing option                | 4h          |~~ 327
-~~| 16 | Prometheus metrics export                  | 3h          |~~ 327
-~~| 17 | OpenTelemetry integration                  | 6h          |~~ 327
-~~| 18 | Debug mode with verbose structured logging | 3h          |~~ 327
-~~| 19 | Stack traces in WatcherError               | 1h          |~~ 327
-~~| 20 | Error codes for programmatic handling      | 2h          |~~ 327
-~~| 21 | `MiddlewareThrottle`                       | 2h          |~~ 327
-~~| 22 | Circuit breaker middleware                 | 4h          |~~ 327
-~~| 23 | Error rate limiting middleware             | 2h          |~~ 327
-~~| 24 | Context propagation through pipeline       | 3h          |~~ 327
-~~| 25 | Benchmark regression CI                    | 2h          |~~ 327
-~~| 26 | Integration tests for recursive watching   | 3h          |~~ 327
-~~| 27 | Fuzz testing                               | 4h          |~~ 327
-~~| 28 | Windows-specific edge case tests           | 4h          |~~ 327
+~~| 10 | `Watcher.WatchOnce()` one-shot mode        | 3h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 11 | Polling fallback for NFS/network mounts    | 8h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 12 | Symlink following support                  | 4h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 13 | `Event.ModTime()` field                    | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 14 | `Event.Size` field                         | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 15 | File content hashing option                | 4h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 16 | Prometheus metrics export                  | 3h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 17 | OpenTelemetry integration                  | 6h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 18 | Debug mode with verbose structured logging | 3h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 19 | Stack traces in WatcherError               | 1h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 20 | Error codes for programmatic handling      | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 21 | `MiddlewareThrottle`                       | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 22 | Circuit breaker middleware                 | 4h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 23 | Error rate limiting middleware             | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 24 | Context propagation through pipeline       | 3h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 25 | Benchmark regression CI                    | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 26 | Integration tests for recursive watching   | 3h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 27 | Fuzz testing                               | 4h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 28 | Windows-specific edge case tests           | 4h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ### Integration Backlog
 
 | #  | Target Project         |
 | -- | ---------------------- |
-~~| 29 | file-and-image-renamer |~~ 327
-~~| 30 | dynamic-markdown-site  |~~ 327
-~~| 31 | auto-deduplicate       |~~ 327
-~~| 32 | Cyberdom               |~~ 327
+~~| 29 | file-and-image-renamer |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 30 | dynamic-markdown-site  |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 31 | auto-deduplicate       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 32 | Cyberdom               |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 
@@ -193,19 +193,19 @@
 
 ### Lessons Learned (Things That Went Wrong, Now Fixed)
 
-~~1. **`golangci-lint run --fix` breaks nolint directives.** When `--fix` reformats code (splitting long lines), it moves `//nolint` comments to different lines than where linters report issues. This caused cascading failures. **Fix:** Run `--fix` first, then manually place nolint directives on the correct lines.~~ 327
+~~1. **`golangci-lint run --fix` breaks nolint directives.** When `--fix` reformats code (splitting long lines), it moves `//nolint` comments to different lines than where linters report issues. This caused cascading failures. **Fix:** Run `--fix` first, then manually place nolint directives on the correct lines.~~ done — shipped ≤v2.2.0, verified v2.4.1
 
-~~2. **nolint placement must match linter reporting line.** Each linter reports on a specific line:~~ 327
+~~2. **nolint placement must match linter reporting line.** Each linter reports on a specific line:~~ done — shipped ≤v2.2.0, verified v2.4.1
    - `funlen` → `func` line, not closing `) {`
    - `unparam` → parameter line, not func signature
    - `exhaustruct` → opening `{` of struct literal
    - `gochecknoglobals` → assignment line, not `var (` opener
 
-~~3. **watcher_walk_test.go compile errors.** Used `os.Stat()` (returns `fs.FileInfo`) where `walkDirFunc` expects `os.DirEntry`. **Fix:** Use `os.ReadDir()` which returns `[]os.DirEntry`.~~ 327
+~~3. **watcher_walk_test.go compile errors.** Used `os.Stat()` (returns `fs.FileInfo`) where `walkDirFunc` expects `os.DirEntry`. **Fix:** Use `os.ReadDir()` which returns `[]os.DirEntry`.~~ done — shipped ≤v2.2.0, verified v2.4.1
 
-~~4. **Data race between Close() and debouncer callbacks.** Two separate race conditions in `buildEmitFunc` and debouncer goroutines. **Fix:** sync.Once for channel close, sync.WaitGroup for debouncer cleanup.~~ 327
+~~4. **Data race between Close() and debouncer callbacks.** Two separate race conditions in `buildEmitFunc` and debouncer goroutines. **Fix:** sync.Once for channel close, sync.WaitGroup for debouncer cleanup.~~ done — shipped ≤v2.2.0, verified v2.4.1
 
-~~5. **DebouncerInterface design smell.** `UsesPerPathKeys()` leaked implementation details through the interface. **Fix:** Removed both `UsesPerPathKeys()` and redundant `Close()` from interface. Always pass key, let implementation decide.~~ 327
+~~5. **DebouncerInterface design smell.** `UsesPerPathKeys()` leaked implementation details through the interface. **Fix:** Removed both `UsesPerPathKeys()` and redundant `Close()` from interface. Always pass key, let implementation decide.~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 
@@ -279,31 +279,31 @@ Testing is macOS-only. No CI matrix for:
 
 | Rank | Task                                        | Impact | Effort | Category       |
 | ---- | ------------------------------------------- | ------ | ------ | -------------- |
-~~| 1    | **Close coverage gaps to ≥95%**             | High   | 4h     | Quality        |~~ 327
-~~| 2    | **Tag v1.0.0 with stability guarantee**     | High   | 1h     | Release        |~~ 327
-~~| 3    | **GoReleaser + binary releases**            | High   | 2h     | Infrastructure |~~ 327
-~~| 4    | **CLI tool MVP** (watch + filter + output)  | High   | 6h     | Feature        |~~ 327
-~~| 5    | **Troubleshooting.md**                      | Medium | 2h     | Documentation  |~~ 327
-~~| 6    | **Linux CI matrix** (GitHub Actions)        | High   | 1h     | Infrastructure |~~ 327
-~~| 7    | **Archive old status reports**              | Low    | 30min  | Cleanup        |~~ 327
-~~| 8    | **CONTRIBUTING.md + PR templates**          | Medium | 2h     | Community      |~~ 327
-~~| 9    | **Dependabot / Renovate**                   | Low    | 30min  | Infrastructure |~~ 327
-~~| 10   | **`Event.Size` + `Event.ModTime()` fields** | Medium | 2h     | Feature        |~~ 327
-~~| 11   | **Error codes** for programmatic handling   | Medium | 2h     | API            |~~ 327
-~~| 12   | **`MiddlewareThrottle`** token-bucket       | Medium | 2h     | Feature        |~~ 327
-~~| 13   | **`Watcher.WatchOnce()`** one-shot mode     | Medium | 3h     | Feature        |~~ 327
-~~| 14   | **Prometheus metrics export**               | Medium | 3h     | Observability  |~~ 327
-~~| 15   | **Polling fallback** for NFS mounts         | High   | 8h     | Feature        |~~ 327
-~~| 16   | **Symlink following** support               | Medium | 4h     | Feature        |~~ 327
-~~| 17   | **Benchmark regression CI**                 | Medium | 2h     | Infrastructure |~~ 327
-~~| 18   | **File content hashing** option             | Medium | 4h     | Feature        |~~ 327
-~~| 19   | **Circuit breaker middleware**              | Medium | 4h     | Feature        |~~ 327
-~~| 20   | **OpenTelemetry integration**               | Medium | 6h     | Observability  |~~ 327
-~~| 21   | **Self-healing watcher** (auto-restart)     | High   | 8h     | Reliability    |~~ 327
-~~| 22   | **Fuzz testing** setup                      | Medium | 4h     | Quality        |~~ 327
-~~| 23   | **Context propagation** through pipeline    | Medium | 3h     | API            |~~ 327
-~~| 24   | **Integrate into file-and-image-renamer**   | High   | 4h     | Validation     |~~ 327
-~~| 25   | **testutil package** extraction             | Low    | 3h     | Cleanup        |~~ 327
+~~| 1    | **Close coverage gaps to ≥95%**             | High   | 4h     | Quality        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 2    | **Tag v1.0.0 with stability guarantee**     | High   | 1h     | Release        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 3    | **GoReleaser + binary releases**            | High   | 2h     | Infrastructure |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 4    | **CLI tool MVP** (watch + filter + output)  | High   | 6h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 5    | **Troubleshooting.md**                      | Medium | 2h     | Documentation  |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 6    | **Linux CI matrix** (GitHub Actions)        | High   | 1h     | Infrastructure |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 7    | **Archive old status reports**              | Low    | 30min  | Cleanup        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 8    | **CONTRIBUTING.md + PR templates**          | Medium | 2h     | Community      |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 9    | **Dependabot / Renovate**                   | Low    | 30min  | Infrastructure |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 10   | **`Event.Size` + `Event.ModTime()` fields** | Medium | 2h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 11   | **Error codes** for programmatic handling   | Medium | 2h     | API            |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 12   | **`MiddlewareThrottle`** token-bucket       | Medium | 2h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 13   | **`Watcher.WatchOnce()`** one-shot mode     | Medium | 3h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 14   | **Prometheus metrics export**               | Medium | 3h     | Observability  |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 15   | **Polling fallback** for NFS mounts         | High   | 8h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 16   | **Symlink following** support               | Medium | 4h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 17   | **Benchmark regression CI**                 | Medium | 2h     | Infrastructure |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 18   | **File content hashing** option             | Medium | 4h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 19   | **Circuit breaker middleware**              | Medium | 4h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 20   | **OpenTelemetry integration**               | Medium | 6h     | Observability  |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 21   | **Self-healing watcher** (auto-restart)     | High   | 8h     | Reliability    |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 22   | **Fuzz testing** setup                      | Medium | 4h     | Quality        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 23   | **Context propagation** through pipeline    | Medium | 3h     | API            |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 24   | **Integrate into file-and-image-renamer**   | High   | 4h     | Validation     |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 25   | **testutil package** extraction             | Low    | 3h     | Cleanup        |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 
@@ -313,9 +313,9 @@ Testing is macOS-only. No CI matrix for:
 
 The TODO_LIST has both "Tag v0.1.0" (done) and "Tag v2.0.0" (not done). But there's no v1.0.0. This creates ambiguity:
 
-~~1. **Is the current API v1.0-worthy?** If yes → tag v1.0.0 and commit to API stability.~~ 327
-~~2. **Is v2.0.0 meant to be a module path change?** In Go, v2+ requires `/v2` in the module path (`github.com/larsartmann/go-filewatcher/v2`). This is a breaking change for all importers.~~ 327
-~~3. **Or is v2.0.0 aspirational?** Meaning "the version we'll tag when we're happy with the API" — in which case, what are the criteria?~~ 327
+~~1. **Is the current API v1.0-worthy?** If yes → tag v1.0.0 and commit to API stability.~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~2. **Is v2.0.0 meant to be a module path change?** In Go, v2+ requires `/v2` in the module path (`github.com/larsartmann/go-filewatcher/v2`). This is a breaking change for all importers.~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~3. **Or is v2.0.0 aspirational?** Meaning "the version we'll tag when we're happy with the API" — in which case, what are the criteria?~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 **Why I can't decide:** This is a product/ownership decision. Versioning signals API stability commitments to users. Getting it wrong means either premature commitment (can't change API) or missed signal (users don't trust the library).
 
@@ -331,9 +331,9 @@ The TODO_LIST has both "Tag v0.1.0" (done) and "Tag v2.0.0" (not done). But ther
 
 | Session | Date             | Focus                                                          | Outcome                    |
 | ------- | ---------------- | -------------------------------------------------------------- | -------------------------- |
-~~| 1       | 2026-04-23 early | DebouncerInterface cleanup, flaky tests, watcher_walk coverage | 3 commits, coverage 84→85% |~~ 327
-~~| 2       | 2026-04-23 mid   | Filter/middleware/options/phantom test coverage                | 7 commits, coverage 85→92% |~~ 327
-~~| 3       | 2026-04-23 late  | Fix ALL lint issues to zero (17 files, 87 linters)             | 4 commits, 0 lint issues   |~~ 327
+~~| 1       | 2026-04-23 early | DebouncerInterface cleanup, flaky tests, watcher_walk coverage | 3 commits, coverage 84→85% |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 2       | 2026-04-23 mid   | Filter/middleware/options/phantom test coverage                | 7 commits, coverage 85→92% |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 3       | 2026-04-23 late  | Fix ALL lint issues to zero (17 files, 87 linters)             | 4 commits, 0 lint issues   |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 

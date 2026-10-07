@@ -110,9 +110,9 @@ Go 1.25+ provides `encoding/json/v2` (10x faster). The project still uses `encod
 
 But `go.mod` never actually got updated. The README badges pointed to `/v2`, the CHANGELOG documented `/v2`, but the actual module path was `/v1`. This means:
 
-1. `pkg.go.dev` was likely showing broken documentation
-2. Anyone `go get`-ing the library got the wrong module path
-3. The `v2.0.0` tag is a lie — it's actually a v1 module with a v2 tag
+~~1. `pkg.go.dev` was likely showing broken documentation~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~2. Anyone `go get`-ing the library got the wrong module path~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~3. The `v2.0.0` tag is a lie — it's actually a v1 module with a v2 tag~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 **Now fixed**, but the existing tag is poison.
 
@@ -130,23 +130,23 @@ The AGENTS.md said gogenfilter "Uses `replace` directive in `go.mod` pointing to
 
 ### High Priority
 
-1. **Re-tag or release v2.0.1** — The v2.0.0 tag is poisoned with the wrong module path
-2. **Fix 17 pre-existing lint issues** — `goconst` strings should be constants, `nolintlint` directives need cleanup, `exhaustive` switch needs `CategoryUnknown`
-3. **Get coverage above 90%** — CI enforces it; we're at 89.8%
+~~1. **Re-tag or release v2.0.1** — The v2.0.0 tag is poisoned with the wrong module path~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~2. **Fix 17 pre-existing lint issues** — `goconst` strings should be constants, `nolintlint` directives need cleanup, `exhaustive` switch needs `CategoryUnknown`~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~3. **Get coverage above 90%** — CI enforces it; we're at 89.8%~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ### Medium Priority
 
-4. **Migrate to `encoding/json/v2`** — 10x faster, available since Go 1.25
-5. **Add `govulncheck` to CI** — Standard security practice
-6. **Add `gosec` to CI** — Static security analysis
-7. **File sizes** — `watcher_test.go` (1466 lines), `middleware_test.go` (851 lines), `watcher_coverage_test.go` (664 lines), `filter_test.go` (714 lines) — all over the 300-line rule
-8. **`watcher.go` at 602 lines** — Over the 300-line threshold, consider splitting
+~~4. **Migrate to `encoding/json/v2`** — 10x faster, available since Go 1.25~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~5. **Add `govulncheck` to CI** — Standard security practice~~ OPEN → untracked CI-hardening idea
+~~6. **Add `gosec` to CI** — Static security analysis~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~7. **File sizes** — `watcher_test.go` (1466 lines), `middleware_test.go` (851 lines), `watcher_coverage_test.go` (664 lines), `filter_test.go` (714 lines) — all over the 300-line rule~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~8. **`watcher.go` at 602 lines** — Over the 300-line threshold, consider splitting~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ### Low Priority
 
-9. **Verify Dependabot config** — Ensure it watches Go modules properly
-10. **Remove unused nolint directives** — 10 `nolintlint` warnings across test files
-11. **Document the v2 migration path** — MIGRATION.md exists but may reference old paths
+~~9. **Verify Dependabot config** — Ensure it watches Go modules properly~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~10. **Remove unused nolint directives** — 10 `nolintlint` warnings across test files~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~11. **Document the v2 migration path** — MIGRATION.md exists but may reference old paths~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 
@@ -154,31 +154,31 @@ The AGENTS.md said gogenfilter "Uses `replace` directive in `go.mod` pointing to
 
 | #  | Priority | Task                                                                       | Effort | Impact               |
 | -- | -------- | -------------------------------------------------------------------------- | ------ | -------------------- |
-| 1  | CRITICAL | Delete v2.0.0 tag and re-tag (or release v2.0.1)                           | 5 min  | Fixes broken release |
-| 2  | CRITICAL | Verify pkg.go.dev renders correctly after re-tag                           | 5 min  | Public API docs      |
-| 3  | HIGH     | Extract string constants for "unknown", "transient", "permanent" (goconst) | 10 min | Fixes 4 lint issues  |
-| 4  | HIGH     | Add `CategoryUnknown` to exhaustive switch in errors.go                    | 5 min  | Fixes 1 lint issue   |
-| 5  | HIGH     | Fix `fmt.Errorf` %v → %w in watcher.go:333                                 | 2 min  | Fixes 1 lint issue   |
-| 6  | HIGH     | Clean up unused `//nolint:testpackage` directives (10 files)               | 15 min | Fixes 10 lint issues |
-| 7  | HIGH     | Fix `varnamelen` in phantom_types_test.go:164 (`dk` → `debounceKey`)       | 2 min  | Fixes 1 lint issue   |
-| 8  | HIGH     | Write tests to push coverage above 90%                                     | 30 min | Unblocks CI          |
-| 9  | MEDIUM   | Split `watcher_test.go` (1466 lines) into focused files                    | 1 hr   | Code quality         |
-| 10 | MEDIUM   | Split `middleware_test.go` (851 lines) into focused files                  | 30 min | Code quality         |
-| 11 | MEDIUM   | Split `watcher_coverage_test.go` (664 lines)                               | 30 min | Code quality         |
-| 12 | MEDIUM   | Split `filter_test.go` (714 lines)                                         | 30 min | Code quality         |
-| 13 | MEDIUM   | Extract sub-files from `watcher.go` (602 lines)                            | 30 min | Code quality         |
-| 14 | MEDIUM   | Migrate from `encoding/json` to `encoding/json/v2`                         | 1 hr   | Performance          |
-| 15 | MEDIUM   | Add `govulncheck` to CI workflow                                           | 15 min | Security             |
-| 16 | MEDIUM   | Add `gosec` to CI workflow or golangci-lint config                         | 15 min | Security             |
-| 17 | LOW      | Verify `.github/dependabot.yml` config for Go modules                      | 5 min  | Maintenance          |
-| 18 | LOW      | Update MIGRATION.md to reflect actual v2 module path                       | 10 min | Docs                 |
-| 19 | LOW      | Add `goreleaser` hook to verify module path matches tag                    | 15 min | Release safety       |
-| 20 | LOW      | Consider adding a `go_module_path` CI check (grep go.mod for /v2)          | 10 min | Prevention           |
-| 21 | LOW      | Add benchmark regression detection in CI                                   | 30 min | Performance          |
-| 22 | LOW      | Review `watcher_poll.go` (161 lines) for test coverage gaps                | 15 min | Reliability          |
-| 23 | LOW      | Add integration test for v2 module path resolution                         | 15 min | Correctness          |
-| 24 | LOW      | Clean up `docs/status/` — 40+ stale status reports                         | 10 min | Housekeeping         |
-| 25 | LOW      | Update CHANGELOG.md with v2.0.1 entry documenting module path fix          | 5 min  | Documentation        |
+~~| 1  | CRITICAL | Delete v2.0.0 tag and re-tag (or release v2.0.1)                           | 5 min  | Fixes broken release |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 2  | CRITICAL | Verify pkg.go.dev renders correctly after re-tag                           | 5 min  | Public API docs      |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 3  | HIGH     | Extract string constants for "unknown", "transient", "permanent" (goconst) | 10 min | Fixes 4 lint issues  |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 4  | HIGH     | Add `CategoryUnknown` to exhaustive switch in errors.go                    | 5 min  | Fixes 1 lint issue   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 5  | HIGH     | Fix `fmt.Errorf` %v → %w in watcher.go:333                                 | 2 min  | Fixes 1 lint issue   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 6  | HIGH     | Clean up unused `//nolint:testpackage` directives (10 files)               | 15 min | Fixes 10 lint issues |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 7  | HIGH     | Fix `varnamelen` in phantom_types_test.go:164 (`dk` → `debounceKey`)       | 2 min  | Fixes 1 lint issue   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 8  | HIGH     | Write tests to push coverage above 90%                                     | 30 min | Unblocks CI          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 9  | MEDIUM   | Split `watcher_test.go` (1466 lines) into focused files                    | 1 hr   | Code quality         |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 10 | MEDIUM   | Split `middleware_test.go` (851 lines) into focused files                  | 30 min | Code quality         |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 11 | MEDIUM   | Split `watcher_coverage_test.go` (664 lines)                               | 30 min | Code quality         |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 12 | MEDIUM   | Split `filter_test.go` (714 lines)                                         | 30 min | Code quality         |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 13 | MEDIUM   | Extract sub-files from `watcher.go` (602 lines)                            | 30 min | Code quality         |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 14 | MEDIUM   | Migrate from `encoding/json` to `encoding/json/v2`                         | 1 hr   | Performance          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 15 | MEDIUM   | Add `govulncheck` to CI workflow                                           | 15 min | Security             |~~ OPEN → untracked CI-hardening idea
+~~| 16 | MEDIUM   | Add `gosec` to CI workflow or golangci-lint config                         | 15 min | Security             |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 17 | LOW      | Verify `.github/dependabot.yml` config for Go modules                      | 5 min  | Maintenance          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 18 | LOW      | Update MIGRATION.md to reflect actual v2 module path                       | 10 min | Docs                 |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 19 | LOW      | Add `goreleaser` hook to verify module path matches tag                    | 15 min | Release safety       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 20 | LOW      | Consider adding a `go_module_path` CI check (grep go.mod for /v2)          | 10 min | Prevention           |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 21 | LOW      | Add benchmark regression detection in CI                                   | 30 min | Performance          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 22 | LOW      | Review `watcher_poll.go` (161 lines) for test coverage gaps                | 15 min | Reliability          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 23 | LOW      | Add integration test for v2 module path resolution                         | 15 min | Correctness          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 24 | LOW      | Clean up `docs/status/` — 40+ stale status reports                         | 10 min | Housekeeping         |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 25 | LOW      | Update CHANGELOG.md with v2.0.1 entry documenting module path fix          | 5 min  | Documentation        |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 

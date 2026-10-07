@@ -138,6 +138,10 @@ Separate Astro + Starlight documentation site with its own `flake.nix`, deployed
 Firebase Hosting at `filewatcher.lars.software`. Not part of the Go module — has its
 own `package.json` and Node toolchain. Build with `cd website && nix run .#build`.
 
+The `/changelog` docs page is **generated** from the repo `CHANGELOG.md` by
+`website/scripts/sync-changelog.mjs` on every `pnpm build`/`pnpm dev` — never edit
+`website/src/content/docs/changelog.mdx` by hand; update `CHANGELOG.md` and rebuild.
+
 ---
 
 ## Critical Gotchas

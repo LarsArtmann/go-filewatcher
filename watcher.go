@@ -106,8 +106,9 @@ type Watcher struct {
 	// Event channel - stored so Close() can close it after stopping debouncer
 	// This prevents race between debouncer callbacks and channel close
 	eventCh chan<- Event
-	// closeEventChOnce ensures eventCh is closed exactly once, either by watchLoop
-	// when context is cancelled, or by Close() when watcher is stopped
+	// closeEventChOnce ensures eventCh is closed exactly once, either by the
+	// per-Watch closer goroutine once every channel-sending loop has exited,
+	// or by Close() when the watcher is stopped
 	closeEventChOnce sync.Once
 
 	// Debouncer (initialized based on config)
@@ -402,15 +403,37 @@ func (w *Watcher) Watch(ctx context.Context) (<-chan Event, error) {
 		w.startTime = time.Now()
 	}
 
+	// chUsers tracks every goroutine that can send on eventCh (watchLoop,
+	// pollLoop). A closer goroutine closes the channel only after ALL of them
+	// have exited, so close can never race an in-flight send — the poll loop
+	// and the fsnotify loop share this channel, and closing it from whichever
+	// loop happens to exit first raced the other's trackedEmit select (CI
+	// run 37585089337: "DATA RACE closechan vs chansend" under -bench -race).
+	// WaitGroup.Wait provides the happens-before edge between the last
+	// sender's return and the close.
+	var chUsers sync.WaitGroup
+
+	chUsers.Add(1)
+
 	w.wg.Add(1)
 
-	go w.watchLoop(ctx, eventCh)
+	go w.watchLoop(ctx, eventCh, &chUsers)
 
 	if w.polling {
+		chUsers.Add(1)
 		w.wg.Add(1)
 
-		go w.pollLoop(ctx, eventCh)
+		go w.pollLoop(ctx, eventCh, &chUsers)
 	}
+
+	// The closer joins w.wg so Close()'s wg.Wait() also awaits it — Reset()
+	// reassigns closeEventChOnce, and it is only safe to touch the old Once
+	// (and the field) when no goroutine can still be doing so. The drain in
+	// cancelAndDrain-style callers unblocks when this closes the channel.
+	w.wg.Go(func() {
+		chUsers.Wait()
+		w.closeEventChOnce.Do(func() { close(eventCh) })
+	})
 
 	if w.selfHealInterval > 0 {
 		w.wg.Add(1)
@@ -823,7 +846,7 @@ func (w *Watcher) Close() error {
 	w.wg.Wait()
 
 	// Now safe to close eventCh - watchLoop and all callbacks are done.
-	// Use sync.Once to coordinate with watchLoop's defer.
+	// Use sync.Once to coordinate with the per-Watch closer goroutine.
 	w.mu.RLock()
 	ch := w.eventCh
 	w.mu.RUnlock()

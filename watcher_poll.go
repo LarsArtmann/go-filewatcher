@@ -5,6 +5,7 @@ import (
 	"maps"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 )
 
@@ -19,8 +20,9 @@ type fileState struct {
 // pollLoop runs a periodic filesystem poll to detect changes that fsnotify
 // may miss (NFS, FUSE, Docker volumes, etc.). It maintains a snapshot of
 // file states and emits events for detected changes.
-func (w *Watcher) pollLoop(ctx context.Context, eventCh chan<- Event) {
+func (w *Watcher) pollLoop(ctx context.Context, eventCh chan<- Event, chUsers *sync.WaitGroup) {
 	defer w.wg.Done()
+	defer chUsers.Done()
 
 	w.debugLog("poll loop started", "interval", w.pollInterval)
 

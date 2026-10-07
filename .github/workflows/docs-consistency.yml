@@ -12,7 +12,7 @@ permissions:
 jobs:
   check-deprecation-consistency:
     name: README vs API_STABILITY Drift Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # pinned for ubuntu-26.04 migration (2026-10-19 rollout)
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Verify deprecated symbols are consistent
@@ -76,7 +76,7 @@ jobs:
 
   check-exported-symbol-docs:
     name: Exported Symbols in Docs
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # pinned for ubuntu-26.04 migration (2026-10-19 rollout)
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0

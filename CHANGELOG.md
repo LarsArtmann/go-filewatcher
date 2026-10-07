@@ -8,6 +8,14 @@
 
 - Nothing yet.
 
+## [2.4.2](https://github.com/LarsArtmann/go-filewatcher/compare/v2.4.1...v2.4.2) (2026-10-07)
+
+
+### Bug Fixes
+
+* close the event channel only after every sender has exited ([e143dc0](https://github.com/LarsArtmann/go-filewatcher/commit/e143dc0a0dd29def81ee2ce15c1bb0583c2fc0c9))
+* make the channel closer observable to Close before Reset ([96b7441](https://github.com/LarsArtmann/go-filewatcher/commit/96b744117d66053c7ec7a1bbadbc09050f78094d))
+
 ## [2.4.1](https://github.com/LarsArtmann/go-filewatcher/compare/v2.4.0...v2.4.1) (2026-10-07)
 
 

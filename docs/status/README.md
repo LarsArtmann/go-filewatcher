@@ -9,6 +9,8 @@ TODO list is the live backlog.
 
 | Report | Topic | State |
 | --- | --- | --- |
+| [15-21 resume-execution-debris-cleanup](./2026-10-07_15-21_resume-execution-debris-cleanup.md) | PR #56 merged; 3 stashes + backup branch verified & dropped; 120 /tmp evidence files trashed | Done; buildflow cache purge (load-independent, was mis-bucketed) queued; §g questions re-asked |
+| [13-09 ci-hardening-continuation-v242](./2026-10-07_13-09_ci-hardening-continuation-v242.md) | v2.4.2 shipped, 18 PRs merged (#38–#55), probe legs green, website CI job | Done; §f10 (/tmp) + §f42 (debris) closed by the 15:21 session; quiet batch + §g decisions pending |
 | [09-47 pareto-execution-ci-hardening](./2026-10-07_09-47_pareto-execution-ci-hardening.md) | CI hardening (floor guard, 26.04 readiness), event-channel race fix, docs debts; PRs #38–#49 | All merged 2026-10-07: §f1–f11, f14, f20, f21 done; §f6 status index + §f50 release landed (v2.4.2); §f16 content-verify done (README dead links fixed); §f12/T16 + quiet-machine batch queued |
 | [08-14 docs-health-full-archive-sweep](./2026-10-07_08-14_docs-health-full-archive-sweep.md) | All 2026-0* reports annotated & archived; full-archive sweep | Done; §b6 vendorHash re-verify open |
 | [06-00 buildflow-green-pnpm-audit-zero-cache-war](./2026-10-07_06-00_buildflow-green-pnpm-audit-zero-cache-war.md) | BuildFlow green, pnpm audit zeroed via update+override, result-cache purge | Done; cache-key gap upstream (gated) |

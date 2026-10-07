@@ -47,27 +47,28 @@ The go-filewatcher library is a functional, well-structured utility built on fsn
 
 | #  | Improvement | Priority                                                | Est. Work | Impact  |
 | -- | ----------- | ------------------------------------------------------- | --------- | ------- |
-| ~~ | 1           | Fix `handleNewDirectory` race condition                 | 🔴 High   | 30 min  |
-| ~~ | 2           | Make `shouldSkipDir` respect user ignore dirs           | 🔴 High   | 20 min  |
-| ~~ | 3           | Replace `cockroachdb/errors` with stdlib                | 🟡 Medium | 30 min  |
-| ~~ | 4           | Improve `Op` type: add `MarshalText`/`UnmarshalText`    | 🟡 Medium | 15 min  |
-| ~~ | 5           | Add `Event` JSON tags and `MarshalJSON`                 | 🟡 Medium | 10 min  |
-| ~~ | 6           | Refactor `getDebounceKey` — remove type assertion       | 🟢 Low    | 10 min  |
-| ~~ | 7           | Replace `log.Logger` with `slog` in `MiddlewareLogging` | 🟡 Medium | 20 min  |
-| ~~ | 8           | Cache file handle in `MiddlewareWriteFileLog`           | 🔴 High   | 15 min  |
-| ~~ | 9           | Split `watcher.go` (549 lines) into 3 files             | 🟢 Low    | 20 min  |
-| ~~ | 10          | Raise test coverage to 90%+                             | 🟡 Medium | 2-3 hrs |
-| ~~ | 11          | Add `-race` to test commands                            | 🟡 Medium | 5 min   |
-| ~~ | 12          | Integrate into `file-and-image-renamer`                 | 🟡 Medium | 1 hr    |
-| ~~ | 13          | Add `MiddlewareSlog` (new, alongside existing)          | 🟢 Low    | 15 min  |
-| ~~ | 14          | Add `Watcher.WatchList()` contains check test           | 🟢 Low    | 5 min   |
-| ~~ | 15          | Add `Watcher.Remove()` subdirectory removal test        | 🟢 Low    | 10 min  |
-| ~~ | 16          | Fix `TestWatcher_Watch_Deletes` flakiness               | 🟡 Medium | 15 min  |
-| ~~ | 17          | Add `Example_new` / `Example_watch` to doc.go           | 🟢 Low    | 10 min  |
-| ~~ | 18          | Add `.golangci.yml` lint config                         | 🟢 Low    | 15 min  |
-| ~~ | 19          | Add GitHub Actions CI workflow                          | 🟡 Medium | 30 min  |
-| ~~ | 20          | Add `doc.go` benchmark tests                            | 🟢 Low    | 20 min  |
-| ~~ | 21          | Add CHANGELOG.md entries for this sprint                | 🟢 Low    | 5 min   |
+| ~~ | ~~1~~ | ~~Fix `handleNewDirectory` race condition~~ | ~~🔴 High~~ | ~~30 min~~ |
+| ~~ | ~~2~~ | ~~Make `shouldSkipDir` respect user ignore dirs~~ | ~~🔴 High~~ | ~~20 min~~ |
+| ~~ | ~~3~~ | ~~Replace `cockroachdb/errors` with stdlib~~ | ~~🟡 Medium~~ | ~~30 min~~ |
+| ~~ | ~~4~~ | ~~Improve `Op` type: add `MarshalText`/`UnmarshalText`~~ | ~~🟡 Medium~~ | ~~15 min~~ |
+| ~~ | ~~5~~ | ~~Add `Event` JSON tags and `MarshalJSON`~~ | ~~🟡 Medium~~ | ~~10 min~~ |
+| ~~ | ~~6~~ | ~~Refactor `getDebounceKey` — remove type assertion~~ | ~~🟢 Low~~ | ~~10 min~~ |
+| ~~ | ~~7~~ | ~~Replace `log.Logger` with `slog` in `MiddlewareLogging`~~ | ~~🟡 Medium~~ | ~~20 min~~ |
+| ~~ | ~~8~~ | ~~Cache file handle in `MiddlewareWriteFileLog`~~ | ~~🔴 High~~ | ~~15 min~~ |
+| ~~ | ~~9~~ | ~~Split `watcher.go` (549 lines) into 3 files~~ | ~~🟢 Low~~ | ~~20 min~~ |
+| ~~ | ~~10~~ | ~~Raise test coverage to 90%+~~ | ~~🟡 Medium~~ | ~~2-3 hrs~~ |
+| ~~ | ~~11~~ | ~~Add `-race` to test commands~~ | ~~🟡 Medium~~ | ~~5 min~~ |
+| ~~ | ~~12~~ | ~~Integrate into `file-and-image-renamer`~~ | ~~🟡 Medium~~ | ~~1 hr~~ |
+| ~~ | ~~13~~ | ~~Add `MiddlewareSlog` (new, alongside existing)~~ | ~~🟢 Low~~ | ~~15 min~~ |
+| ~~ | ~~14~~ | ~~Add `Watcher.WatchList()` contains check test~~ | ~~🟢 Low~~ | ~~5 min~~ |
+| ~~ | ~~15~~ | ~~Add `Watcher.Remove()` subdirectory removal test~~ | ~~🟢 Low~~ | ~~10 min~~ |
+| ~~ | ~~16~~ | ~~Fix `TestWatcher_Watch_Deletes` flakiness~~ | ~~🟡 Medium~~ | ~~15 min~~ |
+| ~~ | ~~17~~ | ~~Add `Example_new` / `Example_watch` to doc.go~~ | ~~🟢 Low~~ | ~~10 min~~ |
+| ~~ | ~~18~~ | ~~Add `.golangci.yml` lint config~~ | ~~🟢 Low~~ | ~~15 min~~ |
+| ~~ | ~~19~~ | ~~Add GitHub Actions CI workflow~~ | ~~🟡 Medium~~ | ~~30 min~~ |
+| ~~ | ~~20~~ | ~~Add `doc.go` benchmark tests~~ | ~~🟢 Low~~ | ~~20 min~~ |
+| ~~ | ~~21~~ | ~~Add CHANGELOG.md entries for this sprint~~ | ~~🟢 Low~~ | ~~5 min~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ---
 
@@ -164,31 +165,31 @@ nix-env -iA nixpkgs.go_1_26
 
 | Rank | Action | Work                                              | Impact | Risk                  | Depends On          |
 | ---- | ------ | ------------------------------------------------- | ------ | --------------------- | ------------------- |
-| ~~   | **1**  | **Fix Go build cache**                            | 15 min | 🔴 Blocks everything  | None                |
-| ~~   | **2**  | **Fix `handleNewDirectory` race**                 | 30 min | 🔴 Data race → crash  | Low                 |
-| ~~   | **3**  | **Make `shouldSkipDir` respect user dirs**        | 20 min | 🔴 Resource waste     | Low                 |
-| ~~   | **4**  | **Replace cockroachdb/errors with stdlib**        | 30 min | 🟡 6 fewer deps       | Medium (API compat) |
-| ~~   | **5**  | **Add `Op.MarshalText`/`UnmarshalText`**          | 15 min | 🟡 JSON support       | None                |
-| ~~   | **6**  | **Add `Event` JSON tags**                         | 10 min | 🟡 Structured logging | None                |
-| ~~   | **7**  | **Cache file handle in `MiddlewareWriteFileLog`** | 15 min | 🔴 FD exhaustion      | Low (API change)    |
-| ~~   | **8**  | **Replace `log.Logger` with `slog`**              | 20 min | 🟡 Modern logging     | Low (API change)    |
-| ~~   | **9**  | **Refactor `getDebounceKey`**                     | 10 min | 🟢 Code quality       | None                |
-| ~~   | **10** | **Run tests with `-race`**                        | 5 min  | 🟡 Catch races        | None                |
-| ~~   | **11** | **Add race to justfile**                          | 5 min  | 🟡 CI quality         | None                |
-| ~~   | **12** | **Add test coverage for `handleError` stderr**    | 10 min | 🟡 Coverage           | None                |
-| ~~   | **13** | **Add test for `MiddlewareLogging`**              | 10 min | 🟡 Coverage           | None                |
-| ~~   | **14** | **Add test for `MiddlewareWriteFileLog`**         | 15 min | 🟡 Coverage           | None                |
-| ~~   | **15** | **Add test for `Remove` subdirectory**            | 10 min | 🟡 Coverage           | None                |
-| ~~   | **16** | **Fix `TestWatcher_Watch_Deletes` flakiness**     | 15 min | 🟡 CI stability       | None                |
-| ~~   | **17** | **Split `watcher.go` into 3 files**               | 20 min | 🟢 Maintainability    | None                |
-| ~~   | **18** | **Add `Stats` observability fields**              | 15 min | 🟢 Observability      | Low                 |
-| ~~   | **19** | **Integrate into file-and-image-renamer**         | 1 hr   | 🟡 Real-world fix     | Medium              |
-| ~~   | **20** | **Add GitHub Actions CI**                         | 30 min | 🟡 Automation         | None                |
-| ~~   | **21** | **Add `.golangci.yml`**                           | 15 min | 🟢 Code quality       | None                |
-| ~~   | **22** | **Add benchmark tests**                           | 20 min | 🟢 Perf tracking      | None                |
-| ~~   | **23** | **Add `Example_*` functions**                     | 10 min | 🟢 godoc              | None                |
-| ~~   | **24** | **Update CHANGELOG.md**                           | 5 min  | 🟢 Documentation      | None                |
-| ~~   | **25** | **Tag v0.2.0 release**                            | 5 min  | 🟢 Distribution       | None                |
+| ~~   | ~~**1**~~ | ~~**Fix Go build cache**~~ | ~~15 min~~ | ~~🔴 Blocks everything~~ | ~~None~~ |
+| ~~   | ~~**2**~~ | ~~**Fix `handleNewDirectory` race**~~ | ~~30 min~~ | ~~🔴 Data race → crash~~ | ~~Low~~ |
+| ~~   | ~~**3**~~ | ~~**Make `shouldSkipDir` respect user dirs**~~ | ~~20 min~~ | ~~🔴 Resource waste~~ | ~~Low~~ |
+| ~~   | ~~**4**~~ | ~~**Replace cockroachdb/errors with stdlib**~~ | ~~30 min~~ | ~~🟡 6 fewer deps~~ | ~~Medium (API compat)~~ |
+| ~~   | ~~**5**~~ | ~~**Add `Op.MarshalText`/`UnmarshalText`**~~ | ~~15 min~~ | ~~🟡 JSON support~~ | ~~None~~ |
+| ~~   | ~~**6**~~ | ~~**Add `Event` JSON tags**~~ | ~~10 min~~ | ~~🟡 Structured logging~~ | ~~None~~ |
+| ~~   | ~~**7**~~ | ~~**Cache file handle in `MiddlewareWriteFileLog`**~~ | ~~15 min~~ | ~~🔴 FD exhaustion~~ | ~~Low (API change)~~ |
+| ~~   | ~~**8**~~ | ~~**Replace `log.Logger` with `slog`**~~ | ~~20 min~~ | ~~🟡 Modern logging~~ | ~~Low (API change)~~ |
+| ~~   | ~~**9**~~ | ~~**Refactor `getDebounceKey`**~~ | ~~10 min~~ | ~~🟢 Code quality~~ | ~~None~~ |
+| ~~   | ~~**10**~~ | ~~**Run tests with `-race`**~~ | ~~5 min~~ | ~~🟡 Catch races~~ | ~~None~~ |
+| ~~   | ~~**11**~~ | ~~**Add race to justfile**~~ | ~~5 min~~ | ~~🟡 CI quality~~ | ~~None~~ |
+| ~~   | ~~**12**~~ | ~~**Add test coverage for `handleError` stderr**~~ | ~~10 min~~ | ~~🟡 Coverage~~ | ~~None~~ |
+| ~~   | ~~**13**~~ | ~~**Add test for `MiddlewareLogging`**~~ | ~~10 min~~ | ~~🟡 Coverage~~ | ~~None~~ |
+| ~~   | ~~**14**~~ | ~~**Add test for `MiddlewareWriteFileLog`**~~ | ~~15 min~~ | ~~🟡 Coverage~~ | ~~None~~ |
+| ~~   | ~~**15**~~ | ~~**Add test for `Remove` subdirectory**~~ | ~~10 min~~ | ~~🟡 Coverage~~ | ~~None~~ |
+| ~~   | ~~**16**~~ | ~~**Fix `TestWatcher_Watch_Deletes` flakiness**~~ | ~~15 min~~ | ~~🟡 CI stability~~ | ~~None~~ |
+| ~~   | ~~**17**~~ | ~~**Split `watcher.go` into 3 files**~~ | ~~20 min~~ | ~~🟢 Maintainability~~ | ~~None~~ |
+| ~~   | ~~**18**~~ | ~~**Add `Stats` observability fields**~~ | ~~15 min~~ | ~~🟢 Observability~~ | ~~Low~~ |
+| ~~   | ~~**19**~~ | ~~**Integrate into file-and-image-renamer**~~ | ~~1 hr~~ | ~~🟡 Real-world fix~~ | ~~Medium~~ |
+| ~~   | ~~**20**~~ | ~~**Add GitHub Actions CI**~~ | ~~30 min~~ | ~~🟡 Automation~~ | ~~None~~ |
+| ~~   | ~~**21**~~ | ~~**Add `.golangci.yml`**~~ | ~~15 min~~ | ~~🟢 Code quality~~ | ~~None~~ |
+| ~~   | ~~**22**~~ | ~~**Add benchmark tests**~~ | ~~20 min~~ | ~~🟢 Perf tracking~~ | ~~None~~ |
+| ~~   | ~~**23**~~ | ~~**Add `Example_*` functions**~~ | ~~10 min~~ | ~~🟢 godoc~~ | ~~None~~ |
+| ~~   | ~~**24**~~ | ~~**Update CHANGELOG.md**~~ | ~~5 min~~ | ~~🟢 Documentation~~ | ~~None~~ |
+| ~~   | ~~**25**~~ | ~~**Tag v0.2.0 release**~~ | ~~5 min~~ | ~~🟢 Distribution~~ | ~~None~~ |
 
 ---
 

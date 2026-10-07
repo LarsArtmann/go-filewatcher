@@ -60,15 +60,16 @@ mode and gitignore-aware walking on macOS/Windows.
 
 | #  | Item | Impact                                                        | Priority                                                                                                                                                                                                                |
 | -- | ---- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ~~ | 1    | **Poll loop case-awareness** (`watcher_poll.go`)              | `pollDetectChanges` uses raw path strings as map keys in `snapshot`/`current`. On case-insensitive FS, rename `File.go` → `file.go` produces false Remove+Create instead of no-op. Also `pollWalkDir` stores raw paths. |
-| ~~ | 2    | **Gitignore matcher case-awareness** (`watcher_gitignore.go`) | `shouldSkipByGitignore` uses `strings.HasPrefix(path, prefix)` with raw strings. If gitignore dir and event path differ in case, prefix match fails, gitignore rules silently bypassed.                                 |
-| ~~ | 3    | **User-facing filters case-awareness** (`filter.go`)          | `FilterIgnoreDirs`, `FilterExcludePaths`, `FilterGlob` compare paths directly. `FilterExtensions` already lowercases extensions, proving the pattern exists.                                                            |
-| ~~ | 4    | **CHANGELOG.md entry**                                        | No release note for the new `WithCaseSensitivity` option                                                                                                                                                                |
-| ~~ | 5    | **doc.go package doc**                                        | No mention of case-sensitivity in package-level docs                                                                                                                                                                    |
-| ~~ | 6    | **example_test.go**                                           | No runnable example for `WithCaseSensitivity`                                                                                                                                                                           |
-| ~~ | 7    | **Troubleshooting.md**                                        | No guidance for case-sensitivity issues                                                                                                                                                                                 |
-| ~~ | 8    | **DOMAIN_LANGUAGE.md**                                        | No entries for `FilesystemCaseSensitivity`, `pathKey`, `CaseSensitive`/`CaseInsensitive`                                                                                                                                |
-| ~~ | 9    | **Website docs**                                              | `website/src/content/docs/` not updated with case-sensitivity guide                                                                                                                                                     |
+| ~~ | ~~1~~ | ~~**Poll loop case-awareness** (`watcher_poll.go`)~~ | ~~`pollDetectChanges` uses raw path strings as map keys in `snapshot`/`current`. On case-insensitive FS, rename `File.go` → `file.go` produces false Remove+Create instead of no-op. Also `pollWalkDir` stores raw paths.~~ |
+| ~~ | ~~2~~ | ~~**Gitignore matcher case-awareness** (`watcher_gitignore.go`)~~ | ~~`shouldSkipByGitignore` uses `strings.HasPrefix(path, prefix)` with raw strings. If gitignore dir and event path differ in case, prefix match fails, gitignore rules silently bypassed.~~ |
+| ~~ | ~~3~~ | ~~**User-facing filters case-awareness** (`filter.go`)~~ | ~~`FilterIgnoreDirs`, `FilterExcludePaths`, `FilterGlob` compare paths directly. `FilterExtensions` already lowercases extensions, proving the pattern exists.~~ |
+| ~~ | ~~4~~ | ~~**CHANGELOG.md entry**~~ | ~~No release note for the new `WithCaseSensitivity` option~~ |
+| ~~ | ~~5~~ | ~~**doc.go package doc**~~ | ~~No mention of case-sensitivity in package-level docs~~ |
+| ~~ | ~~6~~ | ~~**example_test.go**~~ | ~~No runnable example for `WithCaseSensitivity`~~ |
+| ~~ | ~~7~~ | ~~**Troubleshooting.md**~~ | ~~No guidance for case-sensitivity issues~~ |
+| ~~ | ~~8~~ | ~~**DOMAIN_LANGUAGE.md**~~ | ~~No entries for `FilesystemCaseSensitivity`, `pathKey`, `CaseSensitive`/`CaseInsensitive`~~ |
+| ~~ | ~~9~~ | ~~**Website docs**~~ | ~~`website/src/content/docs/` not updated with case-sensitivity guide~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ---
 

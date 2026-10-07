@@ -156,31 +156,32 @@ The AGENTS.md said gogenfilter "Uses `replace` directive in `go.mod` pointing to
 
 | #  | Priority | Task     | Effort                                                                     | Impact |
 | -- | -------- | -------- | -------------------------------------------------------------------------- | ------ |
-| ~~ | 1        | CRITICAL | Delete v2.0.0 tag and re-tag (or release v2.0.1)                           | 5 min  |
-| ~~ | 2        | CRITICAL | Verify pkg.go.dev renders correctly after re-tag                           | 5 min  |
-| ~~ | 3        | HIGH     | Extract string constants for "unknown", "transient", "permanent" (goconst) | 10 min |
-| ~~ | 4        | HIGH     | Add `CategoryUnknown` to exhaustive switch in errors.go                    | 5 min  |
-| ~~ | 5        | HIGH     | Fix `fmt.Errorf` %v → %w in watcher.go:333                                 | 2 min  |
-| ~~ | 6        | HIGH     | Clean up unused `//nolint:testpackage` directives (10 files)               | 15 min |
-| ~~ | 7        | HIGH     | Fix `varnamelen` in phantom_types_test.go:164 (`dk` → `debounceKey`)       | 2 min  |
-| ~~ | 8        | HIGH     | Write tests to push coverage above 90%                                     | 30 min |
-| ~~ | 9        | MEDIUM   | Split `watcher_test.go` (1466 lines) into focused files                    | 1 hr   |
-| ~~ | 10       | MEDIUM   | Split `middleware_test.go` (851 lines) into focused files                  | 30 min |
-| ~~ | 11       | MEDIUM   | Split `watcher_coverage_test.go` (664 lines)                               | 30 min |
-| ~~ | 12       | MEDIUM   | Split `filter_test.go` (714 lines)                                         | 30 min |
-| ~~ | 13       | MEDIUM   | Extract sub-files from `watcher.go` (602 lines)                            | 30 min |
-| ~~ | 14       | MEDIUM   | Migrate from `encoding/json` to `encoding/json/v2`                         | 1 hr   |
-| ~~ | 15       | MEDIUM   | Add `govulncheck` to CI workflow                                           | 15 min |
-| ~~ | 16       | MEDIUM   | Add `gosec` to CI workflow or golangci-lint config                         | 15 min |
-| ~~ | 17       | LOW      | Verify `.github/dependabot.yml` config for Go modules                      | 5 min  |
-| ~~ | 18       | LOW      | Update MIGRATION.md to reflect actual v2 module path                       | 10 min |
-| ~~ | 19       | LOW      | Add `goreleaser` hook to verify module path matches tag                    | 15 min |
-| ~~ | 20       | LOW      | Consider adding a `go_module_path` CI check (grep go.mod for /v2)          | 10 min |
-| ~~ | 21       | LOW      | Add benchmark regression detection in CI                                   | 30 min |
-| ~~ | 22       | LOW      | Review `watcher_poll.go` (161 lines) for test coverage gaps                | 15 min |
-| ~~ | 23       | LOW      | Add integration test for v2 module path resolution                         | 15 min |
-| ~~ | 24       | LOW      | Clean up `docs/status/` — 40+ stale status reports                         | 10 min |
-| ~~ | 25       | LOW      | Update CHANGELOG.md with v2.0.1 entry documenting module path fix          | 5 min  |
+| ~~ | ~~1~~ | ~~CRITICAL~~ | ~~Delete v2.0.0 tag and re-tag (or release v2.0.1)~~ | ~~5 min~~ |
+| ~~ | ~~2~~ | ~~CRITICAL~~ | ~~Verify pkg.go.dev renders correctly after re-tag~~ | ~~5 min~~ |
+| ~~ | ~~3~~ | ~~HIGH~~ | ~~Extract string constants for "unknown", "transient", "permanent" (goconst)~~ | ~~10 min~~ |
+| ~~ | ~~4~~ | ~~HIGH~~ | ~~Add `CategoryUnknown` to exhaustive switch in errors.go~~ | ~~5 min~~ |
+| ~~ | ~~5~~ | ~~HIGH~~ | ~~Fix `fmt.Errorf` %v → %w in watcher.go:333~~ | ~~2 min~~ |
+| ~~ | ~~6~~ | ~~HIGH~~ | ~~Clean up unused `//nolint:testpackage` directives (10 files)~~ | ~~15 min~~ |
+| ~~ | ~~7~~ | ~~HIGH~~ | ~~Fix `varnamelen` in phantom_types_test.go:164 (`dk` → `debounceKey`)~~ | ~~2 min~~ |
+| ~~ | ~~8~~ | ~~HIGH~~ | ~~Write tests to push coverage above 90%~~ | ~~30 min~~ |
+| ~~ | ~~9~~ | ~~MEDIUM~~ | ~~Split `watcher_test.go` (1466 lines) into focused files~~ | ~~1 hr~~ |
+| ~~ | ~~10~~ | ~~MEDIUM~~ | ~~Split `middleware_test.go` (851 lines) into focused files~~ | ~~30 min~~ |
+| ~~ | ~~11~~ | ~~MEDIUM~~ | ~~Split `watcher_coverage_test.go` (664 lines)~~ | ~~30 min~~ |
+| ~~ | ~~12~~ | ~~MEDIUM~~ | ~~Split `filter_test.go` (714 lines)~~ | ~~30 min~~ |
+| ~~ | ~~13~~ | ~~MEDIUM~~ | ~~Extract sub-files from `watcher.go` (602 lines)~~ | ~~30 min~~ |
+| ~~ | ~~14~~ | ~~MEDIUM~~ | ~~Migrate from `encoding/json` to `encoding/json/v2`~~ | ~~1 hr~~ |
+| ~~ | ~~15~~ | ~~MEDIUM~~ | ~~Add `govulncheck` to CI workflow~~ | ~~15 min~~ |
+| ~~ | ~~16~~ | ~~MEDIUM~~ | ~~Add `gosec` to CI workflow or golangci-lint config~~ | ~~15 min~~ |
+| ~~ | ~~17~~ | ~~LOW~~ | ~~Verify `.github/dependabot.yml` config for Go modules~~ | ~~5 min~~ |
+| ~~ | ~~18~~ | ~~LOW~~ | ~~Update MIGRATION.md to reflect actual v2 module path~~ | ~~10 min~~ |
+| ~~ | ~~19~~ | ~~LOW~~ | ~~Add `goreleaser` hook to verify module path matches tag~~ | ~~15 min~~ |
+| ~~ | ~~20~~ | ~~LOW~~ | ~~Consider adding a `go_module_path` CI check (grep go.mod for /v2)~~ | ~~10 min~~ |
+| ~~ | ~~21~~ | ~~LOW~~ | ~~Add benchmark regression detection in CI~~ | ~~30 min~~ |
+| ~~ | ~~22~~ | ~~LOW~~ | ~~Review `watcher_poll.go` (161 lines) for test coverage gaps~~ | ~~15 min~~ |
+| ~~ | ~~23~~ | ~~LOW~~ | ~~Add integration test for v2 module path resolution~~ | ~~15 min~~ |
+| ~~ | ~~24~~ | ~~LOW~~ | ~~Clean up `docs/status/` — 40+ stale status reports~~ | ~~10 min~~ |
+| ~~ | ~~25~~ | ~~LOW~~ | ~~Update CHANGELOG.md with v2.0.1 entry documenting module path fix~~ | ~~5 min~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ---
 

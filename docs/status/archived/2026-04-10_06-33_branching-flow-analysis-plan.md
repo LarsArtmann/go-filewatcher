@@ -39,11 +39,12 @@ The branching-flow multi-linter analysis identified **6 core issues** across 8 l
 
 | #  | Violation | Current                | New Type                                |
 | -- | --------- | ---------------------- | --------------------------------------- |
-| ~~ | 1         | debouncer.go:115       | `Debounce(key string, ...)`             |
-| ~~ | 2         | testing_helpers.go:73  | `assertLogContains(..., substr string)` |
-| ~~ | 3         | testing_helpers.go:144 | `createTestFile(..., tmpDir string)`    |
-| ~~ | 4         | watcher_walk.go:22     | `addPath(root string)`                  |
-| ~~ | 5         | watcher_walk.go:34     | `walkAndAddPaths(root string)`          |
+| ~~ | ~~1~~ | ~~debouncer.go:115~~ | ~~`Debounce(key string, ...)`~~ |
+| ~~ | ~~2~~ | ~~testing_helpers.go:73~~ | ~~`assertLogContains(..., substr string)`~~ |
+| ~~ | ~~3~~ | ~~testing_helpers.go:144~~ | ~~`createTestFile(..., tmpDir string)`~~ |
+| ~~ | ~~4~~ | ~~watcher_walk.go:22~~ | ~~`addPath(root string)`~~ |
+| ~~ | ~~5~~ | ~~watcher_walk.go:34~~ | ~~`walkAndAddPaths(root string)`~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 **Rationale**: Prevents passing wrong string arguments at compile time.
 
@@ -72,15 +73,15 @@ The branching-flow multi-linter analysis identified **6 core issues** across 8 l
 
 | Line | Current | Suggested Improvement                |
 | ---- | ------- | ------------------------------------ |
-| ~~   | 91      | Context variable 'opts' lost         |
-| ~~   | 98      | Context variable 'opts' lost         |
-| ~~   | 102     | Context variable 'opts' lost         |
-| ~~   | 105     | Context variable 'opts' lost         |
-| ~~   | 111     | Context variable 'opts' lost         |
-| ~~   | 188     | Context variable 'path' lost         |
-| ~~   | 197     | Context variable 'path' not included |
-| ~~   | 210     | Context variable 'path' lost         |
-| ~~   | 219     | Context variable 'path' lost         |
+| ~~   | ~~91~~ | ~~Context variable 'opts' lost~~ |
+| ~~   | ~~98~~ | ~~Context variable 'opts' lost~~ |
+| ~~   | ~~102~~ | ~~Context variable 'opts' lost~~ |
+| ~~   | ~~105~~ | ~~Context variable 'opts' lost~~ |
+| ~~   | ~~111~~ | ~~Context variable 'opts' lost~~ |
+| ~~   | ~~188~~ | ~~Context variable 'path' lost~~ |
+| ~~   | ~~197~~ | ~~Context variable 'path' not included~~ |
+| ~~   | ~~210~~ | ~~Context variable 'path' lost~~ |
+| ~~   | ~~219~~ | ~~Context variable 'path' lost~~ |
 
 **Rationale**: Better debugging experience with full error chains.
 
@@ -92,7 +93,7 @@ The branching-flow multi-linter analysis identified **6 core issues** across 8 l
 
 | Line | Current | Improvement               |
 | ---- | ------- | ------------------------- |
-| ~~   | 46      | Context variable 'd' lost |
+| ~~   | ~~46~~ | ~~Context variable 'd' lost~~ |
 
 ---
 

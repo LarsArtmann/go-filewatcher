@@ -28,11 +28,12 @@ _Must-do. These are bugs, broken tooling, or things shipping to consumers that s
 
 | #  | Task | Files                                              | Est.                            | Impact | Why |
 | -- | ---- | -------------------------------------------------- | ------------------------------- | ------ | --- |
-| ~~ | 1    | Fix `Add()` double-append to `watchList` bug       | `watcher.go`, `watcher_walk.go` | 12m    | 🔴  |
-| ~~ | 2    | Fix `MiddlewareBatch` timer error swallowing       | `middleware.go:342`             | 10m    | 🔴  |
-| ~~ | 3    | Fix `handleNewDirectory` error swallowing          | `watcher_internal.go:193`       | 10m    | 🔴  |
-| ~~ | 4    | Align flake.nix Go 1.24 → 1.26                     | `flake.nix`                     | 5m     | 🔴  |
-| ~~ | 5    | Move `testing_helpers.go` out of production binary | `testing_helpers.go`            | 12m    | 🔴  |
+| ~~ | ~~1~~ | ~~Fix `Add()` double-append to `watchList` bug~~ | ~~`watcher.go`, `watcher_walk.go`~~ | ~~12m~~ | ~~🔴~~ |
+| ~~ | ~~2~~ | ~~Fix `MiddlewareBatch` timer error swallowing~~ | ~~`middleware.go:342`~~ | ~~10m~~ | ~~🔴~~ |
+| ~~ | ~~3~~ | ~~Fix `handleNewDirectory` error swallowing~~ | ~~`watcher_internal.go:193`~~ | ~~10m~~ | ~~🔴~~ |
+| ~~ | ~~4~~ | ~~Align flake.nix Go 1.24 → 1.26~~ | ~~`flake.nix`~~ | ~~5m~~ | ~~🔴~~ |
+| ~~ | ~~5~~ | ~~Move `testing_helpers.go` out of production binary~~ | ~~`testing_helpers.go`~~ | ~~12m~~ | ~~🔴~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ---
 
@@ -42,18 +43,18 @@ _Should-do immediately. Low effort, high reliability/safety improvement._
 
 | #  | Task | Files                                                           | Est.                         | Impact | Why |
 | -- | ---- | --------------------------------------------------------------- | ---------------------------- | ------ | --- |
-| ~~ | 6    | Replace hand-rolled `Op.MarshalJSON` with `json.Marshal`        | `event.go:55`                | 5m     | 🟠  |
-| ~~ | 7    | Protect `DefaultIgnoreDirs` from mutation                       | `watcher.go`                 | 5m     | 🟠  |
-| ~~ | 8    | Simplify `errors.As` to `AsType[*WatcherError]`                 | `errors.go:94`               | 5m     | 🟠  |
-| ~~ | 9    | Ring buffer for `MiddlewareSlidingWindowRateLimit`              | `middleware.go:168-176`      | 12m    | 🟠  |
-| ~~ | 10   | Document `GlobalDebouncer` callback replacement caveat          | `debouncer.go`               | 5m     | 🟠  |
-| ~~ | 11   | `FilterExcludePaths`: skip redundant `filepath.Abs` per event   | `filter.go:102`              | 8m     | 🟠  |
-| ~~ | 12   | Validate `WithBuffer(0)` behavior — error or document           | `options.go`                 | 5m     | 🟠  |
-| ~~ | 13   | Validate debounce durations — cap at reasonable max             | `options.go`, `debouncer.go` | 8m     | 🟠  |
-| ~~ | 14   | Remove `nolint:unparam` from `getDebounceKey`                   | `watcher_internal.go`        | 5m     | 🟠  |
-| ~~ | 15   | Validate `FilterRegex` compiles in constructor                  | `filter.go`                  | 5m     | 🟠  |
-| ~~ | 16   | `handleNewDirectory`: propagate addPath errors to error handler | `watcher_internal.go`        | 10m    | 🟠  |
-| ~~ | 17   | `MiddlewareBatch`: propagate timer flush errors                 | `middleware.go`              | 10m    | 🟠  |
+| ~~ | ~~6~~ | ~~Replace hand-rolled `Op.MarshalJSON` with `json.Marshal`~~ | ~~`event.go:55`~~ | ~~5m~~ | ~~🟠~~ |
+| ~~ | ~~7~~ | ~~Protect `DefaultIgnoreDirs` from mutation~~ | ~~`watcher.go`~~ | ~~5m~~ | ~~🟠~~ |
+| ~~ | ~~8~~ | ~~Simplify `errors.As` to `AsType[*WatcherError]`~~ | ~~`errors.go:94`~~ | ~~5m~~ | ~~🟠~~ |
+| ~~ | ~~9~~ | ~~Ring buffer for `MiddlewareSlidingWindowRateLimit`~~ | ~~`middleware.go:168-176`~~ | ~~12m~~ | ~~🟠~~ |
+| ~~ | ~~10~~ | ~~Document `GlobalDebouncer` callback replacement caveat~~ | ~~`debouncer.go`~~ | ~~5m~~ | ~~🟠~~ |
+| ~~ | ~~11~~ | ~~`FilterExcludePaths`: skip redundant `filepath.Abs` per event~~ | ~~`filter.go:102`~~ | ~~8m~~ | ~~🟠~~ |
+| ~~ | ~~12~~ | ~~Validate `WithBuffer(0)` behavior — error or document~~ | ~~`options.go`~~ | ~~5m~~ | ~~🟠~~ |
+| ~~ | ~~13~~ | ~~Validate debounce durations — cap at reasonable max~~ | ~~`options.go`, `debouncer.go`~~ | ~~8m~~ | ~~🟠~~ |
+| ~~ | ~~14~~ | ~~Remove `nolint:unparam` from `getDebounceKey`~~ | ~~`watcher_internal.go`~~ | ~~5m~~ | ~~🟠~~ |
+| ~~ | ~~15~~ | ~~Validate `FilterRegex` compiles in constructor~~ | ~~`filter.go`~~ | ~~5m~~ | ~~🟠~~ |
+| ~~ | ~~16~~ | ~~`handleNewDirectory`: propagate addPath errors to error handler~~ | ~~`watcher_internal.go`~~ | ~~10m~~ | ~~🟠~~ |
+| ~~ | ~~17~~ | ~~`MiddlewareBatch`: propagate timer flush errors~~ | ~~`middleware.go`~~ | ~~10m~~ | ~~🟠~~ |
 
 ---
 
@@ -63,27 +64,27 @@ _Close the holes. Low-to-medium effort, high confidence improvement._
 
 | #  | Task | Files                                                                              | Est.                          | Impact | Why |
 | -- | ---- | ---------------------------------------------------------------------------------- | ----------------------------- | ------ | --- |
-| ~~ | 18   | Add rename event integration test                                                  | `watcher_test.go`             | 10m    | 🟡  |
-| ~~ | 19   | Add multi-directory initialization test (`New([]string{d1,d2})`)                   | `watcher_test.go`             | 10m    | 🟡  |
-| ~~ | 20   | Add buffer overflow / backpressure test                                            | `watcher_test.go`             | 10m    | 🟡  |
-| ~~ | 21   | Add concurrent Add/Remove during active watching test                              | `watcher_test.go`             | 12m    | 🟡  |
-| ~~ | 22   | Add non-recursive watching integration test                                        | `watcher_test.go`             | 10m    | 🟡  |
-| ~~ | 23   | Close coverage gaps: `addPath` (83.3%), `walkDirFunc` (84.6%)                      | `watcher_walk_test.go`        | 12m    | 🟡  |
-| ~~ | 24   | Close coverage gap: `Add` (84.6%) — test error paths                               | `watcher_test.go`             | 10m    | 🟡  |
-| ~~ | 25   | Add test for `handleError()` stderr path                                           | `watcher_test.go`             | 10m    | 🟡  |
-| ~~ | 26   | Add test for `GlobalDebouncer.Flush()`                                             | `debouncer_test.go`           | 8m     | 🟡  |
-| ~~ | 27   | Add test for `handleError` with `ErrorContext`                                     | `watcher_test.go`             | 10m    | 🟡  |
-| ~~ | 28   | Add `FilterGeneratedCodeFull` content-check tests for Templ/Protobuf               | `filter_gogen_test.go`        | 10m    | 🟡  |
-| ~~ | 29   | Add `Example_FilterRegex` godoc example                                            | `example_test.go`             | 8m     | 🟡  |
-| ~~ | 30   | Fix `TestErrorHandler_Async` — assert `callCount == 10`                            | `errors_test.go`              | 8m     | 🟡  |
-| ~~ | 31   | Review parallel tests for race safety                                              | all `*_test.go`               | 12m    | 🟡  |
-| ~~ | 32   | Fix flaky `TestWatcher_Stats_Metrics` timing sensitivity                           | `watcher_test.go`             | 10m    | 🟡  |
-| ~~ | 33   | Fix flaky `TestWatcher_Watch_WithMiddleware` timing sensitivity                    | `watcher_test.go`             | 10m    | 🟡  |
-| ~~ | 34   | Add `Watcher.Errors()` channel closure after `Close()` test                        | `watcher_test.go`             | 8m     | 🟡  |
-| ~~ | 35   | Add error channel test for naturally-occurring fs errors                           | `watcher_test.go`             | 12m    | 🟡  |
-| ~~ | 36   | Add test for `IsWatching()`/`IsClosed()` state transitions during failed `Watch()` | `watcher_test.go`             | 10m    | 🟡  |
-| ~~ | 37   | Add test for `WithIgnorePatterns()` using glob patterns                            | `filter_test.go`, `filter.go` | 12m    | 🟡  |
-| ~~ | 38   | Add coverage for phantom type methods: `IsZero`, `Equal`, `Compare`                | `phantom_types_test.go`       | 10m    | 🟡  |
+| ~~ | ~~18~~ | ~~Add rename event integration test~~ | ~~`watcher_test.go`~~ | ~~10m~~ | ~~🟡~~ |
+| ~~ | ~~19~~ | ~~Add multi-directory initialization test (`New([]string{d1,d2})`)~~ | ~~`watcher_test.go`~~ | ~~10m~~ | ~~🟡~~ |
+| ~~ | ~~20~~ | ~~Add buffer overflow / backpressure test~~ | ~~`watcher_test.go`~~ | ~~10m~~ | ~~🟡~~ |
+| ~~ | ~~21~~ | ~~Add concurrent Add/Remove during active watching test~~ | ~~`watcher_test.go`~~ | ~~12m~~ | ~~🟡~~ |
+| ~~ | ~~22~~ | ~~Add non-recursive watching integration test~~ | ~~`watcher_test.go`~~ | ~~10m~~ | ~~🟡~~ |
+| ~~ | ~~23~~ | ~~Close coverage gaps: `addPath` (83.3%), `walkDirFunc` (84.6%)~~ | ~~`watcher_walk_test.go`~~ | ~~12m~~ | ~~🟡~~ |
+| ~~ | ~~24~~ | ~~Close coverage gap: `Add` (84.6%) — test error paths~~ | ~~`watcher_test.go`~~ | ~~10m~~ | ~~🟡~~ |
+| ~~ | ~~25~~ | ~~Add test for `handleError()` stderr path~~ | ~~`watcher_test.go`~~ | ~~10m~~ | ~~🟡~~ |
+| ~~ | ~~26~~ | ~~Add test for `GlobalDebouncer.Flush()`~~ | ~~`debouncer_test.go`~~ | ~~8m~~ | ~~🟡~~ |
+| ~~ | ~~27~~ | ~~Add test for `handleError` with `ErrorContext`~~ | ~~`watcher_test.go`~~ | ~~10m~~ | ~~🟡~~ |
+| ~~ | ~~28~~ | ~~Add `FilterGeneratedCodeFull` content-check tests for Templ/Protobuf~~ | ~~`filter_gogen_test.go`~~ | ~~10m~~ | ~~🟡~~ |
+| ~~ | ~~29~~ | ~~Add `Example_FilterRegex` godoc example~~ | ~~`example_test.go`~~ | ~~8m~~ | ~~🟡~~ |
+| ~~ | ~~30~~ | ~~Fix `TestErrorHandler_Async` — assert `callCount == 10`~~ | ~~`errors_test.go`~~ | ~~8m~~ | ~~🟡~~ |
+| ~~ | ~~31~~ | ~~Review parallel tests for race safety~~ | ~~all `*_test.go`~~ | ~~12m~~ | ~~🟡~~ |
+| ~~ | ~~32~~ | ~~Fix flaky `TestWatcher_Stats_Metrics` timing sensitivity~~ | ~~`watcher_test.go`~~ | ~~10m~~ | ~~🟡~~ |
+| ~~ | ~~33~~ | ~~Fix flaky `TestWatcher_Watch_WithMiddleware` timing sensitivity~~ | ~~`watcher_test.go`~~ | ~~10m~~ | ~~🟡~~ |
+| ~~ | ~~34~~ | ~~Add `Watcher.Errors()` channel closure after `Close()` test~~ | ~~`watcher_test.go`~~ | ~~8m~~ | ~~🟡~~ |
+| ~~ | ~~35~~ | ~~Add error channel test for naturally-occurring fs errors~~ | ~~`watcher_test.go`~~ | ~~12m~~ | ~~🟡~~ |
+| ~~ | ~~36~~ | ~~Add test for `IsWatching()`/`IsClosed()` state transitions during failed `Watch()`~~ | ~~`watcher_test.go`~~ | ~~10m~~ | ~~🟡~~ |
+| ~~ | ~~37~~ | ~~Add test for `WithIgnorePatterns()` using glob patterns~~ | ~~`filter_test.go`, `filter.go`~~ | ~~12m~~ | ~~🟡~~ |
+| ~~ | ~~38~~ | ~~Add coverage for phantom type methods: `IsZero`, `Equal`, `Compare`~~ | ~~`phantom_types_test.go`~~ | ~~10m~~ | ~~🟡~~ |
 
 ---
 
@@ -93,22 +94,22 @@ _Enable adoption. Now that we're MIT-licensed, this matters._
 
 | #  | Task | Files                                                             | Est.                               | Impact | Why |
 | -- | ---- | ----------------------------------------------------------------- | ---------------------------------- | ------ | --- |
-| ~~ | 39   | Populate CHANGELOG.md for v0.1.0 release                          | `CHANGELOG.md`                     | 5m     | 🟢  |
-| ~~ | 40   | Populate CHANGELOG.md for v0.2.0 release                          | `CHANGELOG.md`                     | 5m     | 🟢  |
-| ~~ | 41   | Write `CONTRIBUTING.md`                                           | new file                           | 12m    | 🟢  |
-| ~~ | 42   | Write `CODE_OF_CONDUCT.md`                                        | new file                           | 8m     | 🟢  |
-| ~~ | 43   | Add GitHub issue templates                                        | `.github/ISSUE_TEMPLATE/`          | 10m    | 🟢  |
-| ~~ | 44   | Add GitHub PR template                                            | `.github/PULL_REQUEST_TEMPLATE.md` | 8m     | 🟢  |
-| ~~ | 45   | Write Troubleshooting.md                                          | new file                           | 12m    | 🟢  |
-| ~~ | 46   | Write migration guide for ErrorHandler signature change           | `MIGRATION.md`                     | 10m    | 🟢  |
-| ~~ | 47   | Add structured logging example                                    | `examples/`                        | 10m    | 🟢  |
-| ~~ | 48   | Document DI integration patterns in README                        | `README.md`                        | 10m    | 🟢  |
-| ~~ | 49   | Consolidate `doc.go` — sync with README examples                  | `doc.go`                           | 10m    | 🟢  |
-| ~~ | 50   | Add API stability doc                                             | new file                           | 10m    | 🟢  |
-| ~~ | 51   | Adopt semver in CHANGELOG                                         | `CHANGELOG.md`                     | 8m     | 🟢  |
-| ~~ | 52   | Check if `examples/` directory worth keeping vs `example_test.go` | —                                  | 10m    | 🟢  |
-| ~~ | 53   | Update TODO_LIST.md — remove already-done items                   | `TODO_LIST.md`                     | 10m    | 🟢  |
-| ~~ | 54   | Update `AGENTS.md` with MIT license info                          | `AGENTS.md`                        | 5m     | 🟢  |
+| ~~ | ~~39~~ | ~~Populate CHANGELOG.md for v0.1.0 release~~ | ~~`CHANGELOG.md`~~ | ~~5m~~ | ~~🟢~~ |
+| ~~ | ~~40~~ | ~~Populate CHANGELOG.md for v0.2.0 release~~ | ~~`CHANGELOG.md`~~ | ~~5m~~ | ~~🟢~~ |
+| ~~ | ~~41~~ | ~~Write `CONTRIBUTING.md`~~ | ~~new file~~ | ~~12m~~ | ~~🟢~~ |
+| ~~ | ~~42~~ | ~~Write `CODE_OF_CONDUCT.md`~~ | ~~new file~~ | ~~8m~~ | ~~🟢~~ |
+| ~~ | ~~43~~ | ~~Add GitHub issue templates~~ | ~~`.github/ISSUE_TEMPLATE/`~~ | ~~10m~~ | ~~🟢~~ |
+| ~~ | ~~44~~ | ~~Add GitHub PR template~~ | ~~`.github/PULL_REQUEST_TEMPLATE.md`~~ | ~~8m~~ | ~~🟢~~ |
+| ~~ | ~~45~~ | ~~Write Troubleshooting.md~~ | ~~new file~~ | ~~12m~~ | ~~🟢~~ |
+| ~~ | ~~46~~ | ~~Write migration guide for ErrorHandler signature change~~ | ~~`MIGRATION.md`~~ | ~~10m~~ | ~~🟢~~ |
+| ~~ | ~~47~~ | ~~Add structured logging example~~ | ~~`examples/`~~ | ~~10m~~ | ~~🟢~~ |
+| ~~ | ~~48~~ | ~~Document DI integration patterns in README~~ | ~~`README.md`~~ | ~~10m~~ | ~~🟢~~ |
+| ~~ | ~~49~~ | ~~Consolidate `doc.go` — sync with README examples~~ | ~~`doc.go`~~ | ~~10m~~ | ~~🟢~~ |
+| ~~ | ~~50~~ | ~~Add API stability doc~~ | ~~new file~~ | ~~10m~~ | ~~🟢~~ |
+| ~~ | ~~51~~ | ~~Adopt semver in CHANGELOG~~ | ~~`CHANGELOG.md`~~ | ~~8m~~ | ~~🟢~~ |
+| ~~ | ~~52~~ | ~~Check if `examples/` directory worth keeping vs `example_test.go`~~ | ~~—~~ | ~~10m~~ | ~~🟢~~ |
+| ~~ | ~~53~~ | ~~Update TODO_LIST.md — remove already-done items~~ | ~~`TODO_LIST.md`~~ | ~~10m~~ | ~~🟢~~ |
+| ~~ | ~~54~~ | ~~Update `AGENTS.md` with MIT license info~~ | ~~`AGENTS.md`~~ | ~~5m~~ | ~~🟢~~ |
 
 ---
 
@@ -116,14 +117,14 @@ _Enable adoption. Now that we're MIT-licensed, this matters._
 
 | #  | Task | Files                                                  | Est.                               | Impact | Why |
 | -- | ---- | ------------------------------------------------------ | ---------------------------------- | ------ | --- |
-| ~~ | 55   | Add `nix run .#test` and `nix run .#lint` to flake.nix | `flake.nix`                        | 12m    | 🟢  |
-| ~~ | 56   | Add Dependabot / Renovate config                       | `.github/dependabot.yml`           | 10m    | 🟢  |
-| ~~ | 57   | Add benchmark regression detection in CI               | `.github/workflows/ci.yml`         | 10m    | 🟢  |
-| ~~ | 58   | Add `-race` to benchmark CI step                       | `.github/workflows/ci.yml`         | 5m     | 🟢  |
-| ~~ | 59   | Test `examples/` in CI pipeline                        | `.github/workflows/ci.yml`         | 10m    | 🟢  |
-| ~~ | 60   | Configure GoReleaser                                   | `.goreleaser.yml`                  | 12m    | 🟢  |
-| ~~ | 61   | Configure semantic-release                             | `.releaserc.yml`                   | 12m    | 🟢  |
-| ~~ | 62   | Extract `drainEvents` to testutil package              | `testing_helpers.go` → `testutil/` | 8m     | 🟢  |
+| ~~ | ~~55~~ | ~~Add `nix run .#test` and `nix run .#lint` to flake.nix~~ | ~~`flake.nix`~~ | ~~12m~~ | ~~🟢~~ |
+| ~~ | ~~56~~ | ~~Add Dependabot / Renovate config~~ | ~~`.github/dependabot.yml`~~ | ~~10m~~ | ~~🟢~~ |
+| ~~ | ~~57~~ | ~~Add benchmark regression detection in CI~~ | ~~`.github/workflows/ci.yml`~~ | ~~10m~~ | ~~🟢~~ |
+| ~~ | ~~58~~ | ~~Add `-race` to benchmark CI step~~ | ~~`.github/workflows/ci.yml`~~ | ~~5m~~ | ~~🟢~~ |
+| ~~ | ~~59~~ | ~~Test `examples/` in CI pipeline~~ | ~~`.github/workflows/ci.yml`~~ | ~~10m~~ | ~~🟢~~ |
+| ~~ | ~~60~~ | ~~Configure GoReleaser~~ | ~~`.goreleaser.yml`~~ | ~~12m~~ | ~~🟢~~ |
+| ~~ | ~~61~~ | ~~Configure semantic-release~~ | ~~`.releaserc.yml`~~ | ~~12m~~ | ~~🟢~~ |
+| ~~ | ~~62~~ | ~~Extract `drainEvents` to testutil package~~ | ~~`testing_helpers.go` → `testutil/`~~ | ~~8m~~ | ~~🟢~~ |
 
 ---
 
@@ -133,19 +134,19 @@ _New capabilities that users have requested or are commonly expected._
 
 | #  | Task | Files                                             | Est.                      | Impact | Why |
 | -- | ---- | ------------------------------------------------- | ------------------------- | ------ | --- |
-| ~~ | 63   | Implement `WatchOnce()` — API design & core logic | `watcher.go`              | 12m    | 🔵  |
-| ~~ | 64   | Implement `WatchOnce()` — tests                   | `watcher_test.go`         | 12m    | 🔵  |
-| ~~ | 65   | Add `Event.ModTime()` field — struct & option     | `event.go`, `options.go`  | 10m    | 🔵  |
-| ~~ | 66   | Add `Event.ModTime()` — tests                     | `event_test.go`           | 8m     | 🔵  |
-| ~~ | 67   | Add `Event.Size` field — struct & option          | `event.go`, `options.go`  | 10m    | 🔵  |
-| ~~ | 68   | Add `Event.Size` — tests                          | `event_test.go`           | 8m     | 🔵  |
-| ~~ | 69   | Add `MiddlewareThrottle` — drop excess events     | `middleware.go`           | 12m    | 🔵  |
-| ~~ | 70   | Add `MiddlewareThrottle` — tests                  | `middleware_test.go`      | 10m    | 🔵  |
-| ~~ | 71   | Add `MiddlewareRateBurst()` — token bucket        | `middleware.go`           | 12m    | 🔵  |
-| ~~ | 72   | Add `MiddlewareRateBurst()` — tests               | `middleware_test.go`      | 10m    | 🔵  |
-| ~~ | 73   | Add `WithIgnorePatterns()` using glob patterns    | `filter.go`, `options.go` | 10m    | 🔵  |
-| ~~ | 74   | Add symlink following support — research & design | —                         | 12m    | 🔵  |
-| ~~ | 75   | Add symlink following support — implementation    | `watcher_walk.go`         | 12m    | 🔵  |
+| ~~ | ~~63~~ | ~~Implement `WatchOnce()` — API design & core logic~~ | ~~`watcher.go`~~ | ~~12m~~ | ~~🔵~~ |
+| ~~ | ~~64~~ | ~~Implement `WatchOnce()` — tests~~ | ~~`watcher_test.go`~~ | ~~12m~~ | ~~🔵~~ |
+| ~~ | ~~65~~ | ~~Add `Event.ModTime()` field — struct & option~~ | ~~`event.go`, `options.go`~~ | ~~10m~~ | ~~🔵~~ |
+| ~~ | ~~66~~ | ~~Add `Event.ModTime()` — tests~~ | ~~`event_test.go`~~ | ~~8m~~ | ~~🔵~~ |
+| ~~ | ~~67~~ | ~~Add `Event.Size` field — struct & option~~ | ~~`event.go`, `options.go`~~ | ~~10m~~ | ~~🔵~~ |
+| ~~ | ~~68~~ | ~~Add `Event.Size` — tests~~ | ~~`event_test.go`~~ | ~~8m~~ | ~~🔵~~ |
+| ~~ | ~~69~~ | ~~Add `MiddlewareThrottle` — drop excess events~~ | ~~`middleware.go`~~ | ~~12m~~ | ~~🔵~~ |
+| ~~ | ~~70~~ | ~~Add `MiddlewareThrottle` — tests~~ | ~~`middleware_test.go`~~ | ~~10m~~ | ~~🔵~~ |
+| ~~ | ~~71~~ | ~~Add `MiddlewareRateBurst()` — token bucket~~ | ~~`middleware.go`~~ | ~~12m~~ | ~~🔵~~ |
+| ~~ | ~~72~~ | ~~Add `MiddlewareRateBurst()` — tests~~ | ~~`middleware_test.go`~~ | ~~10m~~ | ~~🔵~~ |
+| ~~ | ~~73~~ | ~~Add `WithIgnorePatterns()` using glob patterns~~ | ~~`filter.go`, `options.go`~~ | ~~10m~~ | ~~🔵~~ |
+| ~~ | ~~74~~ | ~~Add symlink following support — research & design~~ | ~~—~~ | ~~12m~~ | ~~🔵~~ |
+| ~~ | ~~75~~ | ~~Add symlink following support — implementation~~ | ~~`watcher_walk.go`~~ | ~~12m~~ | ~~🔵~~ |
 
 ---
 
@@ -155,17 +156,17 @@ _Nice-to-have. Higher effort, lower immediate priority._
 
 | #  | Task | Files                                             | Est.                  | Impact | Why |
 | -- | ---- | ------------------------------------------------- | --------------------- | ------ | --- |
-| ~~ | 76   | Add `WithPolling(fallback)` — research & design   | —                     | 12m    | ⚪  |
-| ~~ | 77   | Implement exponential backoff for errors          | `watcher_internal.go` | 12m    | ⚪  |
-| ~~ | 78   | Context propagation through pipeline              | `watcher_internal.go` | 12m    | ⚪  |
-| ~~ | 79   | Self-healing watcher — auto-reconnect             | `watcher.go`          | 12m    | ⚪  |
-| ~~ | 80   | Prometheus metrics export                         | `middleware.go`       | 12m    | ⚪  |
-| ~~ | 81   | OpenTelemetry integration                         | `middleware.go`       | 12m    | ⚪  |
-| ~~ | 82   | Create debug mode with verbose structured logging | `options.go`          | 12m    | ⚪  |
-| ~~ | 83   | Add error code constants                          | `errors.go`           | 8m     | ⚪  |
-| ~~ | 84   | Add stack traces to `WatcherError`                | `errors.go`           | 8m     | ⚪  |
-| ~~ | 85   | Circuit breaker middleware                        | `middleware.go`       | 12m    | ⚪  |
-| ~~ | 86   | Dead letter queue middleware                      | `middleware.go`       | 12m    | ⚪  |
+| ~~ | ~~76~~ | ~~Add `WithPolling(fallback)` — research & design~~ | ~~—~~ | ~~12m~~ | ~~⚪~~ |
+| ~~ | ~~77~~ | ~~Implement exponential backoff for errors~~ | ~~`watcher_internal.go`~~ | ~~12m~~ | ~~⚪~~ |
+| ~~ | ~~78~~ | ~~Context propagation through pipeline~~ | ~~`watcher_internal.go`~~ | ~~12m~~ | ~~⚪~~ |
+| ~~ | ~~79~~ | ~~Self-healing watcher — auto-reconnect~~ | ~~`watcher.go`~~ | ~~12m~~ | ~~⚪~~ |
+| ~~ | ~~80~~ | ~~Prometheus metrics export~~ | ~~`middleware.go`~~ | ~~12m~~ | ~~⚪~~ |
+| ~~ | ~~81~~ | ~~OpenTelemetry integration~~ | ~~`middleware.go`~~ | ~~12m~~ | ~~⚪~~ |
+| ~~ | ~~82~~ | ~~Create debug mode with verbose structured logging~~ | ~~`options.go`~~ | ~~12m~~ | ~~⚪~~ |
+| ~~ | ~~83~~ | ~~Add error code constants~~ | ~~`errors.go`~~ | ~~8m~~ | ~~⚪~~ |
+| ~~ | ~~84~~ | ~~Add stack traces to `WatcherError`~~ | ~~`errors.go`~~ | ~~8m~~ | ~~⚪~~ |
+| ~~ | ~~85~~ | ~~Circuit breaker middleware~~ | ~~`middleware.go`~~ | ~~12m~~ | ~~⚪~~ |
+| ~~ | ~~86~~ | ~~Dead letter queue middleware~~ | ~~`middleware.go`~~ | ~~12m~~ | ~~⚪~~ |
 
 ---
 
@@ -175,10 +176,10 @@ _Depends on other projects. Can only be planned here, executed externally._
 
 | #  | Task | Files                                 | Est.     | Impact | Why |
 | -- | ---- | ------------------------------------- | -------- | ------ | --- |
-| ~~ | 87   | Integrate into file-and-image-renamer | external | 12m    | ⚪  |
-| ~~ | 88   | Integrate into dynamic-markdown-site  | external | 12m    | ⚪  |
-| ~~ | 89   | Integrate into auto-deduplicate       | external | 12m    | ⚪  |
-| ~~ | 90   | Integrate into Cyberdom               | external | 12m    | ⚪  |
+| ~~ | ~~87~~ | ~~Integrate into file-and-image-renamer~~ | ~~external~~ | ~~12m~~ | ~~⚪~~ |
+| ~~ | ~~88~~ | ~~Integrate into dynamic-markdown-site~~ | ~~external~~ | ~~12m~~ | ~~⚪~~ |
+| ~~ | ~~89~~ | ~~Integrate into auto-deduplicate~~ | ~~external~~ | ~~12m~~ | ~~⚪~~ |
+| ~~ | ~~90~~ | ~~Integrate into Cyberdom~~ | ~~external~~ | ~~12m~~ | ~~⚪~~ |
 
 ---
 

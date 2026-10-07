@@ -144,48 +144,49 @@
 
 | #  | Task | Est. Effort                                   |
 | -- | ---- | --------------------------------------------- |
-| ~~ | 1    | Tag v0.1.0 release (DONE — already tagged)    |
-| ~~ | 2    | Tag v2.0.0 release                            |
-| ~~ | 3    | CLI tool (standalone binary for non-Go users) |
-| ~~ | 4    | Troubleshooting.md                            |
-| ~~ | 5    | GoReleaser configuration                      |
-| ~~ | 6    | Dependabot / Renovate configuration           |
-| ~~ | 7    | CONTRIBUTING.md + CODEOWNERS                  |
-| ~~ | 8    | PR template                                   |
-| ~~ | 9    | CODE_OF_CONDUCT.md                            |
+| ~~ | ~~1~~ | ~~Tag v0.1.0 release (DONE — already tagged)~~ |
+| ~~ | ~~2~~ | ~~Tag v2.0.0 release~~ |
+| ~~ | ~~3~~ | ~~CLI tool (standalone binary for non-Go users)~~ |
+| ~~ | ~~4~~ | ~~Troubleshooting.md~~ |
+| ~~ | ~~5~~ | ~~GoReleaser configuration~~ |
+| ~~ | ~~6~~ | ~~Dependabot / Renovate configuration~~ |
+| ~~ | ~~7~~ | ~~CONTRIBUTING.md + CODEOWNERS~~ |
+| ~~ | ~~8~~ | ~~PR template~~ |
+| ~~ | ~~9~~ | ~~CODE_OF_CONDUCT.md~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ### MEDIUM Priority
 
 | #  | Task | Est. Effort                                |
 | -- | ---- | ------------------------------------------ |
-| ~~ | 10   | `Watcher.WatchOnce()` one-shot mode        |
-| ~~ | 11   | Polling fallback for NFS/network mounts    |
-| ~~ | 12   | Symlink following support                  |
-| ~~ | 13   | `Event.ModTime()` field                    |
-| ~~ | 14   | `Event.Size` field                         |
-| ~~ | 15   | File content hashing option                |
-| ~~ | 16   | Prometheus metrics export                  |
-| ~~ | 17   | OpenTelemetry integration                  |
-| ~~ | 18   | Debug mode with verbose structured logging |
-| ~~ | 19   | Stack traces in WatcherError               |
-| ~~ | 20   | Error codes for programmatic handling      |
-| ~~ | 21   | `MiddlewareThrottle`                       |
-| ~~ | 22   | Circuit breaker middleware                 |
-| ~~ | 23   | Error rate limiting middleware             |
-| ~~ | 24   | Context propagation through pipeline       |
-| ~~ | 25   | Benchmark regression CI                    |
-| ~~ | 26   | Integration tests for recursive watching   |
-| ~~ | 27   | Fuzz testing                               |
-| ~~ | 28   | Windows-specific edge case tests           |
+| ~~ | ~~10~~ | ~~`Watcher.WatchOnce()` one-shot mode~~ |
+| ~~ | ~~11~~ | ~~Polling fallback for NFS/network mounts~~ |
+| ~~ | ~~12~~ | ~~Symlink following support~~ |
+| ~~ | ~~13~~ | ~~`Event.ModTime()` field~~ |
+| ~~ | ~~14~~ | ~~`Event.Size` field~~ |
+| ~~ | ~~15~~ | ~~File content hashing option~~ |
+| ~~ | ~~16~~ | ~~Prometheus metrics export~~ |
+| ~~ | ~~17~~ | ~~OpenTelemetry integration~~ |
+| ~~ | ~~18~~ | ~~Debug mode with verbose structured logging~~ |
+| ~~ | ~~19~~ | ~~Stack traces in WatcherError~~ |
+| ~~ | ~~20~~ | ~~Error codes for programmatic handling~~ |
+| ~~ | ~~21~~ | ~~`MiddlewareThrottle`~~ |
+| ~~ | ~~22~~ | ~~Circuit breaker middleware~~ |
+| ~~ | ~~23~~ | ~~Error rate limiting middleware~~ |
+| ~~ | ~~24~~ | ~~Context propagation through pipeline~~ |
+| ~~ | ~~25~~ | ~~Benchmark regression CI~~ |
+| ~~ | ~~26~~ | ~~Integration tests for recursive watching~~ |
+| ~~ | ~~27~~ | ~~Fuzz testing~~ |
+| ~~ | ~~28~~ | ~~Windows-specific edge case tests~~ |
 
 ### Integration Backlog
 
 | #  | Target Project |
 | -- | -------------- |
-| ~~ | 29             |
-| ~~ | 30             |
-| ~~ | 31             |
-| ~~ | 32             |
+| ~~ | ~~29~~ |
+| ~~ | ~~30~~ |
+| ~~ | ~~31~~ |
+| ~~ | ~~32~~ |
 
 ---
 
@@ -282,31 +283,31 @@ Testing is macOS-only. No CI matrix for:
 
 | Rank | Task | Impact                                      | Effort | Category |
 | ---- | ---- | ------------------------------------------- | ------ | -------- |
-| ~~   | 1    | **Close coverage gaps to ≥95%**             | High   | 4h       |
-| ~~   | 2    | **Tag v1.0.0 with stability guarantee**     | High   | 1h       |
-| ~~   | 3    | **GoReleaser + binary releases**            | High   | 2h       |
-| ~~   | 4    | **CLI tool MVP** (watch + filter + output)  | High   | 6h       |
-| ~~   | 5    | **Troubleshooting.md**                      | Medium | 2h       |
-| ~~   | 6    | **Linux CI matrix** (GitHub Actions)        | High   | 1h       |
-| ~~   | 7    | **Archive old status reports**              | Low    | 30min    |
-| ~~   | 8    | **CONTRIBUTING.md + PR templates**          | Medium | 2h       |
-| ~~   | 9    | **Dependabot / Renovate**                   | Low    | 30min    |
-| ~~   | 10   | **`Event.Size` + `Event.ModTime()` fields** | Medium | 2h       |
-| ~~   | 11   | **Error codes** for programmatic handling   | Medium | 2h       |
-| ~~   | 12   | **`MiddlewareThrottle`** token-bucket       | Medium | 2h       |
-| ~~   | 13   | **`Watcher.WatchOnce()`** one-shot mode     | Medium | 3h       |
-| ~~   | 14   | **Prometheus metrics export**               | Medium | 3h       |
-| ~~   | 15   | **Polling fallback** for NFS mounts         | High   | 8h       |
-| ~~   | 16   | **Symlink following** support               | Medium | 4h       |
-| ~~   | 17   | **Benchmark regression CI**                 | Medium | 2h       |
-| ~~   | 18   | **File content hashing** option             | Medium | 4h       |
-| ~~   | 19   | **Circuit breaker middleware**              | Medium | 4h       |
-| ~~   | 20   | **OpenTelemetry integration**               | Medium | 6h       |
-| ~~   | 21   | **Self-healing watcher** (auto-restart)     | High   | 8h       |
-| ~~   | 22   | **Fuzz testing** setup                      | Medium | 4h       |
-| ~~   | 23   | **Context propagation** through pipeline    | Medium | 3h       |
-| ~~   | 24   | **Integrate into file-and-image-renamer**   | High   | 4h       |
-| ~~   | 25   | **testutil package** extraction             | Low    | 3h       |
+| ~~   | ~~1~~ | ~~**Close coverage gaps to ≥95%**~~ | ~~High~~ | ~~4h~~ |
+| ~~   | ~~2~~ | ~~**Tag v1.0.0 with stability guarantee**~~ | ~~High~~ | ~~1h~~ |
+| ~~   | ~~3~~ | ~~**GoReleaser + binary releases**~~ | ~~High~~ | ~~2h~~ |
+| ~~   | ~~4~~ | ~~**CLI tool MVP** (watch + filter + output)~~ | ~~High~~ | ~~6h~~ |
+| ~~   | ~~5~~ | ~~**Troubleshooting.md**~~ | ~~Medium~~ | ~~2h~~ |
+| ~~   | ~~6~~ | ~~**Linux CI matrix** (GitHub Actions)~~ | ~~High~~ | ~~1h~~ |
+| ~~   | ~~7~~ | ~~**Archive old status reports**~~ | ~~Low~~ | ~~30min~~ |
+| ~~   | ~~8~~ | ~~**CONTRIBUTING.md + PR templates**~~ | ~~Medium~~ | ~~2h~~ |
+| ~~   | ~~9~~ | ~~**Dependabot / Renovate**~~ | ~~Low~~ | ~~30min~~ |
+| ~~   | ~~10~~ | ~~**`Event.Size` + `Event.ModTime()` fields**~~ | ~~Medium~~ | ~~2h~~ |
+| ~~   | ~~11~~ | ~~**Error codes** for programmatic handling~~ | ~~Medium~~ | ~~2h~~ |
+| ~~   | ~~12~~ | ~~**`MiddlewareThrottle`** token-bucket~~ | ~~Medium~~ | ~~2h~~ |
+| ~~   | ~~13~~ | ~~**`Watcher.WatchOnce()`** one-shot mode~~ | ~~Medium~~ | ~~3h~~ |
+| ~~   | ~~14~~ | ~~**Prometheus metrics export**~~ | ~~Medium~~ | ~~3h~~ |
+| ~~   | ~~15~~ | ~~**Polling fallback** for NFS mounts~~ | ~~High~~ | ~~8h~~ |
+| ~~   | ~~16~~ | ~~**Symlink following** support~~ | ~~Medium~~ | ~~4h~~ |
+| ~~   | ~~17~~ | ~~**Benchmark regression CI**~~ | ~~Medium~~ | ~~2h~~ |
+| ~~   | ~~18~~ | ~~**File content hashing** option~~ | ~~Medium~~ | ~~4h~~ |
+| ~~   | ~~19~~ | ~~**Circuit breaker middleware**~~ | ~~Medium~~ | ~~4h~~ |
+| ~~   | ~~20~~ | ~~**OpenTelemetry integration**~~ | ~~Medium~~ | ~~6h~~ |
+| ~~   | ~~21~~ | ~~**Self-healing watcher** (auto-restart)~~ | ~~High~~ | ~~8h~~ |
+| ~~   | ~~22~~ | ~~**Fuzz testing** setup~~ | ~~Medium~~ | ~~4h~~ |
+| ~~   | ~~23~~ | ~~**Context propagation** through pipeline~~ | ~~Medium~~ | ~~3h~~ |
+| ~~   | ~~24~~ | ~~**Integrate into file-and-image-renamer**~~ | ~~High~~ | ~~4h~~ |
+| ~~   | ~~25~~ | ~~**testutil package** extraction~~ | ~~Low~~ | ~~3h~~ |
 
 ---
 
@@ -334,9 +335,9 @@ The TODO_LIST has both "Tag v0.1.0" (done) and "Tag v2.0.0" (not done). But ther
 
 | Session | Date | Focus            | Outcome                                                        |
 | ------- | ---- | ---------------- | -------------------------------------------------------------- |
-| ~~      | 1    | 2026-04-23 early | DebouncerInterface cleanup, flaky tests, watcher_walk coverage |
-| ~~      | 2    | 2026-04-23 mid   | Filter/middleware/options/phantom test coverage                |
-| ~~      | 3    | 2026-04-23 late  | Fix ALL lint issues to zero (17 files, 87 linters)             |
+| ~~      | ~~1~~ | ~~2026-04-23 early~~ | ~~DebouncerInterface cleanup, flaky tests, watcher_walk coverage~~ |
+| ~~      | ~~2~~ | ~~2026-04-23 mid~~ | ~~Filter/middleware/options/phantom test coverage~~ |
+| ~~      | ~~3~~ | ~~2026-04-23 late~~ | ~~Fix ALL lint issues to zero (17 files, 87 linters)~~ |
 
 ---
 

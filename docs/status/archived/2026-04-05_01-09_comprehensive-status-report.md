@@ -48,11 +48,12 @@ The ADR lists 5 future improvements. None are implemented yet — they're docume
 
 | #  | Improvement | Status                                                               |
 | -- | ----------- | -------------------------------------------------------------------- |
-| ~~ | 1           | Extract `fsnotify.Watcher` behind internal interface for testability |
-| ~~ | 2           | Add `HealthCheck() error` to `Watcher`                               |
-| ~~ | 3           | Document DI integration pattern in README                            |
-| ~~ | 4           | Use `log/slog` in middleware (replace `log.Logger`)                  |
-| ~~ | 5           | Add `Event` batch accumulation                                       |
+| ~~ | ~~1~~ | ~~Extract `fsnotify.Watcher` behind internal interface for testability~~ |
+| ~~ | ~~2~~ | ~~Add `HealthCheck() error` to `Watcher`~~ |
+| ~~ | ~~3~~ | ~~Document DI integration pattern in README~~ |
+| ~~ | ~~4~~ | ~~Use `log/slog` in middleware (replace `log.Logger`)~~ |
+| ~~ | ~~5~~ | ~~Add `Event` batch accumulation~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ### Test Coverage — 78.9%
 
@@ -68,19 +69,19 @@ The ADR lists 5 future improvements. None are implemented yet — they're docume
 
 | #  | Item | Why it matters                                                         |
 | -- | ---- | ---------------------------------------------------------------------- |
-| ~~ | 1    | **Fix pre-existing race condition** in `walkAndAddPaths` / `watchList` |
-| ~~ | 2    | **Fix 10 exhaustruct violations** in `filter_test.go`                  |
-| ~~ | 3    | **Fix 5 gocritic exitAfterDefer** in examples                          |
-| ~~ | 4    | **Fix new recvcheck warning** in `event.go:10`                         |
-| ~~ | 5    | **Fix golines formatting** in `filter_test.go:36`                      |
-| ~~ | 6    | **Extract `fsnotify.Watcher` behind internal interface**               |
-| ~~ | 7    | **Add `HealthCheck() error` to `Watcher`**                             |
-| ~~ | 8    | **Replace `log.Logger` with `log/slog`** in middleware                 |
-| ~~ | 9    | **Document DI integration patterns** in README                         |
-| ~~ | 10   | **Add `Event` batch accumulation**                                     |
-| ~~ | 11   | **Increase test coverage to 85%+**                                     |
-| ~~ | 12   | **Add benchmarks** for filter evaluation and middleware chains         |
-| ~~ | 13   | **CI pipeline**                                                        |
+| ~~ | ~~1~~ | ~~**Fix pre-existing race condition** in `walkAndAddPaths` / `watchList`~~ |
+| ~~ | ~~2~~ | ~~**Fix 10 exhaustruct violations** in `filter_test.go`~~ |
+| ~~ | ~~3~~ | ~~**Fix 5 gocritic exitAfterDefer** in examples~~ |
+| ~~ | ~~4~~ | ~~**Fix new recvcheck warning** in `event.go:10`~~ |
+| ~~ | ~~5~~ | ~~**Fix golines formatting** in `filter_test.go:36`~~ |
+| ~~ | ~~6~~ | ~~**Extract `fsnotify.Watcher` behind internal interface**~~ |
+| ~~ | ~~7~~ | ~~**Add `HealthCheck() error` to `Watcher`**~~ |
+| ~~ | ~~8~~ | ~~**Replace `log.Logger` with `log/slog`** in middleware~~ |
+| ~~ | ~~9~~ | ~~**Document DI integration patterns** in README~~ |
+| ~~ | ~~10~~ | ~~**Add `Event` batch accumulation**~~ |
+| ~~ | ~~11~~ | ~~**Increase test coverage to 85%+**~~ |
+| ~~ | ~~12~~ | ~~**Add benchmarks** for filter evaluation and middleware chains~~ |
+| ~~ | ~~13~~ | ~~**CI pipeline**~~ |
 
 ---
 
@@ -150,14 +151,14 @@ Sorted by impact × urgency ÷ work:
 
 | #  | Task | Impact                                                              | Work        | Type   |
 | -- | ---- | ------------------------------------------------------------------- | ----------- | ------ |
-| ~~ | 1    | Fix race condition in `walkAndAddPaths` / `watchList`               | 🔴 Critical | Small  |
-| ~~ | 2    | Fix recvcheck: make `String()`/`MarshalText()` use pointer receiver | Medium      | Tiny   |
-| ~~ | 3    | Fix 10 exhaustruct violations in `filter_test.go`                   | Medium      | Tiny   |
-| ~~ | 4    | Fix 5 gocritic exitAfterDefer in examples                           | Medium      | Tiny   |
-| ~~ | 5    | Fix golines formatting in `filter_test.go`                          | Low         | Tiny   |
-| ~~ | 6    | Extract `fsnotify.Watcher` behind internal interface                | High        | Medium |
-| ~~ | 7    | Add mock-based tests for watch loop                                 | High        | Medium |
-| ~~ | 8    | Add `HealthCheck() error` to `Watcher`                              | Medium      | Small  |
+| ~~ | ~~1~~ | ~~Fix race condition in `walkAndAddPaths` / `watchList`~~ | ~~🔴 Critical~~ | ~~Small~~ |
+| ~~ | ~~2~~ | ~~Fix recvcheck: make `String()`/`MarshalText()` use pointer receiver~~ | ~~Medium~~ | ~~Tiny~~ |
+| ~~ | ~~3~~ | ~~Fix 10 exhaustruct violations in `filter_test.go`~~ | ~~Medium~~ | ~~Tiny~~ |
+| ~~ | ~~4~~ | ~~Fix 5 gocritic exitAfterDefer in examples~~ | ~~Medium~~ | ~~Tiny~~ |
+| ~~ | ~~5~~ | ~~Fix golines formatting in `filter_test.go`~~ | ~~Low~~ | ~~Tiny~~ |
+| ~~ | ~~6~~ | ~~Extract `fsnotify.Watcher` behind internal interface~~ | ~~High~~ | ~~Medium~~ |
+| ~~ | ~~7~~ | ~~Add mock-based tests for watch loop~~ | ~~High~~ | ~~Medium~~ |
+| ~~ | ~~8~~ | ~~Add `HealthCheck() error` to `Watcher`~~ | ~~Medium~~ | ~~Small~~ |
 
 ~~| 9 | Replace `log.Logger` with `log/slog` in middleware | Medium | Small | Modernization |~~ done — shipped ≤v2.2.0, verified v2.4.1
 ~~| 10 | Increase test coverage to 85%+ | Medium | Medium | Quality |~~ done — shipped ≤v2.2.0, verified v2.4.1

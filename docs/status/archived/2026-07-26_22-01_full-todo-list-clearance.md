@@ -13,26 +13,27 @@ Every item from the pasted TODO list is implemented, tested, lint-clean, and doc
 
 | #  | Item | Resolution                                 |
 | -- | ---- | ------------------------------------------ |
-| ~~ | 1    | Mark deprecations in README.md             |
-| ~~ | 2    | v2.3→v3 migration section in MIGRATION.md  |
-| ~~ | 3    | Deprecation badges in api-reference.mdx    |
-| ~~ | 4    | Fix `nix run .#ci` tidy permission failure |
-| ~~ | 5    | FEATURES.md error simulation PLANNED→DONE  |
+| ~~ | ~~1~~ | ~~Mark deprecations in README.md~~ |
+| ~~ | ~~2~~ | ~~v2.3→v3 migration section in MIGRATION.md~~ |
+| ~~ | ~~3~~ | ~~Deprecation badges in api-reference.mdx~~ |
+| ~~ | ~~4~~ | ~~Fix `nix run .#ci` tidy permission failure~~ |
+| ~~ | ~~5~~ | ~~FEATURES.md error simulation PLANNED→DONE~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ### MEDIUM Priority (10/10 ✅)
 
 | #  | Item | Resolution                         |
 | -- | ---- | ---------------------------------- |
-| ~~ | 6    | MiddlewareWriteFileLog fd leak     |
-| ~~ | 7    | Dead `addAttemptCount`             |
-| ~~ | 8    | MiddlewareDeduplicate %100 quirk   |
-| ~~ | 9    | `--tests` lint flag                |
-| ~~ | 10   | examples/ in nix build             |
-| ~~ | 11   | Hermetic benchstat                 |
-| ~~ | 12   | Clean bench-baseline.txt           |
-| ~~ | 13   | Commitlint CI gate                 |
-| ~~ | 14   | release-please                     |
-| ~~ | 15   | README vs API_STABILITY drift gate |
+| ~~ | ~~6~~ | ~~MiddlewareWriteFileLog fd leak~~ |
+| ~~ | ~~7~~ | ~~Dead `addAttemptCount`~~ |
+| ~~ | ~~8~~ | ~~MiddlewareDeduplicate %100 quirk~~ |
+| ~~ | ~~9~~ | ~~`--tests` lint flag~~ |
+| ~~ | ~~10~~ | ~~examples/ in nix build~~ |
+| ~~ | ~~11~~ | ~~Hermetic benchstat~~ |
+| ~~ | ~~12~~ | ~~Clean bench-baseline.txt~~ |
+| ~~ | ~~13~~ | ~~Commitlint CI gate~~ |
+| ~~ | ~~14~~ | ~~release-please~~ |
+| ~~ | ~~15~~ | ~~README vs API_STABILITY drift gate~~ |
 
 ## Verification
 

@@ -242,31 +242,32 @@ All critical issues have been resolved:
 
 | #  | Priority | Task        | Effort                                    | Impact |
 | -- | -------- | ----------- | ----------------------------------------- | ------ |
-| ~~ | 1        | 🔴 CRITICAL | Add integration stress tests (10k+ files) | 4h     |
-| ~~ | 2        | 🔴 CRITICAL | Increase test coverage to 90%+            | 3h     |
-| ~~ | 3        | 🔴 CRITICAL | Implement symlink following               | 3h     |
-| ~~ | 4        | 🟠 HIGH     | Add fuzz testing for filters              | 2h     |
-| ~~ | 5        | 🟠 HIGH     | Complete phantom type enforcement         | 2h     |
-| ~~ | 6        | 🟠 HIGH     | Implement polling fallback                | 4h     |
-| ~~ | 7        | 🟠 HIGH     | Add event batching support                | 3h     |
-| ~~ | 8        | 🟡 MEDIUM   | Create standalone CLI binary              | 4h     |
-| ~~ | 9        | 🟡 MEDIUM   | Performance optimization pass             | 3h     |
-| ~~ | 10       | 🟡 MEDIUM   | Add Prometheus metrics                    | 2h     |
-| ~~ | 11       | 🟡 MEDIUM   | OpenTelemetry tracing                     | 3h     |
-| ~~ | 12       | 🟡 MEDIUM   | File content deduplication                | 2h     |
-| ~~ | 13       | 🟢 LOW      | Windows-specific optimizations            | 2h     |
-| ~~ | 14       | 🟢 LOW      | macOS FSEvents backend                    | 4h     |
-| ~~ | 15       | 🟢 LOW      | Plugin system for filters                 | 4h     |
-| ~~ | 16       | 🟢 LOW      | Web dashboard for monitoring              | 6h     |
-| ~~ | 17       | 🟢 LOW      | Add more benchmark scenarios              | 2h     |
-| ~~ | 18       | 🟢 LOW      | CONTRIBUTING.md guide                     | 1h     |
-| ~~ | 19       | 🟢 LOW      | Security policy                           | 1h     |
-| ~~ | 20       | 🟢 LOW      | Code of conduct                           | 1h     |
-| ~~ | 21       | 🟢 LOW      | GitHub issue templates                    | 1h     |
-| ~~ | 22       | 🟢 LOW      | Automated release workflow                | 2h     |
-| ~~ | 23       | 🟢 LOW      | Add more examples                         | 2h     |
-| ~~ | 24       | 🟢 LOW      | Performance comparison docs               | 2h     |
-| ~~ | 25       | 🟢 LOW      | Architecture Decision Records             | 3h     |
+| ~~ | ~~1~~ | ~~🔴 CRITICAL~~ | ~~Add integration stress tests (10k+ files)~~ | ~~4h~~ |
+| ~~ | ~~2~~ | ~~🔴 CRITICAL~~ | ~~Increase test coverage to 90%+~~ | ~~3h~~ |
+| ~~ | ~~3~~ | ~~🔴 CRITICAL~~ | ~~Implement symlink following~~ | ~~3h~~ |
+| ~~ | ~~4~~ | ~~🟠 HIGH~~ | ~~Add fuzz testing for filters~~ | ~~2h~~ |
+| ~~ | ~~5~~ | ~~🟠 HIGH~~ | ~~Complete phantom type enforcement~~ | ~~2h~~ |
+| ~~ | ~~6~~ | ~~🟠 HIGH~~ | ~~Implement polling fallback~~ | ~~4h~~ |
+| ~~ | ~~7~~ | ~~🟠 HIGH~~ | ~~Add event batching support~~ | ~~3h~~ |
+| ~~ | ~~8~~ | ~~🟡 MEDIUM~~ | ~~Create standalone CLI binary~~ | ~~4h~~ |
+| ~~ | ~~9~~ | ~~🟡 MEDIUM~~ | ~~Performance optimization pass~~ | ~~3h~~ |
+| ~~ | ~~10~~ | ~~🟡 MEDIUM~~ | ~~Add Prometheus metrics~~ | ~~2h~~ |
+| ~~ | ~~11~~ | ~~🟡 MEDIUM~~ | ~~OpenTelemetry tracing~~ | ~~3h~~ |
+| ~~ | ~~12~~ | ~~🟡 MEDIUM~~ | ~~File content deduplication~~ | ~~2h~~ |
+| ~~ | ~~13~~ | ~~🟢 LOW~~ | ~~Windows-specific optimizations~~ | ~~2h~~ |
+| ~~ | ~~14~~ | ~~🟢 LOW~~ | ~~macOS FSEvents backend~~ | ~~4h~~ |
+| ~~ | ~~15~~ | ~~🟢 LOW~~ | ~~Plugin system for filters~~ | ~~4h~~ |
+| ~~ | ~~16~~ | ~~🟢 LOW~~ | ~~Web dashboard for monitoring~~ | ~~6h~~ |
+| ~~ | ~~17~~ | ~~🟢 LOW~~ | ~~Add more benchmark scenarios~~ | ~~2h~~ |
+| ~~ | ~~18~~ | ~~🟢 LOW~~ | ~~CONTRIBUTING.md guide~~ | ~~1h~~ |
+| ~~ | ~~19~~ | ~~🟢 LOW~~ | ~~Security policy~~ | ~~1h~~ |
+| ~~ | ~~20~~ | ~~🟢 LOW~~ | ~~Code of conduct~~ | ~~1h~~ |
+| ~~ | ~~21~~ | ~~🟢 LOW~~ | ~~GitHub issue templates~~ | ~~1h~~ |
+| ~~ | ~~22~~ | ~~🟢 LOW~~ | ~~Automated release workflow~~ | ~~2h~~ |
+| ~~ | ~~23~~ | ~~🟢 LOW~~ | ~~Add more examples~~ | ~~2h~~ |
+| ~~ | ~~24~~ | ~~🟢 LOW~~ | ~~Performance comparison docs~~ | ~~2h~~ |
+| ~~ | ~~25~~ | ~~🟢 LOW~~ | ~~Architecture Decision Records~~ | ~~3h~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ---
 

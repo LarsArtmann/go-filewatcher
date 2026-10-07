@@ -203,58 +203,68 @@ Multiple parallel tests manipulate the global `os.Stderr` variable:
 ### Immediate Actions (This Week)
 
 ~~1. **Fix Race Conditions**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Remove `t.Parallel()` from stderr-capturing tests
-   - OR implement thread-safe stderr capture
-   - OR use `testing` package output capture
+
+- Remove `t.Parallel()` from stderr-capturing tests
+- OR implement thread-safe stderr capture
+- OR use `testing` package output capture
 
 ~~2. **Document Breaking Changes**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Write MIGRATION.md guide
-   - Update CHANGELOG.md
-   - Add deprecation notice to old examples
+
+- Write MIGRATION.md guide
+- Update CHANGELOG.md
+- Add deprecation notice to old examples
 
 ~~3. **Stabilize CI**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Ensure `just check` passes completely
-   - Add race detector to CI (after fix)
+
+- Ensure `just check` passes completely
+- Add race detector to CI (after fix)
 
 ### Short-term (Next 2 Weeks)
 
 ~~4. **Add Integration Tests**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Test actual file watching scenarios
-   - Cross-platform testing (Linux, macOS, Windows)
+
+- Test actual file watching scenarios
+- Cross-platform testing (Linux, macOS, Windows)
 
 ~~5. **Benchmark Analysis**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Run benchmarks
-   - Establish performance baselines
-   - Document memory allocations
+
+- Run benchmarks
+- Establish performance baselines
+- Document memory allocations
 
 ~~6. **Error Context Enhancement**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Add more granular operation types
-   - Include stack traces in development mode
-   - Add error correlation IDs
+
+- Add more granular operation types
+- Include stack traces in development mode
+- Add error correlation IDs
 
 ### Medium-term (Next Month)
 
 ~~7. **Observability**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - OpenTelemetry integration
-   - Prometheus metrics
-   - Structured logging support
+
+- OpenTelemetry integration
+- Prometheus metrics
+- Structured logging support
 
 ~~8. **API Hardening**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Review all public APIs for race safety
-   - Add context cancellation tests
-   - Stress testing
+
+- Review all public APIs for race safety
+- Add context cancellation tests
+- Stress testing
 
 ~~9. **Documentation**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Architecture decision records (ADRs)
-   - Performance tuning guide
-   - Troubleshooting guide
+
+- Architecture decision records (ADRs)
+- Performance tuning guide
+- Troubleshooting guide
 
 ### Long-term (Next Quarter)
 
 ~~10. **Advanced Features**~~ done — shipped ≤v2.1.0, verified v2.4.1
-    - Watch-specific events (only metadata changes)
-    - Batch event processing
-    - Event persistence/recovery
+
+- Watch-specific events (only metadata changes)
+- Batch event processing
+- Event persistence/recovery
 
 ---
 

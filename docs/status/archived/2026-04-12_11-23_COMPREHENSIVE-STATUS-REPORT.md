@@ -145,16 +145,18 @@ The go-filewatcher project is in **excellent condition** with all tests passing,
 ### Critical Issues
 
 ~~1. **gopls Diagnostic Cache Corruption** 🔴~~ OBSOLETE — gopls env issue
-   - **Location:** `filter_gogen_test.go:233`
-   - **Error:** "no new variables on left side of :="
-   - **Reality:** Code uses `err =` (assignment), not `:=` (declaration)
-   - **Impact:** LSP shows false error, but code compiles and tests pass
-   - **Fix:** Restart gopls / clear LSP cache
+
+- **Location:** `filter_gogen_test.go:233`
+- **Error:** "no new variables on left side of :="
+- **Reality:** Code uses `err =` (assignment), not `:=` (declaration)
+- **Impact:** LSP shows false error, but code compiles and tests pass
+- **Fix:** Restart gopls / clear LSP cache
 
 ~~2. **Go Version Mismatch Warning** 🟡~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - **Issue:** `compile: version "go1.26.1" does not match go tool version "go1.26.0"`
-   - **Impact:** Warning only, does not affect functionality
-   - **Fix:** Update nix flake or local Go installation
+
+- **Issue:** `compile: version "go1.26.1" does not match go tool version "go1.26.0"`
+- **Impact:** Warning only, does not affect functionality
+- **Fix:** Update nix flake or local Go installation
 
 ### Examples Directory Issues
 
@@ -175,58 +177,68 @@ The `examples/filter-generated/main.go` has accumulated technical debt:
 ### Immediate (This Week)
 
 ~~1. **Fix gopls Diagnostic Issue**~~ OBSOLETE — gopls env issue
-   - Restart gopls or clear cache
-   - Verify LSP diagnostics match actual compilation
+
+- Restart gopls or clear cache
+- Verify LSP diagnostics match actual compilation
 
 ~~2. **Clean Up Examples**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Either fix all 14 linter issues in examples/
-   - Or deprecate examples/ and move to example_test.go
+
+- Either fix all 14 linter issues in examples/
+- Or deprecate examples/ and move to example_test.go
 
 ~~3. **Update TODO_LIST.md**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Mark completed items (15 high-priority items done)
-   - Re-prioritize remaining 182 items
+
+- Mark completed items (15 high-priority items done)
+- Re-prioritize remaining 182 items
 
 ### Short Term (Next 2 Weeks)
 
 ~~4. **Complete Error Context Wrapping**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - `watcher.go` - Add context to all error returns
-   - `watcher_walk.go` - Add context to path-related errors
+
+- `watcher.go` - Add context to all error returns
+- `watcher_walk.go` - Add context to path-related errors
 
 ~~5. **Add Missing Tests**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - `Remove()` method test
-   - `WatchList()` method test
-   - `Stats()` method test
-   - `MiddlewareWriteFileLog()` test
+
+- `Remove()` method test
+- `WatchList()` method test
+- `Stats()` method test
+- `MiddlewareWriteFileLog()` test
 
 ~~6. **CI/CD Setup**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - GitHub Actions workflow
-   - Race detector in CI
-   - Coverage threshold enforcement
+
+- GitHub Actions workflow
+- Race detector in CI
+- Coverage threshold enforcement
 
 ### Medium Term (Next Month)
 
 ~~7. **API Stability**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Tag v2.0.0 release
-   - Document public API stability guarantees
-   - Add API stability document
+
+- Tag v2.0.0 release
+- Document public API stability guarantees
+- Add API stability document
 
 ~~8. **Performance**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Set up continuous benchmark tracking
-   - Add benchmark regression detection
-   - Memory profiling for large directory trees
+
+- Set up continuous benchmark tracking
+- Add benchmark regression detection
+- Memory profiling for large directory trees
 
 ~~9. **Developer Experience**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Complete Architecture.md
-   - Write Troubleshooting.md
-   - Add more godoc examples
+
+- Complete Architecture.md
+- Write Troubleshooting.md
+- Add more godoc examples
 
 ### Long Term (Next Quarter)
 
 ~~10. **Feature Completeness**~~ done — shipped ≤v2.1.0, verified v2.4.1
-    - Event batching with configurable window
-    - Symlink following support
-    - Self-healing watcher
-    - Prometheus metrics export
+
+- Event batching with configurable window
+- Symlink following support
+- Self-healing watcher
+- Prometheus metrics export
 
 ---
 

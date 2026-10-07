@@ -150,10 +150,10 @@ Or restart IDE/terminal to reset toolchain state.
 ### High Priority (Quick Wins) - COMPLETED ✅
 
 1. [x] ~~**Fix `getDebounceKey()`**~~ - Already fixed in previous commits
-~~2. [x] **Add `justfile`** - standardized build/test/lint commands~~ OBSOLETE — justfile removed; Nix flake apps replaced it
-~~3. [ ] **Fix disk space** - clean caches, free space~~ OBSOLETE — transient env issue
-~~4. [ ] **Verify tests pass** - currently blocked by cache issue~~ done — tests pass, CI -race green
-~~5. [x] **Add `examples/` directory** - runnable examples added~~ done — shipped ≤v2.1.0, verified v2.4.1
+       ~~2. [x] **Add `justfile`** - standardized build/test/lint commands~~ OBSOLETE — justfile removed; Nix flake apps replaced it
+       ~~3. [ ] **Fix disk space** - clean caches, free space~~ OBSOLETE — transient env issue
+       ~~4. [ ] **Verify tests pass** - currently blocked by cache issue~~ done — tests pass, CI -race green
+       ~~5. [x] **Add `examples/` directory** - runnable examples added~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Medium Priority
 

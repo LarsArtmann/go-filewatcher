@@ -69,32 +69,32 @@
 
 ### Features (from TODO_LIST.md)
 
-| #  | Task                                             | Effort |
-| -- | ------------------------------------------------ | ------ |
-~~| 42 | Exponential backoff middleware                   | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 45 | Filter func return match metadata                | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 48 | `WatchChanges(ctx, targetState)` idempotent sync | 25min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 49 | Prometheus metrics export                        | 30min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 60 | Dead letter queue middleware                     | 30min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 61 | Self-healing watcher                             | 45min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 62 | OpenTelemetry integration                        | 45min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 63 | Error analytics                                  | 30min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 66 | Standalone CLI tool                              | 60min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 67 | Localizable error messages                       | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 68 | Explore fsnotify v2 API changes                  | 30min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 69 | DebounceEntry Mixin phantom type                 | 15min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+| #  | Task | Effort                                           |
+| -- | ---- | ------------------------------------------------ |
+| ~~ | 42   | Exponential backoff middleware                   |
+| ~~ | 45   | Filter func return match metadata                |
+| ~~ | 48   | `WatchChanges(ctx, targetState)` idempotent sync |
+| ~~ | 49   | Prometheus metrics export                        |
+| ~~ | 60   | Dead letter queue middleware                     |
+| ~~ | 61   | Self-healing watcher                             |
+| ~~ | 62   | OpenTelemetry integration                        |
+| ~~ | 63   | Error analytics                                  |
+| ~~ | 66   | Standalone CLI tool                              |
+| ~~ | 67   | Localizable error messages                       |
+| ~~ | 68   | Explore fsnotify v2 API changes                  |
+| ~~ | 69   | DebounceEntry Mixin phantom type                 |
 
 ### Infrastructure
 
-| #     | Task                               | Effort |
-| ----- | ---------------------------------- | ------ |
-~~| 65    | Configure semantic-release         | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 71    | Extract `drainEvents` to testutil  | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 72    | Windows edge case tests            | 30min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 74    | Test `examples/` in CI             | 15min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 78    | Migrate CI to Nix                  | 60min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 79    | Add Cachix for binary caching      | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-| 76-77 | Integrate into downstream projects | 120min |
+| #     | Task                               | Effort                            |
+| ----- | ---------------------------------- | --------------------------------- |
+| ~~    | 65                                 | Configure semantic-release        |
+| ~~    | 71                                 | Extract `drainEvents` to testutil |
+| ~~    | 72                                 | Windows edge case tests           |
+| ~~    | 74                                 | Test `examples/` in CI            |
+| ~~    | 78                                 | Migrate CI to Nix                 |
+| ~~    | 79                                 | Add Cachix for binary caching     |
+| 76-77 | Integrate into downstream projects | 120min                            |
 
 ---
 
@@ -171,33 +171,33 @@
 
 Sorted by **Pareto: highest impact × lowest effort**.
 
-| #  | Task                                                                      | Effort | Impact | Rationale                                                             |
-| -- | ------------------------------------------------------------------------- | ------ | ------ | --------------------------------------------------------------------- |
-~~| 1  | **Add `MiddlewareRateLimit` default-value tests** (75%→100%)              | 5min   | HIGH   | Easy: test `maxEvents ≤ 0` defaults to 100                            |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 2  | **Add `MiddlewareSlidingWindowRateLimit` default-value tests** (71%→100%) | 5min   | HIGH   | Same pattern as above                                                 |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 3  | **Add `AddRecursive` depth=0 test** (61.9%→higher)                        | 10min  | HIGH   | Edge case: immediate children only                                    |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 4  | **Add `pollEmitEvent` integration test** (0%→higher)                      | 15min  | HIGH   | Biggest single-function gap — create file via poll path, verify event |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 5  | **Add `walkDirFunc` symlink error branch test** (52.2%→higher)            | 10min  | MEDIUM | Symlink resolution error path                                         |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 6  | **Implement exponential backoff middleware (#42)**                        | 20min  | HIGH   | Natural pairing with circuit breaker                                  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 7  | **Consolidate `MiddlewareBatch`/`MiddlewareErrorBatch`** generic batcher  | 25min  | MEDIUM | ~142 lines of duplication                                             |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 8  | **Configure semantic-release (#65)**                                      | 20min  | MEDIUM | Goreleaser alone doesn't handle versioning                            |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 9  | **Test `examples/` in CI (#74)**                                          | 15min  | MEDIUM | `go build ./examples/...`                                             |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 10 | **Remove unused `testpackage` nolint directives** (9 files)               | 10min  | LOW    | Clean linter output                                                   |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 11 | **Extract `filepath.Abs` helper**                                         | 10min  | LOW    | DRY in Add/AddRecursive/Remove/New                                    |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 12 | **Make `NewWatcherError` stack capture opt-in**                           | 10min  | MEDIUM | Performance: expensive default                                        |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 13 | **Consolidate error code mapping**                                        | 15min  | MEDIUM | 3 locations → 1 registration table                                    |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 14 | **Dead letter queue middleware (#60)**                                    | 30min  | MEDIUM | Pairs with circuit breaker                                            |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 15 | **Filter func return match metadata (#45)**                               | 20min  | MEDIUM | Richer filter semantics                                               |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 16 | **Remove duplicate filter test runners**                                  | 15min  | LOW    | 3 variants → 1                                                        |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 17 | **Remove stale `result` binary**                                          | 5min   | LOW    | `git rm`, add to `.gitignore`                                         |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 18 | **Windows edge case tests (#72)**                                         | 30min  | MEDIUM | Cross-platform goal                                                   |~~ OPEN → TODO_LIST (Windows CI matrix)
-~~| 19 | **Extract `drainEvents` to testutil (#71)**                               | 20min  | LOW    | Test consolidation                                                    |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 20 | **Prometheus metrics export (#49)**                                       | 30min  | MEDIUM | Observability integration                                             |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 21 | **Consolidate `docs/status/`**                                            | 15min  | LOW    | 30+ files, most stale                                                 |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 22 | **`filterFileStat` named result struct**                                  | 10min  | LOW    | Prevent bool mixups                                                   |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 23 | **`FilterGeneratedCodeFull` coverage** (64.3%→higher)                     | 15min  | LOW    | Gogenfilter integration paths                                         |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 24 | **WatchChanges idempotent sync (#48)**                                    | 25min  | MEDIUM | Sync API                                                              |~~ OPEN → research contract + TODO_LIST open Q3
-~~| 25 | **Self-healing watcher (#61)**                                            | 45min  | MEDIUM | Auto-retry failed operations                                          |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+| #  | Task | Effort                                                                    | Impact | Rationale |
+| -- | ---- | ------------------------------------------------------------------------- | ------ | --------- |
+| ~~ | 1    | **Add `MiddlewareRateLimit` default-value tests** (75%→100%)              | 5min   | HIGH      |
+| ~~ | 2    | **Add `MiddlewareSlidingWindowRateLimit` default-value tests** (71%→100%) | 5min   | HIGH      |
+| ~~ | 3    | **Add `AddRecursive` depth=0 test** (61.9%→higher)                        | 10min  | HIGH      |
+| ~~ | 4    | **Add `pollEmitEvent` integration test** (0%→higher)                      | 15min  | HIGH      |
+| ~~ | 5    | **Add `walkDirFunc` symlink error branch test** (52.2%→higher)            | 10min  | MEDIUM    |
+| ~~ | 6    | **Implement exponential backoff middleware (#42)**                        | 20min  | HIGH      |
+| ~~ | 7    | **Consolidate `MiddlewareBatch`/`MiddlewareErrorBatch`** generic batcher  | 25min  | MEDIUM    |
+| ~~ | 8    | **Configure semantic-release (#65)**                                      | 20min  | MEDIUM    |
+| ~~ | 9    | **Test `examples/` in CI (#74)**                                          | 15min  | MEDIUM    |
+| ~~ | 10   | **Remove unused `testpackage` nolint directives** (9 files)               | 10min  | LOW       |
+| ~~ | 11   | **Extract `filepath.Abs` helper**                                         | 10min  | LOW       |
+| ~~ | 12   | **Make `NewWatcherError` stack capture opt-in**                           | 10min  | MEDIUM    |
+| ~~ | 13   | **Consolidate error code mapping**                                        | 15min  | MEDIUM    |
+| ~~ | 14   | **Dead letter queue middleware (#60)**                                    | 30min  | MEDIUM    |
+| ~~ | 15   | **Filter func return match metadata (#45)**                               | 20min  | MEDIUM    |
+| ~~ | 16   | **Remove duplicate filter test runners**                                  | 15min  | LOW       |
+| ~~ | 17   | **Remove stale `result` binary**                                          | 5min   | LOW       |
+| ~~ | 18   | **Windows edge case tests (#72)**                                         | 30min  | MEDIUM    |
+| ~~ | 19   | **Extract `drainEvents` to testutil (#71)**                               | 20min  | LOW       |
+| ~~ | 20   | **Prometheus metrics export (#49)**                                       | 30min  | MEDIUM    |
+| ~~ | 21   | **Consolidate `docs/status/`**                                            | 15min  | LOW       |
+| ~~ | 22   | **`filterFileStat` named result struct**                                  | 10min  | LOW       |
+| ~~ | 23   | **`FilterGeneratedCodeFull` coverage** (64.3%→higher)                     | 15min  | LOW       |
+| ~~ | 24   | **WatchChanges idempotent sync (#48)**                                    | 25min  | MEDIUM    |
+| ~~ | 25   | **Self-healing watcher (#61)**                                            | 45min  | MEDIUM    |
 
 ---
 

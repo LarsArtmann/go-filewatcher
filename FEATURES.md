@@ -27,24 +27,24 @@ Honest status of every capability in go-filewatcher. Statuses:
 
 ## Filtering
 
-| Feature                         | Status | Notes                                                                                                                              |
-| ------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Extensions / IgnoreExtensions   | ✅     | Dot-prefixed                                                                                                                       |
-| IgnoreDirs / ExcludePaths       | ✅     | Name-based (`WithIgnoreDirs`, `DefaultIgnoreDirs` / `DefaultIgnoreDirsCopy`) vs absolute-path prefix matching (`WithExcludePaths`) |
-| IgnoreHidden                    | ✅     | Dot-prefixed files/dirs                                                                                                            |
-| Operations / NotOperations      | ✅     | By `Op` enum                                                                                                                       |
-| Glob / Regex                    | ✅     | Filename glob, full-path regex                                                                                                     |
-| MinSize / MaxSize               | ✅     | Bytes                                                                                                                              |
-| MinAge / ModifiedSince          | ✅     | Time-based                                                                                                                         |
-| IgnoreGlobs (patterns)          | ✅     | `WithIgnorePatterns` option                                                                                                        |
-| ContentHash                     | ✅     | `FilterContentHash` + `ContentCheckMode`; `WithContentHashing()` — SHA-256                                                         |
-| Gitignore repository matcher    | ✅     | `FilterGitignore(repoRoot)` — event-time check against .gitignore                                                                  |
-| Generated-code detection        | ✅     | sqlc, protobuf, templ, mockgen, stringer via `NewGeneratedCodeDetector` + gogenfilter v3.6.1 (sqlc: `*.sql.go` by filename, `models.go` only via content marker)                                     |
-| Filter combinators (AND/OR/NOT) | ✅     | `FilterAnd`, `FilterOr`, `FilterNot`                                                                                               |
-| Case-insensitive filter wrapper | ✅     | `FilterCaseInsensitive(inner)` — lowercases + NFC-normalizes the event path before delegating to the inner filter                  |
-| Case-sensitive filter wrapper   | ✅     | `FilterCaseSensitive(inner)` — NFC-normalizes without case-folding (useful on macOS NFD paths)                                     |
-| Case-insensitive dirs filter    | ✅     | `FilterIgnoreDirsCaseInsensitive(dirs...)` — matches dir names case-insensitively (NTFS, APFS)                                     |
-| Metadata-returning filters      | ✅     | `FilterWithMeta`, `MatchResult`, `FilterWithMetaAnd`/`FilterWithMetaOr`/`FilterWithMetaNot`, `FilterFromWithMeta`                  |
+| Feature                         | Status | Notes                                                                                                                                                            |
+| ------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Extensions / IgnoreExtensions   | ✅     | Dot-prefixed                                                                                                                                                     |
+| IgnoreDirs / ExcludePaths       | ✅     | Name-based (`WithIgnoreDirs`, `DefaultIgnoreDirs` / `DefaultIgnoreDirsCopy`) vs absolute-path prefix matching (`WithExcludePaths`)                               |
+| IgnoreHidden                    | ✅     | Dot-prefixed files/dirs                                                                                                                                          |
+| Operations / NotOperations      | ✅     | By `Op` enum                                                                                                                                                     |
+| Glob / Regex                    | ✅     | Filename glob, full-path regex                                                                                                                                   |
+| MinSize / MaxSize               | ✅     | Bytes                                                                                                                                                            |
+| MinAge / ModifiedSince          | ✅     | Time-based                                                                                                                                                       |
+| IgnoreGlobs (patterns)          | ✅     | `WithIgnorePatterns` option                                                                                                                                      |
+| ContentHash                     | ✅     | `FilterContentHash` + `ContentCheckMode`; `WithContentHashing()` — SHA-256                                                                                       |
+| Gitignore repository matcher    | ✅     | `FilterGitignore(repoRoot)` — event-time check against .gitignore                                                                                                |
+| Generated-code detection        | ✅     | sqlc, protobuf, templ, mockgen, stringer via `NewGeneratedCodeDetector` + gogenfilter v3.6.1 (sqlc: `*.sql.go` by filename, `models.go` only via content marker) |
+| Filter combinators (AND/OR/NOT) | ✅     | `FilterAnd`, `FilterOr`, `FilterNot`                                                                                                                             |
+| Case-insensitive filter wrapper | ✅     | `FilterCaseInsensitive(inner)` — lowercases + NFC-normalizes the event path before delegating to the inner filter                                                |
+| Case-sensitive filter wrapper   | ✅     | `FilterCaseSensitive(inner)` — NFC-normalizes without case-folding (useful on macOS NFD paths)                                                                   |
+| Case-insensitive dirs filter    | ✅     | `FilterIgnoreDirsCaseInsensitive(dirs...)` — matches dir names case-insensitively (NTFS, APFS)                                                                   |
+| Metadata-returning filters      | ✅     | `FilterWithMeta`, `MatchResult`, `FilterWithMetaAnd`/`FilterWithMetaOr`/`FilterWithMetaNot`, `FilterFromWithMeta`                                                |
 
 ## Middleware
 

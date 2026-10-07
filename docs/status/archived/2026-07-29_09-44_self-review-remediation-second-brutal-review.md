@@ -154,7 +154,7 @@ defaulting to "new = evolving."
 ### Critical (fix the damage from this session)
 
 ~~1. **Wire up `GaugeValue()` or delete it** — either change `caseSensitivityGauge`~~ done — shipped in v2.4.0
-   to parse the string and call `GaugeValue()`, or delete the dead method
+to parse the string and call `GaugeValue()`, or delete the dead method
 ~~2. **Update CHANGELOG.md** with all remediation changes~~ done — shipped in v2.4.0
 ~~3. **Re-run bench-diff cleanly** (no parallel fuzz) to get valid timing data~~ done — shipped in v2.4.0
 ~~4. **Decide API stability for `FilesystemCaseSensitivity`** — Stable or Evolving?~~ done — shipped in v2.4.0
@@ -163,34 +163,34 @@ defaulting to "new = evolving."
 ### High Priority (close remaining gaps)
 
 ~~6. **Actually fix the `_` error discarding** — create `cleanPath()` that doesn't~~ done — shipped in v2.4.0
-   return an error, or propagate the error properly
+return an error, or propagate the error properly
 ~~7. **Add `FilterCaseSensitive(inner Filter)`** for symmetry with~~ done — shipped in v2.4.0
-   `FilterCaseInsensitive`
+`FilterCaseInsensitive`
 ~~8. **Run bench-diff again after fixing the GaugeValue wiring** to verify no~~ done — shipped in v2.4.0
-   allocation regression from the change
+allocation regression from the change
 ~~9. **Verify mermaid graph renders on GitHub** — `<br/>` tags in node labels may~~ done — shipped in v2.4.0
-   not work
+not work
 ~~10. **Add test for `GaugeValue()` method** — currently untested because it's~~ done — shipped in v2.4.0
-    never called
+never called
 ~~11. **Consider `Stats.CaseSensitivityMode FilesystemCaseSensitivity`** as a~~ done — shipped in v2.4.0
-    second field (additive, non-breaking) so the enum is available without parsing
+second field (additive, non-breaking) so the enum is available without parsing
 ~~12. **Document the bench-diff methodology** — note that benchmarks must run without~~ done — shipped in v2.4.0
-    parallel CPU-intensive workloads
+parallel CPU-intensive workloads
 
 ### Medium Priority (robustness + polish)
 
 ~~13. **Run `BenchmarkShouldExcludePath_ManyPaths`** and record the O(n) cost at~~ done — shipped in v2.4.0
-    100 exclude paths
+100 exclude paths
 ~~14. **Add website API reference** for `FilterCaseInsensitive` and~~ done — shipped in v2.4.0
-    `Stats.CaseSensitivity`
+`Stats.CaseSensitivity`
 ~~15. **Add `EffectiveCaseSensitivity()` public method** — expose resolved mode~~ done — shipped in v2.4.0
-    without calling `Stats()`
+without calling `Stats()`
 ~~16. **Document the go-gitignore trailing-slash limitation in FEATURES.md** —~~ done — shipped in v2.4.0
-    currently only in AGENTS.md and Troubleshooting.md
+currently only in AGENTS.md and Troubleshooting.md
 ~~17. **Add `FilterNFCNormalized(inner Filter)`** — normalization without case-folding~~ done — shipped in v2.4.0
 ~~18. **Run FuzzPathKey overnight** (8+ hours) for maximum Unicode coverage~~ done — shipped in v2.4.0
 ~~19. **Add property test: `GaugeValue() == caseSensitivityGauge(String())`** to~~ done — shipped in v2.4.0
-    guard against the two code paths diverging (once both exist)
+guard against the two code paths diverging (once both exist)
 ~~20. **Consider committing `bench-baseline.txt`** for CI regression gate~~ done — shipped in v2.4.0
 ~~21. **Add `WithNormalizeUnicode(false)`** escape hatch~~ done — shipped in v2.4.0
 ~~22. **Add trie-based `excludePaths`** if ManyPaths benchmark shows >1µs~~ done — shipped in v2.4.0
@@ -201,7 +201,7 @@ defaulting to "new = evolving."
 ~~27. **Consider `CaseSensitivityProbed` mode** for v3 (actually probe filesystem)~~ OPEN → TODO_LIST (v3 candidates)
 ~~28. **Add macOS/Windows CI matrix** for real case-insensitive integration tests~~ OPEN → TODO_LIST (CI matrices)
 ~~29. **Unify all case-sensitivity representations** into a single type with~~ done — shipped in v2.4.0
-    `.String()`, `.GaugeValue()`, and `.Parse()` methods
+`.String()`, `.GaugeValue()`, and `.Parse()` methods
 ~~30. **Add `CHANGELOG.md` cross-references** from status reports~~ done — shipped in v2.4.0
 
 ### Lower Priority (nice-to-have)
@@ -226,7 +226,7 @@ defaulting to "new = evolving."
 ~~48. **Consider `pathKey` returning `(PathKey, error)`** for invalid input~~ done — shipped in v2.4.0
 ~~49. **Add `EffectiveCaseSensitivity().Reason`** — "auto-detected" vs "user-set"~~ done — shipped in v2.4.0
 ~~50. **Clean up `bench-baseline.pre-nfc.txt`** from git history (it's a stale~~ done — shipped in v2.4.0
-    artifact in commit `5a25dc4`)
+artifact in commit `5a25dc4`)
 
 ---
 

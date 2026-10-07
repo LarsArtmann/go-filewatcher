@@ -161,33 +161,33 @@ But there are annoyances:
 
 ## F) Top 25 Things We Should Get Done Next
 
-| #  | Item                                                                       | Priority | Effort | Category      |
-| -- | -------------------------------------------------------------------------- | -------- | ------ | ------------- |
-~~| 1  | **Migrate `ci.yml` to use Nix**                                            | CRITICAL | 1h     | CI/CD         |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2  | **Update MIGRATION_TO_NIX_FLAKES_PROPOSAL.md** to mark complete            | HIGH     | 15min  | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3  | **Update TODO_LIST.md** — check off done items                             | HIGH     | 15min  | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4  | **Fix forbidigo lint in examples**                                         | HIGH     | 30min  | Quality       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5  | **Tag v2.0.0 release**                                                     | HIGH     | 30min  | Release       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 6  | **Add `//nolint:forbidigo` to examples** or configure golangci.yml exclude | MEDIUM   | 15min  | Quality       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 7  | **Document vendorHash update procedure** in AGENTS.md                      | MEDIUM   | 15min  | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 8  | **Add Cachix for binary caching**                                          | MEDIUM   | 30min  | CI/CD         |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 9  | **Fix flaky tests** (TestWatcher_Stats_Metrics)                            | MEDIUM   | 1-2h   | Quality       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 10 | **Add issue/PR templates** (.github/)                                      | MEDIUM   | 30min  | Community     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 11 | **Add Godoc examples** (Example\* functions)                               | MEDIUM   | 2-3h   | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 12 | **Add `Event.ModTime()` field**                                            | MEDIUM   | 30min  | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 13 | **Add `WithPolling(fallback bool)`**                                       | MEDIUM   | 2-4h   | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 14 | **Recursive directory integration test**                                   | MEDIUM   | 1h     | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 15 | **Benchmark regression tests**                                             | MEDIUM   | 2h     | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 16 | **Integration into file-and-image-renamer**                                | MEDIUM   | 4-8h   | Integration   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 17 | **Standalone CLI tool**                                                    | MEDIUM   | 4-8h   | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 18 | **Troubleshooting.md**                                                     | MEDIUM   | 1h     | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 19 | **Goreleaser config**                                                      | MEDIUM   | 2-3h   | Release       |~~ OPEN → TODO_LIST open Q1 (wire or delete; config still present)
-~~| 20 | **Self-healing watcher**                                                   | MEDIUM   | 2-4h   | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 21 | **Circuit breaker middleware**                                             | MEDIUM   | 1-2h   | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 22 | **OpenTelemetry integration**                                              | LOW      | 3-4h   | Observability |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 23 | **Race safety review for parallel tests**                                  | LOW      | 2h     | Quality       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 24 | **Fuzz testing**                                                           | LOW      | 2-3h   | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 25 | **Windows CI + tests**                                                     | LOW      | 2-3h   | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Item | Priority                                                                   | Effort   | Category |
+| -- | ---- | -------------------------------------------------------------------------- | -------- | -------- |
+| ~~ | 1    | **Migrate `ci.yml` to use Nix**                                            | CRITICAL | 1h       |
+| ~~ | 2    | **Update MIGRATION_TO_NIX_FLAKES_PROPOSAL.md** to mark complete            | HIGH     | 15min    |
+| ~~ | 3    | **Update TODO_LIST.md** — check off done items                             | HIGH     | 15min    |
+| ~~ | 4    | **Fix forbidigo lint in examples**                                         | HIGH     | 30min    |
+| ~~ | 5    | **Tag v2.0.0 release**                                                     | HIGH     | 30min    |
+| ~~ | 6    | **Add `//nolint:forbidigo` to examples** or configure golangci.yml exclude | MEDIUM   | 15min    |
+| ~~ | 7    | **Document vendorHash update procedure** in AGENTS.md                      | MEDIUM   | 15min    |
+| ~~ | 8    | **Add Cachix for binary caching**                                          | MEDIUM   | 30min    |
+| ~~ | 9    | **Fix flaky tests** (TestWatcher_Stats_Metrics)                            | MEDIUM   | 1-2h     |
+| ~~ | 10   | **Add issue/PR templates** (.github/)                                      | MEDIUM   | 30min    |
+| ~~ | 11   | **Add Godoc examples** (Example\* functions)                               | MEDIUM   | 2-3h     |
+| ~~ | 12   | **Add `Event.ModTime()` field**                                            | MEDIUM   | 30min    |
+| ~~ | 13   | **Add `WithPolling(fallback bool)`**                                       | MEDIUM   | 2-4h     |
+| ~~ | 14   | **Recursive directory integration test**                                   | MEDIUM   | 1h       |
+| ~~ | 15   | **Benchmark regression tests**                                             | MEDIUM   | 2h       |
+| ~~ | 16   | **Integration into file-and-image-renamer**                                | MEDIUM   | 4-8h     |
+| ~~ | 17   | **Standalone CLI tool**                                                    | MEDIUM   | 4-8h     |
+| ~~ | 18   | **Troubleshooting.md**                                                     | MEDIUM   | 1h       |
+| ~~ | 19   | **Goreleaser config**                                                      | MEDIUM   | 2-3h     |
+| ~~ | 20   | **Self-healing watcher**                                                   | MEDIUM   | 2-4h     |
+| ~~ | 21   | **Circuit breaker middleware**                                             | MEDIUM   | 1-2h     |
+| ~~ | 22   | **OpenTelemetry integration**                                              | LOW      | 3-4h     |
+| ~~ | 23   | **Race safety review for parallel tests**                                  | LOW      | 2h       |
+| ~~ | 24   | **Fuzz testing**                                                           | LOW      | 2-3h     |
+| ~~ | 25   | **Windows CI + tests**                                                     | LOW      | 2-3h     |
 
 ---
 

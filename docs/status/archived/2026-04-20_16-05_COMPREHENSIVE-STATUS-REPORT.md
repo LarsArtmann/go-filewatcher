@@ -89,38 +89,38 @@ The go-filewatcher project has reached a **major milestone with v0.1.0 release**
 
 ### HIGH PRIORITY (Post v0.1.0)
 
-| # | Task                           | Why Important                       | Est. Effort |
-| - | ------------------------------ | ----------------------------------- | ----------- |
-~~| 1 | **CLI tool**                   | Standalone utility for non-Go users | 4-6 hours   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2 | **Troubleshooting.md**         | User support documentation          | 2 hours     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3 | **Coverage enforcement (90%)** | CI quality gate                     | 1 hour      |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4 | **testutil package**           | Extract shared test helpers         | 3 hours     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5 | **Prometheus metrics**         | Production observability            | 3 hours     |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Why Important                  | Est. Effort                         |
+| -- | ---- | ------------------------------ | ----------------------------------- |
+| ~~ | 1    | **CLI tool**                   | Standalone utility for non-Go users |
+| ~~ | 2    | **Troubleshooting.md**         | User support documentation          |
+| ~~ | 3    | **Coverage enforcement (90%)** | CI quality gate                     |
+| ~~ | 4    | **testutil package**           | Extract shared test helpers         |
+| ~~ | 5    | **Prometheus metrics**         | Production observability            |
 
 ### MEDIUM PRIORITY
 
-| #  | Task                                      | Why Important        | Est. Effort |
-| -- | ----------------------------------------- | -------------------- | ----------- |
-~~| 6  | Polling fallback for NFS/network mounts   | Enterprise use cases | 6-8 hours   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 7  | Symlink following support                 | Feature completeness | 4 hours     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 8  | File content hashing option               | Change detection     | 4 hours     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 9  | `Event.Size` and `Event.ModTime()` fields | Richer event data    | 2 hours     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 10 | Goreleaser configuration                  | Automated releases   | 2 hours     |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Why Important                             | Est. Effort          |
+| -- | ---- | ----------------------------------------- | -------------------- |
+| ~~ | 6    | Polling fallback for NFS/network mounts   | Enterprise use cases |
+| ~~ | 7    | Symlink following support                 | Feature completeness |
+| ~~ | 8    | File content hashing option               | Change detection     |
+| ~~ | 9    | `Event.Size` and `Event.ModTime()` fields | Richer event data    |
+| ~~ | 10   | Goreleaser configuration                  | Automated releases   |
 
 ### LOW PRIORITY / BACKLOG
 
-| #  | Task                             | Context                 |
-| -- | -------------------------------- | ----------------------- |
-~~| 11 | Circuit breaker middleware       | Resilience patterns     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 12 | OpenTelemetry integration        | Distributed tracing     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 13 | Fuzz testing                     | Security/stability      |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 14 | Windows-specific edge cases      | Platform coverage       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 15 | Benchmark regression CI          | Performance monitoring  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 16 | Dependabot configuration         | Dependency updates      |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 17 | PR templates                     | Contribution workflow   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 18 | API stability doc                | Versioning policy       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 19 | Integration into other projects  | Real-world validation   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 20 | Filter composition with generics | Type safety improvement |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Context                          |
+| -- | ---- | -------------------------------- |
+| ~~ | 11   | Circuit breaker middleware       |
+| ~~ | 12   | OpenTelemetry integration        |
+| ~~ | 13   | Fuzz testing                     |
+| ~~ | 14   | Windows-specific edge cases      |
+| ~~ | 15   | Benchmark regression CI          |
+| ~~ | 16   | Dependabot configuration         |
+| ~~ | 17   | PR templates                     |
+| ~~ | 18   | API stability doc                |
+| ~~ | 19   | Integration into other projects  |
+| ~~ | 20   | Filter composition with generics |
 
 ---
 
@@ -212,43 +212,43 @@ var eventPool = sync.Pool{
 
 ### IMMEDIATE (This Week)
 
-| Rank | Task                               | Impact | Effort | Owner |
-| ---- | ---------------------------------- | ------ | ------ | ----- |
-~~| 1    | **CLI tool**                       | High   | 6h     | TBD   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2    | **Coverage enforcement (90%)**     | High   | 1h     | TBD   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3    | **Troubleshooting.md**             | Medium | 2h     | TBD   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4    | Add test for `addPath` error paths | Medium | 2h     | TBD   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5    | **Goreleaser configuration**       | Medium | 2h     | TBD   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| Rank | Task | Impact                             | Effort | Owner |
+| ---- | ---- | ---------------------------------- | ------ | ----- |
+| ~~   | 1    | **CLI tool**                       | High   | 6h    |
+| ~~   | 2    | **Coverage enforcement (90%)**     | High   | 1h    |
+| ~~   | 3    | **Troubleshooting.md**             | Medium | 2h    |
+| ~~   | 4    | Add test for `addPath` error paths | Medium | 2h    |
+| ~~   | 5    | **Goreleaser configuration**       | Medium | 2h    |
 
 ### SHORT-TERM (Next 2 Weeks)
 
-| Rank | Task                                    | Impact | Effort |
-| ---- | --------------------------------------- | ------ | ------ |
-~~| 6    | testutil package extraction             | Medium | 3h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 7    | Prometheus metrics export               | Medium | 3h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 8    | Polling fallback for NFS                | High   | 8h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 9    | Add `Event.Size` field                  | Low    | 2h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 10   | Symlink following support               | Medium | 4h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 11   | File content hashing option             | Medium | 4h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 12   | CONTRIBUTING.md + PR templates          | Low    | 2h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 13   | Dependabot configuration                | Low    | 1h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 14   | Benchmark regression CI                 | Medium | 2h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 15   | Integration test for recursive watching | Medium | 3h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| Rank | Task | Impact                                  | Effort |
+| ---- | ---- | --------------------------------------- | ------ |
+| ~~   | 6    | testutil package extraction             | Medium |
+| ~~   | 7    | Prometheus metrics export               | Medium |
+| ~~   | 8    | Polling fallback for NFS                | High   |
+| ~~   | 9    | Add `Event.Size` field                  | Low    |
+| ~~   | 10   | Symlink following support               | Medium |
+| ~~   | 11   | File content hashing option             | Medium |
+| ~~   | 12   | CONTRIBUTING.md + PR templates          | Low    |
+| ~~   | 13   | Dependabot configuration                | Low    |
+| ~~   | 14   | Benchmark regression CI                 | Medium |
+| ~~   | 15   | Integration test for recursive watching | Medium |
 
 ### MEDIUM-TERM (Next Month)
 
-| Rank | Task                                | Impact | Effort |
-| ---- | ----------------------------------- | ------ | ------ |
-~~| 16   | Circuit breaker middleware          | Medium | 4h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 17   | OpenTelemetry integration           | Medium | 6h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 18   | Fuzz testing setup                  | Medium | 4h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 19   | Windows edge case tests             | Low    | 4h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 20   | `Watcher.WatchOnce()` mode          | Medium | 3h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 21   | Self-healing watcher (auto-restart) | High   | 8h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 22   | Batch error handling improvements   | Medium | 3h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 23   | Error correlation IDs               | Low    | 2h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 24   | Dead letter queue for failed events | Medium | 4h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 25   | Generic filter composition          | Low    | 4h     |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| Rank | Task | Impact                              | Effort |
+| ---- | ---- | ----------------------------------- | ------ |
+| ~~   | 16   | Circuit breaker middleware          | Medium |
+| ~~   | 17   | OpenTelemetry integration           | Medium |
+| ~~   | 18   | Fuzz testing setup                  | Medium |
+| ~~   | 19   | Windows edge case tests             | Low    |
+| ~~   | 20   | `Watcher.WatchOnce()` mode          | Medium |
+| ~~   | 21   | Self-healing watcher (auto-restart) | High   |
+| ~~   | 22   | Batch error handling improvements   | Medium |
+| ~~   | 23   | Error correlation IDs               | Low    |
+| ~~   | 24   | Dead letter queue for failed events | Medium |
+| ~~   | 25   | Generic filter composition          | Low    |
 
 ---
 
@@ -273,19 +273,22 @@ type DebouncerInterface interface {
 **The Conflict:**
 
 ~~1. **Abstract Interface vs. Implementation Leakage:**~~ done — shipped ≤v2.2.0, verified v2.4.1
-   - `UsesPerPathKeys()` is a type-checking method that leaks implementation details
-   - It's used in `getDebounceKey()` to decide key strategy
-   - This breaks the abstraction - callers shouldn't need to know
+
+- `UsesPerPathKeys()` is a type-checking method that leaks implementation details
+- It's used in `getDebounceKey()` to decide key strategy
+- This breaks the abstraction - callers shouldn't need to know
 
 ~~2. **Close() vs Stop() Redundancy:**~~ done — shipped ≤v2.2.0, verified v2.4.1
-   - `Close()` exists as an alias for `Stop()`
-   - Original intent: satisfy `io.Closer`-like patterns
-   - Reality: Creates confusion about which to use
+
+- `Close()` exists as an alias for `Stop()`
+- Original intent: satisfy `io.Closer`-like patterns
+- Reality: Creates confusion about which to use
 
 ~~3. **The Real Issue:**~~ done — shipped ≤v2.2.0, verified v2.4.1
-   The interface tries to be both:
-   - A generic debouncer abstraction (shouldn't care about keys)
-   - A file-watcher-specific component (needs to know about per-path vs global)
+The interface tries to be both:
+
+- A generic debouncer abstraction (shouldn't care about keys)
+- A file-watcher-specific component (needs to know about per-path vs global)
 
 **Potential Solutions (I Cannot Choose Without Context):**
 

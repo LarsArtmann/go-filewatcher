@@ -206,76 +206,76 @@ didn't check if it renders. Same mistake, second time.
 ### Critical (fix the damage from this session)
 
 ~~1. **Rename `FilterCaseSensitive` to `FilterNFCNormalized`** — or add a~~ done — shipped in v2.4.0
-   deprecation alias. The name is a usability trap.
+deprecation alias. The name is a usability trap.
 ~~2. **Run `nix run .#bench-baseline`** to capture the 6 new benchmarks in the~~ done — shipped in v2.4.0
-   baseline.
+baseline.
 ~~3. **Re-investigate the statistically significant timing regressions** — re-run~~ done — shipped in v2.4.0
-   bench-diff with CPU temp monitoring and no background processes.
+bench-diff with CPU temp monitoring and no background processes.
 ~~4. **Fix the lock inconsistency** — either remove the lock from~~ OPEN → untracked (EffectiveCaseSensitivity RLock policy note)
-   `EffectiveCaseSensitivity()` or add one to `pathKey()` (and document the
-   policy).
+`EffectiveCaseSensitivity()` or add one to `pathKey()` (and document the
+policy).
 
 ### High Priority (close remaining gaps)
 
 ~~5. **Add `Parse(string) (FilesystemCaseSensitivity, error)` method** — enables~~ done — shipped in v2.4.0
-   round-trip from `Stats.CaseSensitivity` (string) back to the enum.
+round-trip from `Stats.CaseSensitivity` (string) back to the enum.
 ~~6. **Add property test: `GaugeValue()` consistency** — verify the gauge value~~ done — shipped in v2.4.0
-   matches across all representations (enum, string, Stats field).
+matches across all representations (enum, string, Stats field).
 ~~7. **Document the `effectiveCaseSensitivity` lock policy** — in AGENTS.md or a~~ done — shipped in v2.4.0
-   code comment: "set only in New()/Reset(), safe to read without lock during
-   concurrent operation."
+code comment: "set only in New()/Reset(), safe to read without lock during
+concurrent operation."
 ~~8. **Verify mermaid graph renders on GitHub** — or switch to D2 (which the~~ done — shipped in v2.4.0
-   pareto-planning skill actually recommends).
+pareto-planning skill actually recommends).
 ~~9. **Run the `check-exported-symbol-docs` CI gate locally** — verify new~~ done — shipped in v2.4.0
-   exported symbols have adequate documentation.
+exported symbols have adequate documentation.
 ~~10. **Consider exposing the configured mode** — `ConfiguredCaseSensitivity()`~~ OPEN → untracked API idea
-    or `EffectiveCaseSensitivity() (mode, configuredMode FilesystemCaseSensitivity)`.
+or `EffectiveCaseSensitivity() (mode, configuredMode FilesystemCaseSensitivity)`.
 
 ### Medium Priority (robustness + polish)
 
 ~~11. **Update `API_STABILITY.md`** to explicitly list `Stats.CaseSensitivityMode`~~ done — shipped in v2.4.0
-    as part of the Stable Stats contract.
+as part of the Stable Stats contract.
 ~~12. **Add `FilterCaseInsensitive` and `FilterCaseSensitive` to the benchmark~~ done — shipped in v2.4.0
-    baseline** after running bench-baseline.
+baseline** after running bench-baseline.
 ~~13. **Add test for concurrent `EffectiveCaseSensitivity()` + `Reset()`** —~~ done — shipped in v2.4.0
-    verify no race condition (run with `-race`).
+verify no race condition (run with `-race`).
 ~~14. **Add `ExampleFilesystemCaseSensitivity_GaugeValue`** — show how to use the~~ done — shipped in v2.4.0
-    gauge value for Prometheus dashboards.
+gauge value for Prometheus dashboards.
 ~~15. **Document the gauge encoding in a Prometheus query example** — show a~~ done — shipped in v2.4.0
-    PromQL query that alerts on unexpected case-sensitivity mode.
+PromQL query that alerts on unexpected case-sensitivity mode.
 ~~16. **Consider `FilterNFCOnly(inner Filter)` as an alias** for the renamed~~ done — shipped in v2.4.0
-    `FilterCaseSensitive` — clearer intent.
+`FilterCaseSensitive` — clearer intent.
 ~~17. **Add `Stats.CaseSensitivityConfigured` field** — expose the pre-resolution~~ OPEN → untracked API idea
-    mode (what the user configured, before auto-detection).
+mode (what the user configured, before auto-detection).
 ~~18. **Run FuzzPathKey for 30+ minutes** — extend the 5-minute campaign for~~ done — shipped in v2.4.0
-    deeper Unicode coverage.
+deeper Unicode coverage.
 ~~19. **Add `pathKey` benchmark with combining mark chains** (5+ marks) — measure~~ done — shipped in v2.4.0
-    pathological normalization cost.
+pathological normalization cost.
 ~~20. **Consider memoizing `pathKey`** for watch list paths (not event paths).~~ done — shipped in v2.4.0
 ~~21. **Add CI check for benchmark baseline freshness** — alert if~~ done — shipped in v2.4.0
-    bench-baseline.txt is older than N days.
+bench-baseline.txt is older than N days.
 ~~22. **Investigate `ShouldSkipByGitignore_NoGitignore +95%` regression** — profile~~ done — shipped in v2.4.0
-    to find the cause.
+to find the cause.
 ~~23. **Add trie-based `excludePaths`** if ManyPaths benchmark shows >1µs (currently~~ done — shipped in v2.4.0
-    ~3µs at 100 paths — borderline).
+~3µs at 100 paths — borderline).
 ~~24. **Consider `WithNormalizeUnicode(false)` escape hatch** — for users who~~ done — shipped in v2.4.0
-    don't want NFC normalization overhead (even though it's ~0 for ASCII).
+don't want NFC normalization overhead (even though it's ~0 for ASCII).
 ~~25. **Phantom-typed `PathKey`** — `type PathKey string` for compile-time safety.~~ done — shipped in v2.4.0
 ~~26. **Document macOS NFD behavior in README** with the byte-level example from~~ done — shipped in v2.4.0
-    doc.go (currently only in doc.go).
+doc.go (currently only in doc.go).
 ~~27. **Add symlink cross-mount test** for pathKey mode correctness.~~ done — shipped in v2.4.0
 ~~28. **Add `Stats.NormalizedPaths` counter** — NFC transformation observability.~~ done — shipped in v2.4.0
 ~~29. **Consider `CaseSensitivityProbed` mode** for v3 (actually probe filesystem).~~ done — shipped in v2.4.0
 ~~30. **Add macOS/Windows CI matrix** for real case-insensitive integration tests.~~ done — shipped in v2.4.0
 ~~31. **Unify all case-sensitivity representations** into a single type with~~ done — shipped in v2.4.0
-    `.String()`, `.GaugeValue()`, and `.Parse()` methods.
+`.String()`, `.GaugeValue()`, and `.Parse()` methods.
 ~~32. **Add CHANGELOG.md cross-references** from status reports.~~ done — shipped in v2.4.0
 
 ### Lower Priority (nice-to-have)
 
 ~~33. **Add `ExampleCleanPath`** — show when to use `cleanPath` vs `normalizePath`.~~ done — shipped in v2.4.0
 ~~34. **Add `FilterCaseInsensitive` benchmark with NFC input** — measure the case~~ done — shipped in v2.4.0
-    where no normalization work is needed.
+where no normalization work is needed.
 ~~35. **Test `Remove()` with deeply nested emoji subtree** (😀/👨‍👩‍👧/file.go).~~ done — shipped in v2.4.0
 ~~36. **Test `Add()` with redundant separators** (// in path).~~ done — shipped in v2.4.0
 ~~37. **Test `Reset()` + `pathKey` consistency** (keys cleared and rebuilt).~~ done — shipped in v2.4.0
@@ -288,12 +288,12 @@ didn't check if it renders. Same mistake, second time.
 ~~44. **Test concurrent `Add()` + `Remove()` race** on `watchListKeys`.~~ done — shipped in v2.4.0
 ~~45. **Update `docs/DOMAIN_LANGUAGE.md`** with gauge encoding values.~~ done — shipped in v2.4.0
 ~~46. **Review all `//nolint:` directives** — systematic per-directive verification~~ done — shipped in v2.4.0
-    (not just eyeballing).
+(not just eyeballing).
 ~~47. **Consider `pathKey` returning `(PathKey, error)`** for invalid input.~~ done — shipped in v2.4.0
 ~~48. **Add `EffectiveCaseSensitivity().Reason`** — "auto-detected" vs "user-set".~~ done — shipped in v2.4.0
 ~~49. **Clean up `bench-baseline.pre-nfc.txt`** from git history (stale artifact).~~ done — shipped in v2.4.0
 ~~50. **Add website API reference** for `FilterCaseSensitive`,~~ done — shipped in v2.4.0
-    `EffectiveCaseSensitivity`, and `Stats.CaseSensitivityMode`.
+`EffectiveCaseSensitivity`, and `Stats.CaseSensitivityMode`.
 
 ---
 

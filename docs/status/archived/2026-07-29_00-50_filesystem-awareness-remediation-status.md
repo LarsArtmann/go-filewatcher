@@ -130,9 +130,9 @@ implicitly; a no-slash pattern (`Build`) matches the directory path correctly.
 ## e) Open questions still awaiting user input
 
 ~~1. **macOS CI** — is a `macos-latest` runner available for real APFS~~ done — shipped in v2.4.0
-   case-insensitive integration tests? (Current tests prove logic only.)
+case-insensitive integration tests? (Current tests prove logic only.)
 ~~2. **`normalizePath` + NFC** — should `normalizePath()` ALSO apply NFC~~ done — shipped in v2.4.0
-   normalization (currently only `pathKey()` does)? Trade-off: stored paths would
-   be NFC, not original-filesystem bytes.
+normalization (currently only `pathKey()` does)? Trade-off: stored paths would
+be NFC, not original-filesystem bytes.
 ~~3. **Benchmark baseline in CI** — should `bench-baseline.txt` be committed~~ done — shipped in v2.4.0
-   (gitignored today) to drive a CI regression gate? (See TODO_LIST open Q2.)
+(gitignored today) to drive a CI regression gate? (See TODO_LIST open Q2.)

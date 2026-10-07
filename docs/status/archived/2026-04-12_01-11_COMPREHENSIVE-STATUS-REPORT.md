@@ -202,33 +202,33 @@ Previous write at 0x00c0004aa008 by goroutine 266:
 
 ## F) Top #25 Things To Get Done Next 🎯
 
-| #  | Task                                            | Priority | Effort | Impact          |
-| -- | ----------------------------------------------- | -------- | ------ | --------------- |
-~~| 1  | Fix `TestWatcher_Watch_WithDebounce` race       | P0       | 2h     | Unblock CI      |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 2  | Create `OpString` phantom type                  | P0       | 15m    | -1 critical     |~~ OBSOLETE — rejected; plain string types kept
-~~| 3  | Create `RootString` phantom type                | P0       | 20m    | -2 critical     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 4  | Fix `handleNewDirectory` race (production)      | P0       | 1h     | Fix bug         |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 5  | Fix `shouldSkipDir` to respect `WithIgnoreDirs` | P1       | 30m    | Bug fix         |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 6  | Error context wrapping (10 locations)           | P1       | 1h     | DX              |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 7  | Add `Event.Path` phantom type                   | P1       | 2h     | Type safety     |~~ OBSOLETE — rejected; Event.Path kept string
-~~| 8  | Integration tests (Watch→Event→Close)           | P1       | 4h     | Quality         |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 9  | Property-based tests (fuzzing)                  | P1       | 3h     | Reliability     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 10 | Split Watcher struct                            | P1       | 3h     | Maintainability |~~ OBSOLETE — rejected; struct intentionally unsplit
-~~| 11 | Add `IsClosed()` public method                  | P1       | 15m    | API             |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 12 | Fix `TestWatcher_Watch_Deletes` flakiness       | P1       | 1h     | CI stability    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 13 | Implement `Watcher.WatchOnce()`                 | P2       | 2h     | Feature         |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 14 | Add `WithPolling()` for network mounts          | P2       | 3h     | Feature         |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 15 | Add symlink following                           | P2       | 2h     | Feature         |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 16 | Add `Event.ModTime()`                           | P2       | 1h     | Feature         |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 17 | Create standalone CLI tool                      | P2       | 4h     | Usability       |~~ OBSOLETE — library-only scope
-~~| 18 | Add Prometheus metrics                          | P2       | 3h     | Observability   |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 19 | Circuit breaker middleware                      | P2       | 3h     | Resilience      |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 20 | `MiddlewareBatch()` for event batching          | P2       | 3h     | Performance     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 21 | OpenTelemetry integration                       | P2       | 4h     | Observability   |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 22 | Documentation overhaul                          | P2       | 4h     | Adoption        |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 23 | Test coverage 77% → 90%+                        | P2       | 6h     | Quality         |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 24 | Goreleaser + semantic-release                   | P3       | 2h     | Automation      |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 25 | v2.0 Release planning                           | P3       | 8h     | Major version   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+| #  | Task | Priority                                        | Effort | Impact |
+| -- | ---- | ----------------------------------------------- | ------ | ------ |
+| ~~ | 1    | Fix `TestWatcher_Watch_WithDebounce` race       | P0     | 2h     |
+| ~~ | 2    | Create `OpString` phantom type                  | P0     | 15m    |
+| ~~ | 3    | Create `RootString` phantom type                | P0     | 20m    |
+| ~~ | 4    | Fix `handleNewDirectory` race (production)      | P0     | 1h     |
+| ~~ | 5    | Fix `shouldSkipDir` to respect `WithIgnoreDirs` | P1     | 30m    |
+| ~~ | 6    | Error context wrapping (10 locations)           | P1     | 1h     |
+| ~~ | 7    | Add `Event.Path` phantom type                   | P1     | 2h     |
+| ~~ | 8    | Integration tests (Watch→Event→Close)           | P1     | 4h     |
+| ~~ | 9    | Property-based tests (fuzzing)                  | P1     | 3h     |
+| ~~ | 10   | Split Watcher struct                            | P1     | 3h     |
+| ~~ | 11   | Add `IsClosed()` public method                  | P1     | 15m    |
+| ~~ | 12   | Fix `TestWatcher_Watch_Deletes` flakiness       | P1     | 1h     |
+| ~~ | 13   | Implement `Watcher.WatchOnce()`                 | P2     | 2h     |
+| ~~ | 14   | Add `WithPolling()` for network mounts          | P2     | 3h     |
+| ~~ | 15   | Add symlink following                           | P2     | 2h     |
+| ~~ | 16   | Add `Event.ModTime()`                           | P2     | 1h     |
+| ~~ | 17   | Create standalone CLI tool                      | P2     | 4h     |
+| ~~ | 18   | Add Prometheus metrics                          | P2     | 3h     |
+| ~~ | 19   | Circuit breaker middleware                      | P2     | 3h     |
+| ~~ | 20   | `MiddlewareBatch()` for event batching          | P2     | 3h     |
+| ~~ | 21   | OpenTelemetry integration                       | P2     | 4h     |
+| ~~ | 22   | Documentation overhaul                          | P2     | 4h     |
+| ~~ | 23   | Test coverage 77% → 90%+                        | P2     | 6h     |
+| ~~ | 24   | Goreleaser + semantic-release                   | P3     | 2h     |
+| ~~ | 25   | v2.0 Release planning                           | P3     | 8h     |
 
 ---
 

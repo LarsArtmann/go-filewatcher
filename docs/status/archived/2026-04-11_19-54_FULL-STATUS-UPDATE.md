@@ -189,8 +189,8 @@ This requires reading the depguard source code or documentation more carefully.
 
 - [x] Fix golangci config for examples
 - [x] Add benchmark helpers
-~~- [ ] Fix test package structure (not started)~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~- [ ] Fix tparallel issues (not started)~~ done — shipped ≤v2.1.0, verified v2.4.1
+      ~~- [ ] Fix test package structure (not started)~~ done — shipped ≤v2.1.0, verified v2.4.1
+      ~~- [ ] Fix tparallel issues (not started)~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 #### P3 Items — DEFERRED
 

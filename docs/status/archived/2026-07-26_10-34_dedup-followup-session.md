@@ -148,7 +148,7 @@ prior. Not migrated — see Question 3.)
 ~~1. Ran `nix run .#bench` blindly → moved to background after 3 min with no output~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~2. Polled `job_output` twice → still "no output"~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~3. Eventually ran `ps aux` → discovered a **stale benchmark process from 06:16**~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   (4+ hours old, hung) AND the current one
+(4+ hours old, hung) AND the current one
 ~~4. Killed stale processes, pivoted to targeted benches with `timeout`~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~5. Hit the `EmitEvent` panic/deadlock (see d2)~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
@@ -203,33 +203,33 @@ cache-vs-source discrepancy. Lesson: nix lint results can be cached; always dist
 ### e1. Personal process improvements (this session's lessons)
 
 ~~1. **Never run a benchmark suite blindly.** Always name specific benchmarks and wrap~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   in `timeout`. A hung bench in a background shell is a silent time-sink.
+in `timeout`. A hung bench in a background shell is a silent time-sink.
 ~~2. **Watch `/tmp` and go-cache size during long sessions.** 15+ nix invocations on a~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   tmpfs will fill it. Run `go clean -cache` between major phases.
+tmpfs will fill it. Run `go clean -cache` between major phases.
 ~~3. **Know the linters' firing semantics before silencing them.** `gocritic~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 exitAfterDefer` fires once per function; `nolintlint` flags unused nolints.
-   Reading the lint output carefully once beats iterating.
+Reading the lint output carefully once beats iterating.
 ~~4. **Distrust suspiciously-fast "0 issues" results** — nix caches lint output.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~5. **`gocritic exitAfterDefer` is the wrong fight in `main()` functions.** Example~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   code that calls `log.Fatal` is idiomatic. The cleaner long-term fix is a project-
-   level nolint exception for `examples/`, not per-line directives.
+code that calls `log.Fatal` is idiomatic. The cleaner long-term fix is a project-
+level nolint exception for `examples/`, not per-line directives.
 
 ### e2. Codebase improvements observed (not necessarily this session's scope)
 
 ~~6. **`examples/` main functions repeat the `New + err-check + log.Fatal` shape.**~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   This is the 1 remaining t=1 clone group. Acceptable for self-contained examples,
-   but a shared `examples/demo` helper (`mustWatch`) would eliminate it and the
-   recurring linter fights. The `demo` package already exists and is imported.
+This is the 1 remaining t=1 clone group. Acceptable for self-contained examples,
+but a shared `examples/demo` helper (`mustWatch`) would eliminate it and the
+recurring linter fights. The `demo` package already exists and is imported.
 ~~7. **`BenchmarkEmitEvent_*` (4 benches) are broken** — zero-value `&Watcher{}`~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   deadlocks in `emitEvent`. Either fix them or delete them; a benchmark that can't
-   run is worse than no benchmark.
+deadlocks in `emitEvent`. Either fix them or delete them; a benchmark that can't
+run is worse than no benchmark.
 ~~8. **`/tmp` as `GOTMPDIR` on tmpfs** is fragile for this workflow. Consider pointing~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   `GOTMPDIR` at a disk-backed path in the devShell to avoid space exhaustion.
+`GOTMPDIR` at a disk-backed path in the devShell to avoid space exhaustion.
 ~~9. **No benchmark baseline is captured anywhere.** There's no `bench-main.txt` or~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   similar to diff against. Adding `nix run .#bench` output to a baseline file (gitignored)
-   would make regression detection a one-command `benchstat` diff.
+similar to diff against. Adding `nix run .#bench` output to a baseline file (gitignored)
+would make regression detection a one-command `benchstat` diff.
 ~~10. **The status-report skill says HTML; the project uses `.md`.** This is the 2nd~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    override. Either update the skill's default or formalize the `.md` exception.
+override. Either update the skill's default or formalize the `.md` exception.
 
 ---
 
@@ -238,107 +238,107 @@ exitAfterDefer` fires once per function; `nolintlint` flags unused nolints.
 ### High impact — do next
 
 ~~1. **Fix or delete the 4 broken `BenchmarkEmitEvent_*` benchmarks.** They block~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   `nix run .#bench` from completing cleanly. (See Question 2.)
+`nix run .#bench` from completing cleanly. (See Question 2.)
 2. ~~**Push the 6 unpushed commits** on `master` ahead of `origin/master` — or
-   formally decide on a release cadence. (See Question 1.)~~ DONE: pushed (0 ahead/0 behind origin);
+formally decide on a release cadence. (See Question 1.)~~ DONE: pushed (0 ahead/0 behind origin);
 ~~3. **Add a `mustWatch` helper to `examples/demo`** and migrate the 5 example~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   `main()` functions to it. Eliminates the last t=1 clone group AND the recurring
-   `gocritic`/`mnd` linter fights in examples in one stroke.
+`main()` functions to it. Eliminates the last t=1 clone group AND the recurring
+`gocritic`/`mnd` linter fights in examples in one stroke.
 ~~4. **Capture a benchmark baseline** (`nix run .#bench > bench-baseline.txt`,~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   gitignored) so future refactors have a `benchstat` reference.
+gitignored) so future refactors have a `benchstat` reference.
 ~~5. **Set `GOTMPDIR` to a disk-backed path** in `flake.nix` devShell to prevent~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   tmpfs exhaustion during long sessions.
+tmpfs exhaustion during long sessions.
 
 ### Medium impact — quality hardening
 
 ~~6. **Add a `//nolint:gocritic` exception at the `examples/` package level** (or via~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   config) for `exitAfterDefer`, since `log.Fatal` in `main()` is intentional there.
+config) for `exitAfterDefer`, since `log.Fatal` in `main()` is intentional there.
 ~~7. **Add unit tests for `resolveBatchDefaults`** — the third `resolve*` helper,~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   still only indirectly tested (serves `MiddlewareBatch` + `MiddlewareErrorBatch`).
+still only indirectly tested (serves `MiddlewareBatch` + `MiddlewareErrorBatch`).
 ~~8. **Add a test that asserts every middleware default const is used** — guards~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   against dead constants if a middleware's defaulting is refactored away.
+against dead constants if a middleware's defaulting is refactored away.
 ~~9. **Document the "shared vs unique default-guard" decision** with a worked example~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   in AGENTS.md or a short ADR (the table row is too terse).
+in AGENTS.md or a short ADR (the table row is too terse).
 ~~10. **Audit `middleware.go` for any remaining inline magic literals** outside~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    default-guards (e.g. the `len(seen)%100 == 0` heuristic at line 209).
+default-guards (e.g. the `len(seen)%100 == 0` heuristic at line 209).
 ~~11. **Run `art-dupl -t 1` on `examples/` separately** to confirm no clone groups~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    hiding behind the test-file exclusion defaults.
+hiding behind the test-file exclusion defaults.
 ~~12. **Add a `just`-free / `make`-free CI check** that `examples/` all build~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    (`go build ./examples/...`) — currently only validated transitively.
+(`go build ./examples/...`) — currently only validated transitively.
 
 ### Lower impact — polish
 
 ~~13. **Extract a `setupWatchCtx(t, timeout)` test helper** — the~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    `ctx := setupTestContext(t, 5*time.Second)` line repeats ~15x and could fold
-    into `newTestWatcher` as an option.
+`ctx := setupTestContext(t, 5*time.Second)` line repeats ~15x and could fold
+into `newTestWatcher` as an option.
 ~~14. **Standardize test-context timeout** — `5*time.Second` is hardcoded everywhere;~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    a `defaultTestTimeout` const would centralize it.
+a `defaultTestTimeout` const would centralize it.
 ~~15. **Add `t.Helper()` audit** — verify all custom assertions call it (some may not).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~16. **Migrate `errors_test.go:328`** (closure-scoped watcher) by introducing a~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    `newTestWatcherInClosure` variant if the pattern repeats elsewhere.
+`newTestWatcherInClosure` variant if the pattern repeats elsewhere.
 ~~17. **Check `watcher_reset_test.go`** — the 2 remaining inline `New(` are lifecycle~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    tests; confirm they can't use a `newTestWatcherWithoutCleanup` variant.
+tests; confirm they can't use a `newTestWatcherWithoutCleanup` variant.
 ~~18. **Add a lint rule / CI check** that `newTestWatcher` is used in preference to~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    inline `New(` in test files (a custom `depguard` or `forbidigo` rule).
+inline `New(` in test files (a custom `depguard` or `forbidigo` rule).
 ~~19. **Run `nix flake check`** end-to-end to confirm the flake itself is healthy~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    (separate from `.#check`).
+(separate from `.#check`).
 ~~20. **Verify the `website/` submodule** still builds (untouched this session but~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    the repo had a `website/astro.config.mjs` change in the daemon commits).
+the repo had a `website/astro.config.mjs` change in the daemon commits).
 ~~21. **Update `CHANGELOG.md`** with this session's fixes (the daemon committed a~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    CHANGELOG update mid-session — verify it captures the mnd/gocritic fixes).
+CHANGELOG update mid-session — verify it captures the mnd/gocritic fixes).
 ~~22. **Add `//nolint:mnd` exceptions or named consts for the `300`/`500` ms values**~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    if more example debounce delays are added later — or a shared
-    `examples/demo.DefaultDebounceDelay`.
+if more example debounce delays are added later — or a shared
+`examples/demo.DefaultDebounceDelay`.
 ~~23. **Consider a `testdata/` golden-file test** for art-dupl output to catch~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    duplication regressions in CI.
+duplication regressions in CI.
 ~~24. **Document the `baseDebouncer.stop` envelope contract** (lock order, cleanup~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    closure semantics) in a doc comment — currently only the AGENTS.md row.
+closure semantics) in a doc comment — currently only the AGENTS.md row.
 ~~25. **Audit `debouncer.go` for other extractable envelopes** — the `stopTimer`~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    helper was extracted; check if `flush`/`debounce` have similar shared shapes.
+helper was extracted; check if `flush`/`debounce` have similar shared shapes.
 ~~26. **Add a fuzz test for `resolveRateLimitDefaults`** boundary behavior at~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    `math.MinInt32`/`math.MaxInt32`.
+`math.MinInt32`/`math.MaxInt32`.
 ~~27. **Profile `MiddlewareCircuitBreaker` under load** — it holds a mutex across~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    state transitions; worth a benchmark once the EmitEvent deadlock is fixed.
+state transitions; worth a benchmark once the EmitEvent deadlock is fixed.
 ~~28. **Check if `paralleltest` has an `ignore` config** that could allow extracting~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    `t.Parallel()` into a helper for the 28 irreducible clones (unlikely, but verify).
+`t.Parallel()` into a helper for the 28 irreducible clones (unlikely, but verify).
 ~~29. **Rename `newTestWatcher` → `newWatcher`** for brevity? (Judgment call — current~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    name is clear; probably leave it.)
+name is clear; probably leave it.)
 ~~30. **Add a `CONTRIBUTING.md`** note that `newTestWatcher` is mandatory for new tests~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    (currently only discoverable via AGENTS.md Key Patterns).
+(currently only discoverable via AGENTS.md Key Patterns).
 ~~31. **Tag a release** — 6 commits are ahead of origin; if the work is stable,~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    `v2.2.2` or `v2.3.0` would capture the dedup + lint-clean state.
+`v2.2.2` or `v2.3.0` would capture the dedup + lint-clean state.
 ~~32. **Sweep `docs/status/` for stale reports** — there are 56 status reports; the~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    `update-old-docs` skill could annotate which conclusions still hold.
+`update-old-docs` skill could annotate which conclusions still hold.
 ~~33. **Verify `docs/DOMAIN_LANGUAGE.md` is current** — referenced by global AGENTS.md~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    but not checked this session.
+but not checked this session.
 ~~34. **Run the `full-code-review` skill** for a fresh-eyes pass on the refactored~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    `middleware.go` and `debouncer.go`.
+`middleware.go` and `debouncer.go`.
 ~~35. **Check `golangci-lint` version** in the flake — newer versions may have better~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    `exitAfterDefer` handling.
+`exitAfterDefer` handling.
 ~~36. **Add a `Makefile`-free task list to AGENTS.md** documenting the `nix run .#*`~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    apps (partially there in "Critical Commands").
+apps (partially there in "Critical Commands").
 ~~37. **Consider extracting `examples/demo.Run` into a more general `mustWatch`**~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    that handles the `New + Watch + log.Fatal` envelope.
+that handles the `New + Watch + log.Fatal` envelope.
 ~~38. **Test the debouncer under concurrent `Stop()` calls** — the `baseDebouncer.stop`~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    refactor centralizes locking; a `-race` stress test would harden it.
+refactor centralizes locking; a `-race` stress test would harden it.
 ~~39. **Document why `BenchmarkEmitEvent_*` broke** (zero-value Watcher missing~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    channel setup) in a TODO comment if not fixed immediately.
+channel setup) in a TODO comment if not fixed immediately.
 ~~40. **Audit all `//nolint` directives** for accuracy — the session found 2 stale~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    ones; a sweep with `nolintlint` in `--explain` mode would find more.
+ones; a sweep with `nolintlint` in `--explain` mode would find more.
 ~~41. **Add pre-commit hook** to run `nix run .#check` (if not already present).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~42. **Verify `direnv allow` workflow** still works after the flake changes.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~43. **Consider a `bench-short` nix app** that runs only fast, non-I/O benchmarks~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    for quick regression checks.
+for quick regression checks.
 ~~44. **Add type-level assertions** that the `resolve*` helpers return the same type~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    they take (compile-time guard against signature drift).
+they take (compile-time guard against signature drift).
 ~~45. **Review whether `defaultThrottleEvents` should equal `defaultSlidingWindowEvents`**~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    (both 100) — are they the same concept? If so, unify; if not, document why not.
+(both 100) — are they the same concept? If so, unify; if not, document why not.
 ~~46. **Check the `gogenfilter v3` local replace** still resolves (mentioned in AGENTS.md~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    deps; not touched this session).
+deps; not touched this session).
 ~~47. **Add a `CHANGELOG` entry pattern** for dedup/lint work (currently ad hoc).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~48. **Run `nix fmt` on `.nix` files** to confirm flake formatting is current.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~49. **Consider bumping the module version** if the API surface changed (it hasn't~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    this session, but worth confirming before any release).
+this session, but worth confirming before any release).
 ~~50. **Schedule a recurring dedup audit** (`art-dupl -t 5` in CI) to prevent drift.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ---

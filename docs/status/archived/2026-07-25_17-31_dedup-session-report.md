@@ -210,7 +210,7 @@ honesty:
    rule, apply consistently, document in `AGENTS.md`.~~ DONE: policy set (shared→`resolve*` helper, unique→inline guard + named const), documented in AGENTS.md Key Patterns;
 6. ~~**Add a `resolveThrottleDefaults` / inline-cleanup** to
    `MiddlewareThrottle` for consistency with the new `resolve*` family.~~ DONE: `defaultThrottleEvents` const added (unique defaulting → inline guard);
-~~7. **Run `nix run .#bench` and compare** pre/post this session's refactor. — PARTIAL: pure-compute benches ran clean (no regression); `BenchmarkEmitEvent_*` could not run (pre-existing deadlock, now TODO_LIST HIGH).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+   ~~7. **Run `nix run .#bench` and compare** pre/post this session's refactor. — PARTIAL: pure-compute benches ran clean (no regression); `BenchmarkEmitEvent_*` could not run (pre-existing deadlock, now TODO_LIST HIGH).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
 ### Consistency & docs
 
@@ -228,36 +228,36 @@ honesty:
 ### Lint & quality
 
 ~~14. **Run `nix run .#ci`** (full: tidy + fmt + vet + lint + test) to confirm~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    end-to-end cleanliness, not just `.#check`.
+end-to-end cleanliness, not just `.#check`.
 ~~15. **Audit `examples/` for other magic numbers** beyond the 2 flagged.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~16. **Consider an `mnd` allow-list or const sweep** across all examples.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~17. **Re-run `art-dupl -t 1` after adopting `newTestWatcher` more widely** —~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    expect Group #1's count to drop further where the _next_ lines also match.
+expect Group #1's count to drop further where the _next_ lines also match.
 
 ### Test robustness
 
 ~~18. **Address known flaky tests** (`TestWatcher_Stats_Metrics`,~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    `TestWatcher_Watch_WithMiddleware`) listed in `AGENTS.md` — separate from
-    dedup but always relevant.
+`TestWatcher_Watch_WithMiddleware`) listed in `AGENTS.md` — separate from
+dedup but always relevant.
 ~~19. **Add `t.Parallel()` presence to a custom lint check** so the constraint~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    Group #1 relies on is self-documenting in CI.
+Group #1 relies on is self-documenting in CI.
 ~~20. **Review the 2 lifecycle tests in `watcher_reset_test.go`** — confirm the~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    explicit `Close()` mid-test is still the clearest expression of intent.
+explicit `Close()` mid-test is still the clearest expression of intent.
 
 ### Refactor follow-ups
 
 ~~21. **Extract a `withResolvedPath`-style audit** (already exists per commit~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    `45dfbf5`) — verify it's still used everywhere it should be.
+`45dfbf5`) — verify it's still used everywhere it should be.
 ~~22. **Look for `handleError` call-site duplication** across `watcher_internal.go`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~23. **Look for `debugLog` call-site duplication** across the pipeline.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~24. **Audit `filter_gogen.go`** integration — it's generated-code-adjacent.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~25. **Review `middleware.go` `funlen` `//nolint` directives** — now that~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    defaulting is extracted, some functions may have shrunk under the limit.
+defaulting is extracted, some functions may have shrunk under the limit.
 
 ### Documentation / discoverability
 
 ~~26. **Update `FEATURES.md`** if any behavior changed (it shouldn't have — pure~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    refactor).
+refactor).
 ~~27. **Update `TODO_LIST.md`** with the "standardize default-guard style" item.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~28. **Add a short "Refactoring conventions" section** to `AGENTS.md`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~29. **Verify `docs/DOMAIN_LANGUAGE.md`** still matches (debouncer terms etc.).~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
@@ -274,9 +274,9 @@ honesty:
 ### Misc
 
 ~~36. **Verify the 5 unpushed commits** on `master` ahead of `origin/master` are~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    ready to push (or hold per release plan).
+ready to push (or hold per release plan).
 ~~37. **Review commit messages** from the auto-git daemon — ensure they're~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-    coherent with the manual work.
+coherent with the manual work.
 ~~38. **Consider a `BENCHMARKS.md`** to track perf over time.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~39. **Audit `phantom_types.go` usage** for any duplication in constructors.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 ~~40. **Check `otel.go`** for any middleware-shape duplication vs `middleware.go`.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)

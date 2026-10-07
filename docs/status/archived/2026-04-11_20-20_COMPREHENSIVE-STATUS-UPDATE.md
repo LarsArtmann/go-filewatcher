@@ -65,23 +65,23 @@ The go-filewatcher project has reached a **mature, production-ready state** with
 ### Performance Optimization (80%)
 
 - [x] Benchmarks created and running
-~~- [ ] Benchmark results not yet in README~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~- [ ] No performance comparison with raw fsnotify~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~- [ ] No continuous benchmark tracking~~ done — shipped ≤v2.1.0, verified v2.4.1
+      ~~- [ ] Benchmark results not yet in README~~ done — shipped ≤v2.1.0, verified v2.4.1
+      ~~- [ ] No performance comparison with raw fsnotify~~ done — shipped ≤v2.1.0, verified v2.4.1
+      ~~- [ ] No continuous benchmark tracking~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Advanced Features (75%)
 
 - [x] Custom filters and middleware
 - [x] Per-path callbacks
-~~- [ ] Event batching (not implemented)~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~- [ ] File content hashing (not implemented)~~ done — shipped ≤v2.1.0, verified v2.4.1
+      ~~- [ ] Event batching (not implemented)~~ done — shipped ≤v2.1.0, verified v2.4.1
+      ~~- [ ] File content hashing (not implemented)~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ### Developer Experience (85%)
 
 - [x] Good error messages
 - [x] Clear API design
-~~- [ ] Debug mode with verbose logging (partial)~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~- [ ] No interactive CLI tool~~ OBSOLETE — library-only scope (ROADMAP Non-Goals)
+      ~~- [ ] Debug mode with verbose logging (partial)~~ done — shipped ≤v2.1.0, verified v2.4.1
+      ~~- [ ] No interactive CLI tool~~ OBSOLETE — library-only scope (ROADMAP Non-Goals)
 
 ---
 

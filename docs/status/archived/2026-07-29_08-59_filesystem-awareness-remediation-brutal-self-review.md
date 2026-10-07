@@ -178,39 +178,39 @@ reason on Linux.
 ### High Priority (correctness + close gaps from this session)
 
 ~~1. **Document the go-gitignore trailing-slash limitation** in AGENTS.md gotcha +~~ done — shipped in v2.4.0
-   Troubleshooting.md (the finding I dropped)
+Troubleshooting.md (the finding I dropped)
 ~~2. **Run `nix run .#bench-diff`** against the pre-NFC baseline (recoverable from~~ done — shipped in v2.4.0
-   git history via `git show 5ee5567:bench-baseline.pre-nfc.txt.bak`)
+git history via `git show 5ee5567:bench-baseline.pre-nfc.txt.bak`)
 ~~3. **Fix or replace the weak phantom-event test** — either skip on~~ done — shipped in v2.4.0
-   case-sensitive FS, or test the canonicalization logic directly
+case-sensitive FS, or test the canonicalization logic directly
 ~~4. **Check `API_STABILITY.md`** for whether `Stats.CaseSensitivity` and the new~~ done — shipped in v2.4.0
-   Prometheus gauge need stability annotations
+Prometheus gauge need stability annotations
 ~~5. **Stop discarding `normalizePath` errors** — return `(string, error)` and let~~ done — shipped in v2.4.0
-   callers decide, or rename to `normalizePathBestEffort()` to signal intent
+callers decide, or rename to `normalizePathBestEffort()` to signal intent
 ~~6. **Run `FuzzPathKey` for 5+ minutes** as a deeper fuzz campaign~~ done — shipped in v2.4.0
 ~~7. **Add `WithExcludePaths` validation** — warn or error on paths that fail~~ done — shipped in v2.4.0
-   `filepath.Abs` rather than silently using relative paths
+`filepath.Abs` rather than silently using relative paths
 ~~8. **Unify case-sensitivity constants** — single enum with `.String()` +~~ done — shipped in v2.4.0
-   `.GaugeValue()` methods
+`.GaugeValue()` methods
 
 ### Medium Priority (robustness + polish)
 
 ~~9. **Add `FilterNFCNormalized(inner Filter)`** — normalization without case-folding~~ done — shipped in v2.4.0
 ~~10. **`normalizePath` applying NFC** — currently only `pathKey` does; consider~~ done — shipped in v2.4.0
-    NFC at the storage layer too (open question from prior report)
+NFC at the storage layer too (open question from prior report)
 ~~11. **Document `pathKey()` allocation behavior** in the godoc comment (not just~~ done — shipped in v2.4.0
-    AGENTS.md) — users should know NFD paths allocate
+AGENTS.md) — users should know NFD paths allocate
 ~~12. **Add `Stats.NormalizedPaths` counter** — track how many paths required NFC~~ done — shipped in v2.4.0
-    transformation (observability for macOS users)
+transformation (observability for macOS users)
 ~~13. **Add symlink cross-mount test** — verify pathKey mode correctness when~~ done — shipped in v2.4.0
-    symlink targets a different filesystem
+symlink targets a different filesystem
 ~~14. **Add `shouldExcludePath` benchmark** — measure O(n) scan cost at various~~ done — shipped in v2.4.0
-    exclude-set sizes
+exclude-set sizes
 ~~15. **Consider trie-based `excludePaths`** — O(path-depth) vs O(n) prefix scan~~ OBSOLETE — measured premature (deferred, ROADMAP)
 ~~16. **Add `EffectiveCaseSensitivity()` public method** — expose resolved mode~~ done — shipped in v2.4.0
-    without calling `Stats()`
+without calling `Stats()`
 ~~17. **Website API reference** — update `website/src/content/docs/api-reference.mdx`~~ done — shipped in v2.4.0
-    with `FilterCaseInsensitive`, `Stats.CaseSensitivity`, new gauge
+with `FilterCaseInsensitive`, `Stats.CaseSensitivity`, new gauge
 ~~18. **Add `ExampleFilterCaseInsensitive` to website** docs~~ done — shipped in v2.4.0
 ~~19. **Phantom-typed `PathKey`** — `type PathKey string` for compile-time safety~~ done — shipped in v2.4.0
 ~~20. **Add `WithNormalizeUnicode(false)`** escape hatch for raw-byte comparison~~ done — shipped in v2.4.0
@@ -221,7 +221,7 @@ reason on Linux.
 ~~25. **Property-based test: `pathKey` is stable across `Reset()`** cycles~~ done — shipped in v2.4.0
 ~~26. **Add `nix run .#bench-diff` to CI** to catch perf regressions~~ done — shipped in v2.4.0
 ~~27. **Consider memoizing `pathKey` for the watch list** (paths don't change once~~ done — shipped in v2.4.0
-    added)
+added)
 ~~28. **Add gitignore walk-skip benchmark** — measure case-aware prefix check overhead~~ done — shipped in v2.4.0
 ~~29. **Verify `filepath.Rel` with canonical keys** produces valid relative paths~~ done — shipped in v2.4.0
 ~~30. **Add poll loop test with emoji ZWJ filenames** through full pipeline~~ done — shipped in v2.4.0
@@ -239,7 +239,7 @@ reason on Linux.
 ~~39. **Update `docs/DOMAIN_LANGUAGE.md` Commands table** with case-sensitivity entries~~ OBSOLETE — measured premature (deferred, ROADMAP)
 ~~40. **Add `golang.org/x/text` to the Dependencies section of README.md**~~ done — shipped in v2.4.0
 ~~41. **Add NFC normalization explanation to Troubleshooting.md** with `file` command~~ done — shipped in v2.4.0
-    to detect NFD vs NFC on macOS
+to detect NFD vs NFC on macOS
 ~~42. **Consider `FilterCaseInsensitive` benchmark** — measure wrapper overhead~~ done — shipped in v2.4.0
 ~~43. **Add `Stats.WatchListSize` vs `len(watchListKeys)` consistency check**~~ done — shipped in v2.4.0
 ~~44. **Document the `gaugeCaseSensitive` encoding** in Prometheus section of README~~ done — shipped in v2.4.0

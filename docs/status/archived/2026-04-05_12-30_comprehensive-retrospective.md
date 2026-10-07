@@ -35,13 +35,13 @@
 
 ## c) NOT STARTED ⬜
 
-| # | Item                                           | Priority |
-| - | ---------------------------------------------- | -------- |
-~~| 1 | Integration/E2E tests                          | High     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2 | Fuzz tests for filter functions                | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3 | `Watcher.Restart()` / `Watcher.Reset()` method | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4 | Example tests (`TestExample*`)                 | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5 | Coverage threshold in CI (>90%)                | Low      |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Item | Priority                                       |
+| -- | ---- | ---------------------------------------------- |
+| ~~ | 1    | Integration/E2E tests                          |
+| ~~ | 2    | Fuzz tests for filter functions                |
+| ~~ | 3    | `Watcher.Restart()` / `Watcher.Reset()` method |
+| ~~ | 4    | Example tests (`TestExample*`)                 |
+| ~~ | 5    | Coverage threshold in CI (>90%)                |
 
 ## d) TOTALLY FUCKED UP 💥
 
@@ -87,34 +87,34 @@ Nothing! All changes build clean, pass with `-race`, lint at 0 issues, and tests
 
 ## f) TOP 25 NEXT ITEMS (Prioritized: Impact ↑ / Effort ↓)
 
-| #  | Item                                                                     | Impact | Effort | Category      |
-| -- | ------------------------------------------------------------------------ | ------ | ------ | ------------- |
-~~| 1  | Close MiddlewareWriteFileLog file handle on Watcher.Close()              | High   | Low    | Bug           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2  | Add `slog.LogValuer` to Event type                                       | High   | Low    | Type Model    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3  | Replace bare `atomic int64` with `atomic.Int64` in MiddlewareRateLimit   | Medium | Low    | Code Quality  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4  | Fix GlobalDebouncer.Debounce key parameter (use it or remove it)         | Medium | Low    | API           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5  | Add integration tests: watch tree → create/modify/delete → verify events | High   | Medium | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 6  | Add coverage threshold enforcement in CI (>=90%)                         | High   | Low    | DevOps        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 7  | Consolidate doc.go — move package doc there, remove from watcher.go      | Medium | Low    | Code Quality  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 8  | Add `UnmarshalText` to Op type for YAML/JSON round-trip symmetry         | Medium | Low    | Type Model    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 9  | Enrich Stats struct: event counts, filter stats, error count, uptime     | High   | Medium | API           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 10 | Make convertEvent's os.Stat optional or cacheable                        | High   | Medium | Performance   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 11 | Add watcher-level benchmarks (full event pipeline)                       | Medium | Low    | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 12 | Add fuzz tests for FilterRegex and FilterGlob                            | Medium | Medium | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 13 | Add example tests (TestExample\*) in example_test.go                     | Medium | Low    | Documentation |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 14 | Validate WithBuffer(0) — error or document                               | Low    | Low    | API           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 15 | Add benchmark results table to README                                    | Medium | Low    | Documentation |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 16 | Add API stability doc (stable vs experimental)                           | Medium | Low    | Documentation |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 17 | Adopt semver in CHANGELOG                                                | Low    | Low    | DevOps        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 18 | Add benchmark regression detection in CI                                 | Medium | Medium | DevOps        |~~ PARTIAL → bench-diff app exists; CI gate policy = TODO_LIST open Q2
+| #  | Item | Impact                                                                   | Effort | Category |
+| -- | ---- | ------------------------------------------------------------------------ | ------ | -------- |
+| ~~ | 1    | Close MiddlewareWriteFileLog file handle on Watcher.Close()              | High   | Low      |
+| ~~ | 2    | Add `slog.LogValuer` to Event type                                       | High   | Low      |
+| ~~ | 3    | Replace bare `atomic int64` with `atomic.Int64` in MiddlewareRateLimit   | Medium | Low      |
+| ~~ | 4    | Fix GlobalDebouncer.Debounce key parameter (use it or remove it)         | Medium | Low      |
+| ~~ | 5    | Add integration tests: watch tree → create/modify/delete → verify events | High   | Medium   |
+| ~~ | 6    | Add coverage threshold enforcement in CI (>=90%)                         | High   | Low      |
+| ~~ | 7    | Consolidate doc.go — move package doc there, remove from watcher.go      | Medium | Low      |
+| ~~ | 8    | Add `UnmarshalText` to Op type for YAML/JSON round-trip symmetry         | Medium | Low      |
+| ~~ | 9    | Enrich Stats struct: event counts, filter stats, error count, uptime     | High   | Medium   |
+| ~~ | 10   | Make convertEvent's os.Stat optional or cacheable                        | High   | Medium   |
+| ~~ | 11   | Add watcher-level benchmarks (full event pipeline)                       | Medium | Low      |
+| ~~ | 12   | Add fuzz tests for FilterRegex and FilterGlob                            | Medium | Medium   |
+| ~~ | 13   | Add example tests (TestExample\*) in example_test.go                     | Medium | Low      |
+| ~~ | 14   | Validate WithBuffer(0) — error or document                               | Low    | Low      |
+| ~~ | 15   | Add benchmark results table to README                                    | Medium | Low      |
+| ~~ | 16   | Add API stability doc (stable vs experimental)                           | Medium | Low      |
+| ~~ | 17   | Adopt semver in CHANGELOG                                                | Low    | Low      |
+| ~~ | 18   | Add benchmark regression detection in CI                                 | Medium | Medium   |
 
-~~| 19 | Extract drainEvents to testutil package                                  | Low    | Low    | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 20 | Add Watcher.Restart() method                                             | Medium | Medium | API           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 21 | Filter func type could return match metadata                             | Medium | High   | Architecture  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 22 | Test examples/ in CI pipeline                                            | Low    | Low    | DevOps        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 23 | Add `-race` to benchmark CI step                                         | Low    | Low    | DevOps        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 24 | Add context cancellation integration test                                | Medium | Low    | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 25 | Explore fsnotify v2 API changes for future compatibility                 | Low    | Low    | Maintenance   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 19 | Extract drainEvents to testutil package | Low | Low | Testing |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 20 | Add Watcher.Restart() method | Medium | Medium | API |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 21 | Filter func type could return match metadata | Medium | High | Architecture |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 22 | Test examples/ in CI pipeline | Low | Low | DevOps |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 23 | Add `-race` to benchmark CI step | Low | Low | DevOps |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 24 | Add context cancellation integration test | Medium | Low | Testing |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 25 | Explore fsnotify v2 API changes for future compatibility | Low | Low | Maintenance |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 

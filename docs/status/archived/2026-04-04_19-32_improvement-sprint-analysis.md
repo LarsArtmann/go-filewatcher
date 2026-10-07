@@ -34,33 +34,33 @@
 
 ## c) NOT STARTED
 
-| #  | What                                                                        | Impact | Work | Priority |
-| -- | --------------------------------------------------------------------------- | ------ | ---- | -------- |
-~~| 1  | Fix handleNewDirectory race (writes watchList without lock)                 | HIGH   | LOW  | 🔴       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 2  | Make shouldSkipDir respect user WithIgnoreDirs                              | HIGH   | LOW  | 🔴       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 3  | Replace cockroachdb/errors with stdlib errors                               | HIGH   | MED  | 🟠       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 4  | Split watcher.go (549 lines) into watcher.go + lifecycle.go + internal.go   | MED    | LOW  | 🟡       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 5  | Add Op.MarshalText/UnmarshalText for JSON                                   | MED    | LOW  | 🟡       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 6  | Add slog support to MiddlewareLogging                                       | MED    | LOW  | 🟡       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 7  | Fix MiddlewareWriteFileLog (opens file on every event)                      | MED    | LOW  | 🟡       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 8  | Raise test coverage from 77% → 90%+                                         | HIGH   | MED  | 🔴       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 9  | Fix getDebounceKey type assertion smell                                     | LOW    | LOW  | 🟢       |~~ OBSOLETE — function removed
-~~| 10 | Remove report/ directory (jscpd-report.json)                                | LOW    | LOW  | 🟢       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 11 | Integrate into file-and-image-renamer                                       | HIGH   | MED  | 🔴       |~~ OBSOLETE — external repo, out of scope
-~~| 12 | Integrate into dynamic-markdown-site                                        | MED    | LOW  | 🟡       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 13 | Integrate into auto-deduplicate                                             | MED    | LOW  | 🟡       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 14 | Integrate into Cyberdom                                                     | MED    | LOW  | 🟡       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 15 | Tag v0.1.0                                                                  | MED    | LOW  | 🟢       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 16 | Update README/CHANGELOG with all changes                                    | MED    | LOW  | 🟡       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 17 | Add WithWatchedIgnoreDirs option (separate filter vs. walk skip)            | HIGH   | MED  | 🔴       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 18 | Remove `nolint:unparam` from getDebounceKey                                 | LOW    | LOW  | 🟢       |~~ OBSOLETE — function removed
-~~| 19 | Add `Pending()` to DebouncerInterface                                       | LOW    | LOW  | 🟢       |~~ OBSOLETE — exists on impls; interface kept minimal
-~~| 20 | Validate debounce durations (cap at reasonable max)                         | LOW    | LOW  | 🟢       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 21 | Add Example_FilterRegex test (currently has no Output comment)              | LOW    | LOW  | 🟢       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 22 | Consider removing cockroachdb/errors entirely (2 deps → 0)                  | MED    | MED  | 🟠       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 23 | Add `Errors() <-chan error` method as alternative to error handler callback | MED    | MED  | 🟡       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 24 | Check if examples/ directory is worth keeping vs. just example_test.go      | LOW    | LOW  | 🟢       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 25 | Ensure FilterRegex compiles are validated in constructor, not at runtime    | LOW    | LOW  | 🟢       |~~ done — shipped ≤v2.1.0, verified v2.4.1
+| #  | What | Impact                                                                      | Work | Priority |
+| -- | ---- | --------------------------------------------------------------------------- | ---- | -------- |
+| ~~ | 1    | Fix handleNewDirectory race (writes watchList without lock)                 | HIGH | LOW      |
+| ~~ | 2    | Make shouldSkipDir respect user WithIgnoreDirs                              | HIGH | LOW      |
+| ~~ | 3    | Replace cockroachdb/errors with stdlib errors                               | HIGH | MED      |
+| ~~ | 4    | Split watcher.go (549 lines) into watcher.go + lifecycle.go + internal.go   | MED  | LOW      |
+| ~~ | 5    | Add Op.MarshalText/UnmarshalText for JSON                                   | MED  | LOW      |
+| ~~ | 6    | Add slog support to MiddlewareLogging                                       | MED  | LOW      |
+| ~~ | 7    | Fix MiddlewareWriteFileLog (opens file on every event)                      | MED  | LOW      |
+| ~~ | 8    | Raise test coverage from 77% → 90%+                                         | HIGH | MED      |
+| ~~ | 9    | Fix getDebounceKey type assertion smell                                     | LOW  | LOW      |
+| ~~ | 10   | Remove report/ directory (jscpd-report.json)                                | LOW  | LOW      |
+| ~~ | 11   | Integrate into file-and-image-renamer                                       | HIGH | MED      |
+| ~~ | 12   | Integrate into dynamic-markdown-site                                        | MED  | LOW      |
+| ~~ | 13   | Integrate into auto-deduplicate                                             | MED  | LOW      |
+| ~~ | 14   | Integrate into Cyberdom                                                     | MED  | LOW      |
+| ~~ | 15   | Tag v0.1.0                                                                  | MED  | LOW      |
+| ~~ | 16   | Update README/CHANGELOG with all changes                                    | MED  | LOW      |
+| ~~ | 17   | Add WithWatchedIgnoreDirs option (separate filter vs. walk skip)            | HIGH | MED      |
+| ~~ | 18   | Remove `nolint:unparam` from getDebounceKey                                 | LOW  | LOW      |
+| ~~ | 19   | Add `Pending()` to DebouncerInterface                                       | LOW  | LOW      |
+| ~~ | 20   | Validate debounce durations (cap at reasonable max)                         | LOW  | LOW      |
+| ~~ | 21   | Add Example_FilterRegex test (currently has no Output comment)              | LOW  | LOW      |
+| ~~ | 22   | Consider removing cockroachdb/errors entirely (2 deps → 0)                  | MED  | MED      |
+| ~~ | 23   | Add `Errors() <-chan error` method as alternative to error handler callback | MED  | MED      |
+| ~~ | 24   | Check if examples/ directory is worth keeping vs. just example_test.go      | LOW  | LOW      |
+| ~~ | 25   | Ensure FilterRegex compiles are validated in constructor, not at runtime    | LOW  | LOW      |
 
 ---
 
@@ -86,7 +86,6 @@
 ~~4. **watcher.go is 549 lines** — Contains New(), Watch(), Add(), Remove(), WatchList(), Stats(), Close(), plus 10+ internal methods. Should split: `watcher.go` (public API), `lifecycle.go` (init/close/stats), `internal.go` (addPath, watchLoop, processEvent, etc).~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ~~5. **getDebounceKey uses type assertion** — Checks `w.debounceInterface.(*Debouncer)` to decide per-path vs global key. Should instead have the debouncer itself provide the key strategy, or have a boolean flag.~~ OBSOLETE — function removed
-
 
 ### Type Model Issues
 
@@ -114,33 +113,33 @@
 
 ## f) TOP 25 NEXT ACTIONS (Ranked by Impact × Ease)
 
-| Rank | Action                                             | Impact | Work | Why                                                    |
-| ---- | -------------------------------------------------- | ------ | ---- | ------------------------------------------------------ |
-~~| 1    | Fix handleNewDirectory race condition              | HIGH   | LOW  | Data race on watchList — will bite in production       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 2    | Make shouldSkipDir respect user ignore dirs        | HIGH   | LOW  | Wastes kernel FDs, confusing behavior                  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 3    | Raise test coverage to 90%+                        | HIGH   | MED  | Current 77% misses error paths, middleware, edge cases |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 4    | Remove cockroachdb/errors → stdlib errors          | HIGH   | MED  | 6 transitive deps for 4 sentinel errors is absurd      |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 5    | Integrate into file-and-image-renamer              | HIGH   | MED  | Fixes confirmed bug, validates library in real project |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 6    | Fix Go build cache corruption                      | HIGH   | LOW  | `rm -rf ~/Library/Caches/go-build/` needed             |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 7    | Add Op.MarshalText/UnmarshalText                   | MED    | LOW  | JSON support for audit/logging pipelines               |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 8    | Add slog support to MiddlewareLogging              | MED    | LOW  | log.Logger is legacy; slog is standard since Go 1.21   |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 9    | Fix MiddlewareWriteFileLog perf                    | MED    | LOW  | Opens file on every event                              |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 10   | Add WithWatchedIgnoreDirs (walk-level skip)        | MED    | MED  | Separate filter-level vs walk-level ignore             |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 11   | Split watcher.go into 3 files                      | MED    | LOW  | 549 lines is hard to navigate                          |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 12   | Remove report/ template artifact                   | LOW    | LOW  | Dead file                                              |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 13   | Update README/CHANGELOG                            | MED    | LOW  | Reflect all improvements                               |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 14   | Integrate into dynamic-markdown-site               | MED    | LOW  | Second validation point                                |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 15   | Fix getDebounceKey type assertion smell            | LOW    | LOW  | Replace with boolean flag or interface method          |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 16   | Add `Errors() <-chan error` method                 | MED    | MED  | Better than callback for composability                 |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 17   | Integrate into auto-deduplicate                    | MED    | LOW  | Collapses double abstraction                           |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 18   | Validate debounce durations                        | LOW    | LOW  | Prevent footguns                                       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 19   | Tag v0.1.0                                         | MED    | LOW  | After integrations pass                                |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 20   | Integrate into Cyberdom                            | MED    | LOW  | Generic markdown live-reload validation                |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 21   | Clean nolint directives                            | LOW    | LOW  | Remove `nolint:unparam` from getDebounceKey            |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 22   | Add Pending() to DebouncerInterface                | LOW    | LOW  | Completes the interface                                |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 23   | Verify examples/ compile                           | LOW    | LOW  | May be broken after recent changes                     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 24   | FilterRegex already validated at compile — confirm | LOW    | LOW  | regexp.MustCompile panics on bad patterns              |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 25   | Add benchmark tests                                | LOW    | LOW  | Prove performance claims                               |~~ done — shipped ≤v2.1.0, verified v2.4.1
+| Rank | Action | Impact                                             | Work | Why |
+| ---- | ------ | -------------------------------------------------- | ---- | --- |
+| ~~   | 1      | Fix handleNewDirectory race condition              | HIGH | LOW |
+| ~~   | 2      | Make shouldSkipDir respect user ignore dirs        | HIGH | LOW |
+| ~~   | 3      | Raise test coverage to 90%+                        | HIGH | MED |
+| ~~   | 4      | Remove cockroachdb/errors → stdlib errors          | HIGH | MED |
+| ~~   | 5      | Integrate into file-and-image-renamer              | HIGH | MED |
+| ~~   | 6      | Fix Go build cache corruption                      | HIGH | LOW |
+| ~~   | 7      | Add Op.MarshalText/UnmarshalText                   | MED  | LOW |
+| ~~   | 8      | Add slog support to MiddlewareLogging              | MED  | LOW |
+| ~~   | 9      | Fix MiddlewareWriteFileLog perf                    | MED  | LOW |
+| ~~   | 10     | Add WithWatchedIgnoreDirs (walk-level skip)        | MED  | MED |
+| ~~   | 11     | Split watcher.go into 3 files                      | MED  | LOW |
+| ~~   | 12     | Remove report/ template artifact                   | LOW  | LOW |
+| ~~   | 13     | Update README/CHANGELOG                            | MED  | LOW |
+| ~~   | 14     | Integrate into dynamic-markdown-site               | MED  | LOW |
+| ~~   | 15     | Fix getDebounceKey type assertion smell            | LOW  | LOW |
+| ~~   | 16     | Add `Errors() <-chan error` method                 | MED  | MED |
+| ~~   | 17     | Integrate into auto-deduplicate                    | MED  | LOW |
+| ~~   | 18     | Validate debounce durations                        | LOW  | LOW |
+| ~~   | 19     | Tag v0.1.0                                         | MED  | LOW |
+| ~~   | 20     | Integrate into Cyberdom                            | MED  | LOW |
+| ~~   | 21     | Clean nolint directives                            | LOW  | LOW |
+| ~~   | 22     | Add Pending() to DebouncerInterface                | LOW  | LOW |
+| ~~   | 23     | Verify examples/ compile                           | LOW  | LOW |
+| ~~   | 24     | FilterRegex already validated at compile — confirm | LOW  | LOW |
+| ~~   | 25     | Add benchmark tests                                | LOW  | LOW |
 
 ---
 

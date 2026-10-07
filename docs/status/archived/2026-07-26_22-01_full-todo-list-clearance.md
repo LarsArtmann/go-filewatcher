@@ -11,28 +11,28 @@ Every item from the pasted TODO list is implemented, tested, lint-clean, and doc
 
 ### HIGH Priority (5/5 ✅)
 
-| # | Item                                       | Resolution                                                                                   |
-| - | ------------------------------------------ | -------------------------------------------------------------------------------------------- |
-~~| 1 | Mark deprecations in README.md             | Added ⚠️ deprecated callouts to `WithOnError` and `MiddlewareRateLimit` table rows            |~~ done — all 15 items verified shipped (v2.3.0 era)
-~~| 2 | v2.3→v3 migration section in MIGRATION.md  | Added before/after snippets for both deprecated symbols                                      |~~ done — all 15 items verified shipped (v2.3.0 era)
-~~| 3 | Deprecation badges in api-reference.mdx    | Starlight `:::caution[Deprecated]` blocks, moved deprecated symbols to dedicated subsections |~~ done — all 15 items verified shipped (v2.3.0 era)
-~~| 4 | Fix `nix run .#ci` tidy permission failure | `ci`/`fmt`/`tidy` apps now run from caller CWD (no `cd "${self}"` into read-only store)      |~~ done — all 15 items verified shipped (v2.3.0 era)
-~~| 5 | FEATURES.md error simulation PLANNED→DONE  | Moved to Developer Experience section as ✅                                                  |~~ done — all 15 items verified shipped (v2.3.0 era)
+| #  | Item | Resolution                                 |
+| -- | ---- | ------------------------------------------ |
+| ~~ | 1    | Mark deprecations in README.md             |
+| ~~ | 2    | v2.3→v3 migration section in MIGRATION.md  |
+| ~~ | 3    | Deprecation badges in api-reference.mdx    |
+| ~~ | 4    | Fix `nix run .#ci` tidy permission failure |
+| ~~ | 5    | FEATURES.md error simulation PLANNED→DONE  |
 
 ### MEDIUM Priority (10/10 ✅)
 
-| #  | Item                               | Resolution                                                                                                |
-| -- | ---------------------------------- | --------------------------------------------------------------------------------------------------------- |
-~~| 6  | MiddlewareWriteFileLog fd leak     | Added `NewFileLogMiddleware` (returns closer) + `WithCleanup` option; `Close()` calls registered cleanups |~~ done — all 15 items verified shipped (v2.3.0 era)
-~~| 7  | Dead `addAttemptCount`             | Wired up in `TestSelfHeal_HealsFailedPathAfterRetry` and `TestFakeBackend_AddFailsSpecificPaths`          |~~ done — all 15 items verified shipped (v2.3.0 era)
-~~| 8  | MiddlewareDeduplicate %100 quirk   | Replaced `len(seen)%100` with `eventCount%dedupeCleanupInterval` (event counter)                          |~~ done — all 15 items verified shipped (v2.3.0 era)
-~~| 9  | `--tests` lint flag                | Added `nix run .#lint-tests` app (explicit `--tests` opt-in)                                              |~~ done — all 15 items verified shipped (v2.3.0 era)
-~~| 10 | examples/ in nix build             | Added `./examples` to `fileset.unions` + `examples-build` check in `checks`                               |~~ done — all 15 items verified shipped (v2.3.0 era)
-~~| 11 | Hermetic benchstat                 | `buildGoModule` derivation in flake; `bench-diff` uses it instead of `go run @latest`                     |~~ done — all 15 items verified shipped (v2.3.0 era)
-~~| 12 | Clean bench-baseline.txt           | Regenerated with `-run=^$` (skips test functions that produce slog output)                                |~~ done — all 15 items verified shipped (v2.3.0 era)
-~~| 13 | Commitlint CI gate                 | `.github/workflows/commitlint.yml` — validates conventional-commit format on PRs                          |~~ done — all 15 items verified shipped (v2.3.0 era)
-~~| 14 | release-please                     | `.github/workflows/release-please.yml` — release-type: go, Keep a Changelog                               |~~ done — all 15 items verified shipped (v2.3.0 era)
-~~| 15 | README vs API_STABILITY drift gate | `.github/workflows/docs-consistency.yml` — checks deprecation claims cross-file                           |~~ done — all 15 items verified shipped (v2.3.0 era)
+| #  | Item | Resolution                         |
+| -- | ---- | ---------------------------------- |
+| ~~ | 6    | MiddlewareWriteFileLog fd leak     |
+| ~~ | 7    | Dead `addAttemptCount`             |
+| ~~ | 8    | MiddlewareDeduplicate %100 quirk   |
+| ~~ | 9    | `--tests` lint flag                |
+| ~~ | 10   | examples/ in nix build             |
+| ~~ | 11   | Hermetic benchstat                 |
+| ~~ | 12   | Clean bench-baseline.txt           |
+| ~~ | 13   | Commitlint CI gate                 |
+| ~~ | 14   | release-please                     |
+| ~~ | 15   | README vs API_STABILITY drift gate |
 
 ## Verification
 

@@ -13,17 +13,17 @@
 
 ## Conceptual Overlap
 
-| go-error-family                                             | go-filewatcher                                         | Notes                                                      |
-| ----------------------------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------------- |
-| `Family` (5 families)                                       | `ErrorCategory` (Transient/Permanent/Unknown)          | filewatcher's domain is simpler — 3 categories suffice     |
-| `Coded` interface → `ErrorCode() string`                    | `ErrorCode` type + `Code()` method                     | Same concept, different implementation                     |
-| `Classified` interface → `ErrorFamily() Family`             | `WatcherError.IsTransient()` / `.IsPermanent()`        | Same intent, different granularity                         |
-| `Contextual` interface → `ErrorContext() map[string]string` | `ErrorContext` struct (Operation/Path/Event/Retryable) | Struct is more domain-specific                             |
+| go-error-family                                             | go-filewatcher                                         | Notes                                                              |
+| ----------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------ |
+| `Family` (5 families)                                       | `ErrorCategory` (Transient/Permanent/Unknown)          | filewatcher's domain is simpler — 3 categories suffice             |
+| `Coded` interface → `ErrorCode() string`                    | `ErrorCode` type + `Code()` method                     | Same concept, different implementation                             |
+| `Classified` interface → `ErrorFamily() Family`             | `WatcherError.IsTransient()` / `.IsPermanent()`        | Same intent, different granularity                                 |
+| `Contextual` interface → `ErrorContext() map[string]string` | `ErrorContext` struct (Operation/Path/Event/Retryable) | Struct is more domain-specific                                     |
 | `errorfamily.New()` constructors                            | `NewWatcherError()` constructor                        | filewatcher's is simpler and unused in production code at ADR time |
-| `Classify()` + `RegisterClassification()`                   | `categorizeError()` (hardcoded switch)                 | filewatcher's sentinels are fixed; no extensibility needed |
-| `HandleError()` → stderr + exit code                        | `handleError()` → channel/callback/stderr              | filewatcher has no CLI boundary                            |
-| Diagnostics (`diagnose/`)                                   | None                                                   | Filesystem/Network diagnostics don't apply here            |
-| Agent analysis (`agent/`)                                   | None                                                   | Debug agent is overkill for a watcher library              |
+| `Classify()` + `RegisterClassification()`                   | `categorizeError()` (hardcoded switch)                 | filewatcher's sentinels are fixed; no extensibility needed         |
+| `HandleError()` → stderr + exit code                        | `handleError()` → channel/callback/stderr              | filewatcher has no CLI boundary                                    |
+| Diagnostics (`diagnose/`)                                   | None                                                   | Filesystem/Network diagnostics don't apply here                    |
+| Agent analysis (`agent/`)                                   | None                                                   | Debug agent is overkill for a watcher library                      |
 
 ## Reasoning
 

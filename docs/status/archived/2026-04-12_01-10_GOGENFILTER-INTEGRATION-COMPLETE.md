@@ -125,42 +125,50 @@ github.com/LarsArtmann/gogenfilter v0.1.0
 ### Critical Issues (Fix Immediately)
 
 ~~1. **BUILD CACHE CORRUPTION** - `go build` and `go test` hang indefinitely~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - **Root Cause:** Unknown - possibly gogenfilter compilation issue or circular dependency
-   - **Impact:** Cannot verify tests or build project
-   - **Solution:** Try `go clean -cache`, remove replace directive, or investigate gogenfilter build
+
+- **Root Cause:** Unknown - possibly gogenfilter compilation issue or circular dependency
+- **Impact:** Cannot verify tests or build project
+- **Solution:** Try `go clean -cache`, remove replace directive, or investigate gogenfilter build
 
 ~~2. **LOCAL REPLACE DIRECTIVE** - Blocks publishing~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - **Issue:** `go.mod` has `replace github.com/LarsArtmann/gogenfilter => ../gogenfilter`
-   - **Impact:** Cannot push to remote or use as library
-   - **Solution:** Remove replace directive; use proper version v0.1.0
+
+- **Issue:** `go.mod` has `replace github.com/LarsArtmann/gogenfilter => ../gogenfilter`
+- **Impact:** Cannot push to remote or use as library
+- **Solution:** Remove replace directive; use proper version v0.1.0
 
 ### High Priority (Fix This Week)
 
 ~~3. **TEST EXECUTION** - Tests written but not verified~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - **Impact:** Cannot confirm integration works
-   - **Solution:** Fix build issues, run full test suite
+
+- **Impact:** Cannot confirm integration works
+- **Solution:** Fix build issues, run full test suite
 
 ~~4. **EXAMPLE COMPILATION** - LSP shows import errors in filter-generated example~~ OBSOLETE — stale LSP diagnostics
-   - **Impact:** Example may not compile
-   - **Solution:** Verify example compiles and runs correctly
+
+- **Impact:** Example may not compile
+- **Solution:** Verify example compiles and runs correctly
 
 ### Medium Priority (Fix Next Sprint)
 
 ~~5. **BENCHMARK SUITE** - No performance comparison~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - **Impact:** Unknown overhead of gogenfilter integration
-   - **Solution:** Add benchmarks comparing filter performance
+
+- **Impact:** Unknown overhead of gogenfilter integration
+- **Solution:** Add benchmarks comparing filter performance
 
 ~~6. **COMPREHENSIVE DOCUMENTATION** - No advanced usage examples~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - **Impact:** Users don't know how to combine filters
-   - **Solution:** Add documentation for FilterAnd, FilterOr combinations
+
+- **Impact:** Users don't know how to combine filters
+- **Solution:** Add documentation for FilterAnd, FilterOr combinations
 
 ~~7. **CI/CD INTEGRATION** - No automated gogenfilter tests~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - **Impact:** Regression risk
-   - **Solution:** Add GitHub Actions job for gogenfilter tests
+
+- **Impact:** Regression risk
+- **Solution:** Add GitHub Actions job for gogenfilter tests
 
 ~~8. **CONTENT DETECTION VALIDATION** - Real-world testing needed~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - **Impact:** Content-based detection may have edge cases
-   - **Solution:** Test with actual generated files from each tool
+
+- **Impact:** Content-based detection may have edge cases
+- **Solution:** Test with actual generated files from each tool
 
 ### Low Priority (Nice to Have)
 

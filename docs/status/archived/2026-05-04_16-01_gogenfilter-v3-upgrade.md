@@ -147,43 +147,43 @@ Nothing. The upgrade went cleanly. One notable issue:
 
 ### High Impact (P0-P1)
 
-| # | Task                                                                  | Impact                  | Effort  |
-| - | --------------------------------------------------------------------- | ----------------------- | ------- |
-~~| 1 | Fix gogenfilter module path (`/v3`) and remove replace directive      | Unblocks publishing     | Medium  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2 | Add `filter-generated` (and similar example binaries) to `.gitignore` | Prevents binary commits | Trivial |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3 | Update README.md with v3 API examples                                 | User-facing docs        | Low     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4 | Fix unused `modernize` nolint in `watcher_coverage_test.go`           | Linter hygiene          | Trivial |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5 | Create CHANGELOG.md and record v3 upgrade                             | Project history         | Low     |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Impact                                                                | Effort                  |
+| -- | ---- | --------------------------------------------------------------------- | ----------------------- |
+| ~~ | 1    | Fix gogenfilter module path (`/v3`) and remove replace directive      | Unblocks publishing     |
+| ~~ | 2    | Add `filter-generated` (and similar example binaries) to `.gitignore` | Prevents binary commits |
+| ~~ | 3    | Update README.md with v3 API examples                                 | User-facing docs        |
+| ~~ | 4    | Fix unused `modernize` nolint in `watcher_coverage_test.go`           | Linter hygiene          |
+| ~~ | 5    | Create CHANGELOG.md and record v3 upgrade                             | Project history         |
 
 ### Medium Impact (P2)
 
-| #  | Task                                                                          | Impact               | Effort  |
-| -- | ----------------------------------------------------------------------------- | -------------------- | ------- |
-~~| 6  | Update example comments to mention new generators (Oapi, Deepcopy, Wire, Moq) | Discoverability      | Trivial |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 7  | Fix flaky `TestWatcher_Stats_Metrics` test                                    | CI reliability       | Medium  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 8  | Fix flaky `TestWatcher_Watch_WithMiddleware` test                             | CI reliability       | Medium  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 9  | Leverage `DetectReasonReader` in `FilterGeneratedCodeFull`                    | Memory efficiency    | Low     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 10 | Expose `FilterStats.FilteredFiles()` through our API                          | Richer introspection | Low     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 11 | Add integration test for all v3 generators (including new ones)               | Test coverage        | Medium  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 12 | Document contributor setup (local gogenfilter checkout needed)                | Onboarding           | Low     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 13 | Consider go.work for multi-module local development                           | DX improvement       | Medium  |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Impact                                                                        | Effort               |
+| -- | ---- | ----------------------------------------------------------------------------- | -------------------- |
+| ~~ | 6    | Update example comments to mention new generators (Oapi, Deepcopy, Wire, Moq) | Discoverability      |
+| ~~ | 7    | Fix flaky `TestWatcher_Stats_Metrics` test                                    | CI reliability       |
+| ~~ | 8    | Fix flaky `TestWatcher_Watch_WithMiddleware` test                             | CI reliability       |
+| ~~ | 9    | Leverage `DetectReasonReader` in `FilterGeneratedCodeFull`                    | Memory efficiency    |
+| ~~ | 10   | Expose `FilterStats.FilteredFiles()` through our API                          | Richer introspection |
+| ~~ | 11   | Add integration test for all v3 generators (including new ones)               | Test coverage        |
+| ~~ | 12   | Document contributor setup (local gogenfilter checkout needed)                | Onboarding           |
+| ~~ | 13   | Consider go.work for multi-module local development                           | DX improvement       |
 
 ### Lower Impact (P3-P4)
 
-| #  | Task                                                                              | Impact                 | Effort  |
-| -- | --------------------------------------------------------------------------------- | ---------------------- | ------- |
-~~| 14 | Review `buildGogenFilterOptions` — is it still needed at all?                     | Simplification         | Trivial |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 15 | Add example for `FilterGeneratedCodeWithFilter` with v3 patterns                  | Documentation          | Low     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 16 | Clean up old status reports in `docs/status/` (41 files)                          | Housekeeping           | Trivial |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 17 | Add `.editorconfig` or formatting consistency check                               | Code style             | Trivial |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 18 | Review if `ContentCheckMode` type could use v3's `fs.FS` abstraction              | API consistency        | Medium  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 19 | Audit all nolint directives for continued necessity                               | Linter hygiene         | Low     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 20 | Add benchmark tests for v3 detection performance                                  | Performance validation | Medium  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 21 | Review `depguard` rules — gogenfilter still uses old path (no `/v3`)              | Config accuracy        | Trivial |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 22 | Add version compatibility test matrix                                             | Future-proofing        | Medium  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 23 | Consider error wrapping in `FilterGeneratedCodeWithFilter` when `Filter()` errors | Error handling         | Trivial |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 24 | Update `docs/adr/` if architecture decisions exist                                | Documentation          | Low     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 25 | Verify all examples compile and run with v3                                       | Correctness            | Trivial |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Impact                                                                            | Effort                 |
+| -- | ---- | --------------------------------------------------------------------------------- | ---------------------- |
+| ~~ | 14   | Review `buildGogenFilterOptions` — is it still needed at all?                     | Simplification         |
+| ~~ | 15   | Add example for `FilterGeneratedCodeWithFilter` with v3 patterns                  | Documentation          |
+| ~~ | 16   | Clean up old status reports in `docs/status/` (41 files)                          | Housekeeping           |
+| ~~ | 17   | Add `.editorconfig` or formatting consistency check                               | Code style             |
+| ~~ | 18   | Review if `ContentCheckMode` type could use v3's `fs.FS` abstraction              | API consistency        |
+| ~~ | 19   | Audit all nolint directives for continued necessity                               | Linter hygiene         |
+| ~~ | 20   | Add benchmark tests for v3 detection performance                                  | Performance validation |
+| ~~ | 21   | Review `depguard` rules — gogenfilter still uses old path (no `/v3`)              | Config accuracy        |
+| ~~ | 22   | Add version compatibility test matrix                                             | Future-proofing        |
+| ~~ | 23   | Consider error wrapping in `FilterGeneratedCodeWithFilter` when `Filter()` errors | Error handling         |
+| ~~ | 24   | Update `docs/adr/` if architecture decisions exist                                | Documentation          |
+| ~~ | 25   | Verify all examples compile and run with v3                                       | Correctness            |
 
 ---
 

@@ -173,90 +173,100 @@ All critical issues have been resolved:
 ### Critical (Do Next)
 
 ~~1. **Add Integration Stress Tests**~~ OPEN → TODO_LIST (large-tree stress harness)
-   - 10,000+ file create/modify/delete operations
-   - Concurrent watcher operations
-   - Memory pressure testing
+
+- 10,000+ file create/modify/delete operations
+- Concurrent watcher operations
+- Memory pressure testing
 
 ~~2. **Increase Test Coverage to 90%+**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Current: ~85%
-   - Target: 90%+
-   - Focus: Error paths, edge cases
+
+- Current: ~85%
+- Target: 90%+
+- Focus: Error paths, edge cases
 
 ~~3. **Implement Symlink Following**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Common feature request
-   - Requires careful cycle detection
-   - Add `WithFollowSymlinks()` option
+
+- Common feature request
+- Requires careful cycle detection
+- Add `WithFollowSymlinks()` option
 
 ### High Priority
 
 ~~4. **Add Fuzz Testing**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - For filter functions
-   - For event marshaling
-   - For path handling
+
+- For filter functions
+- For event marshaling
+- For path handling
 
 ~~5. **Complete Phantom Type Enforcement**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - `BufferSize` - enforce in channel creation
-   - `WatchCount` - enforce in Stats()
-   - `uint` conversions for sizes/counts
+
+- `BufferSize` - enforce in channel creation
+- `WatchCount` - enforce in Stats()
+- `uint` conversions for sizes/counts
 
 ~~6. **Polling Fallback Implementation**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - For network filesystems
-   - Configurable poll interval
-   - Automatic fallback detection
+
+- For network filesystems
+- Configurable poll interval
+- Automatic fallback detection
 
 ### Medium Priority
 
 ~~7. **Event Batching**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Configurable window (e.g., 100ms)
-   - Batch multiple events into slice
-   - Reduce callback overhead
+
+- Configurable window (e.g., 100ms)
+- Batch multiple events into slice
+- Reduce callback overhead
 
 ~~8. **Create Standalone CLI**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - `go-filewatcher ./src --exec "go test"`
-   - Configuration file support
-   - Daemon mode
+
+- `go-filewatcher ./src --exec "go test"`
+- Configuration file support
+- Daemon mode
 
 ~~9. **Performance Optimizations**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Reduce allocations in hot path
-   - Optimize filter chains
-   - Benchmark-driven improvements
+
+- Reduce allocations in hot path
+- Optimize filter chains
+- Benchmark-driven improvements
 
 ~~10. **Enhanced Observability**~~ done — shipped ≤v2.1.0, verified v2.4.1
-    - Prometheus metrics endpoint
-    - OpenTelemetry tracing
-    - Structured logging improvements
+
+- Prometheus metrics endpoint
+- OpenTelemetry tracing
+- Structured logging improvements
 
 ---
 
 ## f) Top #25 Things To Get Done Next! 🔥
 
-| #  | Priority    | Task                                      | Effort | Impact |
-| -- | ----------- | ----------------------------------------- | ------ | ------ |
-~~| 1  | 🔴 CRITICAL | Add integration stress tests (10k+ files) | 4h     | HIGH   |~~ OPEN → TODO_LIST (large-tree stress harness)
-~~| 2  | 🔴 CRITICAL | Increase test coverage to 90%+            | 3h     | HIGH   |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 3  | 🔴 CRITICAL | Implement symlink following               | 3h     | MEDIUM |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 4  | 🟠 HIGH     | Add fuzz testing for filters              | 2h     | MEDIUM |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 5  | 🟠 HIGH     | Complete phantom type enforcement         | 2h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 6  | 🟠 HIGH     | Implement polling fallback                | 4h     | MEDIUM |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 7  | 🟠 HIGH     | Add event batching support                | 3h     | MEDIUM |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 8  | 🟡 MEDIUM   | Create standalone CLI binary              | 4h     | MEDIUM |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 9  | 🟡 MEDIUM   | Performance optimization pass             | 3h     | MEDIUM |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 10 | 🟡 MEDIUM   | Add Prometheus metrics                    | 2h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 11 | 🟡 MEDIUM   | OpenTelemetry tracing                     | 3h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 12 | 🟡 MEDIUM   | File content deduplication                | 2h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 13 | 🟢 LOW      | Windows-specific optimizations            | 2h     | LOW    |~~ OPEN → TODO_LIST (Windows CI matrix)
-~~| 14 | 🟢 LOW      | macOS FSEvents backend                    | 4h     | LOW    |~~ OBSOLETE — fsnotify+polling retained
-~~| 15 | 🟢 LOW      | Plugin system for filters                 | 4h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 16 | 🟢 LOW      | Web dashboard for monitoring              | 6h     | LOW    |~~ OBSOLETE — untracked
-~~| 17 | 🟢 LOW      | Add more benchmark scenarios              | 2h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 18 | 🟢 LOW      | CONTRIBUTING.md guide                     | 1h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 19 | 🟢 LOW      | Security policy                           | 1h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 20 | 🟢 LOW      | Code of conduct                           | 1h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 21 | 🟢 LOW      | GitHub issue templates                    | 1h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 22 | 🟢 LOW      | Automated release workflow                | 2h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 23 | 🟢 LOW      | Add more examples                         | 2h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 24 | 🟢 LOW      | Performance comparison docs               | 2h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 25 | 🟢 LOW      | Architecture Decision Records             | 3h     | LOW    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+| #  | Priority | Task        | Effort                                    | Impact |
+| -- | -------- | ----------- | ----------------------------------------- | ------ |
+| ~~ | 1        | 🔴 CRITICAL | Add integration stress tests (10k+ files) | 4h     |
+| ~~ | 2        | 🔴 CRITICAL | Increase test coverage to 90%+            | 3h     |
+| ~~ | 3        | 🔴 CRITICAL | Implement symlink following               | 3h     |
+| ~~ | 4        | 🟠 HIGH     | Add fuzz testing for filters              | 2h     |
+| ~~ | 5        | 🟠 HIGH     | Complete phantom type enforcement         | 2h     |
+| ~~ | 6        | 🟠 HIGH     | Implement polling fallback                | 4h     |
+| ~~ | 7        | 🟠 HIGH     | Add event batching support                | 3h     |
+| ~~ | 8        | 🟡 MEDIUM   | Create standalone CLI binary              | 4h     |
+| ~~ | 9        | 🟡 MEDIUM   | Performance optimization pass             | 3h     |
+| ~~ | 10       | 🟡 MEDIUM   | Add Prometheus metrics                    | 2h     |
+| ~~ | 11       | 🟡 MEDIUM   | OpenTelemetry tracing                     | 3h     |
+| ~~ | 12       | 🟡 MEDIUM   | File content deduplication                | 2h     |
+| ~~ | 13       | 🟢 LOW      | Windows-specific optimizations            | 2h     |
+| ~~ | 14       | 🟢 LOW      | macOS FSEvents backend                    | 4h     |
+| ~~ | 15       | 🟢 LOW      | Plugin system for filters                 | 4h     |
+| ~~ | 16       | 🟢 LOW      | Web dashboard for monitoring              | 6h     |
+| ~~ | 17       | 🟢 LOW      | Add more benchmark scenarios              | 2h     |
+| ~~ | 18       | 🟢 LOW      | CONTRIBUTING.md guide                     | 1h     |
+| ~~ | 19       | 🟢 LOW      | Security policy                           | 1h     |
+| ~~ | 20       | 🟢 LOW      | Code of conduct                           | 1h     |
+| ~~ | 21       | 🟢 LOW      | GitHub issue templates                    | 1h     |
+| ~~ | 22       | 🟢 LOW      | Automated release workflow                | 2h     |
+| ~~ | 23       | 🟢 LOW      | Add more examples                         | 2h     |
+| ~~ | 24       | 🟢 LOW      | Performance comparison docs               | 2h     |
+| ~~ | 25       | 🟢 LOW      | Architecture Decision Records             | 3h     |
 
 ---
 

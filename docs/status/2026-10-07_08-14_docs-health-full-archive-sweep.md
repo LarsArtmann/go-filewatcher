@@ -8,37 +8,37 @@
 
 ## a) FULLY DONE
 
-| #  | Item                                                                                                                                                     | Evidence                                                                                                                          |
-| -- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| 1  | docs-health skill + 3 references loaded; AUDIT mode executed (BUILD/HARVEST/VERIFY/ANNOTATE)                                                              | SKILL.md + harvest-guide/verify-checklist/health-report-format in context                                                         |
-| 2  | **All `2026-0*` files viewed**: 7 of today's reports read fully in-context; ~78 historical reports extracted via 6 sub-agents (3 retried after 429s); 2 ADRs assessed | Agent outputs batch A–E + 9-file follow-up batch                                                                                  |
-| 3  | **86 files annotated inline + archived**: 76 → `docs/status/archived/`, 10 → `docs/planning/archived/` (`git mv`), each with an ARCHIVED banner          | `grep -rLn '~~'` over both archived dirs returns nothing (completeness gate PASSES)                                                |
-| 4  | Per-item verdicts with evidence: `done — shipped ≤vX (<symbol/file>)`, `OBSOLETE (<why>)`, `OPEN → TODO_LIST (<item>)`, `NOT-DO`                         | ~13k struck lines; spot-fixes applied where my defaults mislabeled (06-56 CODEOWNERS/SECURITY/goreleaser, 16-16, 18-12, 18-59, 20-40, 19-32, 07-00) |
-| 5  | **Archive manifests** written (per skill's bulk-archive rule): one-line-per-file classification + deciding reason for both archived dirs                 | `docs/status/archived/README.md`, `docs/planning/archived/README.md`                                                              |
-| 6  | Supersession banners on the live 04:34→05:17 buildflow chain (pointing at the 06:00 close-out); 03-09 report annotated with THIS session's resolutions (proxy verified, harvest done, README pass done, gotchas consolidated, status sweep done) | inline edits in the three 2026-10-07 reports                                                                                       |
-| 7  | ADR addendum (non-destructive): go-error-family ADR's "NewWatcherError unused in production" is now false — self-heal uses it; verdict unaffected         | `docs/adr/2026-05-31_go-error-family-adoption.md` inline UPDATE + struck bullet                                                    |
-| 8  | **TODO_LIST rebuilt** — 29 curated open items + 9 open questions, every item with `src:` provenance; struck-through "Resolved (2026-07-29)" section removed (belongs in CHANGELOG) | TODO_LIST.md; snapshot updated to 29                                                                                               |
-| 9  | **HARVEST verified against code, not reports**: proxy serves v2.4.1 (live fetch); `.goreleaser.yml` still EXISTS (agent claimed deleted — wrong); `AddRecursive` SHIPPED (agent claimed open — wrong); exemption list is 15 symbols (not 14/36); 30 godoc examples (not 26) | go.mod, `ls .goreleaser.yml`, watcher.go:487, docs-consistency.yml, proxy @v/list, example_test.go                                 |
-| 10 | **README fact-fixed**: Go 1.26.4→1.26.7; gogenfilter v3.2.0→v3.6.1; missing `x/text/unicode/norm` dependency row added; "minimal deps" line corrected; sqlc v3.6 weak-filename note added | README.md (4 edits)                                                                                                                |
-| 11 | **FEATURES refreshed**: header → v2.4.1 / 2026-10-07; gogenfilter row → v3.6.1 + sqlc semantics; examples 26→30                                            | FEATURES.md (3 edits)                                                                                                              |
-| 12 | **ROADMAP refreshed**: date; exemption 36→15; versioning section now covers v2.4.0/v2.4.1; 8 new v3-candidate ideas (poll dedup/rename detection, DropCallback, maxWatches split, Stats split, channelSender, runtime deprecation warning, sqlc output-dir config, ecosystem go-daemon pairing) | ROADMAP.md                                                                                                                         |
-| 13 | **AGENTS.md "Release / CI Gotchas" consolidated** (03-09 §f20): six accreting subsections → one table + single dense go.mod subsection + BuildFlow shared-machine lessons (binary-drift→doctor; high-load spawn-kill false failures; slug-verify lesson added) | AGENTS.md ~551+                                                                                                                    |
-| 14 | **Quality gate green**: `nix run .#check` (vet + lint 0 issues + race tests) in background early; `go build ./... && go vet ./...` re-verified after all edits | background shell 008; final run output "GO GREEN"                                                                                  |
-| 15 | Cross-file consistency checks: all internal links resolve; no living doc references moved status files; TODO↔ROADMAP benchmark overlap is a deliberate pointer (decision lives in TODO_LIST open Q2) | link existence loop; grep sweeps                                                                                                   |
+| #  | Item                                                                                                                                                                                                                                                                                            | Evidence                                                                                                                                            |
+| -- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1  | docs-health skill + 3 references loaded; AUDIT mode executed (BUILD/HARVEST/VERIFY/ANNOTATE)                                                                                                                                                                                                    | SKILL.md + harvest-guide/verify-checklist/health-report-format in context                                                                           |
+| 2  | **All `2026-0*` files viewed**: 7 of today's reports read fully in-context; ~78 historical reports extracted via 6 sub-agents (3 retried after 429s); 2 ADRs assessed                                                                                                                           | Agent outputs batch A–E + 9-file follow-up batch                                                                                                    |
+| 3  | **86 files annotated inline + archived**: 76 → `docs/status/archived/`, 10 → `docs/planning/archived/` (`git mv`), each with an ARCHIVED banner                                                                                                                                                 | `grep -rLn '~~'` over both archived dirs returns nothing (completeness gate PASSES)                                                                 |
+| 4  | Per-item verdicts with evidence: `done — shipped ≤vX (<symbol/file>)`, `OBSOLETE (<why>)`, `OPEN → TODO_LIST (<item>)`, `NOT-DO`                                                                                                                                                                | ~13k struck lines; spot-fixes applied where my defaults mislabeled (06-56 CODEOWNERS/SECURITY/goreleaser, 16-16, 18-12, 18-59, 20-40, 19-32, 07-00) |
+| 5  | **Archive manifests** written (per skill's bulk-archive rule): one-line-per-file classification + deciding reason for both archived dirs                                                                                                                                                        | `docs/status/archived/README.md`, `docs/planning/archived/README.md`                                                                                |
+| 6  | Supersession banners on the live 04:34→05:17 buildflow chain (pointing at the 06:00 close-out); 03-09 report annotated with THIS session's resolutions (proxy verified, harvest done, README pass done, gotchas consolidated, status sweep done)                                                | inline edits in the three 2026-10-07 reports                                                                                                        |
+| 7  | ADR addendum (non-destructive): go-error-family ADR's "NewWatcherError unused in production" is now false — self-heal uses it; verdict unaffected                                                                                                                                               | `docs/adr/2026-05-31_go-error-family-adoption.md` inline UPDATE + struck bullet                                                                     |
+| 8  | **TODO_LIST rebuilt** — 29 curated open items + 9 open questions, every item with `src:` provenance; struck-through "Resolved (2026-07-29)" section removed (belongs in CHANGELOG)                                                                                                              | TODO_LIST.md; snapshot updated to 29                                                                                                                |
+| 9  | **HARVEST verified against code, not reports**: proxy serves v2.4.1 (live fetch); `.goreleaser.yml` still EXISTS (agent claimed deleted — wrong); `AddRecursive` SHIPPED (agent claimed open — wrong); exemption list is 15 symbols (not 14/36); 30 godoc examples (not 26)                     | go.mod, `ls .goreleaser.yml`, watcher.go:487, docs-consistency.yml, proxy @v/list, example_test.go                                                  |
+| 10 | **README fact-fixed**: Go 1.26.4→1.26.7; gogenfilter v3.2.0→v3.6.1; missing `x/text/unicode/norm` dependency row added; "minimal deps" line corrected; sqlc v3.6 weak-filename note added                                                                                                       | README.md (4 edits)                                                                                                                                 |
+| 11 | **FEATURES refreshed**: header → v2.4.1 / 2026-10-07; gogenfilter row → v3.6.1 + sqlc semantics; examples 26→30                                                                                                                                                                                 | FEATURES.md (3 edits)                                                                                                                               |
+| 12 | **ROADMAP refreshed**: date; exemption 36→15; versioning section now covers v2.4.0/v2.4.1; 8 new v3-candidate ideas (poll dedup/rename detection, DropCallback, maxWatches split, Stats split, channelSender, runtime deprecation warning, sqlc output-dir config, ecosystem go-daemon pairing) | ROADMAP.md                                                                                                                                          |
+| 13 | **AGENTS.md "Release / CI Gotchas" consolidated** (03-09 §f20): six accreting subsections → one table + single dense go.mod subsection + BuildFlow shared-machine lessons (binary-drift→doctor; high-load spawn-kill false failures; slug-verify lesson added)                                  | AGENTS.md ~551+                                                                                                                                     |
+| 14 | **Quality gate green**: `nix run .#check` (vet + lint 0 issues + race tests) in background early; `go build ./... && go vet ./...` re-verified after all edits                                                                                                                                  | background shell 008; final run output "GO GREEN"                                                                                                   |
+| 15 | Cross-file consistency checks: all internal links resolve; no living doc references moved status files; TODO↔ROADMAP benchmark overlap is a deliberate pointer (decision lives in TODO_LIST open Q2)                                                                                            | link existence loop; grep sweeps                                                                                                                    |
 
 ## b) PARTIALLY DONE
 
-| Item | Done | Missing |
-| --- | --- | --- |
-| `2026-10-07_03-10_pr-review-ci-recovery-v2.4.1-release.md` | file located in inventory | **NEVER READ** — I read 6 of today's 7 reports and missed this one entirely until writing this report |
-| Annotation completeness on deep-history files | every archived file carries ≥1 strikethrough (gate passes) | ~15–20 micro-items retain generic defaults or older-format markers where per-item evidence wasn't determinable (e.g. 2026-07-27_00-59: 0/5 prefix fixes landed on phrasing mismatch) |
-| `check-rows.py` uniformity gate | completeness gate (`~~` presence) run | the skill's ROW-level uniformity check was NOT run over every annotated file before declaring done — skill mandate, skipped under time pressure |
-| AGENTS.md size | consolidated (stopped accreting; section table) | still ~29 KB vs 15 KB target; full split (≤220 lines) is TODO_LIST item, not done |
-| pkg.go.dev verification | proxy serves v2.4.0+v2.4.1 (verified live) | the pkg.go.dev crawl itself not re-checked |
-| README benchmark table | flagged as unverified | stale pre-v2.4.x numbers left in place (needs quiet-machine bench re-capture, already TODO) |
-| Nix verification depth | `nix run .#check` green | full `nix flake check` + second vendorHash leg (flake.nix:111) not re-run this session |
-| Harvest ledger | `src:` citations embedded in TODO_LIST; dispositions decided | the skill's formal ledger table (new-row/existing-row/declined+reason) is only now being written — into this report, retroactively |
-| Git attribution | all work committed | the daemon absorbed the sweep into 6 `chore: auto-commit` messages (178 files in one) — the conventional-commit history for this pass does not exist; 2 files (AGENTS/ROADMAP) still uncommitted at report time; master 9 ahead, unpushed (user-gated) |
+| Item                                                       | Done                                                         | Missing                                                                                                                                                                                                                                                |
+| ---------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `2026-10-07_03-10_pr-review-ci-recovery-v2.4.1-release.md` | file located in inventory                                    | **NEVER READ** — I read 6 of today's 7 reports and missed this one entirely until writing this report                                                                                                                                                  |
+| Annotation completeness on deep-history files              | every archived file carries ≥1 strikethrough (gate passes)   | ~15–20 micro-items retain generic defaults or older-format markers where per-item evidence wasn't determinable (e.g. 2026-07-27_00-59: 0/5 prefix fixes landed on phrasing mismatch)                                                                   |
+| `check-rows.py` uniformity gate                            | completeness gate (`~~` presence) run                        | the skill's ROW-level uniformity check was NOT run over every annotated file before declaring done — skill mandate, skipped under time pressure                                                                                                        |
+| AGENTS.md size                                             | consolidated (stopped accreting; section table)              | still ~29 KB vs 15 KB target; full split (≤220 lines) is TODO_LIST item, not done                                                                                                                                                                      |
+| pkg.go.dev verification                                    | proxy serves v2.4.0+v2.4.1 (verified live)                   | the pkg.go.dev crawl itself not re-checked                                                                                                                                                                                                             |
+| README benchmark table                                     | flagged as unverified                                        | stale pre-v2.4.x numbers left in place (needs quiet-machine bench re-capture, already TODO)                                                                                                                                                            |
+| Nix verification depth                                     | `nix run .#check` green                                      | full `nix flake check` + second vendorHash leg (flake.nix:111) not re-run this session                                                                                                                                                                 |
+| Harvest ledger                                             | `src:` citations embedded in TODO_LIST; dispositions decided | the skill's formal ledger table (new-row/existing-row/declined+reason) is only now being written — into this report, retroactively                                                                                                                     |
+| Git attribution                                            | all work committed                                           | the daemon absorbed the sweep into 6 `chore: auto-commit` messages (178 files in one) — the conventional-commit history for this pass does not exist; 2 files (AGENTS/ROADMAP) still uncommitted at report time; master 9 ahead, unpushed (user-gated) |
 
 ## c) NOT STARTED
 
@@ -76,58 +76,58 @@
 
 ## f) UP TO 50 THINGS TO GET DONE NEXT (prioritized; first ~12 are this sweep's own tail)
 
-| #  | Task | Note |
-| -- | ---- | ---- |
-| 1  | Read + annotate `2026-10-07_03-10_pr-review-ci-recovery-v2.4.1-release.md` | my missed file |
-| 2  | Run `check-rows.py` over all archived files; fix PARTIAL table rows | skill-mandated gate I skipped |
-| 3  | Commit AGENTS/ROADMAP leftovers + push master after `git fetch` (9 ahead) | user-gated push |
-| 4  | Verify CI green on GitHub post-push | local green ≠ CI green |
-| 5  | **Ubuntu 26 runner migration audit — deadline 2026-10-12** | warnings in every run log |
-| 6  | CI guard: fail if `go.mod` go-directive ≠ 1.26.7 / > matrix | three incidents; structural fix |
-| 7  | Full `nix flake check` + verify second vendorHash (flake.nix:111) | B6 residue |
-| 8  | Content-verify DOMAIN_LANGUAGE.md, API_STABILITY.md, Troubleshooting.md, MIGRATION.md | VERIFY residue |
-| 9  | AGENTS.md split to ≤220 lines (move tables to docs/, pointers remain) | carrying capacity |
-| 10 | Website CI build job (`pnpm install && pnpm build` + html-validate) | caught twice at deploy time |
-| 11 | Website link checker in build | migration-guide 404 class |
-| 12 | Status-dir index/README (active reports + archived pointer) | drift-alarm status leg |
-| 13 | Windows CI matrix | TODO_LIST |
-| 14 | macOS CI matrix (real APFS/NFD behavior) | TODO_LIST |
-| 15 | Expand fuzz tests (combinators, Event JSON, gitignore, case-insensitive filter/middleware) | TODO_LIST |
-| 16 | Large-tree stress harness (100k dirs) | TODO_LIST |
-| 17 | Test: `WithContentHashing()` + `WithContentHashMaxSize(0)` interaction | session3 F8 |
-| 18 | Test: `WatchBudgetCap == WatchLimit` at fraction 1.0 | session3 F9 |
-| 19 | Test: `ErrorContext.Event` population | 02-24 §f13 |
-| 20 | Go 1.27 in CI matrix (with floor guard) | fleet decision pair |
-| 21 | Required status checks on master + release PRs | 02-24 §f10 |
-| 22 | `release.yml` `workflow_dispatch` trigger | dead code for token tags |
-| 23 | BuildFlow binary upgrade + skip-list re-verify | 202b114 is stale |
-| 24 | Root-cause the vanished type-check findings (B1) | unexplained green |
-| 25 | Review the 7 `minimumReleaseAgeExclude` entries once aged | supply chain |
-| 26 | Review/merge dependabot #31, #32; close #14 | 02-24 §f15 |
-| 27 | Fix website dependabot alerts (fast-uri high, astro medium) | TODO_LIST |
-| 28 | pkg.go.dev crawl check v2.4.0/v2.4.1 | proxy already verified |
-| 29 | Document `FilterGeneratedCodeFull`/`WithFilter` in FEATURES → exemption zero | TODO_LIST |
-| 30 | Website deploy runbook + slug-verify step (AGENTS.md or RELEASE.md) | 03-09 §f5/#30 |
-| 31 | `pnpm dedupe` + postcss override docs + conditional drop + redeploy + sharp spot-check | 06-00 website cluster |
-| 32 | OG image render check; editLink/lastUpdated; gitignore changelog.mdx | 03-09 small items |
-| 33 | CodeRabbit "bot user not eligible" config check | 03-09 §f29 |
-| 34 | Benchmark baseline re-capture (quiet machine) + refresh README table | README finding |
-| 35 | Run gitleaks + codespell once | 06-00 §f32 |
-| 36 | Review prettier's 3 daemon-fixed files | unreviewed auto-edits |
-| 37 | Clean /tmp evidence logs after CI green | hygiene |
-| 38 | CHANGELOG v2.4.0 cosmetic blank-line fix | Low finding |
-| 39 | gogenfilter sqlc output-dir config exposure (design first) | 02-24 §f17 |
-| 40 | gogenfilter v3.6 semantics → website API reference | 03-09 §f19 |
-| 41 | crush-config: commit `lessons.md` (instrument writers before racing them) | cross-project, 05-17 §f10 |
-| 42 | crush-config: fix buildflow skill DB path (`buildflow.db`→`cache.db`) | 06-00 §f9 |
-| 43 | v3 grooming: phantom `PathKey`, `CaseSensitivityProbed`, filesystem micro-polish bundle | TODO_LIST v3 |
-| 44 | Ecosystem: go-daemon README mirror + `watcher-daemon` example host decision | user-gated (open Q7) |
-| 45 | Daemon governance: exclusions for `.github/`, `go.mod`, `release-please*.json` | recurring ask (02-24 g2, 03-09 g3) |
-| 46 | Decide goreleaser wire-or-delete (open Q1) — config still present | verified this session |
-| 47 | Decide benchmark-baseline committed-vs-gitignored (open Q2) | blocks bench-freshness CI |
-| 48 | WatchChanges design answers (open Q3) → then implement | research contract ready |
-| 49 | Decide `watchBackend` export (open Q4) | v3 commitment |
-| 50 | Retro: add "verify exact line text before verdict specs" + "agents must cite grep evidence for absence-claims" to crush-config lessons | this session's meta-lessons |
+| #  | Task                                                                                                                                   | Note                               |
+| -- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| 1  | Read + annotate `2026-10-07_03-10_pr-review-ci-recovery-v2.4.1-release.md`                                                             | my missed file                     |
+| 2  | Run `check-rows.py` over all archived files; fix PARTIAL table rows                                                                    | skill-mandated gate I skipped      |
+| 3  | Commit AGENTS/ROADMAP leftovers + push master after `git fetch` (9 ahead)                                                              | user-gated push                    |
+| 4  | Verify CI green on GitHub post-push                                                                                                    | local green ≠ CI green             |
+| 5  | **Ubuntu 26 runner migration audit — deadline 2026-10-12**                                                                             | warnings in every run log          |
+| 6  | CI guard: fail if `go.mod` go-directive ≠ 1.26.7 / > matrix                                                                            | three incidents; structural fix    |
+| 7  | Full `nix flake check` + verify second vendorHash (flake.nix:111)                                                                      | B6 residue                         |
+| 8  | Content-verify DOMAIN_LANGUAGE.md, API_STABILITY.md, Troubleshooting.md, MIGRATION.md                                                  | VERIFY residue                     |
+| 9  | AGENTS.md split to ≤220 lines (move tables to docs/, pointers remain)                                                                  | carrying capacity                  |
+| 10 | Website CI build job (`pnpm install && pnpm build` + html-validate)                                                                    | caught twice at deploy time        |
+| 11 | Website link checker in build                                                                                                          | migration-guide 404 class          |
+| 12 | Status-dir index/README (active reports + archived pointer)                                                                            | drift-alarm status leg             |
+| 13 | Windows CI matrix                                                                                                                      | TODO_LIST                          |
+| 14 | macOS CI matrix (real APFS/NFD behavior)                                                                                               | TODO_LIST                          |
+| 15 | Expand fuzz tests (combinators, Event JSON, gitignore, case-insensitive filter/middleware)                                             | TODO_LIST                          |
+| 16 | Large-tree stress harness (100k dirs)                                                                                                  | TODO_LIST                          |
+| 17 | Test: `WithContentHashing()` + `WithContentHashMaxSize(0)` interaction                                                                 | session3 F8                        |
+| 18 | Test: `WatchBudgetCap == WatchLimit` at fraction 1.0                                                                                   | session3 F9                        |
+| 19 | Test: `ErrorContext.Event` population                                                                                                  | 02-24 §f13                         |
+| 20 | Go 1.27 in CI matrix (with floor guard)                                                                                                | fleet decision pair                |
+| 21 | Required status checks on master + release PRs                                                                                         | 02-24 §f10                         |
+| 22 | `release.yml` `workflow_dispatch` trigger                                                                                              | dead code for token tags           |
+| 23 | BuildFlow binary upgrade + skip-list re-verify                                                                                         | 202b114 is stale                   |
+| 24 | Root-cause the vanished type-check findings (B1)                                                                                       | unexplained green                  |
+| 25 | Review the 7 `minimumReleaseAgeExclude` entries once aged                                                                              | supply chain                       |
+| 26 | Review/merge dependabot #31, #32; close #14                                                                                            | 02-24 §f15                         |
+| 27 | Fix website dependabot alerts (fast-uri high, astro medium)                                                                            | TODO_LIST                          |
+| 28 | pkg.go.dev crawl check v2.4.0/v2.4.1                                                                                                   | proxy already verified             |
+| 29 | Document `FilterGeneratedCodeFull`/`WithFilter` in FEATURES → exemption zero                                                           | TODO_LIST                          |
+| 30 | Website deploy runbook + slug-verify step (AGENTS.md or RELEASE.md)                                                                    | 03-09 §f5/#30                      |
+| 31 | `pnpm dedupe` + postcss override docs + conditional drop + redeploy + sharp spot-check                                                 | 06-00 website cluster              |
+| 32 | OG image render check; editLink/lastUpdated; gitignore changelog.mdx                                                                   | 03-09 small items                  |
+| 33 | CodeRabbit "bot user not eligible" config check                                                                                        | 03-09 §f29                         |
+| 34 | Benchmark baseline re-capture (quiet machine) + refresh README table                                                                   | README finding                     |
+| 35 | Run gitleaks + codespell once                                                                                                          | 06-00 §f32                         |
+| 36 | Review prettier's 3 daemon-fixed files                                                                                                 | unreviewed auto-edits              |
+| 37 | Clean /tmp evidence logs after CI green                                                                                                | hygiene                            |
+| 38 | CHANGELOG v2.4.0 cosmetic blank-line fix                                                                                               | Low finding                        |
+| 39 | gogenfilter sqlc output-dir config exposure (design first)                                                                             | 02-24 §f17                         |
+| 40 | gogenfilter v3.6 semantics → website API reference                                                                                     | 03-09 §f19                         |
+| 41 | crush-config: commit `lessons.md` (instrument writers before racing them)                                                              | cross-project, 05-17 §f10          |
+| 42 | crush-config: fix buildflow skill DB path (`buildflow.db`→`cache.db`)                                                                  | 06-00 §f9                          |
+| 43 | v3 grooming: phantom `PathKey`, `CaseSensitivityProbed`, filesystem micro-polish bundle                                                | TODO_LIST v3                       |
+| 44 | Ecosystem: go-daemon README mirror + `watcher-daemon` example host decision                                                            | user-gated (open Q7)               |
+| 45 | Daemon governance: exclusions for `.github/`, `go.mod`, `release-please*.json`                                                         | recurring ask (02-24 g2, 03-09 g3) |
+| 46 | Decide goreleaser wire-or-delete (open Q1) — config still present                                                                      | verified this session              |
+| 47 | Decide benchmark-baseline committed-vs-gitignored (open Q2)                                                                            | blocks bench-freshness CI          |
+| 48 | WatchChanges design answers (open Q3) → then implement                                                                                 | research contract ready            |
+| 49 | Decide `watchBackend` export (open Q4)                                                                                                 | v3 commitment                      |
+| 50 | Retro: add "verify exact line text before verdict specs" + "agents must cite grep evidence for absence-claims" to crush-config lessons | this session's meta-lessons        |
 
 ## g) QUESTIONS I CANNOT ANSWER MYSELF
 

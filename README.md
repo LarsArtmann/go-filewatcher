@@ -461,13 +461,13 @@ Run benchmarks: `nix run .#bench` or `go test -bench=. -benchmem`
 
 ## Dependencies
 
-| Dependency                                                                 | Purpose                                              |
-| -------------------------------------------------------------------------- | ---------------------------------------------------- |
-| [`fsnotify/fsnotify`](https://github.com/fsnotify/fsnotify)                | Core file watching (v1.10.1)                         |
-| [`LarsArtmann/gogenfilter/v3`](https://github.com/LarsArtmann/gogenfilter) | Generated code detection (v3.6.1)                    |
-| [`sabhiram/go-gitignore`](https://github.com/sabhiram/go-gitignore)        | `.gitignore` pattern matching (zero transitive deps) |
-| [`golang.org/x/text/unicode/norm`](https://pkg.go.dev/golang.org/x/text/unicode/norm) | NFC Unicode normalization in path keys    |
-| [`golang.org/x/time/rate`](https://pkg.go.dev/golang.org/x/time/rate)      | Token-bucket rate limiting for `MiddlewareThrottle`  |
+| Dependency                                                                            | Purpose                                              |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| [`fsnotify/fsnotify`](https://github.com/fsnotify/fsnotify)                           | Core file watching (v1.10.1)                         |
+| [`LarsArtmann/gogenfilter/v3`](https://github.com/LarsArtmann/gogenfilter)            | Generated code detection (v3.6.1)                    |
+| [`sabhiram/go-gitignore`](https://github.com/sabhiram/go-gitignore)                   | `.gitignore` pattern matching (zero transitive deps) |
+| [`golang.org/x/text/unicode/norm`](https://pkg.go.dev/golang.org/x/text/unicode/norm) | NFC Unicode normalization in path keys               |
+| [`golang.org/x/time/rate`](https://pkg.go.dev/golang.org/x/time/rate)                 | Token-bucket rate limiting for `MiddlewareThrottle`  |
 
 ## Design Decisions
 

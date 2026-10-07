@@ -142,50 +142,50 @@
 
 ### HIGH Priority
 
-| # | Task                                          | Est. Effort |
-| - | --------------------------------------------- | ----------- |
-~~| 1 | Tag v0.1.0 release (DONE — already tagged)    | -           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2 | Tag v2.0.0 release                            | 30min       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3 | CLI tool (standalone binary for non-Go users) | 6-8h        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4 | Troubleshooting.md                            | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5 | GoReleaser configuration                      | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 6 | Dependabot / Renovate configuration           | 30min       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 7 | CONTRIBUTING.md + CODEOWNERS                  | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 8 | PR template                                   | 30min       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 9 | CODE_OF_CONDUCT.md                            | 15min       |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Est. Effort                                   |
+| -- | ---- | --------------------------------------------- |
+| ~~ | 1    | Tag v0.1.0 release (DONE — already tagged)    |
+| ~~ | 2    | Tag v2.0.0 release                            |
+| ~~ | 3    | CLI tool (standalone binary for non-Go users) |
+| ~~ | 4    | Troubleshooting.md                            |
+| ~~ | 5    | GoReleaser configuration                      |
+| ~~ | 6    | Dependabot / Renovate configuration           |
+| ~~ | 7    | CONTRIBUTING.md + CODEOWNERS                  |
+| ~~ | 8    | PR template                                   |
+| ~~ | 9    | CODE_OF_CONDUCT.md                            |
 
 ### MEDIUM Priority
 
-| #  | Task                                       | Est. Effort |
-| -- | ------------------------------------------ | ----------- |
-~~| 10 | `Watcher.WatchOnce()` one-shot mode        | 3h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 11 | Polling fallback for NFS/network mounts    | 8h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 12 | Symlink following support                  | 4h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 13 | `Event.ModTime()` field                    | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 14 | `Event.Size` field                         | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 15 | File content hashing option                | 4h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 16 | Prometheus metrics export                  | 3h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 17 | OpenTelemetry integration                  | 6h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 18 | Debug mode with verbose structured logging | 3h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 19 | Stack traces in WatcherError               | 1h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 20 | Error codes for programmatic handling      | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 21 | `MiddlewareThrottle`                       | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 22 | Circuit breaker middleware                 | 4h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 23 | Error rate limiting middleware             | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 24 | Context propagation through pipeline       | 3h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 25 | Benchmark regression CI                    | 2h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 26 | Integration tests for recursive watching   | 3h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 27 | Fuzz testing                               | 4h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 28 | Windows-specific edge case tests           | 4h          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Est. Effort                                |
+| -- | ---- | ------------------------------------------ |
+| ~~ | 10   | `Watcher.WatchOnce()` one-shot mode        |
+| ~~ | 11   | Polling fallback for NFS/network mounts    |
+| ~~ | 12   | Symlink following support                  |
+| ~~ | 13   | `Event.ModTime()` field                    |
+| ~~ | 14   | `Event.Size` field                         |
+| ~~ | 15   | File content hashing option                |
+| ~~ | 16   | Prometheus metrics export                  |
+| ~~ | 17   | OpenTelemetry integration                  |
+| ~~ | 18   | Debug mode with verbose structured logging |
+| ~~ | 19   | Stack traces in WatcherError               |
+| ~~ | 20   | Error codes for programmatic handling      |
+| ~~ | 21   | `MiddlewareThrottle`                       |
+| ~~ | 22   | Circuit breaker middleware                 |
+| ~~ | 23   | Error rate limiting middleware             |
+| ~~ | 24   | Context propagation through pipeline       |
+| ~~ | 25   | Benchmark regression CI                    |
+| ~~ | 26   | Integration tests for recursive watching   |
+| ~~ | 27   | Fuzz testing                               |
+| ~~ | 28   | Windows-specific edge case tests           |
 
 ### Integration Backlog
 
-| #  | Target Project         |
-| -- | ---------------------- |
-~~| 29 | file-and-image-renamer |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 30 | dynamic-markdown-site  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 31 | auto-deduplicate       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 32 | Cyberdom               |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Target Project |
+| -- | -------------- |
+| ~~ | 29             |
+| ~~ | 30             |
+| ~~ | 31             |
+| ~~ | 32             |
 
 ---
 
@@ -198,10 +198,11 @@
 ~~1. **`golangci-lint run --fix` breaks nolint directives.** When `--fix` reformats code (splitting long lines), it moves `//nolint` comments to different lines than where linters report issues. This caused cascading failures. **Fix:** Run `--fix` first, then manually place nolint directives on the correct lines.~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ~~2. **nolint placement must match linter reporting line.** Each linter reports on a specific line:~~ done — shipped ≤v2.2.0, verified v2.4.1
-   - `funlen` → `func` line, not closing `) {`
-   - `unparam` → parameter line, not func signature
-   - `exhaustruct` → opening `{` of struct literal
-   - `gochecknoglobals` → assignment line, not `var (` opener
+
+- `funlen` → `func` line, not closing `) {`
+- `unparam` → parameter line, not func signature
+- `exhaustruct` → opening `{` of struct literal
+- `gochecknoglobals` → assignment line, not `var (` opener
 
 ~~3. **watcher_walk_test.go compile errors.** Used `os.Stat()` (returns `fs.FileInfo`) where `walkDirFunc` expects `os.DirEntry`. **Fix:** Use `os.ReadDir()` which returns `[]os.DirEntry`.~~ done — shipped ≤v2.2.0, verified v2.4.1
 
@@ -279,33 +280,33 @@ Testing is macOS-only. No CI matrix for:
 
 ## f) TOP #25 Things to Get Done Next! 🎯
 
-| Rank | Task                                        | Impact | Effort | Category       |
-| ---- | ------------------------------------------- | ------ | ------ | -------------- |
-~~| 1    | **Close coverage gaps to ≥95%**             | High   | 4h     | Quality        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2    | **Tag v1.0.0 with stability guarantee**     | High   | 1h     | Release        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3    | **GoReleaser + binary releases**            | High   | 2h     | Infrastructure |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4    | **CLI tool MVP** (watch + filter + output)  | High   | 6h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5    | **Troubleshooting.md**                      | Medium | 2h     | Documentation  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 6    | **Linux CI matrix** (GitHub Actions)        | High   | 1h     | Infrastructure |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 7    | **Archive old status reports**              | Low    | 30min  | Cleanup        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 8    | **CONTRIBUTING.md + PR templates**          | Medium | 2h     | Community      |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 9    | **Dependabot / Renovate**                   | Low    | 30min  | Infrastructure |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 10   | **`Event.Size` + `Event.ModTime()` fields** | Medium | 2h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 11   | **Error codes** for programmatic handling   | Medium | 2h     | API            |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 12   | **`MiddlewareThrottle`** token-bucket       | Medium | 2h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 13   | **`Watcher.WatchOnce()`** one-shot mode     | Medium | 3h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 14   | **Prometheus metrics export**               | Medium | 3h     | Observability  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 15   | **Polling fallback** for NFS mounts         | High   | 8h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 16   | **Symlink following** support               | Medium | 4h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 17   | **Benchmark regression CI**                 | Medium | 2h     | Infrastructure |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 18   | **File content hashing** option             | Medium | 4h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 19   | **Circuit breaker middleware**              | Medium | 4h     | Feature        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 20   | **OpenTelemetry integration**               | Medium | 6h     | Observability  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 21   | **Self-healing watcher** (auto-restart)     | High   | 8h     | Reliability    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 22   | **Fuzz testing** setup                      | Medium | 4h     | Quality        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 23   | **Context propagation** through pipeline    | Medium | 3h     | API            |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 24   | **Integrate into file-and-image-renamer**   | High   | 4h     | Validation     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 25   | **testutil package** extraction             | Low    | 3h     | Cleanup        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| Rank | Task | Impact                                      | Effort | Category |
+| ---- | ---- | ------------------------------------------- | ------ | -------- |
+| ~~   | 1    | **Close coverage gaps to ≥95%**             | High   | 4h       |
+| ~~   | 2    | **Tag v1.0.0 with stability guarantee**     | High   | 1h       |
+| ~~   | 3    | **GoReleaser + binary releases**            | High   | 2h       |
+| ~~   | 4    | **CLI tool MVP** (watch + filter + output)  | High   | 6h       |
+| ~~   | 5    | **Troubleshooting.md**                      | Medium | 2h       |
+| ~~   | 6    | **Linux CI matrix** (GitHub Actions)        | High   | 1h       |
+| ~~   | 7    | **Archive old status reports**              | Low    | 30min    |
+| ~~   | 8    | **CONTRIBUTING.md + PR templates**          | Medium | 2h       |
+| ~~   | 9    | **Dependabot / Renovate**                   | Low    | 30min    |
+| ~~   | 10   | **`Event.Size` + `Event.ModTime()` fields** | Medium | 2h       |
+| ~~   | 11   | **Error codes** for programmatic handling   | Medium | 2h       |
+| ~~   | 12   | **`MiddlewareThrottle`** token-bucket       | Medium | 2h       |
+| ~~   | 13   | **`Watcher.WatchOnce()`** one-shot mode     | Medium | 3h       |
+| ~~   | 14   | **Prometheus metrics export**               | Medium | 3h       |
+| ~~   | 15   | **Polling fallback** for NFS mounts         | High   | 8h       |
+| ~~   | 16   | **Symlink following** support               | Medium | 4h       |
+| ~~   | 17   | **Benchmark regression CI**                 | Medium | 2h       |
+| ~~   | 18   | **File content hashing** option             | Medium | 4h       |
+| ~~   | 19   | **Circuit breaker middleware**              | Medium | 4h       |
+| ~~   | 20   | **OpenTelemetry integration**               | Medium | 6h       |
+| ~~   | 21   | **Self-healing watcher** (auto-restart)     | High   | 8h       |
+| ~~   | 22   | **Fuzz testing** setup                      | Medium | 4h       |
+| ~~   | 23   | **Context propagation** through pipeline    | Medium | 3h       |
+| ~~   | 24   | **Integrate into file-and-image-renamer**   | High   | 4h       |
+| ~~   | 25   | **testutil package** extraction             | Low    | 3h       |
 
 ---
 
@@ -331,11 +332,11 @@ The TODO_LIST has both "Tag v0.1.0" (done) and "Tag v2.0.0" (not done). But ther
 
 ## Session History
 
-| Session | Date             | Focus                                                          | Outcome                    |
-| ------- | ---------------- | -------------------------------------------------------------- | -------------------------- |
-~~| 1       | 2026-04-23 early | DebouncerInterface cleanup, flaky tests, watcher_walk coverage | 3 commits, coverage 84→85% |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2       | 2026-04-23 mid   | Filter/middleware/options/phantom test coverage                | 7 commits, coverage 85→92% |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3       | 2026-04-23 late  | Fix ALL lint issues to zero (17 files, 87 linters)             | 4 commits, 0 lint issues   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| Session | Date | Focus            | Outcome                                                        |
+| ------- | ---- | ---------------- | -------------------------------------------------------------- |
+| ~~      | 1    | 2026-04-23 early | DebouncerInterface cleanup, flaky tests, watcher_walk coverage |
+| ~~      | 2    | 2026-04-23 mid   | Filter/middleware/options/phantom test coverage                |
+| ~~      | 3    | 2026-04-23 late  | Fix ALL lint issues to zero (17 files, 87 linters)             |
 
 ---
 

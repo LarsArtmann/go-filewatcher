@@ -185,9 +185,10 @@ Tasks fully implemented, tested, linted, and verified:
 ~~2. **WithDebug** — Same situation. `debug` and `debugLogger` fields exist on Watcher but **no debug logging calls** were added to `watcher_internal.go` or elsewhere. The option is accepted but has zero effect.~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ~~3. **Three falsely-marked-done items were in TODO_LIST.md** from before this session:~~ done — shipped ≤v2.2.0, verified v2.4.1
-   - `#1` coverage $TMPDIR — was marked done but still used `/tmp/`
-   - `#13` -race in bench — was marked done but confused `-benchmem` with `-race`
-   - `#14` benchmark regression — was marked done but had no baselines
+
+- `#1` coverage $TMPDIR — was marked done but still used `/tmp/`
+- `#13` -race in bench — was marked done but confused `-benchmem` with `-race`
+- `#14` benchmark regression — was marked done but had no baselines
 
 ---
 
@@ -222,33 +223,33 @@ Tasks fully implemented, tested, linted, and verified:
 
 ## F) TOP 25 THINGS TO DO NEXT
 
-| Priority | #  | Task                                                                    | Effort | Impact |
-| -------- | -- | ----------------------------------------------------------------------- | ------ | ------ |
-~~| 1        | —  | **Implement polling goroutine** (wire WithPolling to actual fs polling) | 30min  | HIGH   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2        | —  | **Implement debug logging** (wire WithDebug to actual log calls)        | 15min  | HIGH   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3        | 42 | Implement exponential backoff for errors                                | 20min  | HIGH   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4        | 43 | Add symlink following support                                           | 30min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5        | 64 | Configure Goreleaser                                                    | 20min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 6        | 74 | Test examples/ in CI pipeline                                           | 15min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 7        | 73 | Add fuzz testing                                                        | 45min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 8        | 53 | Circuit breaker middleware                                              | 30min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 9        | 52 | Error rate limiting middleware                                          | 20min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 10       | 55 | Error recovery strategies                                               | 20min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 11       | 56 | Batch error handling                                                    | 15min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 12       | 57 | Error correlation IDs                                                   | 15min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 13       | 58 | Error sanitization                                                      | 15min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 14       | 45 | Filter func return match metadata                                       | 20min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 15       | 47 | Watcher.AddRecursive for partial recursion                              | 20min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 16       | 62 | OpenTelemetry integration                                               | 45min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 17       | 49 | Prometheus metrics export                                               | 30min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 18       | 65 | Configure semantic-release                                              | 20min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 19       | 66 | Create standalone CLI tool                                              | 60min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 20       | 72 | Windows-specific edge case tests                                        | 30min  | LOW    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 21       | 61 | Self-healing watcher                                                    | 45min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 22       | 60 | Dead letter queue                                                       | 30min  | MEDIUM |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 23       | 71 | Extract drainEvents to testutil package                                 | 20min  | LOW    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 24       | 78 | Migrate CI to Nix (Phase 3)                                             | 60min  | HIGH   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 25       | —  | Update AGENTS.md with new features                                      | 10min  | HIGH   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| Priority | #  | Task | Effort                                                                  | Impact |
+| -------- | -- | ---- | ----------------------------------------------------------------------- | ------ |
+| ~~       | 1  | —    | **Implement polling goroutine** (wire WithPolling to actual fs polling) | 30min  |
+| ~~       | 2  | —    | **Implement debug logging** (wire WithDebug to actual log calls)        | 15min  |
+| ~~       | 3  | 42   | Implement exponential backoff for errors                                | 20min  |
+| ~~       | 4  | 43   | Add symlink following support                                           | 30min  |
+| ~~       | 5  | 64   | Configure Goreleaser                                                    | 20min  |
+| ~~       | 6  | 74   | Test examples/ in CI pipeline                                           | 15min  |
+| ~~       | 7  | 73   | Add fuzz testing                                                        | 45min  |
+| ~~       | 8  | 53   | Circuit breaker middleware                                              | 30min  |
+| ~~       | 9  | 52   | Error rate limiting middleware                                          | 20min  |
+| ~~       | 10 | 55   | Error recovery strategies                                               | 20min  |
+| ~~       | 11 | 56   | Batch error handling                                                    | 15min  |
+| ~~       | 12 | 57   | Error correlation IDs                                                   | 15min  |
+| ~~       | 13 | 58   | Error sanitization                                                      | 15min  |
+| ~~       | 14 | 45   | Filter func return match metadata                                       | 20min  |
+| ~~       | 15 | 47   | Watcher.AddRecursive for partial recursion                              | 20min  |
+| ~~       | 16 | 62   | OpenTelemetry integration                                               | 45min  |
+| ~~       | 17 | 49   | Prometheus metrics export                                               | 30min  |
+| ~~       | 18 | 65   | Configure semantic-release                                              | 20min  |
+| ~~       | 19 | 66   | Create standalone CLI tool                                              | 60min  |
+| ~~       | 20 | 72   | Windows-specific edge case tests                                        | 30min  |
+| ~~       | 21 | 61   | Self-healing watcher                                                    | 45min  |
+| ~~       | 22 | 60   | Dead letter queue                                                       | 30min  |
+| ~~       | 23 | 71   | Extract drainEvents to testutil package                                 | 20min  |
+| ~~       | 24 | 78   | Migrate CI to Nix (Phase 3)                                             | 60min  |
+| ~~       | 25 | —    | Update AGENTS.md with new features                                      | 10min  |
 
 ---
 

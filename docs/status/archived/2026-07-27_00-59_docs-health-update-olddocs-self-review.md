@@ -229,31 +229,31 @@ them. The correct behavior is to log the routing decision per item. I did not.
 ### On this codebase (fix the damage from this session)
 
 ~~1. **Fix the README Prometheus snippet NOW** — replace `ExemplarAdder` with a~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-   correct `prometheus.Collector` wrapper, or reduce to API-surface pseudo-code.
-   Do not leave known-panicking code in the onboarding doc.
+correct `prometheus.Collector` wrapper, or reduce to API-surface pseudo-code.
+Do not leave known-panicking code in the onboarding doc.
 ~~2. **Fix the README OTel snippet NOW** — verify `stdouttrace` vs `stdouttracer`~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-   and `attribute.KeyValue` vs `trace.Attribute` against the actual OTel SDK.
+and `attribute.KeyValue` vs `trace.Attribute` against the actual OTel SDK.
 ~~3. **Update `docs/DOMAIN_LANGUAGE.md`** — add the 5 missing terms. It's a living~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-   doc; fix it in place.
+doc; fix it in place.
 ~~4. **Update README "17+ filters" → "26 filters"** — I have the count; apply it.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 ~~5. **Run `nix run .#check` + `nix flake check`** — close the verification gap.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 
 ### On my process
 
 ~~6. **Never report a perfect score while holding evidence of imperfection.** If~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-   I documented a finding in TODO_LIST, it is a finding — it affects the score.
-   The score reflects the doc's **current** state, not the intended future state.
+I documented a finding in TODO_LIST, it is a finding — it affects the score.
+The score reflects the doc's **current** state, not the intended future state.
 ~~7. **Fix living docs in place during AUDIT.** Ticketing is for work that is~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-   blocked or needs a design decision. A stale glossary with 5 missing terms is
-   neither — it's a 10-minute edit.
+blocked or needs a design decision. A stale glossary with 5 missing terms is
+neither — it's a 10-minute edit.
 ~~8. **Run the canonical gate. Every time.** `nix run .#check` is the source of~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-   truth for a Nix-first project. `go vet` + `go test` is a shortcut, not a gate.
+truth for a Nix-first project. `go vet` + `go test` is a shortcut, not a gate.
 ~~9. **Log every HARVEST routing decision.** Even a one-line "dropped: already~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-   done in commit X" per item makes the harvest auditable.
+done in commit X" per item makes the harvest auditable.
 ~~10. **Inline-correct stale claims where the reader will see them first**, not~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    just at the bottom. The fresh-open test exists to catch exactly this.
+just at the bottom. The fresh-open test exists to catch exactly this.
 ~~11. **Verify behavior, not existence.** "The file exists" is not verification.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    Run the command, compile the snippet, execute the check.
+Run the command, compile the snippet, execute the check.
 
 ---
 
@@ -262,76 +262,76 @@ them. The correct behavior is to log the routing decision per item. I did not.
 ### P0 — Fix live damage from this session
 
 ~~1. **Replace the README Prometheus snippet** with a correct~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-   `prometheus.Collector` wrapper (Describe + Collect) or reduce to pseudo-code.
-   (`README.md:309`; currently uses fake `ExemplarAdder` type.)
+`prometheus.Collector` wrapper (Describe + Collect) or reduce to pseudo-code.
+(`README.md:309`; currently uses fake `ExemplarAdder` type.)
 ~~2. **Fix the README OTel snippet** — `stdouttracer`→`stdouttrace`,~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-   `trace.Attribute`→`attribute.KeyValue`. Verify against actual SDK.
-   (`README.md:354,380`.)
+`trace.Attribute`→`attribute.KeyValue`. Verify against actual SDK.
+(`README.md:354,380`.)
 ~~3. **Update `docs/DOMAIN_LANGUAGE.md`** — add `ContentHash`, `MatchResult`,~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-   `FilterWithMeta`, `ErrorCategory`, `CircuitBreaker` states
-   (`CircuitClosed`/`Open`/`HalfOpen`). Verify each against code.
+`FilterWithMeta`, `ErrorCategory`, `CircuitBreaker` states
+(`CircuitClosed`/`Open`/`HalfOpen`). Verify each against code.
 ~~4. **Update README "17+ composable filters" → "26 filters"** — the count is~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-   verified; apply it. Also check "18 middleware" (correct) and consider
-   stating the options count.
+verified; apply it. Also check "18 middleware" (correct) and consider
+stating the options count.
 ~~5. **Run `nix run .#check`** — the canonical gate. Also `nix flake check`.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 ~~6. **Add a visible warning to the README Prometheus/OTel snippets** if they~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-   cannot be fixed immediately — mark as pseudo-code so users don't copy blindly.
+cannot be fixed immediately — mark as pseudo-code so users don't copy blindly.
 
 ### P1 — Verify the unverified
 
 ~~7. **Run `nix run .#bench-diff`** — confirm the hermetic benchstat actually works.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 ~~8. **Run the `examples-build` nix check** — confirm it compiles `./examples/...`.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 ~~9. **Verify `bench-baseline.txt` is clean** (no slog noise) by inspecting the~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-   file head.
+file head.
 ~~10. **Run `nix run .#lint-tests`** — confirm the `--tests` flag works and test~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    files lint clean.
+files lint clean.
 ~~11. **Run `golangci-lint run ./...`** — the lint gate I skipped.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 ~~12. **Cross-check "18 middleware"** across README, FEATURES, and website — I~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    verified the source count (18) but did not check every consumer doc.
+verified the source count (18) but did not check every consumer doc.
 
 ### P2 — HARVEST audit trail (the ~190 dropped items)
 
 ~~13. **Log which §f items from the 7 reports were dropped as already-done** —~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    grep each against code, record "DONE: commit X" or "dropped: low-value."
+grep each against code, record "DONE: commit X" or "dropped: low-value."
 ~~14. **Route any genuinely-open items from the §f lists** that I missed —~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    e.g. `Stats().SelfHealAttempts` counter, `Stats().CircuitState` gauge,
-    `fakeBackend` delayed-error injection, `Reset()` with debounce test.
+e.g. `Stats().SelfHealAttempts` counter, `Stats().CircuitState` gauge,
+`fakeBackend` delayed-error injection, `Reset()` with debounce test.
 ~~15. **Check for items I may have wrongly dropped** — re-scan the 7 reports'~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    §f lists against the rebuilt TODO_LIST for false negatives.
+§f lists against the rebuilt TODO_LIST for false negatives.
 
 ### P3 — Documentation depth
 
 ~~16. **Shrink the 36-symbol docs-consistency exemption list** — document~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    `BatchError`, `CircuitState`, `ErrorCategory`, `ErrorHandler`,
-    `IsPermanentError`, `IsTransientError` in FEATURES.md.
+`BatchError`, `CircuitState`, `ErrorCategory`, `ErrorHandler`,
+`IsPermanentError`, `IsTransientError` in FEATURES.md.
 ~~17. **Add `ExampleMiddlewareThrottle` godoc example** alongside the deprecated~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    `ExampleMiddlewareRateLimit`.
+`ExampleMiddlewareRateLimit`.
 ~~18. **Document the `wrapHandlerWithNilReturn` architectural limitation** as an~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    ADR or doc comment (circuit breaker only works as innermost middleware).
+ADR or doc comment (circuit breaker only works as innermost middleware).
 ~~19. **Verify README benchmark numbers** ("Apple M2 / arm64") are still current.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 ~~20. **Add a "Testing Guide" doc** showing how to use `fakeBackend` for consumer~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    integration testing.
+integration testing.
 
 ### P4 — Release preparation
 
 ~~21. **Decide on v2.3.0 release** — 68 commits ahead of v2.2.1; release-please~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    is wired in and will generate the PR from conventional commits.
+is wired in and will generate the PR from conventional commits.
 ~~22. **Confirm the `.goreleaser.yml` disposition** — delete as dead config, or~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    wire in for cross-platform binaries. Blocks FEATURES "Cross-platform
-    releases" 🟡 status.
+wire in for cross-platform binaries. Blocks FEATURES "Cross-platform
+releases" 🟡 status.
 ~~23. **Run `-count=50 -race`** on the formerly-flaky tests for statistical~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    confidence before release.
+confidence before release.
 ~~24. **Verify SA1019 deprecation warnings emit** for consumers (`staticcheck`~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    explicit pass).
+explicit pass).
 
 ### P5 — Code quality (from report harvests)
 
 ~~25. **Add `Stats().SelfHealAttempts` counter** — no way to verify self-heal ran~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    N times currently.
+N times currently.
 ~~26. **Add `Stats().CircuitState` gauge** — no observability for circuit breaker~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    state.
+state.
 ~~27. **Add `fakeBackend` delayed-error injection** — for testing timeout/retry~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    windows.
+windows.
 ~~28. **Add `fakeBackend` event-sequence helper** — create→write→remove chains.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 ~~29. **Test `Reset()` with debounce** — verify debounce config survives reset.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 ~~30. **Test `Reset()` with gitignore cache** — verify re-initialization.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
@@ -364,7 +364,7 @@ them. The correct behavior is to log the routing decision per item. I did not.
 ~~48. **Add a `BENCHMARKS.md`** to track perf over time.~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 ~~49. **Consider exporting `watchBackend`** for consumer testing (v3 decision).~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
 ~~50. **Auto-generate FEATURES.md/README tables** from `go doc -all` to kill~~ done — resolved by the 2026-07-26/27 docs-health passes or shipped v2.3.0
-    manual sync permanently.
+manual sync permanently.
 
 ---
 

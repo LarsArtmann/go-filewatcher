@@ -139,42 +139,50 @@ The go-filewatcher library has reached a mature, production-ready state with **8
 ### High-Impact Items
 
 ~~1. **Prometheus Metrics Export**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Why: Stats struct is perfect for metrics
-   - Effort: Medium
-   - Blockers: None
+
+- Why: Stats struct is perfect for metrics
+- Effort: Medium
+- Blockers: None
 
 ~~2. **OpenTelemetry Integration**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Why: Distributed tracing for file operations
-   - Effort: High
-   - Blockers: None
+
+- Why: Distributed tracing for file operations
+- Effort: High
+- Blockers: None
 
 ~~3. **WatchOnce() Mode**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Why: One-shot file watching use cases
-   - Effort: Medium
-   - Blockers: None
+
+- Why: One-shot file watching use cases
+- Effort: Medium
+- Blockers: None
 
 ~~4. **Release Tags**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - v0.1.0 and v2.0.0 tags
-   - Effort: Low
-   - Blockers: Decision on versioning strategy
+
+- v0.1.0 and v2.0.0 tags
+- Effort: Low
+- Blockers: Decision on versioning strategy
 
 ### Medium-Impact Items
 
 ~~5. **Polling Fallback for NFS**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - `WithPolling(fallback bool)` option
-   - Effort: Medium
+
+- `WithPolling(fallback bool)` option
+- Effort: Medium
 
 ~~6. **Symlink Following Support**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Follow symbolic links during recursion
-   - Effort: Medium
+
+- Follow symbolic links during recursion
+- Effort: Medium
 
 ~~7. **File Content Hashing**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Detect actual content changes vs metadata
-   - Effort: High
+
+- Detect actual content changes vs metadata
+- Effort: High
 
 ~~8. **Circuit Breaker Middleware**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Fail-fast for error scenarios
-   - Effort: Medium
+
+- Fail-fast for error scenarios
+- Effort: Medium
 
 ### Documentation Items
 
@@ -195,13 +203,15 @@ The codebase is in excellent shape. No critical issues identified.
 ### Minor Issues (Acceptable)
 
 ~~1. **Linter Warnings in Tests**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Test code has some linter violations
-   - Not production code, acceptable trade-off for readability
+
+- Test code has some linter violations
+- Not production code, acceptable trade-off for readability
 
 ~~2. **Examples Not Tested in CI**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Examples in `examples/` directory not automatically tested
-   - Risk: Examples could break without detection
-   - Mitigation: Manual testing before releases
+
+- Examples in `examples/` directory not automatically tested
+- Risk: Examples could break without detection
+- Mitigation: Manual testing before releases
 
 ---
 
@@ -210,59 +220,71 @@ The codebase is in excellent shape. No critical issues identified.
 ### Immediate (Next 2 Weeks)
 
 ~~1. **Add Test Coverage for New Stats Fields**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Current: Test exists but could be more comprehensive
-   - Action: Add edge case tests for error scenarios
+
+- Current: Test exists but could be more comprehensive
+- Action: Add edge case tests for error scenarios
 
 ~~2. **Create Prometheus Example**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Show how to export Stats to Prometheus
-   - Demonstrate real-world observability
+
+- Show how to export Stats to Prometheus
+- Demonstrate real-world observability
 
 ~~3. **Tag v0.1.0 Release**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Mark current stable state
-   - Document breaking changes for v2.0
+
+- Mark current stable state
+- Document breaking changes for v2.0
 
 ### Short-Term (Next Month)
 
 ~~4. **OpenTelemetry Tracing**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Add spans for file operations
-   - Context propagation through middleware
+
+- Add spans for file operations
+- Context propagation through middleware
 
 ~~5. **WatchOnce() Implementation**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - New state flag for one-shot mode
-   - Auto-close after first event
+
+- New state flag for one-shot mode
+- Auto-close after first event
 
 ~~6. **Coverage Threshold Enforcement**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Add to CI: fail if < 90%
-   - Current: 83.1%, need 7% more
+
+- Add to CI: fail if < 90%
+- Current: 83.1%, need 7% more
 
 ### Medium-Term (Next Quarter)
 
 ~~7. **Polling Fallback**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - For NFS/network filesystems
-   - Fallback when fsnotify fails
+
+- For NFS/network filesystems
+- Fallback when fsnotify fails
 
 ~~8. **Symlink Support**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Follow symlinks during recursion
-   - Detect cycles
+
+- Follow symlinks during recursion
+- Detect cycles
 
 ~~9. **Content Hashing Filter**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Skip events if content unchanged
-   - Useful for editors that touch files
+
+- Skip events if content unchanged
+- Useful for editors that touch files
 
 ### Long-Term Vision
 
 ~~10. **CLI Tool**~~ done — shipped ≤v2.1.0, verified v2.4.1
-    - Standalone filewatcher binary
-    - Configuration file support
-    - Plugin system
+
+- Standalone filewatcher binary
+- Configuration file support
+- Plugin system
 
 ~~11. **WebSocket API**~~ OBSOLETE — out of scope
-    - Real-time event streaming
-    - Browser integration
+
+- Real-time event streaming
+- Browser integration
 
 ~~12. **Distributed Watching**~~ OBSOLETE — out of scope
-    - Watch across multiple nodes
-    - Event synchronization
+
+- Watch across multiple nodes
+- Event synchronization
 
 ---
 
@@ -270,48 +292,48 @@ The codebase is in excellent shape. No critical issues identified.
 
 ### Priority 1: Critical (Do First)
 
-| # | Task                                      | Impact | Effort | Why                       |
-| - | ----------------------------------------- | ------ | ------ | ------------------------- |
-~~| 1 | Tag v0.1.0 release                        | High   | Low    | Mark stable state         |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 2 | Fix testing_helpers.go exhaustruct        | Low    | Low    | Clean linter              |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 3 | Refactor TestWatcher_Stats_Metrics cyclop | Low    | Low    | Clean linter              |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 4 | Add Prometheus example                    | High   | Medium | Demonstrate observability |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 5 | Add Troubleshooting.md                    | Medium | Low    | User support              |~~ done — shipped ≤v2.1.0, verified v2.4.1
+| #  | Task | Impact                                    | Effort | Why    |
+| -- | ---- | ----------------------------------------- | ------ | ------ |
+| ~~ | 1    | Tag v0.1.0 release                        | High   | Low    |
+| ~~ | 2    | Fix testing_helpers.go exhaustruct        | Low    | Low    |
+| ~~ | 3    | Refactor TestWatcher_Stats_Metrics cyclop | Low    | Low    |
+| ~~ | 4    | Add Prometheus example                    | High   | Medium |
+| ~~ | 5    | Add Troubleshooting.md                    | Medium | Low    |
 
 ### Priority 2: High Impact
 
-| #  | Task                            | Impact | Effort | Why                 |
-| -- | ------------------------------- | ------ | ------ | ------------------- |
-~~| 6  | OpenTelemetry integration       | High   | High   | Distributed tracing |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 7  | WatchOnce() mode                | High   | Medium | One-shot use cases  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 8  | Coverage threshold CI           | High   | Low    | Quality gate        |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 9  | Add test for handleError stderr | Medium | Low    | Coverage gap        |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 10 | CONTRIBUTING.md                 | Medium | Low    | Community           |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 11 | CODEOWNERS                      | Low    | Low    | Code ownership      |~~ OBSOLETE — solo maintainer, absent
-~~| 12 | CODE_OF_CONDUCT.md              | Low    | Low    | Community           |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 13 | PR template                     | Low    | Low    | Process             |~~ done — shipped ≤v2.1.0, verified v2.4.1
+| #  | Task | Impact                          | Effort | Why    |
+| -- | ---- | ------------------------------- | ------ | ------ |
+| ~~ | 6    | OpenTelemetry integration       | High   | High   |
+| ~~ | 7    | WatchOnce() mode                | High   | Medium |
+| ~~ | 8    | Coverage threshold CI           | High   | Low    |
+| ~~ | 9    | Add test for handleError stderr | Medium | Low    |
+| ~~ | 10   | CONTRIBUTING.md                 | Medium | Low    |
+| ~~ | 11   | CODEOWNERS                      | Low    | Low    |
+| ~~ | 12   | CODE_OF_CONDUCT.md              | Low    | Low    |
+| ~~ | 13   | PR template                     | Low    | Low    |
 
 ### Priority 3: Medium Impact
 
-| #  | Task                       | Impact | Effort | Why            |
-| -- | -------------------------- | ------ | ------ | -------------- |
-~~| 14 | WithPolling() fallback     | Medium | Medium | NFS support    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 15 | Symlink following          | Medium | Medium | Feature parity |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 16 | Content hashing filter     | Medium | High   | Accuracy       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 17 | Circuit breaker middleware | Medium | Medium | Resilience     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 18 | Error rate limiting        | Medium | Low    | Stability      |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 19 | Examples in CI             | Medium | Low    | Quality        |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 20 | Benchmark regression       | Medium | Medium | Performance    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 21 | Fuzz testing               | Medium | High   | Robustness     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+| #  | Task | Impact                     | Effort | Why    |
+| -- | ---- | -------------------------- | ------ | ------ |
+| ~~ | 14   | WithPolling() fallback     | Medium | Medium |
+| ~~ | 15   | Symlink following          | Medium | Medium |
+| ~~ | 16   | Content hashing filter     | Medium | High   |
+| ~~ | 17   | Circuit breaker middleware | Medium | Medium |
+| ~~ | 18   | Error rate limiting        | Medium | Low    |
+| ~~ | 19   | Examples in CI             | Medium | Low    |
+| ~~ | 20   | Benchmark regression       | Medium | Medium |
+| ~~ | 21   | Fuzz testing               | Medium | High   |
 
 ### Priority 4: Nice to Have
 
-| #  | Task              | Impact | Effort | Why            |
-| -- | ----------------- | ------ | ------ | -------------- |
-~~| 22 | Dead letter queue | Low    | Medium | Error handling |~~ OBSOLETE — untracked, YAGNI
-~~| 23 | Goreleaser config | Low    | Low    | Releases       |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 24 | Dependabot config | Low    | Low    | Maintenance    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 25 | Semantic-release  | Low    | Medium | Automation     |~~ done — shipped ≤v2.1.0, verified v2.4.1
+| #  | Task | Impact            | Effort | Why    |
+| -- | ---- | ----------------- | ------ | ------ |
+| ~~ | 22   | Dead letter queue | Low    | Medium |
+| ~~ | 23   | Goreleaser config | Low    | Low    |
+| ~~ | 24   | Dependabot config | Low    | Low    |
+| ~~ | 25   | Semantic-release  | Low    | Medium |
 
 ---
 

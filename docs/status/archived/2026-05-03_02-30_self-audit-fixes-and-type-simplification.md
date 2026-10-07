@@ -36,20 +36,20 @@
 
 ## c) NOT STARTED
 
-| #  | Item                                           | Priority |
-| -- | ---------------------------------------------- | -------- |
-~~| 1  | `WithPolling(fallback)` for NFS/network mounts | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2  | Exponential backoff for errors                 | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3  | Symlink following support                      | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4  | `Event.ModTime()` field                        | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5  | File content hashing option                    | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 6  | Prometheus metrics export                      | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 7  | OpenTelemetry integration                      | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 8  | Self-healing watcher                           | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 9  | Circuit breaker middleware                     | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 10 | Goreleaser configuration                       | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 11 | CLI tool                                       | Medium   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 12 | Fuzz testing                                   | Backlog  |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Item | Priority                                       |
+| -- | ---- | ---------------------------------------------- |
+| ~~ | 1    | `WithPolling(fallback)` for NFS/network mounts |
+| ~~ | 2    | Exponential backoff for errors                 |
+| ~~ | 3    | Symlink following support                      |
+| ~~ | 4    | `Event.ModTime()` field                        |
+| ~~ | 5    | File content hashing option                    |
+| ~~ | 6    | Prometheus metrics export                      |
+| ~~ | 7    | OpenTelemetry integration                      |
+| ~~ | 8    | Self-healing watcher                           |
+| ~~ | 9    | Circuit breaker middleware                     |
+| ~~ | 10   | Goreleaser configuration                       |
+| ~~ | 11   | CLI tool                                       |
+| ~~ | 12   | Fuzz testing                                   |
 
 ## d) TOTALLY FUCKED UP
 
@@ -71,33 +71,33 @@
 
 ## f) Top 25 Things to Do Next
 
-| #  | Item                                                          | Impact | Effort |
-| -- | ------------------------------------------------------------- | ------ | ------ |
-~~| 1  | Tag v0.2.0 release                                            | High   | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2  | Delete ghost `testing_helpers.go`                             | Medium | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3  | Fix pre-commit hook permissions                               | Medium | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4  | Fix LSP warnings in test files                                | Medium | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5  | Add `WithPolling(fallback bool)` for NFS                      | High   | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 6  | Add exponential backoff for errors                            | High   | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 7  | Add `Event.ModTime` field                                     | Medium | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 8  | Add self-healing watcher (re-add lost paths)                  | High   | High   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 9  | Add symlink following support                                 | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 10 | Add circuit breaker middleware                                | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 11 | Prometheus/OpenTelemetry integration                          | High   | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 12 | Goreleaser configuration                                      | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 13 | Standalone CLI tool                                           | High   | High   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 14 | Address flaky tests (Stats, Middleware)                       | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 15 | Fuzz testing for event parsing                                | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 16 | Windows-specific edge case tests                              | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 17 | File content hashing option                                   | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 18 | Document DI integration patterns                              | Low    | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 19 | Add `CODE_OF_CONDUCT.md`                                      | Low    | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 20 | Add PR template                                               | Low    | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 21 | Write Troubleshooting.md                                      | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 22 | Add `FilterGeneratedCodeFull` test for edge cases             | Medium | Low    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 23 | Consider `WatchChanges(ctx, targetState)` for idempotent sync | Medium | High   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 24 | Dead letter queue for dropped events                          | Medium | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 25 | Error correlation IDs                                         | Low    | Medium |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Item | Impact                                                        | Effort |
+| -- | ---- | ------------------------------------------------------------- | ------ |
+| ~~ | 1    | Tag v0.2.0 release                                            | High   |
+| ~~ | 2    | Delete ghost `testing_helpers.go`                             | Medium |
+| ~~ | 3    | Fix pre-commit hook permissions                               | Medium |
+| ~~ | 4    | Fix LSP warnings in test files                                | Medium |
+| ~~ | 5    | Add `WithPolling(fallback bool)` for NFS                      | High   |
+| ~~ | 6    | Add exponential backoff for errors                            | High   |
+| ~~ | 7    | Add `Event.ModTime` field                                     | Medium |
+| ~~ | 8    | Add self-healing watcher (re-add lost paths)                  | High   |
+| ~~ | 9    | Add symlink following support                                 | Medium |
+| ~~ | 10   | Add circuit breaker middleware                                | Medium |
+| ~~ | 11   | Prometheus/OpenTelemetry integration                          | High   |
+| ~~ | 12   | Goreleaser configuration                                      | Medium |
+| ~~ | 13   | Standalone CLI tool                                           | High   |
+| ~~ | 14   | Address flaky tests (Stats, Middleware)                       | Medium |
+| ~~ | 15   | Fuzz testing for event parsing                                | Medium |
+| ~~ | 16   | Windows-specific edge case tests                              | Medium |
+| ~~ | 17   | File content hashing option                                   | Medium |
+| ~~ | 18   | Document DI integration patterns                              | Low    |
+| ~~ | 19   | Add `CODE_OF_CONDUCT.md`                                      | Low    |
+| ~~ | 20   | Add PR template                                               | Low    |
+| ~~ | 21   | Write Troubleshooting.md                                      | Medium |
+| ~~ | 22   | Add `FilterGeneratedCodeFull` test for edge cases             | Medium |
+| ~~ | 23   | Consider `WatchChanges(ctx, targetState)` for idempotent sync | Medium |
+| ~~ | 24   | Dead letter queue for dropped events                          | Medium |
+| ~~ | 25   | Error correlation IDs                                         | Low    |
 
 ## g) Top Question I Cannot Figure Out Myself
 

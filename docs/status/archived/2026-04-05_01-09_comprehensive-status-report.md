@@ -46,13 +46,13 @@ Evaluated `samber/do/v2` integration (decision: **no**), then deep-reflected on 
 
 The ADR lists 5 future improvements. None are implemented yet — they're documented as next steps:
 
-| # | Improvement                                                          | Status      |
-| - | -------------------------------------------------------------------- | ----------- |
-~~| 1 | Extract `fsnotify.Watcher` behind internal interface for testability | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2 | Add `HealthCheck() error` to `Watcher`                               | Not started |~~ OBSOLETE — never built; Stats() covers
-~~| 3 | Document DI integration pattern in README                            | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4 | Use `log/slog` in middleware (replace `log.Logger`)                  | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5 | Add `Event` batch accumulation                                       | Not started |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Improvement | Status                                                               |
+| -- | ----------- | -------------------------------------------------------------------- |
+| ~~ | 1           | Extract `fsnotify.Watcher` behind internal interface for testability |
+| ~~ | 2           | Add `HealthCheck() error` to `Watcher`                               |
+| ~~ | 3           | Document DI integration pattern in README                            |
+| ~~ | 4           | Use `log/slog` in middleware (replace `log.Logger`)                  |
+| ~~ | 5           | Add `Event` batch accumulation                                       |
 
 ### Test Coverage — 78.9%
 
@@ -66,21 +66,21 @@ The ADR lists 5 future improvements. None are implemented yet — they're docume
 
 ## c) NOT STARTED 📋
 
-| #  | Item                                                                   | Why it matters                                                                                                                                                                                        |
-| -- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-~~| 1  | **Fix pre-existing race condition** in `walkAndAddPaths` / `watchList` | Race detector fails on `go test -race`. `watchList` is appended without holding `w.mu` when called from `handleNewDirectory` in the watch goroutine, while `Close()` reads it from another goroutine. |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2  | **Fix 10 exhaustruct violations** in `filter_test.go`                  | Event structs missing `IsDir` field in test cases                                                                                                                                                     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3  | **Fix 5 gocritic exitAfterDefer** in examples                          | `log.Fatal` after `defer cancel()` means cancel never runs                                                                                                                                            |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4  | **Fix new recvcheck warning** in `event.go:10`                         | `Op` methods mix pointer (`UnmarshalText`) and value (`String`, `MarshalText`) receivers — self-introduced in commit `6d934dc`                                                                        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5  | **Fix golines formatting** in `filter_test.go:36`                      | Line too long                                                                                                                                                                                         |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 6  | **Extract `fsnotify.Watcher` behind internal interface**               | Enables mock-based testing of watch loop                                                                                                                                                              |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 7  | **Add `HealthCheck() error` to `Watcher`**                             | DI-friendly lifecycle hook                                                                                                                                                                            |~~ OBSOLETE — never built; Stats() covers
-~~| 8  | **Replace `log.Logger` with `log/slog`** in middleware                 | Structured logging (stdlib since Go 1.21)                                                                                                                                                             |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 9  | **Document DI integration patterns** in README                         | Show consumers how to use with `samber/do`, `wire`, `fx`                                                                                                                                              |~~ OBSOLETE — samber/do rejected (docs/adr/2026-04-04)
-~~| 10 | **Add `Event` batch accumulation**                                     | Useful for consumers processing events in batches                                                                                                                                                     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 11 | **Increase test coverage to 85%+**                                     | Currently 78.9%                                                                                                                                                                                       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 12 | **Add benchmarks** for filter evaluation and middleware chains         | `just bench` exists but no bench tests                                                                                                                                                                |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 13 | **CI pipeline**                                                        | No GitHub Actions or CI config                                                                                                                                                                        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Item | Why it matters                                                         |
+| -- | ---- | ---------------------------------------------------------------------- |
+| ~~ | 1    | **Fix pre-existing race condition** in `walkAndAddPaths` / `watchList` |
+| ~~ | 2    | **Fix 10 exhaustruct violations** in `filter_test.go`                  |
+| ~~ | 3    | **Fix 5 gocritic exitAfterDefer** in examples                          |
+| ~~ | 4    | **Fix new recvcheck warning** in `event.go:10`                         |
+| ~~ | 5    | **Fix golines formatting** in `filter_test.go:36`                      |
+| ~~ | 6    | **Extract `fsnotify.Watcher` behind internal interface**               |
+| ~~ | 7    | **Add `HealthCheck() error` to `Watcher`**                             |
+| ~~ | 8    | **Replace `log.Logger` with `log/slog`** in middleware                 |
+| ~~ | 9    | **Document DI integration patterns** in README                         |
+| ~~ | 10   | **Add `Event` batch accumulation**                                     |
+| ~~ | 11   | **Increase test coverage to 85%+**                                     |
+| ~~ | 12   | **Add benchmarks** for filter evaluation and middleware chains         |
+| ~~ | 13   | **CI pipeline**                                                        |
 
 ---
 
@@ -148,34 +148,34 @@ TestDebouncer_DefaultDelay, TestDebouncer_NegativeDelay
 
 Sorted by impact × urgency ÷ work:
 
-| #  | Task                                                                | Impact      | Work   | Type          |
-| -- | ------------------------------------------------------------------- | ----------- | ------ | ------------- |
-~~| 1  | Fix race condition in `walkAndAddPaths` / `watchList`               | 🔴 Critical | Small  | Bug           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2  | Fix recvcheck: make `String()`/`MarshalText()` use pointer receiver | Medium      | Tiny   | Lint          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3  | Fix 10 exhaustruct violations in `filter_test.go`                   | Medium      | Tiny   | Lint          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4  | Fix 5 gocritic exitAfterDefer in examples                           | Medium      | Tiny   | Lint          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5  | Fix golines formatting in `filter_test.go`                          | Low         | Tiny   | Lint          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 6  | Extract `fsnotify.Watcher` behind internal interface                | High        | Medium | Architecture  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 7  | Add mock-based tests for watch loop                                 | High        | Medium | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 8  | Add `HealthCheck() error` to `Watcher`                              | Medium      | Small  | Feature       |~~ OBSOLETE — never built; Stats() covers
+| #  | Task | Impact                                                              | Work        | Type   |
+| -- | ---- | ------------------------------------------------------------------- | ----------- | ------ |
+| ~~ | 1    | Fix race condition in `walkAndAddPaths` / `watchList`               | 🔴 Critical | Small  |
+| ~~ | 2    | Fix recvcheck: make `String()`/`MarshalText()` use pointer receiver | Medium      | Tiny   |
+| ~~ | 3    | Fix 10 exhaustruct violations in `filter_test.go`                   | Medium      | Tiny   |
+| ~~ | 4    | Fix 5 gocritic exitAfterDefer in examples                           | Medium      | Tiny   |
+| ~~ | 5    | Fix golines formatting in `filter_test.go`                          | Low         | Tiny   |
+| ~~ | 6    | Extract `fsnotify.Watcher` behind internal interface                | High        | Medium |
+| ~~ | 7    | Add mock-based tests for watch loop                                 | High        | Medium |
+| ~~ | 8    | Add `HealthCheck() error` to `Watcher`                              | Medium      | Small  |
 
-~~| 9  | Replace `log.Logger` with `log/slog` in middleware                  | Medium      | Small  | Modernization |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 10 | Increase test coverage to 85%+                                      | Medium      | Medium | Quality       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 11 | Investigate and fix `TestWatcher_Watch_Deletes` flakiness           | Medium      | Small  | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 12 | Add benchmarks for filters, middleware, debouncer                   | Medium      | Small  | Performance   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 13 | Document DI integration patterns in README                          | Medium      | Tiny   | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 14 | Add `Event` batch accumulation option                               | Medium      | Medium | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 15 | Add CI pipeline (GitHub Actions)                                    | Medium      | Small  | Infra         |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 16 | Add `Close()` to `DebouncerInterface` (rename `Stop()`)             | Low         | Small  | API cleanup   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 17 | Add `Watcher.Watch()` with callback option (not just channel)       | Medium      | Medium | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 18 | Add `FilterExcludePaths` for exact path exclusion                   | Low         | Tiny   | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 19 | Add `Event.Size` field (file size at event time)                    | Low         | Small  | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 20 | Add `MiddlewareThrottle` (N events per duration)                    | Low         | Small  | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 21 | Add changelog entries for recent changes                            | Low         | Tiny   | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 22 | Update README with new serialization features                       | Low         | Tiny   | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 23 | Add `Watcher.IsWatching()` convenience method                       | Low         | Tiny   | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 24 | Consider `context.Context` in `DebouncerInterface`                  | Low         | Medium | API           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 25 | Generate GoDoc site (pkg.go.dev works but no custom)                | Low         | Tiny   | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 9 | Replace `log.Logger` with `log/slog` in middleware | Medium | Small | Modernization |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 10 | Increase test coverage to 85%+ | Medium | Medium | Quality |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 11 | Investigate and fix `TestWatcher_Watch_Deletes` flakiness | Medium | Small | Testing |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 12 | Add benchmarks for filters, middleware, debouncer | Medium | Small | Performance |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 13 | Document DI integration patterns in README | Medium | Tiny | Docs |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 14 | Add `Event` batch accumulation option | Medium | Medium | Feature |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 15 | Add CI pipeline (GitHub Actions) | Medium | Small | Infra |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 16 | Add `Close()` to `DebouncerInterface` (rename `Stop()`) | Low | Small | API cleanup |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 17 | Add `Watcher.Watch()` with callback option (not just channel) | Medium | Medium | Feature |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 18 | Add `FilterExcludePaths` for exact path exclusion | Low | Tiny | Feature |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 19 | Add `Event.Size` field (file size at event time) | Low | Small | Feature |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 20 | Add `MiddlewareThrottle` (N events per duration) | Low | Small | Feature |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 21 | Add changelog entries for recent changes | Low | Tiny | Docs |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 22 | Update README with new serialization features | Low | Tiny | Docs |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 23 | Add `Watcher.IsWatching()` convenience method | Low | Tiny | Feature |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 24 | Consider `context.Context` in `DebouncerInterface` | Low | Medium | API |~~ done — shipped ≤v2.2.0, verified v2.4.1
+~~| 25 | Generate GoDoc site (pkg.go.dev works but no custom) | Low | Tiny | Docs |~~ done — shipped ≤v2.2.0, verified v2.4.1
 
 ---
 

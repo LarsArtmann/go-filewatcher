@@ -26,13 +26,13 @@
 
 _Must-do. These are bugs, broken tooling, or things shipping to consumers that shouldn't._
 
-| # | Task                                               | Files                           | Est. | Impact | Why                                                                                                |
-| - | -------------------------------------------------- | ------------------------------- | ---- | ------ | -------------------------------------------------------------------------------------------------- |
-~~| 1 | Fix `Add()` double-append to `watchList` bug       | `watcher.go`, `watcher_walk.go` | 12m  | 🔴     | `WatchList()` returns duplicates in recursive mode. User-facing bug.                               |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2 | Fix `MiddlewareBatch` timer error swallowing       | `middleware.go:342`             | 10m  | 🔴     | `_ = flush(events)` silently drops errors on timer-triggered flush. Log or propagate.              |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3 | Fix `handleNewDirectory` error swallowing          | `watcher_internal.go:193`       | 10m  | 🔴     | `_ = w.addPath(...)` silently fails to add new subdirectories. Log the error at minimum.           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4 | Align flake.nix Go 1.24 → 1.26                     | `flake.nix`                     | 5m   | 🔴     | CI uses 1.26, linter targets 1.26.1, but `nix develop` gives Go 1.24. Broken toolchain.            |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5 | Move `testing_helpers.go` out of production binary | `testing_helpers.go`            | 12m  | 🔴     | 306 lines of test-only code compiled into consumer binaries. Add `//go:build tools` tag or rename. |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Files                                              | Est.                            | Impact | Why |
+| -- | ---- | -------------------------------------------------- | ------------------------------- | ------ | --- |
+| ~~ | 1    | Fix `Add()` double-append to `watchList` bug       | `watcher.go`, `watcher_walk.go` | 12m    | 🔴  |
+| ~~ | 2    | Fix `MiddlewareBatch` timer error swallowing       | `middleware.go:342`             | 10m    | 🔴  |
+| ~~ | 3    | Fix `handleNewDirectory` error swallowing          | `watcher_internal.go:193`       | 10m    | 🔴  |
+| ~~ | 4    | Align flake.nix Go 1.24 → 1.26                     | `flake.nix`                     | 5m     | 🔴  |
+| ~~ | 5    | Move `testing_helpers.go` out of production binary | `testing_helpers.go`            | 12m    | 🔴  |
 
 ---
 
@@ -40,20 +40,20 @@ _Must-do. These are bugs, broken tooling, or things shipping to consumers that s
 
 _Should-do immediately. Low effort, high reliability/safety improvement._
 
-| #  | Task                                                            | Files                        | Est. | Impact | Why                                                                                                 |
-| -- | --------------------------------------------------------------- | ---------------------------- | ---- | ------ | --------------------------------------------------------------------------------------------------- |
-~~| 6  | Replace hand-rolled `Op.MarshalJSON` with `json.Marshal`        | `event.go:55`                | 5m   | 🟠     | String concat `"\"" + op.String() + "\""` is fragile, no escaping. Use `json.Marshal(op.String())`. |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 7  | Protect `DefaultIgnoreDirs` from mutation                       | `watcher.go`                 | 5m   | 🟠     | Exported `var []string` — users can accidentally mutate shared slice. Return copy or use accessor.  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 8  | Simplify `errors.As` to `AsType[*WatcherError]`                 | `errors.go:94`               | 5m   | 🟠     | gopls hint: modernize to Go 1.26 `AsType` pattern.                                                  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 9  | Ring buffer for `MiddlewareSlidingWindowRateLimit`              | `middleware.go:168-176`      | 12m  | 🟠     | Allocates new slice on every event. Replace with in-place ring buffer.                              |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 10 | Document `GlobalDebouncer` callback replacement caveat          | `debouncer.go`               | 5m   | 🟠     | Only last callback survives coalescing — undocumented. Add doc comment.                             |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 11 | `FilterExcludePaths`: skip redundant `filepath.Abs` per event   | `filter.go:102`              | 8m   | 🟠     | Path already absolute from fsnotify. Cache or skip re-normalization.                                |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 12 | Validate `WithBuffer(0)` behavior — error or document           | `options.go`                 | 5m   | 🟠     | Unbuffered channel (0) may deadlock. Either reject or document clearly.                             |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 13 | Validate debounce durations — cap at reasonable max             | `options.go`, `debouncer.go` | 8m   | 🟠     | No validation on duration. Negative or absurdly large values cause issues.                          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 14 | Remove `nolint:unparam` from `getDebounceKey`                   | `watcher_internal.go`        | 5m   | 🟠     | Investigate if the parameter is actually used now. Clean up the suppression.                        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 15 | Validate `FilterRegex` compiles in constructor                  | `filter.go`                  | 5m   | 🟠     | Invalid regex panics at event time. Validate at construction.                                       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 16 | `handleNewDirectory`: propagate addPath errors to error handler | `watcher_internal.go`        | 10m  | 🟠     | Instead of `_ = w.addPath(...)`, call `handleError` on failure.                                     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 17 | `MiddlewareBatch`: propagate timer flush errors                 | `middleware.go`              | 10m  | 🟠     | Instead of `_ = flush(events)`, log via slog or call onError handler.                               |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Files                                                           | Est.                         | Impact | Why |
+| -- | ---- | --------------------------------------------------------------- | ---------------------------- | ------ | --- |
+| ~~ | 6    | Replace hand-rolled `Op.MarshalJSON` with `json.Marshal`        | `event.go:55`                | 5m     | 🟠  |
+| ~~ | 7    | Protect `DefaultIgnoreDirs` from mutation                       | `watcher.go`                 | 5m     | 🟠  |
+| ~~ | 8    | Simplify `errors.As` to `AsType[*WatcherError]`                 | `errors.go:94`               | 5m     | 🟠  |
+| ~~ | 9    | Ring buffer for `MiddlewareSlidingWindowRateLimit`              | `middleware.go:168-176`      | 12m    | 🟠  |
+| ~~ | 10   | Document `GlobalDebouncer` callback replacement caveat          | `debouncer.go`               | 5m     | 🟠  |
+| ~~ | 11   | `FilterExcludePaths`: skip redundant `filepath.Abs` per event   | `filter.go:102`              | 8m     | 🟠  |
+| ~~ | 12   | Validate `WithBuffer(0)` behavior — error or document           | `options.go`                 | 5m     | 🟠  |
+| ~~ | 13   | Validate debounce durations — cap at reasonable max             | `options.go`, `debouncer.go` | 8m     | 🟠  |
+| ~~ | 14   | Remove `nolint:unparam` from `getDebounceKey`                   | `watcher_internal.go`        | 5m     | 🟠  |
+| ~~ | 15   | Validate `FilterRegex` compiles in constructor                  | `filter.go`                  | 5m     | 🟠  |
+| ~~ | 16   | `handleNewDirectory`: propagate addPath errors to error handler | `watcher_internal.go`        | 10m    | 🟠  |
+| ~~ | 17   | `MiddlewareBatch`: propagate timer flush errors                 | `middleware.go`              | 10m    | 🟠  |
 
 ---
 
@@ -61,29 +61,29 @@ _Should-do immediately. Low effort, high reliability/safety improvement._
 
 _Close the holes. Low-to-medium effort, high confidence improvement._
 
-| #  | Task                                                                               | Files                         | Est. | Impact | Why                                                                                  |
-| -- | ---------------------------------------------------------------------------------- | ----------------------------- | ---- | ------ | ------------------------------------------------------------------------------------ |
-~~| 18 | Add rename event integration test                                                  | `watcher_test.go`             | 10m  | 🟡     | Only Create/Write/Remove tested end-to-end. Rename is a first-class Op.              |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 19 | Add multi-directory initialization test (`New([]string{d1,d2})`)                   | `watcher_test.go`             | 10m  | 🟡     | Core use case with zero test coverage.                                               |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 20 | Add buffer overflow / backpressure test                                            | `watcher_test.go`             | 10m  | 🟡     | `WithBuffer(n)` never tested for full-channel behavior.                              |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 21 | Add concurrent Add/Remove during active watching test                              | `watcher_test.go`             | 12m  | 🟡     | Race conditions possible, zero test coverage.                                        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 22 | Add non-recursive watching integration test                                        | `watcher_test.go`             | 10m  | 🟡     | `WithRecursive(false)` never tested for ignoring subdirs.                            |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 23 | Close coverage gaps: `addPath` (83.3%), `walkDirFunc` (84.6%)                      | `watcher_walk_test.go`        | 12m  | 🟡     | Below 90% threshold. Add error path tests.                                           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 24 | Close coverage gap: `Add` (84.6%) — test error paths                               | `watcher_test.go`             | 10m  | 🟡     | Double-add, add-after-close, add-during-watch.                                       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 25 | Add test for `handleError()` stderr path                                           | `watcher_test.go`             | 10m  | 🟡     | When no error handler/channel configured, errors go to stderr. Untested.             |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 26 | Add test for `GlobalDebouncer.Flush()`                                             | `debouncer_test.go`           | 8m   | 🟡     | Flush is tested for per-key Debouncer but not GlobalDebouncer.                       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 27 | Add test for `handleError` with `ErrorContext`                                     | `watcher_test.go`             | 10m  | 🟡     | ErrorContext propagation through error handler is untested.                          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 28 | Add `FilterGeneratedCodeFull` content-check tests for Templ/Protobuf               | `filter_gogen_test.go`        | 10m  | 🟡     | Only SQLC content check tested. Other modes untested.                                |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 29 | Add `Example_FilterRegex` godoc example                                            | `example_test.go`             | 8m   | 🟡     | Missing example for a commonly-used filter.                                          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 30 | Fix `TestErrorHandler_Async` — assert `callCount == 10`                            | `errors_test.go`              | 8m   | 🟡     | Test spawns 10 goroutines but never verifies all complete. Effectively a no-op test. |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 31 | Review parallel tests for race safety                                              | all `*_test.go`               | 12m  | 🟡     | 12 tests not using `t.Parallel()`. Some may be unnecessarily serialized.             |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 32 | Fix flaky `TestWatcher_Stats_Metrics` timing sensitivity                           | `watcher_test.go`             | 10m  | 🟡     | Known flaky — filesystem write coalescing may produce 2 events instead of 1.         |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 33 | Fix flaky `TestWatcher_Watch_WithMiddleware` timing sensitivity                    | `watcher_test.go`             | 10m  | 🟡     | Known flaky — same root cause as above.                                              |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 34 | Add `Watcher.Errors()` channel closure after `Close()` test                        | `watcher_test.go`             | 8m   | 🟡     | Only verifies channel exists, not that it closes properly.                           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 35 | Add error channel test for naturally-occurring fs errors                           | `watcher_test.go`             | 12m  | 🟡     | e.g., permission denied, deleted watched root directory.                             |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 36 | Add test for `IsWatching()`/`IsClosed()` state transitions during failed `Watch()` | `watcher_test.go`             | 10m  | 🟡     | State during/after failed Watch() is untested.                                       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 37 | Add test for `WithIgnorePatterns()` using glob patterns                            | `filter_test.go`, `filter.go` | 12m  | 🟡     | Feature request — glob-based ignore patterns (different from FilterGlob).            |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 38 | Add coverage for phantom type methods: `IsZero`, `Equal`, `Compare`                | `phantom_types_test.go`       | 10m  | 🟡     | Several `IsZero`/`Equal`/`Compare` methods at 0% coverage.                           |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Files                                                                              | Est.                          | Impact | Why |
+| -- | ---- | ---------------------------------------------------------------------------------- | ----------------------------- | ------ | --- |
+| ~~ | 18   | Add rename event integration test                                                  | `watcher_test.go`             | 10m    | 🟡  |
+| ~~ | 19   | Add multi-directory initialization test (`New([]string{d1,d2})`)                   | `watcher_test.go`             | 10m    | 🟡  |
+| ~~ | 20   | Add buffer overflow / backpressure test                                            | `watcher_test.go`             | 10m    | 🟡  |
+| ~~ | 21   | Add concurrent Add/Remove during active watching test                              | `watcher_test.go`             | 12m    | 🟡  |
+| ~~ | 22   | Add non-recursive watching integration test                                        | `watcher_test.go`             | 10m    | 🟡  |
+| ~~ | 23   | Close coverage gaps: `addPath` (83.3%), `walkDirFunc` (84.6%)                      | `watcher_walk_test.go`        | 12m    | 🟡  |
+| ~~ | 24   | Close coverage gap: `Add` (84.6%) — test error paths                               | `watcher_test.go`             | 10m    | 🟡  |
+| ~~ | 25   | Add test for `handleError()` stderr path                                           | `watcher_test.go`             | 10m    | 🟡  |
+| ~~ | 26   | Add test for `GlobalDebouncer.Flush()`                                             | `debouncer_test.go`           | 8m     | 🟡  |
+| ~~ | 27   | Add test for `handleError` with `ErrorContext`                                     | `watcher_test.go`             | 10m    | 🟡  |
+| ~~ | 28   | Add `FilterGeneratedCodeFull` content-check tests for Templ/Protobuf               | `filter_gogen_test.go`        | 10m    | 🟡  |
+| ~~ | 29   | Add `Example_FilterRegex` godoc example                                            | `example_test.go`             | 8m     | 🟡  |
+| ~~ | 30   | Fix `TestErrorHandler_Async` — assert `callCount == 10`                            | `errors_test.go`              | 8m     | 🟡  |
+| ~~ | 31   | Review parallel tests for race safety                                              | all `*_test.go`               | 12m    | 🟡  |
+| ~~ | 32   | Fix flaky `TestWatcher_Stats_Metrics` timing sensitivity                           | `watcher_test.go`             | 10m    | 🟡  |
+| ~~ | 33   | Fix flaky `TestWatcher_Watch_WithMiddleware` timing sensitivity                    | `watcher_test.go`             | 10m    | 🟡  |
+| ~~ | 34   | Add `Watcher.Errors()` channel closure after `Close()` test                        | `watcher_test.go`             | 8m     | 🟡  |
+| ~~ | 35   | Add error channel test for naturally-occurring fs errors                           | `watcher_test.go`             | 12m    | 🟡  |
+| ~~ | 36   | Add test for `IsWatching()`/`IsClosed()` state transitions during failed `Watch()` | `watcher_test.go`             | 10m    | 🟡  |
+| ~~ | 37   | Add test for `WithIgnorePatterns()` using glob patterns                            | `filter_test.go`, `filter.go` | 12m    | 🟡  |
+| ~~ | 38   | Add coverage for phantom type methods: `IsZero`, `Equal`, `Compare`                | `phantom_types_test.go`       | 10m    | 🟡  |
 
 ---
 
@@ -91,39 +91,39 @@ _Close the holes. Low-to-medium effort, high confidence improvement._
 
 _Enable adoption. Now that we're MIT-licensed, this matters._
 
-| #  | Task                                                              | Files                              | Est. | Impact | Why                                                                  |
-| -- | ----------------------------------------------------------------- | ---------------------------------- | ---- | ------ | -------------------------------------------------------------------- |
-~~| 39 | Populate CHANGELOG.md for v0.1.0 release                          | `CHANGELOG.md`                     | 5m   | 🟢     | No versioned entries exist.                                          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 40 | Populate CHANGELOG.md for v0.2.0 release                          | `CHANGELOG.md`                     | 5m   | 🟢     | No versioned entries exist.                                          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 41 | Write `CONTRIBUTING.md`                                           | new file                           | 12m  | 🟢     | Now MIT-licensed — external contributions possible. No guide exists. |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 42 | Write `CODE_OF_CONDUCT.md`                                        | new file                           | 8m   | 🟢     | Standard for open-source projects.                                   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 43 | Add GitHub issue templates                                        | `.github/ISSUE_TEMPLATE/`          | 10m  | 🟢     | Bug report + feature request templates.                              |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 44 | Add GitHub PR template                                            | `.github/PULL_REQUEST_TEMPLATE.md` | 8m   | 🟢     | Consistent review process.                                           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 45 | Write Troubleshooting.md                                          | new file                           | 12m  | 🟢     | Common issues: NFS, permissions, recursive watching gotchas.         |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 46 | Write migration guide for ErrorHandler signature change           | `MIGRATION.md`                     | 10m  | 🟢     | Update existing MIGRATION.md with ErrorHandler changes.              |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 47 | Add structured logging example                                    | `examples/`                        | 10m  | 🟢     | Show slog integration with MiddlewareLogging.                        |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 48 | Document DI integration patterns in README                        | `README.md`                        | 10m  | 🟢     | How to inject Watcher in DI frameworks.                              |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 49 | Consolidate `doc.go` — sync with README examples                  | `doc.go`                           | 10m  | 🟢     | Ensure doc.go examples match current API.                            |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 50 | Add API stability doc                                             | new file                           | 10m  | 🟢     | Document versioning guarantees, what's stable vs experimental.       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 51 | Adopt semver in CHANGELOG                                         | `CHANGELOG.md`                     | 8m   | 🟢     | Use proper semver versioning structure.                              |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 52 | Check if `examples/` directory worth keeping vs `example_test.go` | —                                  | 10m  | 🟢     | Evaluate duplication. Remove or document purpose.                    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 53 | Update TODO_LIST.md — remove already-done items                   | `TODO_LIST.md`                     | 10m  | 🟢     | Many items marked done in TODO but still listed. Stale.              |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 54 | Update `AGENTS.md` with MIT license info                          | `AGENTS.md`                        | 5m   | 🟢     | Still references proprietary conventions.                            |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Files                                                             | Est.                               | Impact | Why |
+| -- | ---- | ----------------------------------------------------------------- | ---------------------------------- | ------ | --- |
+| ~~ | 39   | Populate CHANGELOG.md for v0.1.0 release                          | `CHANGELOG.md`                     | 5m     | 🟢  |
+| ~~ | 40   | Populate CHANGELOG.md for v0.2.0 release                          | `CHANGELOG.md`                     | 5m     | 🟢  |
+| ~~ | 41   | Write `CONTRIBUTING.md`                                           | new file                           | 12m    | 🟢  |
+| ~~ | 42   | Write `CODE_OF_CONDUCT.md`                                        | new file                           | 8m     | 🟢  |
+| ~~ | 43   | Add GitHub issue templates                                        | `.github/ISSUE_TEMPLATE/`          | 10m    | 🟢  |
+| ~~ | 44   | Add GitHub PR template                                            | `.github/PULL_REQUEST_TEMPLATE.md` | 8m     | 🟢  |
+| ~~ | 45   | Write Troubleshooting.md                                          | new file                           | 12m    | 🟢  |
+| ~~ | 46   | Write migration guide for ErrorHandler signature change           | `MIGRATION.md`                     | 10m    | 🟢  |
+| ~~ | 47   | Add structured logging example                                    | `examples/`                        | 10m    | 🟢  |
+| ~~ | 48   | Document DI integration patterns in README                        | `README.md`                        | 10m    | 🟢  |
+| ~~ | 49   | Consolidate `doc.go` — sync with README examples                  | `doc.go`                           | 10m    | 🟢  |
+| ~~ | 50   | Add API stability doc                                             | new file                           | 10m    | 🟢  |
+| ~~ | 51   | Adopt semver in CHANGELOG                                         | `CHANGELOG.md`                     | 8m     | 🟢  |
+| ~~ | 52   | Check if `examples/` directory worth keeping vs `example_test.go` | —                                  | 10m    | 🟢  |
+| ~~ | 53   | Update TODO_LIST.md — remove already-done items                   | `TODO_LIST.md`                     | 10m    | 🟢  |
+| ~~ | 54   | Update `AGENTS.md` with MIT license info                          | `AGENTS.md`                        | 5m     | 🟢  |
 
 ---
 
 ## T4b — DX & INFRASTRUCTURE
 
-| #  | Task                                                   | Files                              | Est. | Impact | Why                                               |
-| -- | ------------------------------------------------------ | ---------------------------------- | ---- | ------ | ------------------------------------------------- |
-~~| 55 | Add `nix run .#test` and `nix run .#lint` to flake.nix | `flake.nix`                        | 12m  | 🟢     | No way to run tests/lint via nix currently.       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 56 | Add Dependabot / Renovate config                       | `.github/dependabot.yml`           | 10m  | 🟢     | Automated dependency updates.                     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 57 | Add benchmark regression detection in CI               | `.github/workflows/ci.yml`         | 10m  | 🟢     | Catch perf regressions automatically.             |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 58 | Add `-race` to benchmark CI step                       | `.github/workflows/ci.yml`         | 5m   | 🟢     | Benchmarks should also run with race detector.    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 59 | Test `examples/` in CI pipeline                        | `.github/workflows/ci.yml`         | 10m  | 🟢     | Examples compile but never tested in CI.          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 60 | Configure GoReleaser                                   | `.goreleaser.yml`                  | 12m  | 🟢     | Automate cross-platform releases.                 |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 61 | Configure semantic-release                             | `.releaserc.yml`                   | 12m  | 🟢     | Automate versioning from conventional commits.    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 62 | Extract `drainEvents` to testutil package              | `testing_helpers.go` → `testutil/` | 8m   | 🟢     | Reusable test utilities for downstream consumers. |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Files                                                  | Est.                               | Impact | Why |
+| -- | ---- | ------------------------------------------------------ | ---------------------------------- | ------ | --- |
+| ~~ | 55   | Add `nix run .#test` and `nix run .#lint` to flake.nix | `flake.nix`                        | 12m    | 🟢  |
+| ~~ | 56   | Add Dependabot / Renovate config                       | `.github/dependabot.yml`           | 10m    | 🟢  |
+| ~~ | 57   | Add benchmark regression detection in CI               | `.github/workflows/ci.yml`         | 10m    | 🟢  |
+| ~~ | 58   | Add `-race` to benchmark CI step                       | `.github/workflows/ci.yml`         | 5m     | 🟢  |
+| ~~ | 59   | Test `examples/` in CI pipeline                        | `.github/workflows/ci.yml`         | 10m    | 🟢  |
+| ~~ | 60   | Configure GoReleaser                                   | `.goreleaser.yml`                  | 12m    | 🟢  |
+| ~~ | 61   | Configure semantic-release                             | `.releaserc.yml`                   | 12m    | 🟢  |
+| ~~ | 62   | Extract `drainEvents` to testutil package              | `testing_helpers.go` → `testutil/` | 8m     | 🟢  |
 
 ---
 
@@ -131,21 +131,21 @@ _Enable adoption. Now that we're MIT-licensed, this matters._
 
 _New capabilities that users have requested or are commonly expected._
 
-| #  | Task                                              | Files                     | Est. | Impact | Why                                               |
-| -- | ------------------------------------------------- | ------------------------- | ---- | ------ | ------------------------------------------------- |
-~~| 63 | Implement `WatchOnce()` — API design & core logic | `watcher.go`              | 12m  | 🔵     | High-demand feature. Single-shot event watch.     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 64 | Implement `WatchOnce()` — tests                   | `watcher_test.go`         | 12m  | 🔵     | Full coverage for WatchOnce lifecycle.            |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 65 | Add `Event.ModTime()` field — struct & option     | `event.go`, `options.go`  | 10m  | 🔵     | Common request. File modification time on events. |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 66 | Add `Event.ModTime()` — tests                     | `event_test.go`           | 8m   | 🔵     | Round-trip, JSON, zero-value handling.            |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 67 | Add `Event.Size` field — struct & option          | `event.go`, `options.go`  | 10m  | 🔵     | File size on events. Needs stat call.             |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 68 | Add `Event.Size` — tests                          | `event_test.go`           | 8m   | 🔵     | Coverage for Size field.                          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 69 | Add `MiddlewareThrottle` — drop excess events     | `middleware.go`           | 12m  | 🔵     | Rate limiting that drops instead of rejects.      |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 70 | Add `MiddlewareThrottle` — tests                  | `middleware_test.go`      | 10m  | 🔵     | Full throttle test coverage.                      |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 71 | Add `MiddlewareRateBurst()` — token bucket        | `middleware.go`           | 12m  | 🔵     | Token bucket rate limiting (burst support).       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 72 | Add `MiddlewareRateBurst()` — tests               | `middleware_test.go`      | 10m  | 🔵     | Burst behavior tests.                             |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 73 | Add `WithIgnorePatterns()` using glob patterns    | `filter.go`, `options.go` | 10m  | 🔵     | Glob-based ignore at construction time.           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 74 | Add symlink following support — research & design | —                         | 12m  | 🔵     | Research fsnotify symlink limitations first.      |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 75 | Add symlink following support — implementation    | `watcher_walk.go`         | 12m  | 🔵     | Follow symlinks during directory walk.            |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Files                                             | Est.                      | Impact | Why |
+| -- | ---- | ------------------------------------------------- | ------------------------- | ------ | --- |
+| ~~ | 63   | Implement `WatchOnce()` — API design & core logic | `watcher.go`              | 12m    | 🔵  |
+| ~~ | 64   | Implement `WatchOnce()` — tests                   | `watcher_test.go`         | 12m    | 🔵  |
+| ~~ | 65   | Add `Event.ModTime()` field — struct & option     | `event.go`, `options.go`  | 10m    | 🔵  |
+| ~~ | 66   | Add `Event.ModTime()` — tests                     | `event_test.go`           | 8m     | 🔵  |
+| ~~ | 67   | Add `Event.Size` field — struct & option          | `event.go`, `options.go`  | 10m    | 🔵  |
+| ~~ | 68   | Add `Event.Size` — tests                          | `event_test.go`           | 8m     | 🔵  |
+| ~~ | 69   | Add `MiddlewareThrottle` — drop excess events     | `middleware.go`           | 12m    | 🔵  |
+| ~~ | 70   | Add `MiddlewareThrottle` — tests                  | `middleware_test.go`      | 10m    | 🔵  |
+| ~~ | 71   | Add `MiddlewareRateBurst()` — token bucket        | `middleware.go`           | 12m    | 🔵  |
+| ~~ | 72   | Add `MiddlewareRateBurst()` — tests               | `middleware_test.go`      | 10m    | 🔵  |
+| ~~ | 73   | Add `WithIgnorePatterns()` using glob patterns    | `filter.go`, `options.go` | 10m    | 🔵  |
+| ~~ | 74   | Add symlink following support — research & design | —                         | 12m    | 🔵  |
+| ~~ | 75   | Add symlink following support — implementation    | `watcher_walk.go`         | 12m    | 🔵  |
 
 ---
 
@@ -153,19 +153,19 @@ _New capabilities that users have requested or are commonly expected._
 
 _Nice-to-have. Higher effort, lower immediate priority._
 
-| #  | Task                                              | Files                 | Est. | Impact | Why                                                     |
-| -- | ------------------------------------------------- | --------------------- | ---- | ------ | ------------------------------------------------------- |
-~~| 76 | Add `WithPolling(fallback)` — research & design   | —                     | 12m  | ⚪     | NFS/inotify-less systems. Complex feature.              |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 77 | Implement exponential backoff for errors          | `watcher_internal.go` | 12m  | ⚪     | Retry transient filesystem errors.                      |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 78 | Context propagation through pipeline              | `watcher_internal.go` | 12m  | ⚪     | Pass ctx through middleware chain.                      |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 79 | Self-healing watcher — auto-reconnect             | `watcher.go`          | 12m  | ⚪     | Recover from lost fsnotify watchers.                    |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 80 | Prometheus metrics export                         | `middleware.go`       | 12m  | ⚪     | `MiddlewarePrometheus` integration.                     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 81 | OpenTelemetry integration                         | `middleware.go`       | 12m  | ⚪     | `MiddlewareTelemetry` with OTel spans.                  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 82 | Create debug mode with verbose structured logging | `options.go`          | 12m  | ⚪     | `WithDebug(true)` for detailed event tracing.           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 83 | Add error code constants                          | `errors.go`           | 8m   | ⚪     | Machine-readable error codes for programmatic handling. |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 84 | Add stack traces to `WatcherError`                | `errors.go`           | 8m   | ⚪     | Debug helper for error origin.                          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 85 | Circuit breaker middleware                        | `middleware.go`       | 12m  | ⚪     | Stop event processing after error threshold.            |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 86 | Dead letter queue middleware                      | `middleware.go`       | 12m  | ⚪     | Capture failed events for retry.                        |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Files                                             | Est.                  | Impact | Why |
+| -- | ---- | ------------------------------------------------- | --------------------- | ------ | --- |
+| ~~ | 76   | Add `WithPolling(fallback)` — research & design   | —                     | 12m    | ⚪  |
+| ~~ | 77   | Implement exponential backoff for errors          | `watcher_internal.go` | 12m    | ⚪  |
+| ~~ | 78   | Context propagation through pipeline              | `watcher_internal.go` | 12m    | ⚪  |
+| ~~ | 79   | Self-healing watcher — auto-reconnect             | `watcher.go`          | 12m    | ⚪  |
+| ~~ | 80   | Prometheus metrics export                         | `middleware.go`       | 12m    | ⚪  |
+| ~~ | 81   | OpenTelemetry integration                         | `middleware.go`       | 12m    | ⚪  |
+| ~~ | 82   | Create debug mode with verbose structured logging | `options.go`          | 12m    | ⚪  |
+| ~~ | 83   | Add error code constants                          | `errors.go`           | 8m     | ⚪  |
+| ~~ | 84   | Add stack traces to `WatcherError`                | `errors.go`           | 8m     | ⚪  |
+| ~~ | 85   | Circuit breaker middleware                        | `middleware.go`       | 12m    | ⚪  |
+| ~~ | 86   | Dead letter queue middleware                      | `middleware.go`       | 12m    | ⚪  |
 
 ---
 
@@ -173,12 +173,12 @@ _Nice-to-have. Higher effort, lower immediate priority._
 
 _Depends on other projects. Can only be planned here, executed externally._
 
-| #  | Task                                  | Files    | Est. | Impact | Why                                      |
-| -- | ------------------------------------- | -------- | ---- | ------ | ---------------------------------------- |
-~~| 87 | Integrate into file-and-image-renamer | external | 12m  | ⚪     | Adopt go-filewatcher in sibling project. |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 88 | Integrate into dynamic-markdown-site  | external | 12m  | ⚪     | Adopt go-filewatcher in sibling project. |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 89 | Integrate into auto-deduplicate       | external | 12m  | ⚪     | Adopt go-filewatcher in sibling project. |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 90 | Integrate into Cyberdom               | external | 12m  | ⚪     | Adopt go-filewatcher in sibling project. |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Task | Files                                 | Est.     | Impact | Why |
+| -- | ---- | ------------------------------------- | -------- | ------ | --- |
+| ~~ | 87   | Integrate into file-and-image-renamer | external | 12m    | ⚪  |
+| ~~ | 88   | Integrate into dynamic-markdown-site  | external | 12m    | ⚪  |
+| ~~ | 89   | Integrate into auto-deduplicate       | external | 12m    | ⚪  |
+| ~~ | 90   | Integrate into Cyberdom               | external | 12m    | ⚪  |
 
 ---
 

@@ -186,33 +186,33 @@ The coverage app writes to `coverage.out` which is not writable in the nix sandb
 
 ## F) TOP #25 THINGS WE SHOULD GET DONE NEXT
 
-| #  | Item                                                       | Priority | Effort | Category      |
-| -- | ---------------------------------------------------------- | -------- | ------ | ------------- |
-~~| 1  | **Fix `nix run .#coverage`** — write to `$TMPDIR`          | CRITICAL | 15min  | Nix           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2  | **Fix pre-commit hook timeout** — increase timeout or skip | HIGH     | 15min  | DevEx         |~~ OBSOLETE — BuildFlow reworked; green 2026-10-07
-~~| 3  | **Tag v2.0.0 release**                                     | HIGH     | 30min  | Release       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4  | **Update TODO_LIST.md** — check off done items             | HIGH     | 15min  | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5  | **Add meta to nix apps** — silence warnings                | MEDIUM   | 15min  | Nix           |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 6  | **Add `//nolint:forbidigo` to examples**                   | MEDIUM   | 15min  | Quality       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 7  | **Document vendorHash update procedure**                   | MEDIUM   | 15min  | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 8  | **Add Cachix for binary caching**                          | MEDIUM   | 30min  | CI/CD         |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 9  | **Fix flaky tests** (TestWatcher_Stats_Metrics)            | MEDIUM   | 1-2h   | Quality       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 10 | **Add issue/PR templates** (.github/)                      | MEDIUM   | 30min  | Community     |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 11 | **Add Godoc examples** (Example\* functions)               | MEDIUM   | 2-3h   | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 12 | **Add `Event.ModTime()` field**                            | MEDIUM   | 30min  | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 13 | **Add `WithPolling(fallback bool)`**                       | MEDIUM   | 2-4h   | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 14 | **Recursive directory integration test**                   | MEDIUM   | 1h     | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 15 | **Benchmark regression tests**                             | MEDIUM   | 2h     | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 16 | **Integration into file-and-image-renamer**                | MEDIUM   | 4-8h   | Integration   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 17 | **Standalone CLI tool**                                    | MEDIUM   | 4-8h   | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 18 | **Troubleshooting.md**                                     | MEDIUM   | 1h     | Docs          |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 19 | **Goreleaser config**                                      | MEDIUM   | 2-3h   | Release       |~~ OPEN → TODO_LIST open Q1
-~~| 20 | **Self-healing watcher**                                   | MEDIUM   | 2-4h   | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 21 | **Circuit breaker middleware**                             | MEDIUM   | 1-2h   | Feature       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 22 | **OpenTelemetry integration**                              | LOW      | 3-4h   | Observability |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 23 | **Race safety review for parallel tests**                  | LOW      | 2h     | Quality       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 24 | **Fuzz testing**                                           | LOW      | 2-3h   | Testing       |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 25 | **Windows CI + tests**                                     | LOW      | 2-3h   | Testing       |~~ OPEN → TODO_LIST (Windows CI matrix)
+| #  | Item | Priority                                                   | Effort   | Category |
+| -- | ---- | ---------------------------------------------------------- | -------- | -------- |
+| ~~ | 1    | **Fix `nix run .#coverage`** — write to `$TMPDIR`          | CRITICAL | 15min    |
+| ~~ | 2    | **Fix pre-commit hook timeout** — increase timeout or skip | HIGH     | 15min    |
+| ~~ | 3    | **Tag v2.0.0 release**                                     | HIGH     | 30min    |
+| ~~ | 4    | **Update TODO_LIST.md** — check off done items             | HIGH     | 15min    |
+| ~~ | 5    | **Add meta to nix apps** — silence warnings                | MEDIUM   | 15min    |
+| ~~ | 6    | **Add `//nolint:forbidigo` to examples**                   | MEDIUM   | 15min    |
+| ~~ | 7    | **Document vendorHash update procedure**                   | MEDIUM   | 15min    |
+| ~~ | 8    | **Add Cachix for binary caching**                          | MEDIUM   | 30min    |
+| ~~ | 9    | **Fix flaky tests** (TestWatcher_Stats_Metrics)            | MEDIUM   | 1-2h     |
+| ~~ | 10   | **Add issue/PR templates** (.github/)                      | MEDIUM   | 30min    |
+| ~~ | 11   | **Add Godoc examples** (Example\* functions)               | MEDIUM   | 2-3h     |
+| ~~ | 12   | **Add `Event.ModTime()` field**                            | MEDIUM   | 30min    |
+| ~~ | 13   | **Add `WithPolling(fallback bool)`**                       | MEDIUM   | 2-4h     |
+| ~~ | 14   | **Recursive directory integration test**                   | MEDIUM   | 1h       |
+| ~~ | 15   | **Benchmark regression tests**                             | MEDIUM   | 2h       |
+| ~~ | 16   | **Integration into file-and-image-renamer**                | MEDIUM   | 4-8h     |
+| ~~ | 17   | **Standalone CLI tool**                                    | MEDIUM   | 4-8h     |
+| ~~ | 18   | **Troubleshooting.md**                                     | MEDIUM   | 1h       |
+| ~~ | 19   | **Goreleaser config**                                      | MEDIUM   | 2-3h     |
+| ~~ | 20   | **Self-healing watcher**                                   | MEDIUM   | 2-4h     |
+| ~~ | 21   | **Circuit breaker middleware**                             | MEDIUM   | 1-2h     |
+| ~~ | 22   | **OpenTelemetry integration**                              | LOW      | 3-4h     |
+| ~~ | 23   | **Race safety review for parallel tests**                  | LOW      | 2h       |
+| ~~ | 24   | **Fuzz testing**                                           | LOW      | 2-3h     |
+| ~~ | 25   | **Windows CI + tests**                                     | LOW      | 2-3h     |
 
 ---
 

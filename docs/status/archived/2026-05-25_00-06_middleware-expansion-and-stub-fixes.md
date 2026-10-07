@@ -73,10 +73,10 @@
 
 ## B) PARTIALLY DONE
 
-| #  | Task                         | What's Done                            | What's Missing                                                       |
-| -- | ---------------------------- | -------------------------------------- | -------------------------------------------------------------------- |
-~~| 28 | Error simulation testing     | Indirect tests via `handleError` calls | No fault injection framework, no filesystem error simulation harness |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 37 | examples/ vs example_test.go | Documented in TODO_LIST.md             | No ADR file, no formal decision recorded                             |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+| #  | Task | What's Done                  | What's Missing                         |
+| -- | ---- | ---------------------------- | -------------------------------------- |
+| ~~ | 28   | Error simulation testing     | Indirect tests via `handleError` calls |
+| ~~ | 37   | examples/ vs example_test.go | Documented in TODO_LIST.md             |
 
 ---
 
@@ -173,33 +173,33 @@
 
 ## F) TOP 25 THINGS TO DO NEXT
 
-| Priority | #  | Task                                                              | Effort | Impact |
-| -------- | -- | ----------------------------------------------------------------- | ------ | ------ |
-~~| 1        | —  | **Raise coverage back to ≥90%** (polling + middleware edge cases) | 30min  | HIGH   |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 2        | 42 | Implement exponential backoff for errors                          | 20min  | HIGH   |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 3        | 65 | Configure semantic-release                                        | 20min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 4        | 74 | Test examples/ in CI pipeline                                     | 15min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 5        | 45 | Filter func return match metadata                                 | 20min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 6        | 72 | Windows-specific edge case tests                                  | 30min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 7        | 48 | Watch.WatchChanges(ctx, targetState) idempotent sync              | 25min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 8        | 60 | Dead letter queue                                                 | 30min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 9        | 61 | Self-healing watcher                                              | 45min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 10       | 71 | Extract drainEvents to testutil package                           | 20min  | LOW    |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 11       | 49 | Prometheus metrics export                                         | 30min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 12       | 62 | OpenTelemetry integration                                         | 45min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 13       | 63 | Error analytics                                                   | 30min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 14       | 66 | Create standalone CLI tool                                        | 60min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 15       | 28 | Error simulation / fault injection testing                        | 45min  | HIGH   |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 16       | 67 | Localizable error messages                                        | 20min  | LOW    |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 17       | 68 | Explore fsnotify v2 API changes                                   | 30min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 18       | 69 | Implement DebounceEntry Mixin phantom type                        | 15min  | LOW    |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 19       | 78 | Migrate CI to Nix (Phase 3)                                       | 60min  | HIGH   |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 20       | 79 | Add Cachix for binary caching                                     | 20min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 21       | 37 | Write ADR for examples/ decision                                  | 10min  | LOW    |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 22       | 76 | Integrate into file-and-image-renamer                             | 60min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 23       | 77 | Integrate into dynamic-markdown-site                              | 60min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 24       | —  | Consolidate docs/status/ (remove stale files)                     | 15min  | LOW    |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 25       | —  | Add polling integration test with filter verification             | 15min  | MEDIUM |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+| Priority | #  | Task | Effort                                                            | Impact |
+| -------- | -- | ---- | ----------------------------------------------------------------- | ------ |
+| ~~       | 1  | —    | **Raise coverage back to ≥90%** (polling + middleware edge cases) | 30min  |
+| ~~       | 2  | 42   | Implement exponential backoff for errors                          | 20min  |
+| ~~       | 3  | 65   | Configure semantic-release                                        | 20min  |
+| ~~       | 4  | 74   | Test examples/ in CI pipeline                                     | 15min  |
+| ~~       | 5  | 45   | Filter func return match metadata                                 | 20min  |
+| ~~       | 6  | 72   | Windows-specific edge case tests                                  | 30min  |
+| ~~       | 7  | 48   | Watch.WatchChanges(ctx, targetState) idempotent sync              | 25min  |
+| ~~       | 8  | 60   | Dead letter queue                                                 | 30min  |
+| ~~       | 9  | 61   | Self-healing watcher                                              | 45min  |
+| ~~       | 10 | 71   | Extract drainEvents to testutil package                           | 20min  |
+| ~~       | 11 | 49   | Prometheus metrics export                                         | 30min  |
+| ~~       | 12 | 62   | OpenTelemetry integration                                         | 45min  |
+| ~~       | 13 | 63   | Error analytics                                                   | 30min  |
+| ~~       | 14 | 66   | Create standalone CLI tool                                        | 60min  |
+| ~~       | 15 | 28   | Error simulation / fault injection testing                        | 45min  |
+| ~~       | 16 | 67   | Localizable error messages                                        | 20min  |
+| ~~       | 17 | 68   | Explore fsnotify v2 API changes                                   | 30min  |
+| ~~       | 18 | 69   | Implement DebounceEntry Mixin phantom type                        | 15min  |
+| ~~       | 19 | 78   | Migrate CI to Nix (Phase 3)                                       | 60min  |
+| ~~       | 20 | 79   | Add Cachix for binary caching                                     | 20min  |
+| ~~       | 21 | 37   | Write ADR for examples/ decision                                  | 10min  |
+| ~~       | 22 | 76   | Integrate into file-and-image-renamer                             | 60min  |
+| ~~       | 23 | 77   | Integrate into dynamic-markdown-site                              | 60min  |
+| ~~       | 24 | —    | Consolidate docs/status/ (remove stale files)                     | 15min  |
+| ~~       | 25 | —    | Add polling integration test with filter verification             | 15min  |
 
 ---
 

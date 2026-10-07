@@ -164,93 +164,93 @@ Selected based on impact/effort ratio:
 
 ### Immediate Fix Tasks (Race Condition)
 
-| #  | Task                                      | Time  | Blocker? |
-| -- | ----------------------------------------- | ----- | -------- |
-~~| 1  | Remove emitWg field from Watcher struct   | 5min  | YES      |~~ done — executed within days; verified v2.4.1
-~~| 2  | Remove emitWg initialization in New()     | 5min  | YES      |~~ done — executed within days; verified v2.4.1
-~~| 3  | Revert watchLoop defer to close eventCh   | 5min  | YES      |~~ done — executed within days; verified v2.4.1
-~~| 4  | Remove emitWg.Wait() from watchLoop defer | 3min  | YES      |~~ done — executed within days; verified v2.4.1
-~~| 5  | Add defer/recover to buildEmitFunc        | 5min  | YES      |~~ done — executed within days; verified v2.4.1
-~~| 6  | Remove eventCh field from Watcher struct  | 5min  | YES      |~~ done — executed within days; verified v2.4.1
-~~| 7  | Remove eventCh assignment in Watch()      | 3min  | YES      |~~ done — executed within days; verified v2.4.1
-~~| 8  | Simplify Close() - remove eventCh close   | 5min  | YES      |~~ done — executed within days; verified v2.4.1
-~~| 9  | Run tests without -race                   | 5min  | YES      |~~ done — executed within days; verified v2.4.1
-~~| 10 | Run tests with -race                      | 10min | YES      |~~ done — executed within days; verified v2.4.1
-~~| 11 | Fix context cancellation test             | 10min | YES      |~~ done — executed within days; verified v2.4.1
-~~| 12 | Commit race fix                           | 5min  | YES      |~~ done — executed within days; verified v2.4.1
+| #  | Task | Time                                      | Blocker? |
+| -- | ---- | ----------------------------------------- | -------- |
+| ~~ | 1    | Remove emitWg field from Watcher struct   | 5min     |
+| ~~ | 2    | Remove emitWg initialization in New()     | 5min     |
+| ~~ | 3    | Revert watchLoop defer to close eventCh   | 5min     |
+| ~~ | 4    | Remove emitWg.Wait() from watchLoop defer | 3min     |
+| ~~ | 5    | Add defer/recover to buildEmitFunc        | 5min     |
+| ~~ | 6    | Remove eventCh field from Watcher struct  | 5min     |
+| ~~ | 7    | Remove eventCh assignment in Watch()      | 3min     |
+| ~~ | 8    | Simplify Close() - remove eventCh close   | 5min     |
+| ~~ | 9    | Run tests without -race                   | 5min     |
+| ~~ | 10   | Run tests with -race                      | 10min    |
+| ~~ | 11   | Fix context cancellation test             | 10min    |
+| ~~ | 12   | Commit race fix                           | 5min     |
 
 ### Cleanup Tasks
 
-| #  | Task                     | Time  | Blocker? |
-| -- | ------------------------ | ----- | -------- |
-~~| 13 | Update TODO_LIST.md      | 5min  | No       |~~ done — executed within days; verified v2.4.1
-~~| 14 | Run linter               | 5min  | No       |~~ done — executed within days; verified v2.4.1
-~~| 15 | Review git history       | 5min  | No       |~~ done — executed within days; verified v2.4.1
-~~| 16 | Squash commits if needed | 10min | No       |~~ done — executed within days; verified v2.4.1
+| #  | Task | Time                     | Blocker? |
+| -- | ---- | ------------------------ | -------- |
+| ~~ | 13   | Update TODO_LIST.md      | 5min     |
+| ~~ | 14   | Run linter               | 5min     |
+| ~~ | 15   | Review git history       | 5min     |
+| ~~ | 16   | Squash commits if needed | 10min    |
 
 ### Tagging & Release
 
-| #  | Task                       | Time  | Blocker? |
-| -- | -------------------------- | ----- | -------- |
-~~| 17 | Create v0.1.0 tag          | 5min  | YES      |~~ done — executed within days; verified v2.4.1
-~~| 18 | Write v0.1.0 release notes | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 19 | Push tags to origin        | 2min  | No       |~~ done — executed within days; verified v2.4.1
+| #  | Task | Time                       | Blocker? |
+| -- | ---- | -------------------------- | -------- |
+| ~~ | 17   | Create v0.1.0 tag          | 5min     |
+| ~~ | 18   | Write v0.1.0 release notes | 10min    |
+| ~~ | 19   | Push tags to origin        | 2min     |
 
 ### Medium Priority Implementation
 
-| #  | Task                                 | Time  | Blocker? |
-| -- | ------------------------------------ | ----- | -------- |
-~~| 20 | Add Event.Size field to Event struct | 5min  | No       |~~ done — executed within days; verified v2.4.1
-~~| 21 | Update convertEvent to populate Size | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 22 | Test Event.Size                      | 5min  | No       |~~ done — executed within days; verified v2.4.1
-~~| 23 | Add Event.ModTime() method           | 5min  | No       |~~ done — executed within days; verified v2.4.1
-~~| 24 | Test Event.ModTime()                 | 5min  | No       |~~ done — executed within days; verified v2.4.1
-~~| 25 | Add FilterExcludePaths function      | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 26 | Test FilterExcludePaths              | 5min  | No       |~~ done — executed within days; verified v2.4.1
-~~| 27 | Add FilterMinAge function            | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 28 | Test FilterMinAge                    | 5min  | No       |~~ done — executed within days; verified v2.4.1
-~~| 29 | Add FilterMaxSize function           | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 30 | Test FilterMaxSize                   | 5min  | No       |~~ done — executed within days; verified v2.4.1
-~~| 31 | Add WithPolling option skeleton      | 5min  | No       |~~ done — executed within days; verified v2.4.1
-~~| 32 | Research fsnotify polling support    | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 33 | Implement polling fallback           | 20min | No       |~~ done — executed within days; verified v2.4.1
-~~| 34 | Test WithPolling                     | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 35 | Add symlink following support        | 15min | No       |~~ done — executed within days; verified v2.4.1
-~~| 36 | Test symlink following               | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 37 | Add MiddlewareDeduplicate skeleton   | 5min  | No       |~~ done — executed within days; verified v2.4.1
-~~| 38 | Implement deduplication logic        | 15min | No       |~~ done — executed within days; verified v2.4.1
-~~| 39 | Test MiddlewareDeduplicate           | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 40 | Add Watcher.WatchOnce() skeleton     | 5min  | No       |~~ done — executed within days; verified v2.4.1
-~~| 41 | Implement WatchOnce logic            | 15min | No       |~~ done — executed within days; verified v2.4.1
-~~| 42 | Test WatchOnce                       | 10min | No       |~~ done — executed within days; verified v2.4.1
+| #  | Task | Time                                 | Blocker? |
+| -- | ---- | ------------------------------------ | -------- |
+| ~~ | 20   | Add Event.Size field to Event struct | 5min     |
+| ~~ | 21   | Update convertEvent to populate Size | 10min    |
+| ~~ | 22   | Test Event.Size                      | 5min     |
+| ~~ | 23   | Add Event.ModTime() method           | 5min     |
+| ~~ | 24   | Test Event.ModTime()                 | 5min     |
+| ~~ | 25   | Add FilterExcludePaths function      | 10min    |
+| ~~ | 26   | Test FilterExcludePaths              | 5min     |
+| ~~ | 27   | Add FilterMinAge function            | 10min    |
+| ~~ | 28   | Test FilterMinAge                    | 5min     |
+| ~~ | 29   | Add FilterMaxSize function           | 10min    |
+| ~~ | 30   | Test FilterMaxSize                   | 5min     |
+| ~~ | 31   | Add WithPolling option skeleton      | 5min     |
+| ~~ | 32   | Research fsnotify polling support    | 10min    |
+| ~~ | 33   | Implement polling fallback           | 20min    |
+| ~~ | 34   | Test WithPolling                     | 10min    |
+| ~~ | 35   | Add symlink following support        | 15min    |
+| ~~ | 36   | Test symlink following               | 10min    |
+| ~~ | 37   | Add MiddlewareDeduplicate skeleton   | 5min     |
+| ~~ | 38   | Implement deduplication logic        | 15min    |
+| ~~ | 39   | Test MiddlewareDeduplicate           | 10min    |
+| ~~ | 40   | Add Watcher.WatchOnce() skeleton     | 5min     |
+| ~~ | 41   | Implement WatchOnce logic            | 15min    |
+| ~~ | 42   | Test WatchOnce                       | 10min    |
 
 ### Documentation
 
-| #  | Task                                | Time  | Blocker? |
-| -- | ----------------------------------- | ----- | -------- |
-~~| 43 | Write godoc examples for New()      | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 44 | Write godoc examples for Watch()    | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 45 | Write godoc examples for filters    | 15min | No       |~~ done — executed within days; verified v2.4.1
-~~| 46 | Write godoc examples for middleware | 15min | No       |~~ done — executed within days; verified v2.4.1
-~~| 47 | Create Troubleshooting.md outline   | 5min  | No       |~~ done — executed within days; verified v2.4.1
-~~| 48 | Write common issues section         | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 49 | Write debugging tips section        | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 50 | Create CLI tool main.go             | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 51 | Add CLI flags parsing               | 15min | No       |~~ done — executed within days; verified v2.4.1
-~~| 52 | Add CLI watch logic                 | 15min | No       |~~ done — executed within days; verified v2.4.1
-~~| 53 | Test CLI tool                       | 10min | No       |~~ done — executed within days; verified v2.4.1
+| #  | Task | Time                                | Blocker? |
+| -- | ---- | ----------------------------------- | -------- |
+| ~~ | 43   | Write godoc examples for New()      | 10min    |
+| ~~ | 44   | Write godoc examples for Watch()    | 10min    |
+| ~~ | 45   | Write godoc examples for filters    | 15min    |
+| ~~ | 46   | Write godoc examples for middleware | 15min    |
+| ~~ | 47   | Create Troubleshooting.md outline   | 5min     |
+| ~~ | 48   | Write common issues section         | 10min    |
+| ~~ | 49   | Write debugging tips section        | 10min    |
+| ~~ | 50   | Create CLI tool main.go             | 10min    |
+| ~~ | 51   | Add CLI flags parsing               | 15min    |
+| ~~ | 52   | Add CLI watch logic                 | 15min    |
+| ~~ | 53   | Test CLI tool                       | 10min    |
 
 ### CI/CD
 
-| #  | Task                         | Time  | Blocker? |
-| -- | ---------------------------- | ----- | -------- |
-~~| 54 | Create .goreleaser.yaml      | 15min | No       |~~ done — executed within days; verified v2.4.1
-~~| 55 | Test goreleaser locally      | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 56 | Add semantic-release config  | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 57 | Add coverage threshold to CI | 10min | No       |~~ done — executed within days; verified v2.4.1
-~~| 58 | Create CONTRIBUTING.md       | 15min | No       |~~ done — executed within days; verified v2.4.1
-~~| 59 | Create CODEOWNERS            | 5min  | No       |~~ done — executed within days; verified v2.4.1
-~~| 60 | Tag v2.0.0                   | 5min  | No       |~~ done — executed within days; verified v2.4.1
+| #  | Task | Time                         | Blocker? |
+| -- | ---- | ---------------------------- | -------- |
+| ~~ | 54   | Create .goreleaser.yaml      | 15min    |
+| ~~ | 55   | Test goreleaser locally      | 10min    |
+| ~~ | 56   | Add semantic-release config  | 10min    |
+| ~~ | 57   | Add coverage threshold to CI | 10min    |
+| ~~ | 58   | Create CONTRIBUTING.md       | 15min    |
+| ~~ | 59   | Create CODEOWNERS            | 5min     |
+| ~~ | 60   | Tag v2.0.0                   | 5min     |
 
 ---
 

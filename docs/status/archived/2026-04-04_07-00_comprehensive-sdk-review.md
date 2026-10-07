@@ -279,76 +279,76 @@ Using an untyped `interface{}` in a Go library that otherwise embraces strong ty
 
 ### P0 — Before Any Use (Critical Fixes)
 
-| # | Task                                                | Effort | File(s)         |
-| - | --------------------------------------------------- | ------ | --------------- |
-~~| 1 | Fix `MiddlewareRateLimit` data race                 | 5min   | `middleware.go` |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 2 | Fix `Debouncer.Flush()` to actually execute pending | 10min  | `debouncer.go`  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 3 | Add `watching` guard to prevent double `Watch()`    | 5min   | `watcher.go`    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 4 | Change `Add()` from `RLock` to `Lock`               | 2min   | `watcher.go`    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 5 | Propagate middleware errors instead of discarding   | 10min  | `watcher.go`    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+| #  | Task | Effort                                              | File(s) |
+| -- | ---- | --------------------------------------------------- | ------- |
+| ~~ | 1    | Fix `MiddlewareRateLimit` data race                 | 5min    |
+| ~~ | 2    | Fix `Debouncer.Flush()` to actually execute pending | 10min   |
+| ~~ | 3    | Add `watching` guard to prevent double `Watch()`    | 5min    |
+| ~~ | 4    | Change `Add()` from `RLock` to `Lock`               | 2min    |
+| ~~ | 5    | Propagate middleware errors instead of discarding   | 10min   |
 
 ### P1 — Before v0.1.0 (Important)
 
-| #  | Task                                              | Effort | File(s)                    |
-| -- | ------------------------------------------------- | ------ | -------------------------- |
-~~| 6  | Extract `debounceInterface` to named Go interface | 10min  | `watcher.go`               |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 7  | Add `WithBuffer(size int)` option                 | 5min   | `options.go`               |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 8  | Add `WithSkipDotDirs(bool)` option                | 5min   | `options.go`, `watcher.go` |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 9  | Add `Remove(path)` method                         | 15min  | `watcher.go`               |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 10 | Add `WatchList() []string` method                 | 10min  | `watcher.go`               |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 11 | Add `FilterRegex(pattern)` filter                 | 10min  | `filter.go`                |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 12 | Log or count dropped events on full channel       | 10min  | `watcher.go`               |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 13 | Raise test coverage to 90%+                       | 30min  | `*_test.go`                |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 14 | Add benchmark tests for Debouncer                 | 20min  | `debouncer_test.go`        |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 15 | Add `Example*` test functions for godoc           | 20min  | `*_test.go`                |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 16 | Document combined-op priority in `convertEvent`   | 2min   | `watcher.go`               |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 17 | Formalize `io.Closer` interface compliance        | 2min   | `watcher.go`               |~~ done — shipped ≤v2.1.0, verified v2.4.1
+| #  | Task | Effort                                            | File(s) |
+| -- | ---- | ------------------------------------------------- | ------- |
+| ~~ | 6    | Extract `debounceInterface` to named Go interface | 10min   |
+| ~~ | 7    | Add `WithBuffer(size int)` option                 | 5min    |
+| ~~ | 8    | Add `WithSkipDotDirs(bool)` option                | 5min    |
+| ~~ | 9    | Add `Remove(path)` method                         | 15min   |
+| ~~ | 10   | Add `WatchList() []string` method                 | 10min   |
+| ~~ | 11   | Add `FilterRegex(pattern)` filter                 | 10min   |
+| ~~ | 12   | Log or count dropped events on full channel       | 10min   |
+| ~~ | 13   | Raise test coverage to 90%+                       | 30min   |
+| ~~ | 14   | Add benchmark tests for Debouncer                 | 20min   |
+| ~~ | 15   | Add `Example*` test functions for godoc           | 20min   |
+| ~~ | 16   | Document combined-op priority in `convertEvent`   | 2min    |
+| ~~ | 17   | Formalize `io.Closer` interface compliance        | 2min    |
 
 ### P2 — Before v1.0 (Nice to Have)
 
-| #  | Task                                                | Effort |
-| -- | --------------------------------------------------- | ------ |
-~~| 18 | `Stats()` method (event counts, uptime, last event) | 20min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 19 | Stress test with 10k+ files                         | 30min  |~~ OPEN → TODO_LIST (large-tree stress harness)
-~~| 20 | `examples/` directory with standalone programs      | 30min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 21 | Set up GitHub Actions CI                            | 20min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 22 | Create justfile or Makefile                         | 10min  |~~ OBSOLETE — removed; Nix flake apps
-~~| 23 | Integrate in a real project to validate API         | 1hr    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 24 | `FilterMinSize(size int64)` filter                  | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 25 | Tag v0.1.0 after all P0/P1 items done               | 2min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
+| #  | Task | Effort                                              |
+| -- | ---- | --------------------------------------------------- |
+| ~~ | 18   | `Stats()` method (event counts, uptime, last event) |
+| ~~ | 19   | Stress test with 10k+ files                         |
+| ~~ | 20   | `examples/` directory with standalone programs      |
+| ~~ | 21   | Set up GitHub Actions CI                            |
+| ~~ | 22   | Create justfile or Makefile                         |
+| ~~ | 23   | Integrate in a real project to validate API         |
+| ~~ | 24   | `FilterMinSize(size int64)` filter                  |
+| ~~ | 25   | Tag v0.1.0 after all P0/P1 items done               |
 
 ---
 
 ## F) Top 25 Things to Do Next
 
-| #  | Task                                                                  | Priority | Effort | Status      |
-| -- | --------------------------------------------------------------------- | -------- | ------ | ----------- |
-~~| 1  | Fix `MiddlewareRateLimit` data race (use `sync.Mutex` or atomic)      | P0       | 5min   | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 2  | Fix `Debouncer.Flush()` — execute pending fns, not cancel them        | P0       | 10min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 3  | Add `watching bool` guard against double `Watch()` calls              | P0       | 5min   | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 4  | Change `Add()` from `RLock` to `Lock` (mutation needs write lock)     | P0       | 2min   | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 5  | Propagate middleware errors, don't discard with `_ =`                 | P0       | 10min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 6  | Extract `debounceInterface` to named interface                        | P1       | 10min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 7  | Add `WithBuffer(size int)` option (configurable channel buffer)       | P1       | 5min   | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 8  | Add `WithSkipDotDirs(bool)` option                                    | P1       | 5min   | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 9  | Add `Remove(path)` method to stop watching a directory                | P1       | 15min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 10 | Add `WatchList() []string` method                                     | P1       | 10min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 11 | Add `FilterRegex(pattern string)` filter                              | P1       | 10min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 12 | Log/count dropped events when channel buffer is full                  | P1       | 10min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 13 | Raise coverage to 90%+ (middleware, error paths)                      | P1       | 30min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 14 | Add benchmark tests for Debouncer                                     | P1       | 20min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 15 | Add `Example*` test functions for godoc                               | P1       | 20min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 16 | Document combined-op priority in `convertEvent`                       | P1       | 2min   | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 17 | Formalize `io.Closer` compliance: `var _ io.Closer = (*Watcher)(nil)` | P1       | 2min   | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 18 | Add `Stats()` method (event counts, uptime, last event)               | P2       | 20min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 19 | Stress test with 10k+ files                                           | P2       | 30min  | Not started |~~ OPEN → TODO_LIST (large-tree stress harness)
-~~| 20 | Add `examples/` directory with standalone programs                    | P2       | 30min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 21 | Set up GitHub Actions CI                                              | P2       | 20min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 22 | Create justfile or Makefile                                           | P2       | 10min  | Not started |~~ OBSOLETE — removed; Nix flake apps replaced
+| #  | Task | Priority                                                              | Effort | Status |
+| -- | ---- | --------------------------------------------------------------------- | ------ | ------ |
+| ~~ | 1    | Fix `MiddlewareRateLimit` data race (use `sync.Mutex` or atomic)      | P0     | 5min   |
+| ~~ | 2    | Fix `Debouncer.Flush()` — execute pending fns, not cancel them        | P0     | 10min  |
+| ~~ | 3    | Add `watching bool` guard against double `Watch()` calls              | P0     | 5min   |
+| ~~ | 4    | Change `Add()` from `RLock` to `Lock` (mutation needs write lock)     | P0     | 2min   |
+| ~~ | 5    | Propagate middleware errors, don't discard with `_ =`                 | P0     | 10min  |
+| ~~ | 6    | Extract `debounceInterface` to named interface                        | P1     | 10min  |
+| ~~ | 7    | Add `WithBuffer(size int)` option (configurable channel buffer)       | P1     | 5min   |
+| ~~ | 8    | Add `WithSkipDotDirs(bool)` option                                    | P1     | 5min   |
+| ~~ | 9    | Add `Remove(path)` method to stop watching a directory                | P1     | 15min  |
+| ~~ | 10   | Add `WatchList() []string` method                                     | P1     | 10min  |
+| ~~ | 11   | Add `FilterRegex(pattern string)` filter                              | P1     | 10min  |
+| ~~ | 12   | Log/count dropped events when channel buffer is full                  | P1     | 10min  |
+| ~~ | 13   | Raise coverage to 90%+ (middleware, error paths)                      | P1     | 30min  |
+| ~~ | 14   | Add benchmark tests for Debouncer                                     | P1     | 20min  |
+| ~~ | 15   | Add `Example*` test functions for godoc                               | P1     | 20min  |
+| ~~ | 16   | Document combined-op priority in `convertEvent`                       | P1     | 2min   |
+| ~~ | 17   | Formalize `io.Closer` compliance: `var _ io.Closer = (*Watcher)(nil)` | P1     | 2min   |
+| ~~ | 18   | Add `Stats()` method (event counts, uptime, last event)               | P2     | 20min  |
+| ~~ | 19   | Stress test with 10k+ files                                           | P2     | 30min  |
+| ~~ | 20   | Add `examples/` directory with standalone programs                    | P2     | 30min  |
+| ~~ | 21   | Set up GitHub Actions CI                                              | P2     | 20min  |
+| ~~ | 22   | Create justfile or Makefile                                           | P2     | 10min  |
 
-~~| 23 | Integrate in a real project (hierarchical-errors, Kernovia, etc.)     | P2       | 1hr    | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 24 | Add `FilterMinSize(size int64)` filter                                | P3       | 10min  | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 25 | Tag v0.1.0 after all P0/P1 items complete                             | P3       | 2min   | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 23 | Integrate in a real project (hierarchical-errors, Kernovia, etc.) | P2 | 1hr | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 24 | Add `FilterMinSize(size int64)` filter | P3 | 10min | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
+~~| 25 | Tag v0.1.0 after all P0/P1 items complete | P3 | 2min | Not started |~~ done — shipped ≤v2.1.0, verified v2.4.1
 
 ---
 

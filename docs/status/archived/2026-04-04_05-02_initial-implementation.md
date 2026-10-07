@@ -147,33 +147,33 @@ This is cosmetic, not functional.
 
 ## F) Top 25 Things to Do Next
 
-| #  | Task                                                             | Priority | Effort |
-| -- | ---------------------------------------------------------------- | -------- | ------ |
-~~| 1  | Write README.md with installation, quickstart, API reference     | P0       | 30min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 2  | Add LICENSE file (matching go-cqrs-lite)                         | P0       | 2min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 3  | Add `Example*` test functions for godoc                          | P0       | 20min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 4  | Raise coverage to 90%+ (cover middleware, error paths)           | P0       | 30min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 5  | Extract `debounceInterface` to named interface                   | P1       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 6  | Add `WithBuffer(size int)` option                                | P1       | 5min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 7  | Add `FilterRegex(pattern string)`                                | P1       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 8  | Add benchmark tests for Debouncer                                | P1       | 20min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 9  | Add golangci-lint config                                         | P1       | 15min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 10 | Create Makefile or justfile                                      | P1       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 11 | Set up GitHub Actions CI                                         | P1       | 20min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 12 | Integrate in `hierarchical-errors` (replace hand-rolled watcher) | P2       | 1hr    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 13 | Integrate in `todo-list-ai-go` (replace scanner fsnotify code)   | P2       | 1hr    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 14 | Integrate in `Kernovia` (replace hotreload watcher + Debouncer)  | P2       | 1hr    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 15 | Add CHANGELOG.md                                                 | P2       | 5min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 16 | Add CONTRIBUTING.md                                              | P2       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 17 | Add `Watcher.Stats()` method                                     | P2       | 20min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 18 | Stress test with 10k+ files                                      | P2       | 30min  |~~ OBSOLETE — FilterCustom removed (f21fc03)
-~~| 19 | Add `examples/` directory with standalone programs               | P2       | 30min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 20 | Add `FilterCustom(fn func(path string) bool)`                    | P3       | 5min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 21 | Formalize `io.Closer` interface compliance                       | P3       | 2min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 22 | Add `WithOnAdd(fn)` callback option                              | P3       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 23 | Add `FilterMinSize(size int64)` filter                           | P3       | 10min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 24 | Tag v0.1.0 after integrations pass                               | P3       | 2min   |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 25 | Write blog post / announce                                       | P4       | 1hr    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+| #  | Task | Priority                                                         | Effort |
+| -- | ---- | ---------------------------------------------------------------- | ------ |
+| ~~ | 1    | Write README.md with installation, quickstart, API reference     | P0     |
+| ~~ | 2    | Add LICENSE file (matching go-cqrs-lite)                         | P0     |
+| ~~ | 3    | Add `Example*` test functions for godoc                          | P0     |
+| ~~ | 4    | Raise coverage to 90%+ (cover middleware, error paths)           | P0     |
+| ~~ | 5    | Extract `debounceInterface` to named interface                   | P1     |
+| ~~ | 6    | Add `WithBuffer(size int)` option                                | P1     |
+| ~~ | 7    | Add `FilterRegex(pattern string)`                                | P1     |
+| ~~ | 8    | Add benchmark tests for Debouncer                                | P1     |
+| ~~ | 9    | Add golangci-lint config                                         | P1     |
+| ~~ | 10   | Create Makefile or justfile                                      | P1     |
+| ~~ | 11   | Set up GitHub Actions CI                                         | P1     |
+| ~~ | 12   | Integrate in `hierarchical-errors` (replace hand-rolled watcher) | P2     |
+| ~~ | 13   | Integrate in `todo-list-ai-go` (replace scanner fsnotify code)   | P2     |
+| ~~ | 14   | Integrate in `Kernovia` (replace hotreload watcher + Debouncer)  | P2     |
+| ~~ | 15   | Add CHANGELOG.md                                                 | P2     |
+| ~~ | 16   | Add CONTRIBUTING.md                                              | P2     |
+| ~~ | 17   | Add `Watcher.Stats()` method                                     | P2     |
+| ~~ | 18   | Stress test with 10k+ files                                      | P2     |
+| ~~ | 19   | Add `examples/` directory with standalone programs               | P2     |
+| ~~ | 20   | Add `FilterCustom(fn func(path string) bool)`                    | P3     |
+| ~~ | 21   | Formalize `io.Closer` interface compliance                       | P3     |
+| ~~ | 22   | Add `WithOnAdd(fn)` callback option                              | P3     |
+| ~~ | 23   | Add `FilterMinSize(size int64)` filter                           | P3     |
+| ~~ | 24   | Tag v0.1.0 after integrations pass                               | P3     |
+| ~~ | 25   | Write blog post / announce                                       | P4     |
 
 ---
 

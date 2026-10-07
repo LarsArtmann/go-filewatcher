@@ -65,12 +65,12 @@
 
 ## B) PARTIALLY DONE
 
-| # | Task                           | What's Done                                                                 | What's Missing                                            |
-| - | ------------------------------ | --------------------------------------------------------------------------- | --------------------------------------------------------- |
-~~| 1 | Coverage ≥90%                  | Main package at 87.7%. Most functions at 100%.                              | **33 functions below 100%** — see Section E for breakdown |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 2 | Error simulation testing       | Indirect tests via `handleError` calls                                      | No fault injection framework                              |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 3 | Pre-commit hook compliance     | Production code clean                                                       | 9 test files have unused `testpackage` nolint directives  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 4 | Code duplication in middleware | Identified: `MiddlewareBatch` / `MiddlewareErrorBatch` share batching logic | Not yet consolidated                                      |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+| #  | Task | What's Done                    | What's Missing                                                              |
+| -- | ---- | ------------------------------ | --------------------------------------------------------------------------- |
+| ~~ | 1    | Coverage ≥90%                  | Main package at 87.7%. Most functions at 100%.                              |
+| ~~ | 2    | Error simulation testing       | Indirect tests via `handleError` calls                                      |
+| ~~ | 3    | Pre-commit hook compliance     | Production code clean                                                       |
+| ~~ | 4    | Code duplication in middleware | Identified: `MiddlewareBatch` / `MiddlewareErrorBatch` share batching logic |
 
 ---
 
@@ -78,38 +78,38 @@
 
 ### From TODO_LIST.md — Feature Work
 
-| #  | Task                                             | Effort |
-| -- | ------------------------------------------------ | ------ |
-~~| 42 | Exponential backoff middleware                   | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 45 | Filter func return match metadata                | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 48 | `WatchChanges(ctx, targetState)` idempotent sync | 25min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 49 | Prometheus metrics export                        | 30min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 60 | Dead letter queue                                | 30min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 61 | Self-healing watcher                             | 45min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 62 | OpenTelemetry integration                        | 45min  |~~ OPEN → research contract + TODO_LIST open Q3 (WatchChanges)
-~~| 63 | Error analytics                                  | 30min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 66 | Standalone CLI tool                              | 60min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 67 | Localizable error messages                       | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 68 | Explore fsnotify v2 API changes                  | 30min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 69 | DebounceEntry Mixin phantom type                 | 15min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+| #  | Task | Effort                                           |
+| -- | ---- | ------------------------------------------------ |
+| ~~ | 42   | Exponential backoff middleware                   |
+| ~~ | 45   | Filter func return match metadata                |
+| ~~ | 48   | `WatchChanges(ctx, targetState)` idempotent sync |
+| ~~ | 49   | Prometheus metrics export                        |
+| ~~ | 60   | Dead letter queue                                |
+| ~~ | 61   | Self-healing watcher                             |
+| ~~ | 62   | OpenTelemetry integration                        |
+| ~~ | 63   | Error analytics                                  |
+| ~~ | 66   | Standalone CLI tool                              |
+| ~~ | 67   | Localizable error messages                       |
+| ~~ | 68   | Explore fsnotify v2 API changes                  |
+| ~~ | 69   | DebounceEntry Mixin phantom type                 |
 
 ### From TODO_LIST.md — Infra/Quality
 
-| #  | Task                                      | Effort |
-| -- | ----------------------------------------- | ------ |
-~~| 65 | Configure semantic-release                | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 71 | Extract `drainEvents` to testutil package | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 72 | Windows edge case tests                   | 30min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 74 | Test examples/ in CI                      | 15min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 78 | Migrate CI to Nix                         | 60min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 79 | Add Cachix for binary caching             | 20min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+| #  | Task | Effort                                    |
+| -- | ---- | ----------------------------------------- |
+| ~~ | 65   | Configure semantic-release                |
+| ~~ | 71   | Extract `drainEvents` to testutil package |
+| ~~ | 72   | Windows edge case tests                   |
+| ~~ | 74   | Test examples/ in CI                      |
+| ~~ | 78   | Migrate CI to Nix                         |
+| ~~ | 79   | Add Cachix for binary caching             |
 
 ### From TODO_LIST.md — Integration
 
-| #  | Task                                  | Effort |
-| -- | ------------------------------------- | ------ |
-~~| 76 | Integrate into file-and-image-renamer | 60min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 77 | Integrate into dynamic-markdown-site  | 60min  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+| #  | Task | Effort                                |
+| -- | ---- | ------------------------------------- |
+| ~~ | 76   | Integrate into file-and-image-renamer |
+| ~~ | 77   | Integrate into dynamic-markdown-site  |
 
 ---
 
@@ -149,9 +149,10 @@
 ### Critical (blocks release)
 
 ~~1. **Raise coverage from 87.7% → ≥90%** — 33 functions below 100%, 8 at 0%. The biggest gaps:~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-   - `pollEmitEvent` (0.0%), `CircuitState.String()` (0.0%), `ErrorCategory.String()` (0.0%), `WithWatchedIgnoreDirs` (0.0%)
-   - `walkDirFunc` (52.2%), `executeHandler` (60.0%), `AddRecursive` (61.9%)
-   - `pollWalkDir` (70.0%), `WatchOnce` (71.4%), `MiddlewareErrorSanitization` (66.7%)
+
+- `pollEmitEvent` (0.0%), `CircuitState.String()` (0.0%), `ErrorCategory.String()` (0.0%), `WithWatchedIgnoreDirs` (0.0%)
+- `walkDirFunc` (52.2%), `executeHandler` (60.0%), `AddRecursive` (61.9%)
+- `pollWalkDir` (70.0%), `WatchOnce` (71.4%), `MiddlewareErrorSanitization` (66.7%)
 
 ~~2. **Fix `WatchOnce` double `%w`** — Second error silently dropped. Use `fmt.Errorf("... %w ... %w", err1, err2)` with Go 1.20+ multi-Error wrapping or use `%v` for the second.~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
 
@@ -197,33 +198,33 @@
 
 Sorted by **Pareto: highest impact × lowest effort first**.
 
-| Priority | #  | Task                                                                                                    | Effort | Impact | Rationale                                  |
-| -------- | -- | ------------------------------------------------------------------------------------------------------- | ------ | ------ | ------------------------------------------ |
-~~| 1        | —  | **Add tests for 0% functions** (`ErrorCategory.String`, `CircuitState.String`, `WithWatchedIgnoreDirs`) | 10min  | HIGH   | Free coverage: these are trivial functions |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 2        | 9  | **Fix `WatchOnce` double `%w`** — use `%v` for second error                                             | 5min   | HIGH   | Silent error dropping bug                  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 3        | —  | **Fix `Event.ModTime` `omitempty`** → `omitzero`                                                        | 2min   | MEDIUM | Misleading tag                             |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 4        | —  | **Extract `copyWatchList()` helper** — eliminate 3× duplication                                         | 10min  | MEDIUM | DRY + lock safety                          |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 5        | —  | **Add `walkDirFunc` symlink branch tests** — raise from 52.2%                                           | 15min  | HIGH   | Largest single-function gap                |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 6        | —  | **Add `executeHandler` error branch tests** — raise from 60.0%                                          | 10min  | HIGH   | Error path coverage                        |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 7        | —  | **Add `AddRecursive` depth edge case tests** — raise from 61.9%                                         | 15min  | HIGH   | New feature needs coverage                 |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 8        | —  | **Add `pollEmitEvent` test** — raise from 0.0%                                                          | 15min  | HIGH   | Biggest polling coverage gap               |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 9        | —  | **Add `MiddlewareErrorSanitization` nil path test**                                                     | 5min   | MEDIUM | Missing nil handling test                  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 10       | —  | **Add `MiddlewareErrorBatch` timer flush test**                                                         | 10min  | MEDIUM | Only max-size path tested                  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 11       | 42 | **Implement exponential backoff middleware**                                                            | 20min  | HIGH   | Natural pairing with circuit breaker       |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 12       | —  | **Consolidate `MiddlewareBatch` / `MiddlewareErrorBatch`** generic batcher                              | 25min  | MEDIUM | ~142 lines of duplication                  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 13       | —  | **Fix `Event.LogValue` to include `Size` and `ModTime`**                                                | 5min   | LOW    | Incomplete structured logging              |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 14       | —  | **Fix `WithPolling` option ordering bug** — don't clobber `pollInterval` if already set                 | 10min  | HIGH   | Silent configuration loss                  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 15       | 65 | **Configure semantic-release**                                                                          | 20min  | MEDIUM | Goreleaser alone doesn't handle versioning |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 16       | 74 | **Test `examples/` in CI** — `go build ./examples/...`                                                  | 15min  | MEDIUM | Examples should compile in CI              |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 17       | —  | **Remove `WithWatchedIgnoreDirs`** — redundant with `WithFilter(FilterIgnoreDirs(...))`                 | 10min  | LOW    | Dead API surface                           |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 18       | —  | **Make `NewWatcherError` stack capture opt-in**                                                         | 10min  | MEDIUM | Expensive default                          |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 19       | —  | **Fix `MiddlewareErrorSanitization` error chain** — preserve `errors.Is`/`errors.As`                    | 15min  | HIGH   | Silent chain breakage                      |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 20       | 71 | **Extract `drainEvents` to testutil**                                                                   | 20min  | LOW    | Test consolidation                         |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 21       | 60 | **Dead letter queue middleware**                                                                        | 30min  | MEDIUM | Pairs with circuit breaker                 |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 22       | 45 | **Filter func return match metadata**                                                                   | 20min  | MEDIUM | Richer filter semantics                    |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 23       | 72 | **Windows-specific edge case tests**                                                                    | 30min  | MEDIUM | Cross-platform goal                        |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 24       | —  | **Consolidate `docs/status/`** — archive stale files                                                    | 15min  | LOW    | 30+ files, most stale                      |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
-~~| 25       | 49 | **Prometheus metrics export**                                                                           | 30min  | MEDIUM | Observability integration                  |~~ resolved — verified shipped ≤v2.4.1 or consciously dropped (see open-item markers)
+| Priority | #  | Task | Effort                                                                                                  | Impact | Rationale |
+| -------- | -- | ---- | ------------------------------------------------------------------------------------------------------- | ------ | --------- |
+| ~~       | 1  | —    | **Add tests for 0% functions** (`ErrorCategory.String`, `CircuitState.String`, `WithWatchedIgnoreDirs`) | 10min  | HIGH      |
+| ~~       | 2  | 9    | **Fix `WatchOnce` double `%w`** — use `%v` for second error                                             | 5min   | HIGH      |
+| ~~       | 3  | —    | **Fix `Event.ModTime` `omitempty`** → `omitzero`                                                        | 2min   | MEDIUM    |
+| ~~       | 4  | —    | **Extract `copyWatchList()` helper** — eliminate 3× duplication                                         | 10min  | MEDIUM    |
+| ~~       | 5  | —    | **Add `walkDirFunc` symlink branch tests** — raise from 52.2%                                           | 15min  | HIGH      |
+| ~~       | 6  | —    | **Add `executeHandler` error branch tests** — raise from 60.0%                                          | 10min  | HIGH      |
+| ~~       | 7  | —    | **Add `AddRecursive` depth edge case tests** — raise from 61.9%                                         | 15min  | HIGH      |
+| ~~       | 8  | —    | **Add `pollEmitEvent` test** — raise from 0.0%                                                          | 15min  | HIGH      |
+| ~~       | 9  | —    | **Add `MiddlewareErrorSanitization` nil path test**                                                     | 5min   | MEDIUM    |
+| ~~       | 10 | —    | **Add `MiddlewareErrorBatch` timer flush test**                                                         | 10min  | MEDIUM    |
+| ~~       | 11 | 42   | **Implement exponential backoff middleware**                                                            | 20min  | HIGH      |
+| ~~       | 12 | —    | **Consolidate `MiddlewareBatch` / `MiddlewareErrorBatch`** generic batcher                              | 25min  | MEDIUM    |
+| ~~       | 13 | —    | **Fix `Event.LogValue` to include `Size` and `ModTime`**                                                | 5min   | LOW       |
+| ~~       | 14 | —    | **Fix `WithPolling` option ordering bug** — don't clobber `pollInterval` if already set                 | 10min  | HIGH      |
+| ~~       | 15 | 65   | **Configure semantic-release**                                                                          | 20min  | MEDIUM    |
+| ~~       | 16 | 74   | **Test `examples/` in CI** — `go build ./examples/...`                                                  | 15min  | MEDIUM    |
+| ~~       | 17 | —    | **Remove `WithWatchedIgnoreDirs`** — redundant with `WithFilter(FilterIgnoreDirs(...))`                 | 10min  | LOW       |
+| ~~       | 18 | —    | **Make `NewWatcherError` stack capture opt-in**                                                         | 10min  | MEDIUM    |
+| ~~       | 19 | —    | **Fix `MiddlewareErrorSanitization` error chain** — preserve `errors.Is`/`errors.As`                    | 15min  | HIGH      |
+| ~~       | 20 | 71   | **Extract `drainEvents` to testutil**                                                                   | 20min  | LOW       |
+| ~~       | 21 | 60   | **Dead letter queue middleware**                                                                        | 30min  | MEDIUM    |
+| ~~       | 22 | 45   | **Filter func return match metadata**                                                                   | 20min  | MEDIUM    |
+| ~~       | 23 | 72   | **Windows-specific edge case tests**                                                                    | 30min  | MEDIUM    |
+| ~~       | 24 | —    | **Consolidate `docs/status/`** — archive stale files                                                    | 15min  | LOW       |
+| ~~       | 25 | 49   | **Prometheus metrics export**                                                                           | 30min  | MEDIUM    |
 
 ---
 

@@ -120,33 +120,33 @@ go-filewatcher is a **production-ready, high-performance file system watcher** f
 
 ## f) Top #25 Things to Do Next (Priority Order)
 
-| #  | Item                                                   | Impact           | Effort |
-| -- | ------------------------------------------------------ | ---------------- | ------ |
-~~| 1  | Commit MIT license change                              | 🔴 Critical      | 1 min  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 2  | Fix `Add()` double-append bug in `watchList`           | 🔴 Bug fix       | 15 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 3  | Align flake.nix Go version to 1.26                     | 🔴 Toolchain     | 5 min  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 4  | Cut v0.3.0 release (tag + CHANGELOG)                   | 🔴 Release       | 20 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 5  | Move `testing_helpers.go` to test package or build-tag | 🟡 Ship quality  | 15 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 6  | Fix `MiddlewareBatch` timer error swallowing           | 🟡 Robustness    | 10 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 7  | Fix `handleNewDirectory` error swallowing              | 🟡 Robustness    | 10 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 8  | Add rename event integration test                      | 🟡 Coverage      | 15 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 9  | Add multi-directory initialization test                | 🟡 Coverage      | 10 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 10 | Close coverage gaps in `addPath`/`walkDirFunc`         | 🟡 Quality       | 20 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 11 | Replace hand-rolled `Op.MarshalJSON`                   | 🟢 Robustness    | 5 min  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 12 | Protect `DefaultIgnoreDirs` from mutation              | 🟢 Safety        | 5 min  |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 13 | Populate CHANGELOG for v0.1.0 and v0.2.0               | 🟢 Docs          | 15 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 14 | Add `nix run .#test` and `nix run .#lint` to flake.nix | 🟢 DX            | 20 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 15 | Add `CONTRIBUTING.md` (now MIT-licensed)               | 🟢 Community     | 20 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 16 | Ring buffer for `SlidingWindowRateLimit`               | 🟢 Perf          | 20 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 17 | Add buffer overflow / backpressure test                | 🟡 Coverage      | 15 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 18 | Add concurrent Add/Remove during watching test         | 🟡 Coverage      | 15 min |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 19 | Implement `WatchOnce()`                                | 🔵 Feature       | 1 hr   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 20 | Implement symlink following support                    | 🔵 Feature       | 2 hr   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 21 | Implement polling fallback for NFS                     | 🔵 Feature       | 3 hr   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 22 | Add `Event.Size` / `Event.ModTime()` fields            | 🔵 Feature       | 1 hr   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 23 | Implement `MiddlewareThrottle`                         | 🔵 Feature       | 1 hr   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 24 | Set up GoReleaser pipeline                             | 🔵 Infra         | 1 hr   |~~ done — shipped ≤v2.2.0, verified v2.4.1
-~~| 25 | OpenTelemetry integration                              | 🔵 Observability | 2 hr   |~~ done — shipped ≤v2.2.0, verified v2.4.1
+| #  | Item | Impact                                                 | Effort           |
+| -- | ---- | ------------------------------------------------------ | ---------------- |
+| ~~ | 1    | Commit MIT license change                              | 🔴 Critical      |
+| ~~ | 2    | Fix `Add()` double-append bug in `watchList`           | 🔴 Bug fix       |
+| ~~ | 3    | Align flake.nix Go version to 1.26                     | 🔴 Toolchain     |
+| ~~ | 4    | Cut v0.3.0 release (tag + CHANGELOG)                   | 🔴 Release       |
+| ~~ | 5    | Move `testing_helpers.go` to test package or build-tag | 🟡 Ship quality  |
+| ~~ | 6    | Fix `MiddlewareBatch` timer error swallowing           | 🟡 Robustness    |
+| ~~ | 7    | Fix `handleNewDirectory` error swallowing              | 🟡 Robustness    |
+| ~~ | 8    | Add rename event integration test                      | 🟡 Coverage      |
+| ~~ | 9    | Add multi-directory initialization test                | 🟡 Coverage      |
+| ~~ | 10   | Close coverage gaps in `addPath`/`walkDirFunc`         | 🟡 Quality       |
+| ~~ | 11   | Replace hand-rolled `Op.MarshalJSON`                   | 🟢 Robustness    |
+| ~~ | 12   | Protect `DefaultIgnoreDirs` from mutation              | 🟢 Safety        |
+| ~~ | 13   | Populate CHANGELOG for v0.1.0 and v0.2.0               | 🟢 Docs          |
+| ~~ | 14   | Add `nix run .#test` and `nix run .#lint` to flake.nix | 🟢 DX            |
+| ~~ | 15   | Add `CONTRIBUTING.md` (now MIT-licensed)               | 🟢 Community     |
+| ~~ | 16   | Ring buffer for `SlidingWindowRateLimit`               | 🟢 Perf          |
+| ~~ | 17   | Add buffer overflow / backpressure test                | 🟡 Coverage      |
+| ~~ | 18   | Add concurrent Add/Remove during watching test         | 🟡 Coverage      |
+| ~~ | 19   | Implement `WatchOnce()`                                | 🔵 Feature       |
+| ~~ | 20   | Implement symlink following support                    | 🔵 Feature       |
+| ~~ | 21   | Implement polling fallback for NFS                     | 🔵 Feature       |
+| ~~ | 22   | Add `Event.Size` / `Event.ModTime()` fields            | 🔵 Feature       |
+| ~~ | 23   | Implement `MiddlewareThrottle`                         | 🔵 Feature       |
+| ~~ | 24   | Set up GoReleaser pipeline                             | 🔵 Infra         |
+| ~~ | 25   | OpenTelemetry integration                              | 🔵 Observability |
 
 ---
 

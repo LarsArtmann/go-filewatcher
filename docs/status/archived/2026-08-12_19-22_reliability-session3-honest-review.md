@@ -189,13 +189,13 @@ preserved but don't check the `maxWatchesDetected` value for auto-detected limit
 
 ### From the original feedback document (25 items):
 
-| #  | Item                                                     | Status                                            | Reason                                                                                                                   |
-| -- | -------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-~~| 2  | Poll dedup heuristic (`WithPollDeduplicate`)             | NOT STARTED                                       | Large feature: per-path timestamp tracking with LRU. Documented as limitation in `WithPolling` doc + Troubleshooting.md. |~~ OPEN → ROADMAP (v2.5+/v3 backlog)
-~~| 3  | Poll loop rename detection (`WithPollDetectRenames`)     | NOT STARTED                                       | Large feature: platform-specific inode extraction.                                                                       |~~ OPEN → ROADMAP (v2.5+/v3 backlog)
-~~| 20 | Runtime deprecation warning for `MiddlewareWriteFileLog` | NOT STARTED                                       | Doc comment warns. Runtime `log.Warn` is v3 prep.                                                                        |~~ OPEN → v3 prep (ROADMAP)
-~~| 21 | `Reset()` and `failedPaths` retention                    | NOT STARTED                                       | Feedback author self-dismissed: "I'll remove this item."                                                                 |~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
-~~| 22 | `WatcherError.Stack` behavior                            | DONE via doc comment + `NewWatcherErrorWithStack` | Documented current behavior. Added caller-provided stack constructor.                                                    |~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
+| #  | Item | Status                                                   | Reason                                            |
+| -- | ---- | -------------------------------------------------------- | ------------------------------------------------- |
+| ~~ | 2    | Poll dedup heuristic (`WithPollDeduplicate`)             | NOT STARTED                                       |
+| ~~ | 3    | Poll loop rename detection (`WithPollDetectRenames`)     | NOT STARTED                                       |
+| ~~ | 20   | Runtime deprecation warning for `MiddlewareWriteFileLog` | NOT STARTED                                       |
+| ~~ | 21   | `Reset()` and `failedPaths` retention                    | NOT STARTED                                       |
+| ~~ | 22   | `WatcherError.Stack` behavior                            | DONE via doc comment + `NewWatcherErrorWithStack` |
 
 ### From prior sessions' should-do lists:
 
@@ -271,59 +271,59 @@ ran `nix run .#ci` (which doesn't build the website) but not
 ### Architectural
 
 ~~1. **The `contentHashing bool` → `contentHashMaxSize int64` refactor changed~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
-   `convertEvent`'s signature.** This is internal, but the function is called
-   from benchmarks and tests. Changing a bool parameter to int64 is a semantic
-   shift (0 vs false, positive vs true). A `maxHashSize int64` is cleaner but
-   the call sites now read `convertEvent(fsEvent, false, 0)` which is less
-   self-documenting than `convertEvent(fsEvent, false, false)`.
+`convertEvent`'s signature.** This is internal, but the function is called
+from benchmarks and tests. Changing a bool parameter to int64 is a semantic
+shift (0 vs false, positive vs true). A `maxHashSize int64` is cleaner but
+the call sites now read `convertEvent(fsEvent, false, 0)` which is less
+self-documenting than `convertEvent(fsEvent, false, false)`.
 
 ~~2. **`maxWatchesDetected` is a third field tracking the same concept.** We now~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
-   have `maxWatches` (effective), `maxWatchesExplicit` (bool flag), and
-   `maxWatchesDetected` (raw detected). This is the direct consequence of not
-   splitting `maxWatches` into `maxWatchesConfigured` + `maxWatchesEffective`.
-   Each new capability adds another field instead of refactoring the model.
+have `maxWatches` (effective), `maxWatchesExplicit` (bool flag), and
+`maxWatchesDetected` (raw detected). This is the direct consequence of not
+splitting `maxWatches` into `maxWatchesConfigured` + `maxWatchesEffective`.
+Each new capability adds another field instead of refactoring the model.
 
 ~~3. **The `emitEvent` function is still 60+ lines.** The `trackedEmit` closure~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
-   alone is 25 lines with two select blocks. A `channelSender` type encapsulating
-   the send strategy (blocking vs DropOnFull) would make the function shorter
-   and the strategy testable in isolation.
+alone is 25 lines with two select blocks. A `channelSender` type encapsulating
+the send strategy (blocking vs DropOnFull) would make the function shorter
+and the strategy testable in isolation.
 
 ~~4. **Middleware drop tracking via `atomic.Bool` is still a heuristic.** It~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
-   detects "middleware returned nil without calling emit" — but a middleware
-   could call emit zero times for legitimate reasons (e.g., transforming and
-   re-emitting as a different event). The `MiddlewareDropCallback` API remains
-   the correct fix.
+detects "middleware returned nil without calling emit" — but a middleware
+could call emit zero times for legitimate reasons (e.g., transforming and
+re-emitting as a different event). The `MiddlewareDropCallback` API remains
+the correct fix.
 
 ### Process
 
 ~~5. **I should view struct fields after editing them.** The `eventDropOnFull`~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
-   deletion was 100% preventable. One `view` call after the edit would have
-   caught it.
+deletion was 100% preventable. One `view` call after the edit would have
+caught it.
 
 ~~6. **I should not use `sed` for code changes.** It's fragile, doesn't understand~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
-   Go syntax, and can silently miss call sites with different formatting. Use
-   `multiedit` or `lsp_rename` instead.
+Go syntax, and can silently miss call sites with different formatting. Use
+`multiedit` or `lsp_rename` instead.
 
 ~~7. **I should test option interactions.** The `WithContentHashing()` +~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
-   `WithContentHashMaxSize(0)` case is a classic "two options that affect the
-   same state" problem. I should enumerate and test all orderings.
+`WithContentHashMaxSize(0)` case is a classic "two options that affect the
+same state" problem. I should enumerate and test all orderings.
 
 ~~8. **I should verify the website builds** after creating new `.mdx` files with~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
-   component imports.
+component imports.
 
 ### Testing
 
 ~~9. **No test covers `maxWatchesDetected` correctness.** The field is populated~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
-   in `New()` and `Reset()` but never asserted in tests.
+in `New()` and `Reset()` but never asserted in tests.
 
 ~~10. **No integration test covers the full `New() → auto-detect → fraction →~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
     Stats()` pipeline.** The fraction tests reach into internals to set
-    `maxWatches` manually. An end-to-end test can't control `detectMaxWatches()`
-    on the test machine, but it could at least verify `WatchBudgetCap ==
+`maxWatches` manually. An end-to-end test can't control `detectMaxWatches()`
+on the test machine, but it could at least verify `WatchBudgetCap ==
     WatchLimit` when fraction is 1.0 (default).
 
 ~~11. **The CHANGELOG has duplicate section headers.** Two `### Changed` blocks~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
-    and two `### Fixed` blocks in `[Unreleased]`. Should be merged.
+and two `### Fixed` blocks in `[Unreleased]`. Should be merged.
 
 ---
 
@@ -336,10 +336,10 @@ ran `nix run .#ci` (which doesn't build the website) but not
 3. ~~Run `nix flake check`~~ ✅ DONE
 4. ~~Write migration guide~~ ✅ DONE
 5. ~~Archive feedback document~~ ✅ DONE
-~~6. Verify website builds: `cd website && nix run .#build`~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
-~~7. Merge duplicate CHANGELOG section headers~~ done — resolved in v2.4.0 release restructuring
-~~8. Add test: `WithContentHashing()` + `WithContentHashMaxSize(0)` interaction~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
-~~9. Add test: `Stats.WatchBudgetCap == Stats.WatchLimit` when fraction is 1.0~~ OPEN → TODO_LIST (test: budget-cap fraction 1.0)
+   ~~6. Verify website builds: `cd website && nix run .#build`~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
+   ~~7. Merge duplicate CHANGELOG section headers~~ done — resolved in v2.4.0 release restructuring
+   ~~8. Add test: `WithContentHashing()` + `WithContentHashMaxSize(0)` interaction~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
+   ~~9. Add test: `Stats.WatchBudgetCap == Stats.WatchLimit` when fraction is 1.0~~ OPEN → TODO_LIST (test: budget-cap fraction 1.0)
 
 ### Should-do (quality gaps)
 
@@ -353,10 +353,10 @@ ran `nix run .#ci` (which doesn't build the website) but not
 ~~17. Integration test: polling mode + exclusions + gitignore end-to-end~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
 ~~18. Integration test: DropOnFull with slow consumer simulation (deterministic)~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
 ~~19. Add examples for `WithEventChannelMode(DropOnFull)`, `WithMaxWatchesSafetyFraction`,~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
-    `MiddlewareDeduplicateCaseInsensitive`
+`MiddlewareDeduplicateCaseInsensitive`
 ~~20. Review all new option doc comments for consistency~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
 ~~21. Consider `EventsDroppedByBackpressure` in the Prometheus `Describe` method~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
-    (currently only in `Collect` via `Counters()`)
+(currently only in `Collect` via `Counters()`)
 ~~22. Extract `channelSender` type from `emitEvent` (readability)~~ OPEN → v3 refactor candidate (ROADMAP)
 ~~23. Consider `MiddlewareBatchFlushErrorHandler` callback option~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP
 ~~24. Add `MiddlewareDropCallback` API for explicit drop notification~~ OPEN → v3 candidate (ROADMAP)

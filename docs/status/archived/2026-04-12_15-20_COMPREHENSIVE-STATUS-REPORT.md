@@ -140,14 +140,16 @@ The go-filewatcher project is in **excellent condition** with a clean build, com
 ### Known Issues
 
 ~~1. **Go Version Mismatch Warning** 🟡~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - **Issue:** `compile: version "go1.26.1" does not match go tool version "go1.26.0"`
-   - **Impact:** Warning only, does not affect functionality
-   - **Fix:** Update nix flake or local Go installation to 1.26.1
+
+- **Issue:** `compile: version "go1.26.1" does not match go tool version "go1.26.0"`
+- **Impact:** Warning only, does not affect functionality
+- **Fix:** Update nix flake or local Go installation to 1.26.1
 
 ~~2. **Test Execution Time** 🟡~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - **Issue:** Tests take significant time due to file system operations and debounce delays
-   - **Impact:** Development velocity, CI pipeline speed
-   - **Mitigation:** Tests pass reliably, consider parallel test optimization
+
+- **Issue:** Tests take significant time due to file system operations and debounce delays
+- **Impact:** Development velocity, CI pipeline speed
+- **Mitigation:** Tests pass reliably, consider parallel test optimization
 
 ---
 
@@ -163,44 +165,51 @@ The go-filewatcher project is in **excellent condition** with a clean build, com
 ### Short Term (Next 2 Weeks)
 
 ~~5. **Complete Error Context Wrapping**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - `watcher.go` - Add context to all error returns
-   - `watcher_walk.go` - Add context to path-related errors
+
+- `watcher.go` - Add context to all error returns
+- `watcher_walk.go` - Add context to path-related errors
 
 ~~6. **Add Missing Tests**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - `Remove()` method test
-   - `WatchList()` method test
-   - `Stats()` method test
-   - `MiddlewareWriteFileLog()` test
+
+- `Remove()` method test
+- `WatchList()` method test
+- `Stats()` method test
+- `MiddlewareWriteFileLog()` test
 
 ~~7. **CI/CD Setup**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Verify GitHub Actions workflow
-   - Add race detector in CI
-   - Coverage threshold enforcement
+
+- Verify GitHub Actions workflow
+- Add race detector in CI
+- Coverage threshold enforcement
 
 ### Medium Term (Next Month)
 
 ~~8. **API Stability**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Tag v2.0.0 release
-   - Document public API stability guarantees
-   - Add API stability document
+
+- Tag v2.0.0 release
+- Document public API stability guarantees
+- Add API stability document
 
 ~~9. **Performance**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Set up continuous benchmark tracking
-   - Add benchmark regression detection
-   - Memory profiling for large directory trees
+
+- Set up continuous benchmark tracking
+- Add benchmark regression detection
+- Memory profiling for large directory trees
 
 ~~10. **Developer Experience**~~ done — shipped ≤v2.1.0, verified v2.4.1
-    - Complete Architecture.md
-    - Write Troubleshooting.md
-    - Add more godoc examples
+
+- Complete Architecture.md
+- Write Troubleshooting.md
+- Add more godoc examples
 
 ### Long Term (Next Quarter)
 
 ~~11. **Feature Completeness**~~ done — shipped ≤v2.1.0, verified v2.4.1
-    - Event batching with configurable window
-    - Symlink following support
-    - Self-healing watcher
-    - Prometheus metrics export
+
+- Event batching with configurable window
+- Symlink following support
+- Self-healing watcher
+- Prometheus metrics export
 
 ---
 

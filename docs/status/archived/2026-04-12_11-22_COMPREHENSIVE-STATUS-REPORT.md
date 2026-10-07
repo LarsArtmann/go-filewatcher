@@ -116,22 +116,24 @@ The project is in a **transitional state** - core functionality is solid, but te
 
 ~~1. **COMPILATION ERROR in `filter_gogen_test.go:233`**~~ done — shipped ≤v2.1.0, verified v2.4.1
 
-   ```go
-   // Line 233: no new variables on left side of :=
-   err = writeFile(sqlcFile, []byte(sqlcContent))
-   ```
+```go
+// Line 233: no new variables on left side of :=
+err = writeFile(sqlcFile, []byte(sqlcContent))
+```
 
-   **Impact:** Cannot run full test suite\
-   **Fix:** Change to `err :=` or use `=` if variable already declared
+**Impact:** Cannot run full test suite\
+**Fix:** Change to `err :=` or use `=` if variable already declared
 
 ~~2. **Test Suite Timeouts**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Tests hang indefinitely with `t.Parallel()` and race detector
-   - Root cause: fsnotify event loops + parallel test contention
-     **Impact:** CI/CD will fail
+
+- Tests hang indefinitely with `t.Parallel()` and race detector
+- Root cause: fsnotify event loops + parallel test contention
+  **Impact:** CI/CD will fail
 
 ~~3. **LSP Diagnostic Cache Corruption**~~ OBSOLETE — gopls env issue
-   - gopls reporting stale errors
-     **Impact:** Development friction
+
+- gopls reporting stale errors
+  **Impact:** Development friction
 
 ---
 
@@ -141,50 +143,57 @@ The project is in a **transitional state** - core functionality is solid, but te
 
 ~~1. **Fix Compilation Error**~~ done — shipped ≤v2.1.0, verified v2.4.1
 
-   ```bash
-   # In filter_gogen_test.go:233
-   # Change:
-   err = writeFile(...)
-   # To:
-   err := writeFile(...)
-   ```
+```bash
+# In filter_gogen_test.go:233
+# Change:
+err = writeFile(...)
+# To:
+err := writeFile(...)
+```
 
 ~~2. **Stabilize Test Suite**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Audit all `t.Parallel()` usage
-   - Separate unit tests (parallel) from integration tests (serial)
-   - Add timeout guards to prevent hanging
+
+- Audit all `t.Parallel()` usage
+- Separate unit tests (parallel) from integration tests (serial)
+- Add timeout guards to prevent hanging
 
 ~~3. **Restart LSP**~~ OBSOLETE — gopls env issue
-   ```bash
-   gopls version  # Check if needed
-   # Kill and restart editor LSP client
-   ```
+
+```bash
+gopls version  # Check if needed
+# Kill and restart editor LSP client
+```
 
 ### Short-term (This Week)
 
 ~~4. **Complete Phantom Types**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Add `FilePath` phantom type to `Event.Path`
-   - Add `BufferSize` and `WatchCount` types
+
+- Add `FilePath` phantom type to `Event.Path`
+- Add `BufferSize` and `WatchCount` types
 
 ~~5. **Improve Test Coverage**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Add tests for `Remove()`, `WatchList()`, `FilterMinSize()`
-   - Add integration tests
-   - Target: 90% coverage
+
+- Add tests for `Remove()`, `WatchList()`, `FilterMinSize()`
+- Add integration tests
+- Target: 90% coverage
 
 ~~6. **Address Depguard Warnings**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Either configure depguard to allow gogenfilter
-   - Or move examples to separate module
+
+- Either configure depguard to allow gogenfilter
+- Or move examples to separate module
 
 ### Medium-term (This Month)
 
 ~~7. **Performance Optimization**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Benchmark regression detection in CI
-   - Optimize `convertEvent` (cache `os.Stat` results)
+
+- Benchmark regression detection in CI
+- Optimize `convertEvent` (cache `os.Stat` results)
 
 ~~8. **Documentation Sprint**~~ done — shipped ≤v2.1.0, verified v2.4.1
-   - Architecture.md
-   - Troubleshooting.md
-   - API stability doc
+
+- Architecture.md
+- Troubleshooting.md
+- API stability doc
 
 ---
 
@@ -192,43 +201,43 @@ The project is in a **transitional state** - core functionality is solid, but te
 
 ### P0 - Critical (Fix Today)
 
-| # | Task                  | File                       | Effort |
-| - | --------------------- | -------------------------- | ------ |
-~~| 1 | Fix compilation error | `filter_gogen_test.go:233` | 2 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 2 | Fix test timeouts     | `*_test.go`                | 30 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 3 | Restart LSP           | gopls                      | 5 min  |~~ OBSOLETE — gopls env issue
-~~| 4 | Verify all tests pass | `go test ./...`            | 10 min |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 5 | Commit fixes          | git                        | 5 min  |~~ done — shipped ≤v2.1.0, verified v2.4.1
+| #  | Task | File                  | Effort                     |
+| -- | ---- | --------------------- | -------------------------- |
+| ~~ | 1    | Fix compilation error | `filter_gogen_test.go:233` |
+| ~~ | 2    | Fix test timeouts     | `*_test.go`                |
+| ~~ | 3    | Restart LSP           | gopls                      |
+| ~~ | 4    | Verify all tests pass | `go test ./...`            |
+| ~~ | 5    | Commit fixes          | git                        |
 
 ### P1 - High (This Week)
 
-| #  | Task                            | Impact        | Effort |
-| -- | ------------------------------- | ------------- | ------ |
-~~| 6  | Add Event.Path phantom type     | Type safety   | 2h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 7  | Complete Error Context Wrapping | Debuggability | 3h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 8  | Add integration tests           | Quality       | 4h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 9  | Raise test coverage to 90%      | Quality       | 6h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 10 | Implement DebounceEntry Mixin   | Code quality  | 1h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 11 | Add test for Remove() method    | Coverage      | 30m    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 12 | Add test for WatchList() method | Coverage      | 30m    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 13 | Add test for FilterMinSize()    | Coverage      | 30m    |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 14 | Fix remaining gocritic issues   | Linting       | 1h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 15 | Address depguard warnings       | Linting       | 30m    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+| #  | Task | Impact                          | Effort        |
+| -- | ---- | ------------------------------- | ------------- |
+| ~~ | 6    | Add Event.Path phantom type     | Type safety   |
+| ~~ | 7    | Complete Error Context Wrapping | Debuggability |
+| ~~ | 8    | Add integration tests           | Quality       |
+| ~~ | 9    | Raise test coverage to 90%      | Quality       |
+| ~~ | 10   | Implement DebounceEntry Mixin   | Code quality  |
+| ~~ | 11   | Add test for Remove() method    | Coverage      |
+| ~~ | 12   | Add test for WatchList() method | Coverage      |
+| ~~ | 13   | Add test for FilterMinSize()    | Coverage      |
+| ~~ | 14   | Fix remaining gocritic issues   | Linting       |
+| ~~ | 15   | Address depguard warnings       | Linting       |
 
 ### P2 - Medium (This Month)
 
-| #  | Task                          | Impact        | Effort |
-| -- | ----------------------------- | ------------- | ------ |
-~~| 16 | Implement event batching      | Performance   | 4h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 17 | Add symlink following         | Feature       | 3h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 18 | Create standalone CLI tool    | Usability     | 6h     |~~ OBSOLETE — library-only scope
-~~| 19 | Write Architecture.md         | Documentation | 4h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 20 | Write Troubleshooting.md      | Documentation | 3h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 21 | Add stress tests (10k+ files) | Reliability   | 4h     |~~ OPEN → TODO_LIST (large-tree stress harness)
-~~| 22 | Optimize convertEvent os.Stat | Performance   | 2h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 23 | Add prometheus metrics        | Observability | 3h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 24 | Create CONTRIBUTING.md        | Community     | 1h     |~~ done — shipped ≤v2.1.0, verified v2.4.1
-~~| 25 | Tag v2.0.0 release            | Milestone     | 30m    |~~ done — shipped ≤v2.1.0, verified v2.4.1
+| #  | Task | Impact                        | Effort        |
+| -- | ---- | ----------------------------- | ------------- |
+| ~~ | 16   | Implement event batching      | Performance   |
+| ~~ | 17   | Add symlink following         | Feature       |
+| ~~ | 18   | Create standalone CLI tool    | Usability     |
+| ~~ | 19   | Write Architecture.md         | Documentation |
+| ~~ | 20   | Write Troubleshooting.md      | Documentation |
+| ~~ | 21   | Add stress tests (10k+ files) | Reliability   |
+| ~~ | 22   | Optimize convertEvent os.Stat | Performance   |
+| ~~ | 23   | Add prometheus metrics        | Observability |
+| ~~ | 24   | Create CONTRIBUTING.md        | Community     |
+| ~~ | 25   | Tag v2.0.0 release            | Milestone     |
 
 ---
 

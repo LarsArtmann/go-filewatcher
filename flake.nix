@@ -205,6 +205,11 @@
               '';
 
               GOWORK = "off";
+
+              # Never silently download a different toolchain: if go.mod's
+              # directive is ever bumped past the pinned floor, builds must
+              # fail loudly here instead of auto-fetching a newer Go.
+              GOTOOLCHAIN = "local";
             };
 
             ci = pkgs.mkShellNoCC {

@@ -137,12 +137,13 @@ No cleanup needed.
 
 | #  | Item | Why deferred                               |
 | -- | ---- | ------------------------------------------ |
-| ~~ | 17   | `FilterNFCNormalized(inner Filter)`        |
-| ~~ | 18   | FuzzPathKey overnight (8+ hours)           |
-| ~~ | 20   | Commit bench-baseline.txt for CI           |
-| ~~ | 21   | `WithNormalizeUnicode(false)` escape hatch |
-| ~~ | 22   | Trie-based excludePaths                    |
-| ~~ | 23   | Phantom-typed `PathKey`                    |
-| ~~ | 27   | `CaseSensitivityProbed` mode               |
-| ~~ | 28   | macOS/Windows CI matrix                    |
-| ~~ | 48   | `pathKey` returning `(PathKey, error)`     |
+| ~~ | ~~17~~ | ~~`FilterNFCNormalized(inner Filter)`~~ |
+| ~~ | ~~18~~ | ~~FuzzPathKey overnight (8+ hours)~~ |
+| ~~ | ~~20~~ | ~~Commit bench-baseline.txt for CI~~ |
+| ~~ | ~~21~~ | ~~`WithNormalizeUnicode(false)` escape hatch~~ |
+| ~~ | ~~22~~ | ~~Trie-based excludePaths~~ |
+| ~~ | ~~23~~ | ~~Phantom-typed `PathKey`~~ |
+| ~~ | ~~27~~ | ~~`CaseSensitivityProbed` mode~~ |
+| ~~ | ~~28~~ | ~~macOS/Windows CI matrix~~ |
+| ~~ | ~~48~~ | ~~`pathKey` returning `(PathKey, error)`~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.

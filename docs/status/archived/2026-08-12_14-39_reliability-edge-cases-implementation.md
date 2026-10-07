@@ -134,12 +134,13 @@ The feedback document listed 14 testing scenarios. Status:
 
 | #            | Item                          | Reason Skipped                                                                                                                                |
 | ------------ | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| ~~           | 2                             | Polling dedup heuristic (`WithPollDeduplicate`)                                                                                               |
-| ~~           | 3                             | Poll loop rename detection (`WithPollDetectRenames`)                                                                                          |
-| ~~           | 20                            | Deprecation warning for `MiddlewareWriteFileLog`                                                                                              |
-| ~~           | 21                            | `Reset()` and `failedPaths` retention                                                                                                         |
-| ~~           | 22                            | `WatcherError.Stack` captures stack at error creation                                                                                         |
-| 24 (partial) | Docs for remaining edge cases | Most documented. The `WithPolling` option doc comment was not updated with the dedup limitation note (only `Troubleshooting.md` was updated). |
+| ~~           | ~~2~~ | ~~Polling dedup heuristic (`WithPollDeduplicate`)~~ |
+| ~~           | ~~3~~ | ~~Poll loop rename detection (`WithPollDetectRenames`)~~ |
+| ~~           | ~~20~~ | ~~Deprecation warning for `MiddlewareWriteFileLog`~~ |
+| ~~           | ~~21~~ | ~~`Reset()` and `failedPaths` retention~~ |
+| ~~           | ~~22~~ | ~~`WatcherError.Stack` captures stack at error creation~~ |
+| ~~24 (partial)~~ | ~~Docs for remaining edge cases~~ | ~~Most documented. The `WithPolling` option doc comment was not updated with the dedup limitation note (only `Troubleshooting.md` was updated).~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ### Other not-started work:
 

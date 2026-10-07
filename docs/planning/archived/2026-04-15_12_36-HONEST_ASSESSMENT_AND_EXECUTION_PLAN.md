@@ -166,91 +166,92 @@ Selected based on impact/effort ratio:
 
 | #  | Task | Time                                      | Blocker? |
 | -- | ---- | ----------------------------------------- | -------- |
-| ~~ | 1    | Remove emitWg field from Watcher struct   | 5min     |
-| ~~ | 2    | Remove emitWg initialization in New()     | 5min     |
-| ~~ | 3    | Revert watchLoop defer to close eventCh   | 5min     |
-| ~~ | 4    | Remove emitWg.Wait() from watchLoop defer | 3min     |
-| ~~ | 5    | Add defer/recover to buildEmitFunc        | 5min     |
-| ~~ | 6    | Remove eventCh field from Watcher struct  | 5min     |
-| ~~ | 7    | Remove eventCh assignment in Watch()      | 3min     |
-| ~~ | 8    | Simplify Close() - remove eventCh close   | 5min     |
-| ~~ | 9    | Run tests without -race                   | 5min     |
-| ~~ | 10   | Run tests with -race                      | 10min    |
-| ~~ | 11   | Fix context cancellation test             | 10min    |
-| ~~ | 12   | Commit race fix                           | 5min     |
+| ~~ | ~~1~~ | ~~Remove emitWg field from Watcher struct~~ | ~~5min~~ |
+| ~~ | ~~2~~ | ~~Remove emitWg initialization in New()~~ | ~~5min~~ |
+| ~~ | ~~3~~ | ~~Revert watchLoop defer to close eventCh~~ | ~~5min~~ |
+| ~~ | ~~4~~ | ~~Remove emitWg.Wait() from watchLoop defer~~ | ~~3min~~ |
+| ~~ | ~~5~~ | ~~Add defer/recover to buildEmitFunc~~ | ~~5min~~ |
+| ~~ | ~~6~~ | ~~Remove eventCh field from Watcher struct~~ | ~~5min~~ |
+| ~~ | ~~7~~ | ~~Remove eventCh assignment in Watch()~~ | ~~3min~~ |
+| ~~ | ~~8~~ | ~~Simplify Close() - remove eventCh close~~ | ~~5min~~ |
+| ~~ | ~~9~~ | ~~Run tests without -race~~ | ~~5min~~ |
+| ~~ | ~~10~~ | ~~Run tests with -race~~ | ~~10min~~ |
+| ~~ | ~~11~~ | ~~Fix context cancellation test~~ | ~~10min~~ |
+| ~~ | ~~12~~ | ~~Commit race fix~~ | ~~5min~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ### Cleanup Tasks
 
 | #  | Task | Time                     | Blocker? |
 | -- | ---- | ------------------------ | -------- |
-| ~~ | 13   | Update TODO_LIST.md      | 5min     |
-| ~~ | 14   | Run linter               | 5min     |
-| ~~ | 15   | Review git history       | 5min     |
-| ~~ | 16   | Squash commits if needed | 10min    |
+| ~~ | ~~13~~ | ~~Update TODO_LIST.md~~ | ~~5min~~ |
+| ~~ | ~~14~~ | ~~Run linter~~ | ~~5min~~ |
+| ~~ | ~~15~~ | ~~Review git history~~ | ~~5min~~ |
+| ~~ | ~~16~~ | ~~Squash commits if needed~~ | ~~10min~~ |
 
 ### Tagging & Release
 
 | #  | Task | Time                       | Blocker? |
 | -- | ---- | -------------------------- | -------- |
-| ~~ | 17   | Create v0.1.0 tag          | 5min     |
-| ~~ | 18   | Write v0.1.0 release notes | 10min    |
-| ~~ | 19   | Push tags to origin        | 2min     |
+| ~~ | ~~17~~ | ~~Create v0.1.0 tag~~ | ~~5min~~ |
+| ~~ | ~~18~~ | ~~Write v0.1.0 release notes~~ | ~~10min~~ |
+| ~~ | ~~19~~ | ~~Push tags to origin~~ | ~~2min~~ |
 
 ### Medium Priority Implementation
 
 | #  | Task | Time                                 | Blocker? |
 | -- | ---- | ------------------------------------ | -------- |
-| ~~ | 20   | Add Event.Size field to Event struct | 5min     |
-| ~~ | 21   | Update convertEvent to populate Size | 10min    |
-| ~~ | 22   | Test Event.Size                      | 5min     |
-| ~~ | 23   | Add Event.ModTime() method           | 5min     |
-| ~~ | 24   | Test Event.ModTime()                 | 5min     |
-| ~~ | 25   | Add FilterExcludePaths function      | 10min    |
-| ~~ | 26   | Test FilterExcludePaths              | 5min     |
-| ~~ | 27   | Add FilterMinAge function            | 10min    |
-| ~~ | 28   | Test FilterMinAge                    | 5min     |
-| ~~ | 29   | Add FilterMaxSize function           | 10min    |
-| ~~ | 30   | Test FilterMaxSize                   | 5min     |
-| ~~ | 31   | Add WithPolling option skeleton      | 5min     |
-| ~~ | 32   | Research fsnotify polling support    | 10min    |
-| ~~ | 33   | Implement polling fallback           | 20min    |
-| ~~ | 34   | Test WithPolling                     | 10min    |
-| ~~ | 35   | Add symlink following support        | 15min    |
-| ~~ | 36   | Test symlink following               | 10min    |
-| ~~ | 37   | Add MiddlewareDeduplicate skeleton   | 5min     |
-| ~~ | 38   | Implement deduplication logic        | 15min    |
-| ~~ | 39   | Test MiddlewareDeduplicate           | 10min    |
-| ~~ | 40   | Add Watcher.WatchOnce() skeleton     | 5min     |
-| ~~ | 41   | Implement WatchOnce logic            | 15min    |
-| ~~ | 42   | Test WatchOnce                       | 10min    |
+| ~~ | ~~20~~ | ~~Add Event.Size field to Event struct~~ | ~~5min~~ |
+| ~~ | ~~21~~ | ~~Update convertEvent to populate Size~~ | ~~10min~~ |
+| ~~ | ~~22~~ | ~~Test Event.Size~~ | ~~5min~~ |
+| ~~ | ~~23~~ | ~~Add Event.ModTime() method~~ | ~~5min~~ |
+| ~~ | ~~24~~ | ~~Test Event.ModTime()~~ | ~~5min~~ |
+| ~~ | ~~25~~ | ~~Add FilterExcludePaths function~~ | ~~10min~~ |
+| ~~ | ~~26~~ | ~~Test FilterExcludePaths~~ | ~~5min~~ |
+| ~~ | ~~27~~ | ~~Add FilterMinAge function~~ | ~~10min~~ |
+| ~~ | ~~28~~ | ~~Test FilterMinAge~~ | ~~5min~~ |
+| ~~ | ~~29~~ | ~~Add FilterMaxSize function~~ | ~~10min~~ |
+| ~~ | ~~30~~ | ~~Test FilterMaxSize~~ | ~~5min~~ |
+| ~~ | ~~31~~ | ~~Add WithPolling option skeleton~~ | ~~5min~~ |
+| ~~ | ~~32~~ | ~~Research fsnotify polling support~~ | ~~10min~~ |
+| ~~ | ~~33~~ | ~~Implement polling fallback~~ | ~~20min~~ |
+| ~~ | ~~34~~ | ~~Test WithPolling~~ | ~~10min~~ |
+| ~~ | ~~35~~ | ~~Add symlink following support~~ | ~~15min~~ |
+| ~~ | ~~36~~ | ~~Test symlink following~~ | ~~10min~~ |
+| ~~ | ~~37~~ | ~~Add MiddlewareDeduplicate skeleton~~ | ~~5min~~ |
+| ~~ | ~~38~~ | ~~Implement deduplication logic~~ | ~~15min~~ |
+| ~~ | ~~39~~ | ~~Test MiddlewareDeduplicate~~ | ~~10min~~ |
+| ~~ | ~~40~~ | ~~Add Watcher.WatchOnce() skeleton~~ | ~~5min~~ |
+| ~~ | ~~41~~ | ~~Implement WatchOnce logic~~ | ~~15min~~ |
+| ~~ | ~~42~~ | ~~Test WatchOnce~~ | ~~10min~~ |
 
 ### Documentation
 
 | #  | Task | Time                                | Blocker? |
 | -- | ---- | ----------------------------------- | -------- |
-| ~~ | 43   | Write godoc examples for New()      | 10min    |
-| ~~ | 44   | Write godoc examples for Watch()    | 10min    |
-| ~~ | 45   | Write godoc examples for filters    | 15min    |
-| ~~ | 46   | Write godoc examples for middleware | 15min    |
-| ~~ | 47   | Create Troubleshooting.md outline   | 5min     |
-| ~~ | 48   | Write common issues section         | 10min    |
-| ~~ | 49   | Write debugging tips section        | 10min    |
-| ~~ | 50   | Create CLI tool main.go             | 10min    |
-| ~~ | 51   | Add CLI flags parsing               | 15min    |
-| ~~ | 52   | Add CLI watch logic                 | 15min    |
-| ~~ | 53   | Test CLI tool                       | 10min    |
+| ~~ | ~~43~~ | ~~Write godoc examples for New()~~ | ~~10min~~ |
+| ~~ | ~~44~~ | ~~Write godoc examples for Watch()~~ | ~~10min~~ |
+| ~~ | ~~45~~ | ~~Write godoc examples for filters~~ | ~~15min~~ |
+| ~~ | ~~46~~ | ~~Write godoc examples for middleware~~ | ~~15min~~ |
+| ~~ | ~~47~~ | ~~Create Troubleshooting.md outline~~ | ~~5min~~ |
+| ~~ | ~~48~~ | ~~Write common issues section~~ | ~~10min~~ |
+| ~~ | ~~49~~ | ~~Write debugging tips section~~ | ~~10min~~ |
+| ~~ | ~~50~~ | ~~Create CLI tool main.go~~ | ~~10min~~ |
+| ~~ | ~~51~~ | ~~Add CLI flags parsing~~ | ~~15min~~ |
+| ~~ | ~~52~~ | ~~Add CLI watch logic~~ | ~~15min~~ |
+| ~~ | ~~53~~ | ~~Test CLI tool~~ | ~~10min~~ |
 
 ### CI/CD
 
 | #  | Task | Time                         | Blocker? |
 | -- | ---- | ---------------------------- | -------- |
-| ~~ | 54   | Create .goreleaser.yaml      | 15min    |
-| ~~ | 55   | Test goreleaser locally      | 10min    |
-| ~~ | 56   | Add semantic-release config  | 10min    |
-| ~~ | 57   | Add coverage threshold to CI | 10min    |
-| ~~ | 58   | Create CONTRIBUTING.md       | 15min    |
-| ~~ | 59   | Create CODEOWNERS            | 5min     |
-| ~~ | 60   | Tag v2.0.0                   | 5min     |
+| ~~ | ~~54~~ | ~~Create .goreleaser.yaml~~ | ~~15min~~ |
+| ~~ | ~~55~~ | ~~Test goreleaser locally~~ | ~~10min~~ |
+| ~~ | ~~56~~ | ~~Add semantic-release config~~ | ~~10min~~ |
+| ~~ | ~~57~~ | ~~Add coverage threshold to CI~~ | ~~10min~~ |
+| ~~ | ~~58~~ | ~~Create CONTRIBUTING.md~~ | ~~15min~~ |
+| ~~ | ~~59~~ | ~~Create CODEOWNERS~~ | ~~5min~~ |
+| ~~ | ~~60~~ | ~~Tag v2.0.0~~ | ~~5min~~ |
 
 ---
 

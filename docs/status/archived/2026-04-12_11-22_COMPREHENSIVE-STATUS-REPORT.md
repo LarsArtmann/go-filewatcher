@@ -203,41 +203,42 @@ gopls version  # Check if needed
 
 | #  | Task | File                  | Effort                     |
 | -- | ---- | --------------------- | -------------------------- |
-| ~~ | 1    | Fix compilation error | `filter_gogen_test.go:233` |
-| ~~ | 2    | Fix test timeouts     | `*_test.go`                |
-| ~~ | 3    | Restart LSP           | gopls                      |
-| ~~ | 4    | Verify all tests pass | `go test ./...`            |
-| ~~ | 5    | Commit fixes          | git                        |
+| ~~ | ~~1~~ | ~~Fix compilation error~~ | ~~`filter_gogen_test.go:233`~~ |
+| ~~ | ~~2~~ | ~~Fix test timeouts~~ | ~~`*_test.go`~~ |
+| ~~ | ~~3~~ | ~~Restart LSP~~ | ~~gopls~~ |
+| ~~ | ~~4~~ | ~~Verify all tests pass~~ | ~~`go test ./...`~~ |
+| ~~ | ~~5~~ | ~~Commit fixes~~ | ~~git~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ### P1 - High (This Week)
 
 | #  | Task | Impact                          | Effort        |
 | -- | ---- | ------------------------------- | ------------- |
-| ~~ | 6    | Add Event.Path phantom type     | Type safety   |
-| ~~ | 7    | Complete Error Context Wrapping | Debuggability |
-| ~~ | 8    | Add integration tests           | Quality       |
-| ~~ | 9    | Raise test coverage to 90%      | Quality       |
-| ~~ | 10   | Implement DebounceEntry Mixin   | Code quality  |
-| ~~ | 11   | Add test for Remove() method    | Coverage      |
-| ~~ | 12   | Add test for WatchList() method | Coverage      |
-| ~~ | 13   | Add test for FilterMinSize()    | Coverage      |
-| ~~ | 14   | Fix remaining gocritic issues   | Linting       |
-| ~~ | 15   | Address depguard warnings       | Linting       |
+| ~~ | ~~6~~ | ~~Add Event.Path phantom type~~ | ~~Type safety~~ |
+| ~~ | ~~7~~ | ~~Complete Error Context Wrapping~~ | ~~Debuggability~~ |
+| ~~ | ~~8~~ | ~~Add integration tests~~ | ~~Quality~~ |
+| ~~ | ~~9~~ | ~~Raise test coverage to 90%~~ | ~~Quality~~ |
+| ~~ | ~~10~~ | ~~Implement DebounceEntry Mixin~~ | ~~Code quality~~ |
+| ~~ | ~~11~~ | ~~Add test for Remove() method~~ | ~~Coverage~~ |
+| ~~ | ~~12~~ | ~~Add test for WatchList() method~~ | ~~Coverage~~ |
+| ~~ | ~~13~~ | ~~Add test for FilterMinSize()~~ | ~~Coverage~~ |
+| ~~ | ~~14~~ | ~~Fix remaining gocritic issues~~ | ~~Linting~~ |
+| ~~ | ~~15~~ | ~~Address depguard warnings~~ | ~~Linting~~ |
 
 ### P2 - Medium (This Month)
 
 | #  | Task | Impact                        | Effort        |
 | -- | ---- | ----------------------------- | ------------- |
-| ~~ | 16   | Implement event batching      | Performance   |
-| ~~ | 17   | Add symlink following         | Feature       |
-| ~~ | 18   | Create standalone CLI tool    | Usability     |
-| ~~ | 19   | Write Architecture.md         | Documentation |
-| ~~ | 20   | Write Troubleshooting.md      | Documentation |
-| ~~ | 21   | Add stress tests (10k+ files) | Reliability   |
-| ~~ | 22   | Optimize convertEvent os.Stat | Performance   |
-| ~~ | 23   | Add prometheus metrics        | Observability |
-| ~~ | 24   | Create CONTRIBUTING.md        | Community     |
-| ~~ | 25   | Tag v2.0.0 release            | Milestone     |
+| ~~ | ~~16~~ | ~~Implement event batching~~ | ~~Performance~~ |
+| ~~ | ~~17~~ | ~~Add symlink following~~ | ~~Feature~~ |
+| ~~ | ~~18~~ | ~~Create standalone CLI tool~~ | ~~Usability~~ |
+| ~~ | ~~19~~ | ~~Write Architecture.md~~ | ~~Documentation~~ |
+| ~~ | ~~20~~ | ~~Write Troubleshooting.md~~ | ~~Documentation~~ |
+| ~~ | ~~21~~ | ~~Add stress tests (10k+ files)~~ | ~~Reliability~~ |
+| ~~ | ~~22~~ | ~~Optimize convertEvent os.Stat~~ | ~~Performance~~ |
+| ~~ | ~~23~~ | ~~Add prometheus metrics~~ | ~~Observability~~ |
+| ~~ | ~~24~~ | ~~Create CONTRIBUTING.md~~ | ~~Community~~ |
+| ~~ | ~~25~~ | ~~Tag v2.0.0 release~~ | ~~Milestone~~ |
 
 ---
 

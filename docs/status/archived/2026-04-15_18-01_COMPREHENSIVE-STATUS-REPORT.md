@@ -294,46 +294,47 @@ The codebase is in excellent shape. No critical issues identified.
 
 | #  | Task | Impact                                    | Effort | Why    |
 | -- | ---- | ----------------------------------------- | ------ | ------ |
-| ~~ | 1    | Tag v0.1.0 release                        | High   | Low    |
-| ~~ | 2    | Fix testing_helpers.go exhaustruct        | Low    | Low    |
-| ~~ | 3    | Refactor TestWatcher_Stats_Metrics cyclop | Low    | Low    |
-| ~~ | 4    | Add Prometheus example                    | High   | Medium |
-| ~~ | 5    | Add Troubleshooting.md                    | Medium | Low    |
+| ~~ | ~~1~~ | ~~Tag v0.1.0 release~~ | ~~High~~ | ~~Low~~ |
+| ~~ | ~~2~~ | ~~Fix testing_helpers.go exhaustruct~~ | ~~Low~~ | ~~Low~~ |
+| ~~ | ~~3~~ | ~~Refactor TestWatcher_Stats_Metrics cyclop~~ | ~~Low~~ | ~~Low~~ |
+| ~~ | ~~4~~ | ~~Add Prometheus example~~ | ~~High~~ | ~~Medium~~ |
+| ~~ | ~~5~~ | ~~Add Troubleshooting.md~~ | ~~Medium~~ | ~~Low~~ |
+> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 ### Priority 2: High Impact
 
 | #  | Task | Impact                          | Effort | Why    |
 | -- | ---- | ------------------------------- | ------ | ------ |
-| ~~ | 6    | OpenTelemetry integration       | High   | High   |
-| ~~ | 7    | WatchOnce() mode                | High   | Medium |
-| ~~ | 8    | Coverage threshold CI           | High   | Low    |
-| ~~ | 9    | Add test for handleError stderr | Medium | Low    |
-| ~~ | 10   | CONTRIBUTING.md                 | Medium | Low    |
-| ~~ | 11   | CODEOWNERS                      | Low    | Low    |
-| ~~ | 12   | CODE_OF_CONDUCT.md              | Low    | Low    |
-| ~~ | 13   | PR template                     | Low    | Low    |
+| ~~ | ~~6~~ | ~~OpenTelemetry integration~~ | ~~High~~ | ~~High~~ |
+| ~~ | ~~7~~ | ~~WatchOnce() mode~~ | ~~High~~ | ~~Medium~~ |
+| ~~ | ~~8~~ | ~~Coverage threshold CI~~ | ~~High~~ | ~~Low~~ |
+| ~~ | ~~9~~ | ~~Add test for handleError stderr~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~10~~ | ~~CONTRIBUTING.md~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~11~~ | ~~CODEOWNERS~~ | ~~Low~~ | ~~Low~~ |
+| ~~ | ~~12~~ | ~~CODE_OF_CONDUCT.md~~ | ~~Low~~ | ~~Low~~ |
+| ~~ | ~~13~~ | ~~PR template~~ | ~~Low~~ | ~~Low~~ |
 
 ### Priority 3: Medium Impact
 
 | #  | Task | Impact                     | Effort | Why    |
 | -- | ---- | -------------------------- | ------ | ------ |
-| ~~ | 14   | WithPolling() fallback     | Medium | Medium |
-| ~~ | 15   | Symlink following          | Medium | Medium |
-| ~~ | 16   | Content hashing filter     | Medium | High   |
-| ~~ | 17   | Circuit breaker middleware | Medium | Medium |
-| ~~ | 18   | Error rate limiting        | Medium | Low    |
-| ~~ | 19   | Examples in CI             | Medium | Low    |
-| ~~ | 20   | Benchmark regression       | Medium | Medium |
-| ~~ | 21   | Fuzz testing               | Medium | High   |
+| ~~ | ~~14~~ | ~~WithPolling() fallback~~ | ~~Medium~~ | ~~Medium~~ |
+| ~~ | ~~15~~ | ~~Symlink following~~ | ~~Medium~~ | ~~Medium~~ |
+| ~~ | ~~16~~ | ~~Content hashing filter~~ | ~~Medium~~ | ~~High~~ |
+| ~~ | ~~17~~ | ~~Circuit breaker middleware~~ | ~~Medium~~ | ~~Medium~~ |
+| ~~ | ~~18~~ | ~~Error rate limiting~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~19~~ | ~~Examples in CI~~ | ~~Medium~~ | ~~Low~~ |
+| ~~ | ~~20~~ | ~~Benchmark regression~~ | ~~Medium~~ | ~~Medium~~ |
+| ~~ | ~~21~~ | ~~Fuzz testing~~ | ~~Medium~~ | ~~High~~ |
 
 ### Priority 4: Nice to Have
 
 | #  | Task | Impact            | Effort | Why    |
 | -- | ---- | ----------------- | ------ | ------ |
-| ~~ | 22   | Dead letter queue | Low    | Medium |
-| ~~ | 23   | Goreleaser config | Low    | Low    |
-| ~~ | 24   | Dependabot config | Low    | Low    |
-| ~~ | 25   | Semantic-release  | Low    | Medium |
+| ~~ | ~~22~~ | ~~Dead letter queue~~ | ~~Low~~ | ~~Medium~~ |
+| ~~ | ~~23~~ | ~~Goreleaser config~~ | ~~Low~~ | ~~Low~~ |
+| ~~ | ~~24~~ | ~~Dependabot config~~ | ~~Low~~ | ~~Low~~ |
+| ~~ | ~~25~~ | ~~Semantic-release~~ | ~~Low~~ | ~~Medium~~ |
 
 ---
 

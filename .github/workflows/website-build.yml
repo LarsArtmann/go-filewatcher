@@ -1,0 +1,44 @@
+name: Website Build
+
+on:
+  pull_request:
+    paths:
+      - "website/**"
+      - ".github/workflows/website-build.yml"
+  push:
+    branches: [master]
+    paths:
+      - "website/**"
+      - ".github/workflows/website-build.yml"
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    name: Website Build
+    runs-on: ubuntu-24.04 # pinned for ubuntu-26.04 migration (2026-10-19 rollout)
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: website
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: pnpm/action-setup@7088e561eb65 # v4.1.0
+        # version comes from website/package.json packageManager (pnpm@11.20.0)
+
+      - uses: actions/setup-node@49933ea5288c # v4.4.0
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: website/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build

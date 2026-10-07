@@ -86,7 +86,9 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Symbols exempt from the docs check.
+          # Symbols exempt from the docs check. The two FilterGeneratedCode*
+          # gaps were documented in FEATURES.md on 2026-10-07 — the exemption
+          # list is now zero real gaps: only internal/deprecated helpers remain.
           #
           # 1. Compile-time phantom-type helpers (not user-facing):
           #    LogSubstring, NewLogSubstring, TempDir, NewTempDir,
@@ -96,11 +98,10 @@ jobs:
           # 2. Deprecated (mentioned via migration path, not in feature table):
           #    WithWatchedIgnoreDirs
           #
-          # 3. Remaining undocumented gaps — remove as they get documented:
-          #    FilterGeneratedCodeFull, FilterGeneratedCodeWithFilter
+          # 3. Internal runtime state struct (not user-facing API):
+          #    WatcherStateFlags
           EXEMPT_SYMBOLS="LogSubstring NewLogSubstring TempDir NewTempDir OpString NewOpString DebounceKey NewDebounceKey \
-            FilterGeneratedCodeFull FilterGeneratedCodeWithFilter WatcherStateFlags \
-            WithWatchedIgnoreDirs NewEventPath NewRootPath NewWatcherError"
+            WatcherStateFlags WithWatchedIgnoreDirs NewEventPath NewRootPath NewWatcherError"
 
           # Extract top-level exported symbols (skip methods and unexported).
           SYMBOLS=$(go doc -all . 2>/dev/null \

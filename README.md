@@ -305,6 +305,23 @@ filter := filewatcher.FilterCaseInsensitive(filewatcher.FilterExtensions(".go"))
 filter := filewatcher.FilterCaseSensitive(filewatcher.FilterRegex(`^/Project/.*\.go$`))
 ```
 
+### Platform Notes
+
+The watcher runs on Linux (inotify + optional polling), macOS (kqueue/FSEvents
+via fsnotify), and Windows (ReadDirectoryChangesW via fsnotify). What differs:
+
+- **Watch budgets are Linux-only.** `maxWatches` detection, the safety
+  fraction, and `Stats.WatchErrors` budget skipping apply to inotify. macOS and
+  Windows have no equivalent kernel cap, so no budget enforcement runs there.
+- **Path shapes follow the OS.** Event paths arrive with the OS separator and
+  case rules; `pathKey()` normalizes case + Unicode before all internal
+  comparisons, so filters and excludes work consistently once configured.
+- **Error classification is syscall-based.** Permission/not-exist/not-directory
+  errors are permanent (self-heal abandons the path); inotify `ENOSPC` is the
+  only transient watch error — other platforms retry nothing today.
+- **CI coverage:** the test matrix runs ubuntu-24.04, ubuntu-26.04, macOS 15,
+  and Windows 2025 on every push.
+
 ## Observability
 
 ### Stats

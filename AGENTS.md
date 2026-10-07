@@ -113,6 +113,7 @@ Full detail for every gotcha: [docs/gotchas.md](docs/gotchas.md). The one-liners
 24. Poll mode applies the same skip/exclusion/gitignore logic as the initial walk.
 25. `EventChannelDropOnFull`: non-blocking send, drops counted; default is blocking backpressure.
 26. Watch-budget safety fraction applies ONLY to auto-detected limits; explicit `WithMaxWatches` wins, incl. through `Reset()`.
+27. Windows/macOS CI legs: budget enforcement is inotify-only; `failedPaths` lookups MUST go through `pathKey()` (raw paths only work on Linux); POSIX-shape tests skip via `skipOnWindows(t)`.
 
 ## Key Patterns
 

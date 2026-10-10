@@ -79,10 +79,10 @@ check) resolved; **CLEAN, 1 commit**, all 16 required contexts green.
    merged without auto-delete (`ci/floor-guard-rollout`,
    `docs/bookkeeping`; most others show `gone`). Remote deletion is a push
    operation — gated on your OK (§g2).
-2. **§f-22 `global.out.css` artifact** — the reversion is now *preserved and
-   labeled*, but the actual fix (untrack + gitignore vs keep) is still an
+2. **§f-22 `global.out.css` artifact** — the reversion is now _preserved and
+   labeled_, but the actual fix (untrack + gitignore vs keep) is still an
    open decision; the stash should not outlive the decision.
-3. **Incident forensics** — the failure *pattern* is now precisely
+3. **Incident forensics** — the failure _pattern_ is now precisely
    documented (daemon junk commits on local master + resets; Git Town
    all-branch sync amplifies any stale branch), but the daemon's process
    identity/config remains unknown (§g1) — I still cannot see what runs it.
@@ -116,7 +116,7 @@ check) resolved; **CLEAN, 1 commit**, all 16 required contexts green.
 1. **The daemon's sabotage #5 hit during MY recovery operation** — junk
    commit onto local master, inherited by my fresh PR branch, then aborted
    my paused rebase. Recovery was clean (atomic rebuild, protection held,
-   nothing lost), but the *window* was mine to prevent: I forked a branch
+   nothing lost), but the _window_ was mine to prevent: I forked a branch
    without re-verifying master's position seconds beforehand, and I ran an
    **interactive multi-step rebase** — a paused-merge state is an open
    invitation to a daemon that resets. The atomic one-shot pattern should
@@ -127,7 +127,7 @@ check) resolved; **CLEAN, 1 commit**, all 16 required contexts green.
    operation driven by a truncated list is a half-operation; the sweep had
    to run twice.
 3. **PR #58 pushed before a parent check** — the standing rule (verify
-   branch + commit count after `pr create`) *caught* the 2-commit fork, but
+   branch + commit count after `pr create`) _caught_ the 2-commit fork, but
    the cheaper check (`git log --oneline origin/master..HEAD` before push)
    would have caught it pre-push and saved the force-push cycle. Rule
    applied late is a recovery loop.
@@ -143,7 +143,7 @@ reversion survived, and origin/master never moved.
    purge is a documented one-liner, load-independent, and has now been
    "queued" in two consecutive reports while I handled bigger fires. Cheap
    load-independent items need a different queue than the quiet batch —
-   they should execute *inside* any session that touches the repo.
+   they should execute _inside_ any session that touches the repo.
 2. **Under active daemon interference, every git mutation is one atomic
    bash invocation.** The paused rebase was the attack surface; the
    one-shot rebuild was immune. Make the atomic pattern the default for
@@ -170,58 +170,58 @@ Carries the 15:21 list forward; new items 1–6 from this segment, then the
 standing backlog (unchanged items keep their 15:21 numbering in brackets
 where useful).
 
-| # | Item | Notes / gate |
-| --- | --- | --- |
-| 1 | **Merge PR #57** (15:21 report) — CLEAN, 1 commit | your OK (§g2) |
-| 2 | **Merge PR #58** (AGENTS.md Git Town gotcha) — CLEAN, 1 commit; needs one update-branch cycle after #57 | your OK (§g2) |
-| 3 | **BuildFlow stale pnpm-audit cache purge** — documented sqlite one-liner; flagged twice, executed zero times | load-independent; execute in ANY session |
-| 4 | **Delete merged remote branches** on origin (`ci/floor-guard-rollout`, `docs/bookkeeping`, any others) | push op — your OK (§g2) |
-| 5 | **§f-22 fix for real**: decide untrack+gitignore vs keep for `global.out.css`; the preserved stash executes it in one commit | decision + trivial PR |
-| 6 | **Adopt the atomic-git-mutation rule** (one bash invocation for branch surgery; pre-push parent check) | process; AGENTS.md row already covers the sweep half |
-| 7 | **Daemon decision** (§g1): disable / restrict / `wip:` prefix — 5 sabotages today | user answer; highest-leverage |
-| 8 | **Quiet batch as one dedicated session** (§g3): T5 + T16 + T22 + T23 + T24 | load < 8 pre-flight |
-| 9 | **Leg-promotion decision** after 2026-10-14 stability window + week-one review | user answer + data |
-| 10 | **Per-OS test expectations** — replace 34 `skipOnWindows` skips with `filepath` assertions | prerequisite for 9 |
-| 11 | **Website Build → required check** | green since #54 |
-| 12 | **T17 (gated)**: two upstream BuildFlow filings (strace auto-bump evidence; result-cache key gap) | approval gate |
-| 13 | **Release smoke-test script** before v2.4.3 | |
-| 14 | **Re-check release-PR zero-job failure** on next release PR | |
-| 15 | **Wire html-validate into Website Build** (devDep exists) | |
-| 16 | **Starlight editLink/lastUpdated decision** | |
-| 17 | **Website redeploy when there is something to ship** | v2.4.2 not on live changelog yet |
-| 18 | **Overnight merge-ownership protocol** | |
-| 19 | **Consumer sweep** after red-master windows | |
-| 20 | **Audit the 292 marker-free tables** in archives | |
-| 21 | **Benchmark job required-check role** post-race-fix | |
-| 22 | **erraudit nolint sweep** + 4 `err113` LSP warnings on middleware_test.go | |
-| 23 | **CODEOWNERS-style pointer** for docs/ | |
-| 24 | **Floor-guard job on release PRs** confirmation | |
-| 25 | **Event-channel lifecycle gotcha** → docs/gotchas.md | |
-| 26 | **Weekly `-race -count=2`** cost/benefit | |
-| 27 | **vite 8.3.3 verification** with pnpm update | |
-| 28 | **24.04 pins decision 2026-11-19** | |
-| 29 | **Dependabot vs floor guard** conflict check | |
-| 30 | **minimumReleaseAge into pnpm-workspace.yaml** | |
-| 31 | **Verify 09:47 report's `done at` hashes** | |
-| 32 | **Archive 00:42–09:47 reports** (and eventually 13:09/15:21) when tails resolve | |
-| 33 | **Branch-protection record → docs/ci-workflows.md** | |
-| 34 | **close/reopen mergeStateStatus trick → crush-config lessons** | |
-| 35 | **actionlint in pre-push verification** | |
-| 36 | **examples/ README freshness pass** | |
-| 37 | **ROADMAP → v3-decisions.md cross-link** | |
-| 38 | **TODO_LIST Status Snapshot recount** at next sweep | |
-| 39 | **`MiddlewareWriteFileLog` deprecation warning** (v3 prep) | |
-| 40 | **Confirm examples compile on Windows/macOS** explicitly | |
-| 41 | **`--frozen-lockfile` for local website builds** | |
-| 42 | **gitleaks → required CI set?** decision | |
-| 43 | **reliability_semantics_test.go placement convention** | |
-| 44 | **Confirm live site got the v2.4.1 fix** at next deploy | |
-| 45 | **buildflow doctor + list providers inventory** (refresh binary-version note) | load-independent |
-| 46 | **Post-merge master-CI confirmation habit** for docs-only PRs | |
-| 47 | **Status-dir conventions enforcement** (this report complies) | |
-| 48 | **Harvest this §f into TODO_LIST.md** at next docs session | |
-| 49 | **T25 close-out** once cache + evidence purges land | |
-| 50 | **Next probe-leg data checkpoint** (weekly until promotion decision) | |
+| #  | Item                                                                                                                         | Notes / gate                                         |
+| -- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| 1  | **Merge PR #57** (15:21 report) — CLEAN, 1 commit                                                                            | your OK (§g2)                                        |
+| 2  | **Merge PR #58** (AGENTS.md Git Town gotcha) — CLEAN, 1 commit; needs one update-branch cycle after #57                      | your OK (§g2)                                        |
+| 3  | **BuildFlow stale pnpm-audit cache purge** — documented sqlite one-liner; flagged twice, executed zero times                 | load-independent; execute in ANY session             |
+| 4  | **Delete merged remote branches** on origin (`ci/floor-guard-rollout`, `docs/bookkeeping`, any others)                       | push op — your OK (§g2)                              |
+| 5  | **§f-22 fix for real**: decide untrack+gitignore vs keep for `global.out.css`; the preserved stash executes it in one commit | decision + trivial PR                                |
+| 6  | **Adopt the atomic-git-mutation rule** (one bash invocation for branch surgery; pre-push parent check)                       | process; AGENTS.md row already covers the sweep half |
+| 7  | **Daemon decision** (§g1): disable / restrict / `wip:` prefix — 5 sabotages today                                            | user answer; highest-leverage                        |
+| 8  | **Quiet batch as one dedicated session** (§g3): T5 + T16 + T22 + T23 + T24                                                   | load < 8 pre-flight                                  |
+| 9  | **Leg-promotion decision** after 2026-10-14 stability window + week-one review                                               | user answer + data                                   |
+| 10 | **Per-OS test expectations** — replace 34 `skipOnWindows` skips with `filepath` assertions                                   | prerequisite for 9                                   |
+| 11 | **Website Build → required check**                                                                                           | green since #54                                      |
+| 12 | **T17 (gated)**: two upstream BuildFlow filings (strace auto-bump evidence; result-cache key gap)                            | approval gate                                        |
+| 13 | **Release smoke-test script** before v2.4.3                                                                                  |                                                      |
+| 14 | **Re-check release-PR zero-job failure** on next release PR                                                                  |                                                      |
+| 15 | **Wire html-validate into Website Build** (devDep exists)                                                                    |                                                      |
+| 16 | **Starlight editLink/lastUpdated decision**                                                                                  |                                                      |
+| 17 | **Website redeploy when there is something to ship**                                                                         | v2.4.2 not on live changelog yet                     |
+| 18 | **Overnight merge-ownership protocol**                                                                                       |                                                      |
+| 19 | **Consumer sweep** after red-master windows                                                                                  |                                                      |
+| 20 | **Audit the 292 marker-free tables** in archives                                                                             |                                                      |
+| 21 | **Benchmark job required-check role** post-race-fix                                                                          |                                                      |
+| 22 | **erraudit nolint sweep** + 4 `err113` LSP warnings on middleware_test.go                                                    |                                                      |
+| 23 | **CODEOWNERS-style pointer** for docs/                                                                                       |                                                      |
+| 24 | **Floor-guard job on release PRs** confirmation                                                                              |                                                      |
+| 25 | **Event-channel lifecycle gotcha** → docs/gotchas.md                                                                         |                                                      |
+| 26 | **Weekly `-race -count=2`** cost/benefit                                                                                     |                                                      |
+| 27 | **vite 8.3.3 verification** with pnpm update                                                                                 |                                                      |
+| 28 | **24.04 pins decision 2026-11-19**                                                                                           |                                                      |
+| 29 | **Dependabot vs floor guard** conflict check                                                                                 |                                                      |
+| 30 | **minimumReleaseAge into pnpm-workspace.yaml**                                                                               |                                                      |
+| 31 | **Verify 09:47 report's `done at` hashes**                                                                                   |                                                      |
+| 32 | **Archive 00:42–09:47 reports** (and eventually 13:09/15:21) when tails resolve                                              |                                                      |
+| 33 | **Branch-protection record → docs/ci-workflows.md**                                                                          |                                                      |
+| 34 | **close/reopen mergeStateStatus trick → crush-config lessons**                                                               |                                                      |
+| 35 | **actionlint in pre-push verification**                                                                                      |                                                      |
+| 36 | **examples/ README freshness pass**                                                                                          |                                                      |
+| 37 | **ROADMAP → v3-decisions.md cross-link**                                                                                     |                                                      |
+| 38 | **TODO_LIST Status Snapshot recount** at next sweep                                                                          |                                                      |
+| 39 | **`MiddlewareWriteFileLog` deprecation warning** (v3 prep)                                                                   |                                                      |
+| 40 | **Confirm examples compile on Windows/macOS** explicitly                                                                     |                                                      |
+| 41 | **`--frozen-lockfile` for local website builds**                                                                             |                                                      |
+| 42 | **gitleaks → required CI set?** decision                                                                                     |                                                      |
+| 43 | **reliability_semantics_test.go placement convention**                                                                       |                                                      |
+| 44 | **Confirm live site got the v2.4.1 fix** at next deploy                                                                      |                                                      |
+| 45 | **buildflow doctor + list providers inventory** (refresh binary-version note)                                                | load-independent                                     |
+| 46 | **Post-merge master-CI confirmation habit** for docs-only PRs                                                                |                                                      |
+| 47 | **Status-dir conventions enforcement** (this report complies)                                                                |                                                      |
+| 48 | **Harvest this §f into TODO_LIST.md** at next docs session                                                                   |                                                      |
+| 49 | **T25 close-out** once cache + evidence purges land                                                                          |                                                      |
+| 50 | **Next probe-leg data checkpoint** (weekly until promotion decision)                                                         |                                                      |
 
 ---
 
@@ -244,7 +244,7 @@ where useful).
 
 ---
 
-*Prepared 2026-10-07 15:51 CEST. Master at `d8c05cc` (local == origin);
+_Prepared 2026-10-07 15:51 CEST. Master at `d8c05cc` (local == origin);
 18 zombie branches + stale worktrees removed; PRs #57 and #58 OPEN and
 CLEAN; the only unmerged local artifact is a labeled stash holding the
-§f-22 css reversion.*
+§f-22 css reversion._

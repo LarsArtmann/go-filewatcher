@@ -336,4 +336,4 @@ checklist above.
     war class). A daemon-side ignore list is implementable; whether the
     daemon should ever commit manifests is your decision.
     (`src: 2026-10-07_03-10 §g2`)
-   (`src: 2026-10-07_02-24 §g Q3`)
+    (`src: 2026-10-07_02-24 §g Q3`)

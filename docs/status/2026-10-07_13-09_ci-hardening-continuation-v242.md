@@ -13,24 +13,24 @@ session (see §d).
 
 ### The merge wave — every PR verified `state == MERGED` after the fact
 
-| PR | Content | Evidence |
-| --- | --- | --- |
-| #38 | CI hardening: floor guard job, ubuntu-26.04 leg, release gating, **event-channel data race fix**, `WaitGroup.Go` | master CI all green on `7df48ce`; floor guard + both ubuntu legs passed |
-| #39 | Docs sweep: 03-10 report annotated, archives 86/86 uniform, TODO harvest, 09:47 status report | green |
-| #40 | FilterGeneratedCode* exports documented, exemption list → internals only | green |
-| #41 | AGENTS.md split 630→221 lines + 9 docs/ files | green |
-| #42 | **v2.4.2 released** (release-please): the race fix shipped as a `fix:` | tag `v2.4.2` exists, GitHub Release published non-draft |
-| #43 | `GOEXPERIMENT=jsonv2` in release.yml — **found by the T4.3 dry-run** | dry-run #2: tests+lint pass, release step correctly refuses duplicate, published release untouched |
-| #44 | TODO ticks: floor guard, required checks, dispatch, 1.27-leg resolution | green |
-| #45 | `docs/status/README.md` index (T10) + CHANGELOG double-blank normalization | green |
-| #46 | **Reliability test trio** (T13): 9 tests pinning ContentHashMaxSize(0) semantics + option-order trap, budget-fraction contract (1.0 = no-op), ErrorContext.Event population | full suite `-race` green |
-| #47 | **Windows/macOS probe legs** (T11+T12): macos-15 + windows-2025 in matrix, fail-fast off, pathKey test bug fixed, 34 POSIX-shape skips via `skipOnWindows`, per-OS `ExampleEventPath`, `shell: bash` for coverage steps, platform notes in README, gotcha #27 | **all four OS legs green** (run 37603085625 + successors) |
-| #48 | **v3 decision ledger** (T26): json/v2↔floor-bump coupling as constraint C1 | green |
-| #49 | Hygiene (T25 part): two real typos fixed, `.codespellrc` with false-positive inventory | codespell exits clean |
-| #50 | Bookkeeping: branch-protection config recorded in AGENTS.md (f40), GOTOOLCHAIN story wired (f26), buildflow binary version note, deploy runbook, dependabot item closed | green |
-| #51 | **T21 content verification**: API_STABILITY + DOMAIN_LANGUAGE verified against code; README's two dead links fixed (migration → live website URL, slug-verified) | green |
-| #52–#54 | **Website CI job** (T14): `website-build.yml` — pnpm frozen install + astro build on website/** — landed through three fix-forward rounds (full SHAs, `package_json_file`, see §d) | **Website Build: pass** (run 37608801357) |
-| #55 | Website CI tick + gotchas recorded | green |
+| PR      | Content                                                                                                                                                                                                                                                       | Evidence                                                                                           |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| #38     | CI hardening: floor guard job, ubuntu-26.04 leg, release gating, **event-channel data race fix**, `WaitGroup.Go`                                                                                                                                              | master CI all green on `7df48ce`; floor guard + both ubuntu legs passed                            |
+| #39     | Docs sweep: 03-10 report annotated, archives 86/86 uniform, TODO harvest, 09:47 status report                                                                                                                                                                 | green                                                                                              |
+| #40     | FilterGeneratedCode* exports documented, exemption list → internals only                                                                                                                                                                                      | green                                                                                              |
+| #41     | AGENTS.md split 630→221 lines + 9 docs/ files                                                                                                                                                                                                                 | green                                                                                              |
+| #42     | **v2.4.2 released** (release-please): the race fix shipped as a `fix:`                                                                                                                                                                                        | tag `v2.4.2` exists, GitHub Release published non-draft                                            |
+| #43     | `GOEXPERIMENT=jsonv2` in release.yml — **found by the T4.3 dry-run**                                                                                                                                                                                          | dry-run #2: tests+lint pass, release step correctly refuses duplicate, published release untouched |
+| #44     | TODO ticks: floor guard, required checks, dispatch, 1.27-leg resolution                                                                                                                                                                                       | green                                                                                              |
+| #45     | `docs/status/README.md` index (T10) + CHANGELOG double-blank normalization                                                                                                                                                                                    | green                                                                                              |
+| #46     | **Reliability test trio** (T13): 9 tests pinning ContentHashMaxSize(0) semantics + option-order trap, budget-fraction contract (1.0 = no-op), ErrorContext.Event population                                                                                   | full suite `-race` green                                                                           |
+| #47     | **Windows/macOS probe legs** (T11+T12): macos-15 + windows-2025 in matrix, fail-fast off, pathKey test bug fixed, 34 POSIX-shape skips via `skipOnWindows`, per-OS `ExampleEventPath`, `shell: bash` for coverage steps, platform notes in README, gotcha #27 | **all four OS legs green** (run 37603085625 + successors)                                          |
+| #48     | **v3 decision ledger** (T26): json/v2↔floor-bump coupling as constraint C1                                                                                                                                                                                    | green                                                                                              |
+| #49     | Hygiene (T25 part): two real typos fixed, `.codespellrc` with false-positive inventory                                                                                                                                                                        | codespell exits clean                                                                              |
+| #50     | Bookkeeping: branch-protection config recorded in AGENTS.md (f40), GOTOOLCHAIN story wired (f26), buildflow binary version note, deploy runbook, dependabot item closed                                                                                       | green                                                                                              |
+| #51     | **T21 content verification**: API_STABILITY + DOMAIN_LANGUAGE verified against code; README's two dead links fixed (migration → live website URL, slug-verified)                                                                                              | green                                                                                              |
+| #52–#54 | **Website CI job** (T14): `website-build.yml` — pnpm frozen install + astro build on website/** — landed through three fix-forward rounds (full SHAs, `package_json_file`, see §d)                                                                            | **Website Build: pass** (run 37608801357)                                                          |
+| #55     | Website CI tick + gotchas recorded                                                                                                                                                                                                                            | green                                                                                              |
 
 Cross-repo: **crush-config PR #2 merged** (T27 half) — three generalizable
 lessons (full-SHA `uses:`, actions ignoring `working-directory` defaults +
@@ -298,5 +298,5 @@ order and the leftover §f items from 09:47.
 
 ---
 
-*Prepared 2026-10-07 13:09. Master at `a62cb9c`; all 18 session PRs merged;
-0 open PRs; CI + Website Build green on master.*
+_Prepared 2026-10-07 13:09. Master at `a62cb9c`; all 18 session PRs merged;
+0 open PRs; CI + Website Build green on master._

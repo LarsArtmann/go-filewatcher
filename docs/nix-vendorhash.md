@@ -1,6 +1,5 @@
 # Updating vendorHash
 
-
 When `go.mod` or `go.sum` changes, `vendorHash` in `flake.nix` must be updated:
 
 ```bash

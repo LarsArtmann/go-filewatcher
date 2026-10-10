@@ -1,6 +1,5 @@
 # Linter Cheat Sheet
 
-
 50+ linters enabled. Key ones that bite:
 
 | Linter             | Rule                                  |

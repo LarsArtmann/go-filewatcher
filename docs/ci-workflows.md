@@ -1,6 +1,5 @@
 # CI Workflows
 
-
 | Workflow               | Purpose                                                                     |
 | ---------------------- | --------------------------------------------------------------------------- |
 | `ci.yml`               | Test (race + coverage), lint, examples-build, benchmark                     |

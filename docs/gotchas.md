@@ -264,4 +264,3 @@ those legs green:
   POSIX contracts pending per-OS expectations. `ExampleEventPath` is split
   into `example_path_test.go` (!windows) and `example_path_windows_test.go`
   because Example funcs cannot call `t.Skip`.
-

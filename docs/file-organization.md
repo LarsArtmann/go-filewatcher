@@ -1,6 +1,5 @@
 # File Organization
 
-
 | File                   | Responsibility                                                                                   |
 | ---------------------- | ------------------------------------------------------------------------------------------------ |
 | `watcher.go`           | Public API: New, Watch, Add, AddRecursive, Remove, Reset, WatchList, Stats                       |

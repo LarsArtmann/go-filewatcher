@@ -37,13 +37,14 @@ The branching-flow multi-linter analysis identified **6 core issues** across 8 l
 
 **Files**: `debouncer.go`, `testing_helpers.go`, `watcher_walk.go`
 
-| #  | Violation | Current                | New Type                                |
-| -- | --------- | ---------------------- | --------------------------------------- |
-| ~~ | ~~1~~ | ~~debouncer.go:115~~ | ~~`Debounce(key string, ...)`~~ |
-| ~~ | ~~2~~ | ~~testing_helpers.go:73~~ | ~~`assertLogContains(..., substr string)`~~ |
-| ~~ | ~~3~~ | ~~testing_helpers.go:144~~ | ~~`createTestFile(..., tmpDir string)`~~ |
-| ~~ | ~~4~~ | ~~watcher_walk.go:22~~ | ~~`addPath(root string)`~~ |
-| ~~ | ~~5~~ | ~~watcher_walk.go:34~~ | ~~`walkAndAddPaths(root string)`~~ |
+| #  | Violation | Current                    | New Type                                    |
+| -- | --------- | -------------------------- | ------------------------------------------- |
+| ~~ | ~~1~~     | ~~debouncer.go:115~~       | ~~`Debounce(key string, ...)`~~             |
+| ~~ | ~~2~~     | ~~testing_helpers.go:73~~  | ~~`assertLogContains(..., substr string)`~~ |
+| ~~ | ~~3~~     | ~~testing_helpers.go:144~~ | ~~`createTestFile(..., tmpDir string)`~~    |
+| ~~ | ~~4~~     | ~~watcher_walk.go:22~~     | ~~`addPath(root string)`~~                  |
+| ~~ | ~~5~~     | ~~watcher_walk.go:34~~     | ~~`walkAndAddPaths(root string)`~~          |
+
 > Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
 
 **Rationale**: Prevents passing wrong string arguments at compile time.
@@ -71,17 +72,17 @@ The branching-flow multi-linter analysis identified **6 core issues** across 8 l
 
 **Issues**: 9 error propagation issues
 
-| Line | Current | Suggested Improvement                |
-| ---- | ------- | ------------------------------------ |
-| ~~   | ~~91~~ | ~~Context variable 'opts' lost~~ |
-| ~~   | ~~98~~ | ~~Context variable 'opts' lost~~ |
-| ~~   | ~~102~~ | ~~Context variable 'opts' lost~~ |
-| ~~   | ~~105~~ | ~~Context variable 'opts' lost~~ |
-| ~~   | ~~111~~ | ~~Context variable 'opts' lost~~ |
-| ~~   | ~~188~~ | ~~Context variable 'path' lost~~ |
+| Line | Current | Suggested Improvement                    |
+| ---- | ------- | ---------------------------------------- |
+| ~~   | ~~91~~  | ~~Context variable 'opts' lost~~         |
+| ~~   | ~~98~~  | ~~Context variable 'opts' lost~~         |
+| ~~   | ~~102~~ | ~~Context variable 'opts' lost~~         |
+| ~~   | ~~105~~ | ~~Context variable 'opts' lost~~         |
+| ~~   | ~~111~~ | ~~Context variable 'opts' lost~~         |
+| ~~   | ~~188~~ | ~~Context variable 'path' lost~~         |
 | ~~   | ~~197~~ | ~~Context variable 'path' not included~~ |
-| ~~   | ~~210~~ | ~~Context variable 'path' lost~~ |
-| ~~   | ~~219~~ | ~~Context variable 'path' lost~~ |
+| ~~   | ~~210~~ | ~~Context variable 'path' lost~~         |
+| ~~   | ~~219~~ | ~~Context variable 'path' lost~~         |
 
 **Rationale**: Better debugging experience with full error chains.
 
@@ -91,9 +92,9 @@ The branching-flow multi-linter analysis identified **6 core issues** across 8 l
 
 **Issue**: 1 error propagation issue at line 46
 
-| Line | Current | Improvement               |
-| ---- | ------- | ------------------------- |
-| ~~   | ~~46~~ | ~~Context variable 'd' lost~~ |
+| Line | Current | Improvement                   |
+| ---- | ------- | ----------------------------- |
+| ~~   | ~~46~~  | ~~Context variable 'd' lost~~ |
 
 ---
 

@@ -8,9 +8,7 @@ unique defaulting stays inline. `TestMiddlewareDefaultConsts_AllUsed` guards
 the inventory. Middleware has no lifecycle hook — pair factories with
 `WithCleanup(fn)` for resources.
 
-
 _Moved from `AGENTS.md` on 2026-10-07 (carrying-capacity split); AGENTS.md links here._
-
 
 Every middleware that accepts a tunable (duration, count, threshold) must
 substitute a **named const** when the caller passes a non-positive value — never

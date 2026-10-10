@@ -1,6 +1,5 @@
 # Error Handling: Standard Library
 
-
 Uses `errors` and `fmt` from the standard library:
 
 ```go

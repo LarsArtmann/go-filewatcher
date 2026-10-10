@@ -1,11 +1,11 @@
 # Branch Convergence — "MERGE all branches into master" Session Report
 
-| | |
-| --- | --- |
-| **Date** | 2026-10-07 16:30 CEST |
-| **Session scope** | Integrate all 5 unmerged branches into master under live branch protection; recover from two conflict-paused `git sync` runs and one daemon reset |
-| **Start state** | master `d8c05cc`; local branches `docs/git-town-branch-hygiene`, `docs/status-1521-report`, `docs/status-1551-report` (each +1 commit); diverged remote branches `origin/docs/bookkeeping`, `origin/ci/floor-guard-rollout` (no PRs); local master later carried 14 commits (5 of them merge commits) that could never be pushed |
-| **End state** | master `f88be1a` == origin/master, clean; only `master` exists locally and remotely; zero open PRs; all content upstream; required CI green on every merged PR (incl. windows/macos probe legs); tree byte-identical to the locally `nix flake check`-validated tree (9/9 checks) |
+|                   |                                                                                                                                                                                                                                                                                                                                  |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Date**          | 2026-10-07 16:30 CEST                                                                                                                                                                                                                                                                                                            |
+| **Session scope** | Integrate all 5 unmerged branches into master under live branch protection; recover from two conflict-paused `git sync` runs and one daemon reset                                                                                                                                                                                |
+| **Start state**   | master `d8c05cc`; local branches `docs/git-town-branch-hygiene`, `docs/status-1521-report`, `docs/status-1551-report` (each +1 commit); diverged remote branches `origin/docs/bookkeeping`, `origin/ci/floor-guard-rollout` (no PRs); local master later carried 14 commits (5 of them merge commits) that could never be pushed |
+| **End state**     | master `f88be1a` == origin/master, clean; only `master` exists locally and remotely; zero open PRs; all content upstream; required CI green on every merged PR (incl. windows/macos probe legs); tree byte-identical to the locally `nix flake check`-validated tree (9/9 checks)                                                |
 
 ---
 
@@ -150,42 +150,42 @@ remote branches were the ghost risk and were proven-empty then deleted.
 
 ## f) Up to 50 things to get done next (ranked by impact; session-observed only)
 
-| # | Task | Impact | Effort | Category |
-|---|------|--------|--------|----------|
-| 1 | Decide auto-commit daemon policy under branch protection (re-scope to branches / disable on master / remove) — it reset master mid-merge twice today and commits junk snapshots | High | S | Cleanup |
-| 2 | PR: AGENTS.md gotcha — "realign local master to origin/master before `git sync` when local master carries unpushed commits" | High | S | Documentation |
-| 3 | Run docs-health HARVEST: pull this report's section (f) into TODO_LIST.md / ROADMAP.md | High | M | Documentation |
-| 4 | Resolve `stash@{0}` (codespell-hygiene css reversion): drop or land — user decision (see g1) | Medium | S | Cleanup |
-| 5 | Verify `nix flake check` on `f88be1a` itself (tree proven identical to validated `369e0ac`; cheap certainty) | Medium | S | Quality |
-| 6 | Re-run `git town sync` once to confirm the converged state balances clean | Medium | S | Quality |
-| 7 | Investigate whether the daemon still creates local master commits post-protection (silent divergence would recur) | High | S | Bug |
-| 8 | Document merge convention: rebase-merge default, squash for conflict-carrying PRs (what actually happened with #57/#58 vs #59) | Medium | S | Documentation |
-| 9 | PR: add `new-status-report.sh` (or bottom-append convention) to kill docs/status/README.md index-row conflicts | Medium | S | Feature |
-| 10 | PR: this report + docs/status/README.md index row | Medium | S | Documentation |
-| 11 | Website: fix dependabot alerts `fast-uri` (high) + `astro` (medium) in website/package.json | High | M | Bug |
-| 12 | Wire html-validate into website CI (devDep already present) | Medium | M | Feature |
-| 13 | buildflow pnpm-audit result-cache purge (queued per 15:21 report; known surgical sqlite delete) | Medium | S | Cleanup |
-| 14 | Website link checker (Astro dead-link plugin) — would have caught the migration-guide 404 | Medium | M | Feature |
-| 15 | Probe-leg promotion decision: make macos-15/windows-2025 test legs required or keep informational | High | S | Decision |
-| 16 | Per-OS test expectations doc (which POSIX-shape tests skip on Windows, via skipOnWindows) | Medium | M | Documentation |
-| 17 | Work through follow-up items from the probe-leg wave (TODO count note) | Medium | M | Quality |
-| 18 | Clean `/tmp` evidence logs post-green-CI (`bf-*.log`, `gomod-*.log`, `strace-*.log`, `gfw-main-run*.log`) | Low | S | Cleanup |
-| 19 | Remote mirror setup for the repo (open per 15:51 report) | Medium | M | Feature |
-| 20 | Website CSS decision (open per 15:51 report) | Low | S | Decision |
-| 21 | §g questions from the 15:21 report — re-ask and close | Medium | S | Decision |
-| 22 | §b6 vendorHash re-verify (open per 08-14 archive row) | Low | S | Quality |
-| 23 | f12/T16 quiet-machine batch (queued per 09-47 row) | Medium | M | Quality |
-| 24 | Go 1.27 floor bump decision: revisit encoding/json/v2 usage or accept the bump (v3 decision, deliberately deferred) | Medium | L | Decision |
-| 25 | Archive 15-21 + 15-51 status reports once their open items resolve (docs-health ANNOTATE flow) | Low | S | Documentation |
-| 26 | Fix docs/status/README.md hardcoded "Active (2026-10-07)" heading — needs a rolling-date scheme | Low | S | Documentation |
-| 27 | Audit other clones/machines for stale local masters carrying merge commits (same sync-conflict trap as this session) | Medium | S | Cleanup |
-| 28 | Consider a pre-sync guard: warn when local master has commits not on origin (prevents today's pause pattern mechanically) | Medium | M | Quality |
-| 29 | Run `buildflow doctor` + `list providers` (machine-drift check; fleet binary changed mid-session yesterday per AGENTS.md) | Medium | S | Quality |
-| 30 | Confirm release-please is unaffected by the branch cleanup (watch the next commit wave for a correct release PR) | Medium | S | Quality |
-| 31 | GitGuardian third-party check sits IN_PROGRESS on PRs (non-required, slow) — suppress the noise or accept | Low | S | Quality |
-| 32 | Update TODO_LIST.md status snapshot + open-item count after harvesting this report | Medium | S | Documentation |
-| 33 | website-build.yml job is non-required on PRs (noted in the 15:21 DONE text) — require it or record the accepted risk | Medium | S | Decision |
-| 34 | Confirm GitHub's auto-delete-head-branch setting is intentional (it silently removed all four merged PR branches today — desired, but undocumented) | Low | S | Documentation |
+| #  | Task                                                                                                                                                                            | Impact | Effort | Category      |
+| -- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ | ------------- |
+| 1  | Decide auto-commit daemon policy under branch protection (re-scope to branches / disable on master / remove) — it reset master mid-merge twice today and commits junk snapshots | High   | S      | Cleanup       |
+| 2  | PR: AGENTS.md gotcha — "realign local master to origin/master before `git sync` when local master carries unpushed commits"                                                     | High   | S      | Documentation |
+| 3  | Run docs-health HARVEST: pull this report's section (f) into TODO_LIST.md / ROADMAP.md                                                                                          | High   | M      | Documentation |
+| 4  | Resolve `stash@{0}` (codespell-hygiene css reversion): drop or land — user decision (see g1)                                                                                    | Medium | S      | Cleanup       |
+| 5  | Verify `nix flake check` on `f88be1a` itself (tree proven identical to validated `369e0ac`; cheap certainty)                                                                    | Medium | S      | Quality       |
+| 6  | Re-run `git town sync` once to confirm the converged state balances clean                                                                                                       | Medium | S      | Quality       |
+| 7  | Investigate whether the daemon still creates local master commits post-protection (silent divergence would recur)                                                               | High   | S      | Bug           |
+| 8  | Document merge convention: rebase-merge default, squash for conflict-carrying PRs (what actually happened with #57/#58 vs #59)                                                  | Medium | S      | Documentation |
+| 9  | PR: add `new-status-report.sh` (or bottom-append convention) to kill docs/status/README.md index-row conflicts                                                                  | Medium | S      | Feature       |
+| 10 | PR: this report + docs/status/README.md index row                                                                                                                               | Medium | S      | Documentation |
+| 11 | Website: fix dependabot alerts `fast-uri` (high) + `astro` (medium) in website/package.json                                                                                     | High   | M      | Bug           |
+| 12 | Wire html-validate into website CI (devDep already present)                                                                                                                     | Medium | M      | Feature       |
+| 13 | buildflow pnpm-audit result-cache purge (queued per 15:21 report; known surgical sqlite delete)                                                                                 | Medium | S      | Cleanup       |
+| 14 | Website link checker (Astro dead-link plugin) — would have caught the migration-guide 404                                                                                       | Medium | M      | Feature       |
+| 15 | Probe-leg promotion decision: make macos-15/windows-2025 test legs required or keep informational                                                                               | High   | S      | Decision      |
+| 16 | Per-OS test expectations doc (which POSIX-shape tests skip on Windows, via skipOnWindows)                                                                                       | Medium | M      | Documentation |
+| 17 | Work through follow-up items from the probe-leg wave (TODO count note)                                                                                                          | Medium | M      | Quality       |
+| 18 | Clean `/tmp` evidence logs post-green-CI (`bf-*.log`, `gomod-*.log`, `strace-*.log`, `gfw-main-run*.log`)                                                                       | Low    | S      | Cleanup       |
+| 19 | Remote mirror setup for the repo (open per 15:51 report)                                                                                                                        | Medium | M      | Feature       |
+| 20 | Website CSS decision (open per 15:51 report)                                                                                                                                    | Low    | S      | Decision      |
+| 21 | §g questions from the 15:21 report — re-ask and close                                                                                                                           | Medium | S      | Decision      |
+| 22 | §b6 vendorHash re-verify (open per 08-14 archive row)                                                                                                                           | Low    | S      | Quality       |
+| 23 | f12/T16 quiet-machine batch (queued per 09-47 row)                                                                                                                              | Medium | M      | Quality       |
+| 24 | Go 1.27 floor bump decision: revisit encoding/json/v2 usage or accept the bump (v3 decision, deliberately deferred)                                                             | Medium | L      | Decision      |
+| 25 | Archive 15-21 + 15-51 status reports once their open items resolve (docs-health ANNOTATE flow)                                                                                  | Low    | S      | Documentation |
+| 26 | Fix docs/status/README.md hardcoded "Active (2026-10-07)" heading — needs a rolling-date scheme                                                                                 | Low    | S      | Documentation |
+| 27 | Audit other clones/machines for stale local masters carrying merge commits (same sync-conflict trap as this session)                                                            | Medium | S      | Cleanup       |
+| 28 | Consider a pre-sync guard: warn when local master has commits not on origin (prevents today's pause pattern mechanically)                                                       | Medium | M      | Quality       |
+| 29 | Run `buildflow doctor` + `list providers` (machine-drift check; fleet binary changed mid-session yesterday per AGENTS.md)                                                       | Medium | S      | Quality       |
+| 30 | Confirm release-please is unaffected by the branch cleanup (watch the next commit wave for a correct release PR)                                                                | Medium | S      | Quality       |
+| 31 | GitGuardian third-party check sits IN_PROGRESS on PRs (non-required, slow) — suppress the noise or accept                                                                       | Low    | S      | Quality       |
+| 32 | Update TODO_LIST.md status snapshot + open-item count after harvesting this report                                                                                              | Medium | S      | Documentation |
+| 33 | website-build.yml job is non-required on PRs (noted in the 15:21 DONE text) — require it or record the accepted risk                                                            | Medium | S      | Decision      |
+| 34 | Confirm GitHub's auto-delete-head-branch setting is intentional (it silently removed all four merged PR branches today — desired, but undocumented)                             | Low    | S      | Documentation |
 
 (34 items — stopped where specificity would have become filler. Items 11–24
 were observed in merged reports/TODO_LIST during this session, not re-researched.)
@@ -208,5 +208,5 @@ were observed in merged reports/TODO_LIST during this session, not re-researched
 
 ---
 
-*Report convention: point-in-time snapshot. Section (f) is the HARVEST input
-for TODO_LIST.md/ROADMAP.md. Waiting for instructions.*
+_Report convention: point-in-time snapshot. Section (f) is the HARVEST input
+for TODO_LIST.md/ROADMAP.md. Waiting for instructions._

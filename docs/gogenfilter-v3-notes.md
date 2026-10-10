@@ -1,6 +1,5 @@
 # gogenfilter v3 API Notes
 
-
 The library depends on `github.com/LarsArtmann/gogenfilter/v3` (v3.6.1, published module — no
 local replace directive). The v3 API differs from v0/v2 in these ways (relevant when upgrading consumers):
 

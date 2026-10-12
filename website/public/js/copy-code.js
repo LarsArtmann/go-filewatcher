@@ -1,7 +1,9 @@
+const COPY_RESET_DELAY_MS = 2000;
+
 const btn = document.querySelector("#copy-btn");
 if (btn) {
   btn.addEventListener("click", async () => {
-    const code = btn.dataset.code;
+    const { code } = btn.dataset;
     try {
       await navigator.clipboard.writeText(code || "");
       btn.textContent = "Copied!";
@@ -9,12 +11,12 @@ if (btn) {
       setTimeout(() => {
         btn.textContent = "Copy";
         btn.classList.remove("text-success");
-      }, 2000);
+      }, COPY_RESET_DELAY_MS);
     } catch {
       btn.textContent = "Failed";
       setTimeout(() => {
         btn.textContent = "Copy";
-      }, 2000);
+      }, COPY_RESET_DELAY_MS);
     }
   });
 }

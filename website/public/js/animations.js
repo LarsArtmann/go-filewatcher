@@ -1,16 +1,20 @@
 if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-  document.querySelectorAll("[data-animate]").forEach((el) => el.classList.add("animate-fade-in"));
+  for (const el of document.querySelectorAll("[data-animate]")) {
+    el.classList.add("animate-fade-in");
+  }
 } else {
   const observer = new IntersectionObserver(
     (entries) => {
-      entries.forEach((entry) => {
+      for (const entry of entries) {
         if (entry.isIntersecting) {
           entry.target.classList.add("animate-fade-in");
           observer.unobserve(entry.target);
         }
-      });
+      }
     },
     { threshold: 0.1 },
   );
-  document.querySelectorAll("[data-animate]").forEach((el) => observer.observe(el));
+  for (const el of document.querySelectorAll("[data-animate]")) {
+    observer.observe(el);
+  }
 }

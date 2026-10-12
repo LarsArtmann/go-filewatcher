@@ -11,16 +11,16 @@ const {
   padding = 'md',
   width,
   class: className,
-} = Astro.props,
+} = Astro.props;
 
- paddingClasses: Record<string, string> = {
+const paddingClasses: Record<string, string> = {
   lg: 'py-32',
   md: 'py-24',
   none: '',
   sm: 'py-12',
-},
+};
 
- widthClasses: Record<string, string> = {
+const widthClasses: Record<string, string> = {
   narrow: 'max-w-4xl',
   wide: 'max-w-7xl',
 };

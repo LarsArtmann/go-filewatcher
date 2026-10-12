@@ -2,26 +2,25 @@
 // So the website changelog can never drift from the source of truth again.
 // Run automatically before `astro build` and `astro dev` (see package.json).
 import { readFileSync, writeFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 
 const scriptDir = import.meta.dirname;
-const sourcePath = join(scriptDir, "..", "..", "CHANGELOG.md"),
- targetPath = join(scriptDir, "..", "src", "content", "docs", "changelog.mdx"),
+const sourcePath = join(scriptDir, "..", "..", "CHANGELOG.md");
+const targetPath = join(scriptDir, "..", "src", "content", "docs", "changelog.mdx");
 
- changelog = readFileSync(sourcePath, "utf8"),
+const changelog = readFileSync(sourcePath, "utf8");
 
-// Drop the leading `# Changelog` H1 and intro lines: Starlight renders its
-// own page title from the frontmatter below.
- firstEntry = changelog.indexOf("\n## ");
+// Drop the leading `# Changelog` H1 and the intro lines.
+// Starlight renders its own page title from the frontmatter below.
+const firstEntry = changelog.indexOf("\n## ");
 if (firstEntry === -1) {
-	console.error(`sync-changelog: no version entries found in ${sourcePath}`);
-	process.exit(1);
+  console.error(`sync-changelog: no version entries found in ${sourcePath}`);
+  process.exit(1);
 }
 
-const body = changelog.slice(firstEntry + 1).trimEnd(),
+const body = changelog.slice(firstEntry + 1).trimEnd();
 
- page = `---
+const page = `---
 title: Changelog
 description: All notable changes to go-filewatcher, synced from CHANGELOG.md.
 ---

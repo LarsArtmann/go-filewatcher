@@ -82,6 +82,19 @@ its own flake/toolchain — not part of the Go module. Build `cd website && nix 
 rebuild. Details: [website/README.md](website/README.md) if present.
 Deploy procedure + quirks: [docs/website-deploy-runbook.md](docs/website-deploy-runbook.md).
 
+Website JS/TS is linted by BuildFlow's oxlint step under a NESTED
+`website/.oxlintrc.json` (2026-10-12) carving website conventions out of the
+root BuildFlow config: PascalCase components (filename-case off), intentional
+content/config key order (sort-keys off), one-declaration-per-line (one-var /
+sort-vars off), font-weight/timeout literals (no-magic-numbers off), `window`
+globals (prefer-global-this off), console/process-exit/fs-sync allowed for
+`scripts/**` + `*.config.*`. A nested oxlint config REPLACES the root `rules`
+block (no merge) — carry the root's `oxc/*` exceptions (no-async-await etc.)
+into it or they resurface. oxlint sort-imports orders by first local name,
+case-sensitive (uppercase sorts before lowercase). `astro check` is BROKEN
+here (TS 7.0 unsupported); the working typecheck is `tsc --noEmit` in
+`website/` (what BuildFlow runs), plus `pnpm run build`.
+
 ---
 
 ## Critical Gotchas (index)
@@ -238,3 +251,9 @@ explicit strategy (`--fix=update` re-resolves the lockfile; `--fix=override` add
 overrides to `website/pnpm-workspace.yaml`). 2026-10-07: 12 vulns (9 high) → 0 via
 update + one override (`postcss-selector-parser@<7.1.6: ^7.1.6`, forced major bump,
 website build verified green after).
+
+2026-10-12: the same replay class hit the `oxlint` entry — a stale zero-finding
+JSON masked two real `no-unused-vars` errors (dead imports in sync-changelog.mjs).
+Purge is fleet-DB shared, so scope by repo hash: `SELECT DISTINCT repo_hash FROM
+result_cache WHERE value LIKE '%go-filewatcher%'`, then
+`DELETE FROM result_cache WHERE repo_hash='<hash>' AND value LIKE '%"Tool":"oxlint"%'`.

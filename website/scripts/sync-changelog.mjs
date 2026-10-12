@@ -14,8 +14,8 @@ const changelog = readFileSync(sourcePath, "utf8");
 // Starlight renders its own page title from the frontmatter below.
 const firstEntry = changelog.indexOf("\n## ");
 if (firstEntry === -1) {
-  console.error(`sync-changelog: no version entries found in ${sourcePath}`);
-  process.exit(1);
+	console.error(`sync-changelog: no version entries found in ${sourcePath}`);
+	process.exit(1);
 }
 
 const body = changelog.slice(firstEntry + 1).trimEnd();

@@ -1,6 +1,6 @@
 import { siteConfig } from "./config";
 
-const importPath = siteConfig.github.replace("https://github.com/", "github.com/") + "/v2";
+const importPath = `${siteConfig.github.replace("https://github.com/", "github.com/")  }/v2`;
 
 export const heroCode = `package main
 

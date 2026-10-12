@@ -15,25 +15,25 @@ const {
   href,
   external = false,
   class: className,
-} = Astro.props;
+} = Astro.props,
 
-const paddingClasses: Record<string, string> = {
-  xs: 'p-4',
-  sm: 'p-5',
-  md: 'p-6',
+ paddingClasses: Record<string, string> = {
   lg: 'p-8',
-};
+  md: 'p-6',
+  sm: 'p-5',
+  xs: 'p-4',
+},
 
-const variantClasses: Record<string, string> = {
+ variantClasses: Record<string, string> = {
+  comparison: 'border-border text-center',
   default: 'border-border hover:border-border-hover',
   feature: 'border-border hover:border-border-hover',
-  comparison: 'border-border text-center',
   usecase: 'border-border text-center',
-};
+},
 
-const baseClasses = 'rounded-xl border bg-bg-card backdrop-blur-sm transition-all duration-200';
+ baseClasses = 'rounded-xl border bg-bg-card backdrop-blur-sm transition-all duration-200',
 
-const allClasses = [
+ allClasses = [
   baseClasses,
   paddingClasses[padding],
   variantClasses[variant],

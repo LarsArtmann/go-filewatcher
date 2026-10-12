@@ -10,7 +10,7 @@ async function getGitHubStars(): Promise<number | null> {
         'Accept': 'application/vnd.github.v3+json',
       },
     });
-    if (!response.ok) return null;
+    if (!response.ok) {return null;}
     const data = await response.json();
     return data.stargazers_count as number;
   } catch {
@@ -18,10 +18,10 @@ async function getGitHubStars(): Promise<number | null> {
   }
 }
 
-const stars = await getGitHubStars();
-const starsText = stars !== null ? `${stars} Stars` : 'Star on GitHub';
+const stars = await getGitHubStars(),
+ starsText = stars === null ? 'Star on GitHub' : `${stars} Stars`;
 
-const importPath = siteConfig.github.replace('https://github.com/', 'github.com/') + '/v2';
+const importPath = `${siteConfig.github.replace('https://github.com/', 'github.com/')  }/v2`;
 
 const highlightedCode = `<span class="text-text-muted">package</span> <span class="text-text-secondary">main</span>
 
@@ -49,13 +49,13 @@ const highlightedCode = `<span class="text-text-muted">package</span> <span clas
     <span class="text-text-muted">for</span> ev := <span class="text-text-muted">range</span> events {
         fmt.Printf(<span class="text-amber">"%s: %s\\n"</span>, ev.Op, ev.Path)
     }
-}`;
+}`,
 
-const metrics = [
-  { value: '18', label: 'Middleware' },
-  { value: '17+', label: 'Filters' },
-  { value: '4', label: 'Dependencies' },
-  { value: 'MIT', label: 'License' },
+ metrics = [
+  { label: 'Middleware', value: '18' },
+  { label: 'Filters', value: '17+' },
+  { label: 'Dependencies', value: '4' },
+  { label: 'License', value: 'MIT' },
 ];
 ---
 

@@ -5,14 +5,7 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-	site: "https://filewatcher.lars.software",
-
 	compressHTML: true,
-
-	prefetch: {
-		prefetchAll: false,
-		defaultStrategy: "hover",
-	},
 
 	fonts: [
 		{
@@ -103,6 +96,13 @@ export default defineConfig({
 			],
 		}),
 	],
+
+	prefetch: {
+		defaultStrategy: "hover",
+		prefetchAll: false,
+	},
+
+	site: "https://filewatcher.lars.software",
 
 	vite: {
 		plugins: [tailwindcss()],

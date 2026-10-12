@@ -1,7 +1,7 @@
-const btn = document.getElementById("copy-btn");
+const btn = document.querySelector("#copy-btn");
 if (btn) {
   btn.addEventListener("click", async () => {
-    const code = btn.getAttribute("data-code");
+    const code = btn.dataset.code;
     try {
       await navigator.clipboard.writeText(code || "");
       btn.textContent = "Copied!";

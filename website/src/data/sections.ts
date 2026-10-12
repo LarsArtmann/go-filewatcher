@@ -1,45 +1,43 @@
-import type { StepCard, ComparisonItem, UseCase, ComparisonMatrix } from "./types";
+import type { ComparisonItem, ComparisonMatrix, StepCard, UseCase } from "./types";
 
 export const steps: StepCard[] = [
   {
-    step: "1",
-    stepColor: "accent",
-    title: "Create",
-    desc: "Initialize with paths and options. Functional options configure filters, middleware, debounce.",
     code: `w, _ := filewatcher.New(paths,
     filewatcher.WithExtensions(".go"),
 )`,
+    desc: "Initialize with paths and options. Functional options configure filters, middleware, debounce.",
+    step: "1",
+    stepColor: "accent",
+    title: "Create",
   },
   {
+    code: `events, _ := w.Watch(ctx)`,
+    desc: "Call Watch(ctx) to start. Returns a read-only event channel. Goroutines handle the rest.",
     step: "2",
     stepColor: "accent",
     title: "Watch",
-    desc: "Call Watch(ctx) to start. Returns a read-only event channel. Goroutines handle the rest.",
-    code: `events, _ := w.Watch(ctx)`,
   },
   {
+    code: `// filters + middleware applied automatically`,
+    desc: "Events pass through your filter chain and middleware. 17+ filters, 18 middleware, composable.",
     step: "3",
     stepColor: "amber",
     title: "Pipeline",
-    desc: "Events pass through your filter chain and middleware. 17+ filters, 18 middleware, composable.",
-    code: `// filters + middleware applied automatically`,
   },
   {
-    step: "4",
-    stepColor: "amber",
-    title: "Consume",
-    desc: "Range over the channel. Each event carries path, op, timestamp, size, modtime, and optional hash.",
     code: `for ev := range events {
     fmt.Println(ev.Op, ev.Path)
 }`,
+    desc: "Range over the channel. Each event carries path, op, timestamp, size, modtime, and optional hash.",
+    step: "4",
+    stepColor: "amber",
+    title: "Consume",
   },
 ];
 
 export const comparisons: ComparisonItem[] = [
   {
-    variant: "Raw fsnotify",
     accent: false,
-    pros: ["Low-level control", "No abstraction overhead"],
     cons: [
       "No recursive watching",
       "Manual filter logic",
@@ -47,10 +45,12 @@ export const comparisons: ComparisonItem[] = [
       "ENOSPC crashes the watcher",
       "No NFS/FUSE support",
     ],
+    pros: ["Low-level control", "No abstraction overhead"],
+    variant: "Raw fsnotify",
   },
   {
-    variant: "go-filewatcher",
     accent: true,
+    cons: [],
     pros: [
       "Automatic recursion + new directories",
       "17+ composable filters with AND/OR/NOT",
@@ -60,18 +60,18 @@ export const comparisons: ComparisonItem[] = [
       ".gitignore-aware walking",
       "Prometheus + OpenTelemetry built in",
     ],
-    cons: [],
+    variant: "go-filewatcher",
   },
   {
-    variant: "Other wrappers",
     accent: false,
-    pros: ["Some convenience over raw fsnotify"],
     cons: [
       "Limited or no middleware",
       "Few or no filters",
       "No observability hooks",
       "No resilience features",
     ],
+    pros: ["Some convenience over raw fsnotify"],
+    variant: "Other wrappers",
   },
 ];
 
@@ -92,18 +92,18 @@ export const comparisonMatrix: ComparisonMatrix = {
 
 export const useCases: UseCase[] = [
   {
-    title: "Hot Reload",
     desc: "Dev servers, build systems, and live-reload tools that trigger on file changes",
     icon: "bolt",
+    title: "Hot Reload",
   },
   {
-    title: "Log Monitoring",
     desc: "Tail and process log files in real-time with debouncing and rate limiting",
     icon: "server",
+    title: "Log Monitoring",
   },
   {
-    title: "CI/CD Triggers",
     desc: "Watch for changes and trigger pipelines, tests, or deployments automatically",
     icon: "refresh",
+    title: "CI/CD Triggers",
   },
 ];

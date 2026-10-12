@@ -1,4 +1,6 @@
-if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  document.querySelectorAll("[data-animate]").forEach((el) => el.classList.add("animate-fade-in"));
+} else {
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -11,6 +13,4 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     { threshold: 0.1 },
   );
   document.querySelectorAll("[data-animate]").forEach((el) => observer.observe(el));
-} else {
-  document.querySelectorAll("[data-animate]").forEach((el) => el.classList.add("animate-fade-in"));
 }

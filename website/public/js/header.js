@@ -1,12 +1,12 @@
-const themeToggle = document.getElementById("theme-toggle");
+const themeToggle = document.querySelector("#theme-toggle");
 if (themeToggle) {
-  const lightIcon = themeToggle.querySelector(".theme-icon-light");
-  const darkIcon = themeToggle.querySelector(".theme-icon-dark");
+  const lightIcon = themeToggle.querySelector(".theme-icon-light"),
+   darkIcon = themeToggle.querySelector(".theme-icon-dark");
 
   function applyTheme() {
     const isLight = document.documentElement.classList.contains("light");
-    if (lightIcon) lightIcon.classList.toggle("hidden", !isLight);
-    if (darkIcon) darkIcon.classList.toggle("hidden", isLight);
+    if (lightIcon) {lightIcon.classList.toggle("hidden", !isLight);}
+    if (darkIcon) {darkIcon.classList.toggle("hidden", isLight);}
     themeToggle.setAttribute("aria-pressed", String(isLight));
   }
 
@@ -27,13 +27,13 @@ if (themeToggle) {
   });
 }
 
-const toggle = document.getElementById("nav-toggle");
-const navLinks = document.getElementById("nav-links");
+const toggle = document.querySelector("#nav-toggle"),
+ navLinks = document.querySelector("#nav-links");
 if (toggle && navLinks) {
-  const menuIcon = toggle.querySelector(".menu-icon");
-  const closeIcon = toggle.querySelector(".close-icon");
+  const menuIcon = toggle.querySelector(".menu-icon"),
+   closeIcon = toggle.querySelector(".close-icon");
 
-  toggle.addEventListener("click", function () {
+  toggle.addEventListener("click", () => {
     const isOpen = navLinks.classList.toggle("open");
     if (menuIcon) menuIcon.classList.toggle("hidden", isOpen);
     if (closeIcon) closeIcon.classList.toggle("hidden", !isOpen);
@@ -43,8 +43,8 @@ if (toggle && navLinks) {
   navLinks.querySelectorAll(".nav-link").forEach((link) => {
     link.addEventListener("click", () => {
       navLinks.classList.remove("open");
-      if (menuIcon) menuIcon.classList.remove("hidden");
-      if (closeIcon) closeIcon.classList.add("hidden");
+      if (menuIcon) {menuIcon.classList.remove("hidden");}
+      if (closeIcon) {closeIcon.classList.add("hidden");}
       toggle.setAttribute("aria-expanded", "false");
     });
   });

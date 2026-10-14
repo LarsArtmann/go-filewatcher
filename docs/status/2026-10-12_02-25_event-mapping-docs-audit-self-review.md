@@ -10,9 +10,9 @@
 
 Three user questions, answered from source (repo code + fsnotify v1.10.1 module cache):
 
-1. *"Do we support watching folders and stuff like IN_MODIFY or IN_MOVED_TO?"*
-2. *"So ALL ways to change a file are properly mapped to our events?"*
-3. *"Is this all well documented?"*
+1. _"Do we support watching folders and stuff like IN_MODIFY or IN_MOVED_TO?"_
+2. _"So ALL ways to change a file are properly mapped to our events?"_
+3. _"Is this all well documented?"_
 
 No code, docs, or tests were changed. All findings below are analysis output that exists only in conversation + this report — **nothing has been harvested into TODO_LIST.md yet.**
 
@@ -81,46 +81,46 @@ No code, docs, or tests were changed. All findings below are analysis output tha
 
 **Documentation (highest value, all from this session's verified findings):**
 
-| # | Task | Size |
-|---|------|------|
-| 1 | Add inotify→Op mapping table to README Event section | S |
-| 2 | Link research doc from README + Troubleshooting + gotchas | XS |
-| 3 | Expand gotchas #6 with user consequence (metadata changes → no event) | XS |
-| 4 | Document mmap-without-sync gap in Troubleshooting | S |
-| 5 | Document hardlink cross-directory gap in Troubleshooting | S |
-| 6 | Document IN_Q_OVERFLOW loss + what does/doesn't mitigate it (correcting my d.3 imprecision) | S |
-| 7 | Add poll-mode blindness caveat to website resilience guide | XS |
-| 8 | Enrich `Op` doc comments in event.go with arrival semantics (incl. "created-and-written arrives as Create") | S |
-| 9 | Website guide page: "Event semantics across platforms" | M |
-| 10 | Verify + document Windows ReadDirectoryChangesW mapping differences | M |
-| 11 | Verify + document macOS kqueue/FSEvents mapping differences | M |
+| #  | Task                                                                                                        | Size |
+| -- | ----------------------------------------------------------------------------------------------------------- | ---- |
+| 1  | Add inotify→Op mapping table to README Event section                                                        | S    |
+| 2  | Link research doc from README + Troubleshooting + gotchas                                                   | XS   |
+| 3  | Expand gotchas #6 with user consequence (metadata changes → no event)                                       | XS   |
+| 4  | Document mmap-without-sync gap in Troubleshooting                                                           | S    |
+| 5  | Document hardlink cross-directory gap in Troubleshooting                                                    | S    |
+| 6  | Document IN_Q_OVERFLOW loss + what does/doesn't mitigate it (correcting my d.3 imprecision)                 | S    |
+| 7  | Add poll-mode blindness caveat to website resilience guide                                                  | XS   |
+| 8  | Enrich `Op` doc comments in event.go with arrival semantics (incl. "created-and-written arrives as Create") | S    |
+| 9  | Website guide page: "Event semantics across platforms"                                                      | M    |
+| 10 | Verify + document Windows ReadDirectoryChangesW mapping differences                                         | M    |
+| 11 | Verify + document macOS kqueue/FSEvents mapping differences                                                 | M    |
 
 **Tests (hardening the claims I made):**
 
-| # | Task | Size |
-|---|------|------|
-| 12 | Table-driven test: convertEvent over synthetic fsnotify Op bitmasks (all 2^5 combos) asserting priority order | S |
-| 13 | Test: poll mode misses same-size+same-mtime rewrite (documents the blindness as executable spec) | S |
-| 14 | Test/docs: editor atomic-save produces Create+Remove, not Write (reliability_semantics_test.go candidate) | S |
-| 15 | Verify existing convertEvent Chmod-drop test coverage (commit 215f114 suggests it exists — confirm) | XS |
+| #  | Task                                                                                                          | Size |
+| -- | ------------------------------------------------------------------------------------------------------------- | ---- |
+| 12 | Table-driven test: convertEvent over synthetic fsnotify Op bitmasks (all 2^5 combos) asserting priority order | S    |
+| 13 | Test: poll mode misses same-size+same-mtime rewrite (documents the blindness as executable spec)              | S    |
+| 14 | Test/docs: editor atomic-save produces Create+Remove, not Write (reliability_semantics_test.go candidate)     | S    |
+| 15 | Verify existing convertEvent Chmod-drop test coverage (commit 215f114 suggests it exists — confirm)           | XS   |
 
 **Product/type decisions (v3 fuel):**
 
-| # | Task | Size |
-|---|------|------|
-| 16 | Decide Chmod policy for v3: stay dropped vs opt-in metadata events (record in docs/research/v3-decisions.md — read it first this time) | M |
-| 17 | Decide: surface move-in vs create distinction (consumers cannot distinguish IN_MOVED_TO from IN_CREATE today) | M |
-| 18 | Consider `Stats.EventsCoalesced` counter — multi-op merges are currently invisible to observability | S |
-| 19 | Consider poll-mode content-hash comparison option to catch same-size/mtime rewrites (interacts with WithContentHashing) | M |
-| 20 | Decide whether root-move (watched dir itself renamed) is handled by self-heal — verify watcher_selfheal.go, then document | M |
+| #  | Task                                                                                                                                   | Size |
+| -- | -------------------------------------------------------------------------------------------------------------------------------------- | ---- |
+| 16 | Decide Chmod policy for v3: stay dropped vs opt-in metadata events (record in docs/research/v3-decisions.md — read it first this time) | M    |
+| 17 | Decide: surface move-in vs create distinction (consumers cannot distinguish IN_MOVED_TO from IN_CREATE today)                          | M    |
+| 18 | Consider `Stats.EventsCoalesced` counter — multi-op merges are currently invisible to observability                                    | S    |
+| 19 | Consider poll-mode content-hash comparison option to catch same-size/mtime rewrites (interacts with WithContentHashing)                | M    |
+| 20 | Decide whether root-move (watched dir itself renamed) is handled by self-heal — verify watcher_selfheal.go, then document              | M    |
 
 **Process:**
 
-| # | Task | Size |
-|---|------|------|
-| 21 | HARVEST this report's items 1-11 into TODO_LIST.md | XS |
-| 22 | docs-health VERIFY pass over the whole docs tree (the proper version of my improvised audit) | M |
-| 23 | Check getting-started website pages for event-semantics claims I never grepped | S |
+| #  | Task                                                                                         | Size |
+| -- | -------------------------------------------------------------------------------------------- | ---- |
+| 21 | HARVEST this report's items 1-11 into TODO_LIST.md                                           | XS   |
+| 22 | docs-health VERIFY pass over the whole docs tree (the proper version of my improvised audit) | M    |
+| 23 | Check getting-started website pages for event-semantics claims I never grepped               | S    |
 
 Remaining slots (24-50): intentionally not padded — see g) before spending them.
 
@@ -145,4 +145,4 @@ Remaining slots (24-50): intentionally not padded — see g) before spending the
 
 ---
 
-*Point-in-time snapshot. Stale on arrival; see docs-health ANNOTATE for updates. Format note: `.md` per explicit user instruction (skill canonical is HTML — override flagged).*
+_Point-in-time snapshot. Stale on arrival; see docs-health ANNOTATE for updates. Format note: `.md` per explicit user instruction (skill canonical is HTML — override flagged)._

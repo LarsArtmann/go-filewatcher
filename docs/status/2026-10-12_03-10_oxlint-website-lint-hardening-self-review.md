@@ -59,6 +59,7 @@ Nothing catastrophic. Honest failures:
 ## f) Up to 50 things next (brainstorm, session-derived; quality over padding — 30 real ones)
 
 **Verification & correctness**
+
 1. Run full `buildflow` (all steps) in a quiet window; confirm no cross-step regressions.
 2. Browser smoke test: theme toggle, nav toggle, copy button, scroll animations (`astro preview`).
 3. Resolve the `filesScanned: 0` finding-report question definitively (BuildFlow source read).
@@ -112,4 +113,4 @@ Nothing catastrophic. Honest failures:
 
 No. Every headline claim maps to captured evidence: `oxlint .` exit 0, `tsc` exit 0, build log "14 page(s) built", empty changelog diff, fresh 0-finding BuildFlow run. The two weakest claims are flagged honestly above (b.3 filesScanned, partial verification coverage) rather than papered over. Time wasted on the sort-imports theory spiral was real but cost only minutes; the one process violation that matters (d.4) is called out.
 
-*Report format note: user explicitly demanded Markdown at `docs/status/` — overrides the skill's HTML-canonical default for this report only.*
+_Report format note: user explicitly demanded Markdown at `docs/status/` — overrides the skill's HTML-canonical default for this report only._

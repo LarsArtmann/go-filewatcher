@@ -22,7 +22,7 @@
     }:
     let
       version = self.rev or self.dirtyRev or "dev";
-      vendorHash = "sha256-9qQXBs0qx/NO3MlaGarCGHiv7OAhx7t+9Xy5F/EohOI=";
+      vendorHash = "sha256-gCTpc6TJoHL81NkxHws6o2Bsi00/EPpXsLyR4TVi8hI=";
 
       src = nixpkgs.lib.fileset.toSource {
         root = ./.;

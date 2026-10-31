@@ -35,13 +35,13 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
-    "@astrojs/starlight": "^0.42.6",
+    "@astrojs/starlight": "^0.42.7",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.4.0",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
+    "@astrojs/check": "^0.9.12",
     "html-validate": "^11.16.4",
     "typescript": "^7.0.2"
   },

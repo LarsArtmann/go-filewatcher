@@ -1,7 +1,7 @@
 version: "2"
 run:
   timeout: 5m
-  go: "1.26"
+  go: "1.27"
   build-tags:
     - goexperiment.arenas
     - goexperiment.goroutineleakprofile
@@ -16,13 +16,11 @@ output:
   formats: {}
 linters:
   enable:
-    - arangolint
     - asasalint
     - asciicheck
     - bidichk
     - bodyclose
     - canonicalheader
-    - clickhouselint
     - containedctx
     - contextcheck
     - copyloopvar

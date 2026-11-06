@@ -1,5 +1,11 @@
 # Status Report + Brutal Self-Review — oxlint Website Lint Hardening
 
+> **ARCHIVED 2026-11-06** (docs-health sweep): every forward-looking item in
+> this report is resolved inline — struck through with the evidence that closed
+> it, or struck through and routed to the living docs ([TODO_LIST.md](../../../TODO_LIST.md)
+> / [ROADMAP.md](../../../ROADMAP.md)) where the work still lives. The history below
+> is settled; open work is in the TODO list, not here.
+
 **Date:** 2026-10-12 03:10 CEST · **Session scope:** the `oxlint .` cleanup run (website lint) — NOT a full-project audit · **Repo state:** local master `954b68a`, working tree clean, **all work LOCAL-ONLY** (auto-commit daemon cannot push; branch protection is live)
 
 ---
@@ -60,46 +66,46 @@ Nothing catastrophic. Honest failures:
 
 **Verification & correctness**
 
-1. Run full `buildflow` (all steps) in a quiet window; confirm no cross-step regressions.
-2. Browser smoke test: theme toggle, nav toggle, copy button, scroll animations (`astro preview`).
-3. Resolve the `filesScanned: 0` finding-report question definitively (BuildFlow source read).
-4. Run `html-validate` against the rebuilt `dist/`.
-5. Runtime-check `import.meta.dirname` still correct after my sync-changelog rewrite (build ran it — pass; add a failing-CHANGELOG test case).
-6. Prove the copy-code 2 s reset + "Failed" path manually once.
+1. ~~Run full `buildflow` (all steps) in a quiet window; confirm no cross-step regressions.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+2. ~~Browser smoke test: theme toggle, nav toggle, copy button, scroll animations (`astro preview`).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+3. ~~Resolve the `filesScanned: 0` finding-report question definitively (BuildFlow source read).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+4. ~~Run `html-validate` against the rebuilt `dist/`.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+5. ~~Runtime-check `import.meta.dirname` still correct after my sync-changelog rewrite (build ran it — pass; add a failing-CHANGELOG test case).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+6. ~~Prove the copy-code 2 s reset + "Failed" path manually once.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 
 **Quick wins (minutes each)**
 7. Fix website `typecheck` script → `tsc --noEmit`.
-8. Add `"lint": "oxlint ."` to website `package.json`.
-9. Extract `importPath` into `data/config.ts` (kill the e)1 split brain).
-10. Clean `/tmp/index.astro.bak`, `/tmp/oxlint-fresh.txt` (trivial).
-11. Decide + record policy: keep or revert the alphabetical data-file key order.
+8. ~~Add `"lint": "oxlint ."` to website `package.json`.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+9. ~~Extract `importPath` into `data/config.ts` (kill the e)1 split brain).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+10. ~~Clean `/tmp/index.astro.bak`, `/tmp/oxlint-fresh.txt` (trivial).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+11. ~~Decide + record policy: keep or revert the alphabetical data-file key order.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 
 **Upstream / fleet**
-12. File the BuildFlow result-cache replay issue (verify-before-filing: minimal repro = this repo's oxlint entry).
-13. Rebuild/reinstall the stale fleet BuildFlow binary (doctor warns: built 0eec15d, repo HEAD moved twice this session).
-14. Consider a scheduled `BUILDFLOW_NO_RESULT_CACHE=1` run as a cache-lie tripwire.
-15. Ask whether BuildFlow should own a `lint` npm-script sync (scripts ↔ pipeline parity).
+12. ~~File the BuildFlow result-cache replay issue (verify-before-filing: minimal repro = this repo's oxlint entry).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+13. ~~Rebuild/reinstall the stale fleet BuildFlow binary (doctor warns: built 0eec15d, repo HEAD moved twice this session).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+14. ~~Consider a scheduled `BUILDFLOW_NO_RESULT_CACHE=1` run as a cache-lie tripwire.~~ no longer open here — routed to TODO_LIST (tripwire** — cache-keying gaps (pnpm-lock, oxlint) have twice hidden real)
+15. ~~Ask whether BuildFlow should own a `lint` npm-script sync (scripts ↔ pipeline parity).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 
 **Process / docs**
-16. `docs-health` HARVEST this list into `TODO_LIST.md`.
-17. Slim AGENTS.md under 220 lines (move website-oxlint detail to `docs/`).
-18. Document website JS conventions in `website/README.md`.
-19. Add the "nested oxlint config replaces rules" gotcha to `docs/gotchas.md` index.
-20. Calendar: ubuntu-26.04 CI rollout starts 2026-10-19 (documented in AGENTS.md).
+16. ~~`docs-health` HARVEST this list into `TODO_LIST.md`.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+17. ~~Slim AGENTS.md under 220 lines (move website-oxlint detail to `docs/`).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+18. ~~Document website JS conventions in `website/README.md`.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+19. ~~Add the "nested oxlint config replaces rules" gotcha to `docs/gotchas.md` index.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+20. ~~Calendar: ubuntu-26.04 CI rollout starts 2026-10-19 (documented in AGENTS.md).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 
 **Hygiene / investigation**
-21. Investigate root stub `package.json` + near-no-op root `.oxlintrc.json` — keep or remove, one deliberate decision.
-22. Pin oxlint (website flake or root flake) for reproducible lint behavior.
-23. Investigate root `coverage/` dir (July artifact) — trash if stale.
-24. Verify `result -> /nix/store/...` symlink is gitignored.
-25. Verify `website/dist/` is gitignored (daemon churn risk otherwise).
-26. Check whether committed `changelog.mdx` should be gitignored (it's regenerated on every build).
-27. Re-check `Newsletter.astro` inline `onsubmit` against CSP posture (deploy runbook).
+21. ~~Investigate root stub `package.json` + near-no-op root `.oxlintrc.json` — keep or remove, one deliberate decision.~~ no longer open here — routed to TODO_LIST (nested `.oxlintrc.json` conventions carved out of the root config. Also)
+22. ~~Pin oxlint (website flake or root flake) for reproducible lint behavior.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+23. ~~Investigate root `coverage/` dir (July artifact) — trash if stale.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+24. ~~Verify `result -> /nix/store/...` symlink is gitignored.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+25. ~~Verify `website/dist/` is gitignored (daemon churn risk otherwise).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+26. ~~Check whether committed `changelog.mdx` should be gitignored (it's regenerated on every build).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+27. ~~Re-check `Newsletter.astro` inline `onsubmit` against CSP posture (deploy runbook).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 
 **Bigger / later**
-28. Consider a tiny Playwright smoke suite for the 4 public/js behaviors (site currently has ZERO behavioral tests — typecheck+build+html-validate only).
-29. Consider `.astro`-aware linting story (oxlint frontmatter-only today) — re-evaluate when oxlint ships .astro template support.
-30. v3 planning already notes json/v2 floor coupling (docs/research/v3-decisions.md) — when that lands, `importPath` (e.1) MUST be single-sourced first.
+28. ~~Consider a tiny Playwright smoke suite for the 4 public/js behaviors (site currently has ZERO behavioral tests — typecheck+build+html-validate only).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+29. ~~Consider `.astro`-aware linting story (oxlint frontmatter-only today) — re-evaluate when oxlint ships .astro template support.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+30. ~~v3 planning already notes json/v2 floor coupling (docs/research/v3-decisions.md) — when that lands, `importPath` (e.1) MUST be single-sourced first.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 
 ## g) Questions I cannot answer myself
 

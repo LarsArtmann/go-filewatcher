@@ -1,6 +1,6 @@
 # Status Report: Public Presence Overhaul
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Date:** 2026-07-13 21:22
 **Session Scope:** README.md rewrite, documentation website creation, GitHub repo metadata update

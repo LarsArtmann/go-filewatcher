@@ -1,5 +1,11 @@
 # Status Report: buildflow --fix Recovery Session (go-filewatcher)
 
+> **ARCHIVED 2026-11-06** (docs-health sweep): every forward-looking item in
+> this report is resolved inline — struck through with the evidence that closed
+> it, or struck through and routed to the living docs ([TODO_LIST.md](../../../TODO_LIST.md)
+> / [ROADMAP.md](../../../ROADMAP.md)) where the work still lives. The history below
+> is settled; open work is in the TODO list, not here.
+
 > **SUPERSEDED (2026-10-07 06:00):** every open item here was resolved by `2026-10-07_05-17_buildflow-gomod-war-solved.md` and closed out in `2026-10-07_06-00_buildflow-green-pnpm-audit-zero-cache-war.md` (exit 0 ×2, floor held, 3-skip policy committed). Read the 06:00 report for the final state.
 
 **Date:** 2026-10-07 04:34 CEST
@@ -67,55 +73,55 @@
 ## f) NEXT TASKS (prioritized)
 
 1. Fix the inotify command (`--timefmt`) and re-run the worktree full pipeline with go-mod-update skipped → identify the remaining writer if the line still flips (candidates: go-mod-tidy, go-mod-normalize).
-2. If go-mod-tidy/normalize is the writer: add it to skip_steps with rationale (tidy verified by `tidy -diff` canary in doctor/go-mod-update's check).
-3. Achieve the GREEN full run in `/tmp/gfw-verify` (worktree, `verify-gomod-floor`, go.mod at 1.26.7).
-4. Sync the final `.buildflow.yml` dispositions to the main repo; delete the worktree + branch.
-5. Restore main-repo go.mod to `go 1.26.7`; refresh `./result` (`nix build .`).
-6. Re-run `buildflow --fix --build-mode=full` in the MAIN repo in a quiet window; expect exit 0.
-7. Update AGENTS.md "go.mod language version" section with the refined mechanism (go-mod-update minor mode = bumper; disposition fix = skip + explicit `buildflow update`).
-8. Update AGENTS.md nix-hash-fix entry with the additional failure signature seen today ("build reported hash mismatch but no fixable findings were generated").
-9. Trim AGENTS.md under the size limit: move File Organization table + Dependencies/gogenfilter section + CI Workflows table + Linter Cheat Sheet to `docs/` with pointers (verify every concept survives).
-10. File upstream BuildFlow issues: (a) nix-hash-fix "stale hash not found verbatim" false negative; (b) go-mod-update minor mode silently bumping the go directive against documented floors; (c) `go get -u=patch` failing on this module graph (maybe upstream Go behavior worth a BuildFlow fallback).
-11. Consider `dep_update_mode: patch` + fixing the `-u=patch` failure as the alternative to skipping go-mod-update (keeps auto-updates working at patch level).
-12. Decide lychee fleet policy (authenticate vs exclude) — this repo now has a working `lychee.toml` exclude to copy.
-13. pnpm-audit: update website deps (js-yaml ≥4.3.2, fast-uri ≥3.1.6, source-map-js ≥1.2.2, devalue ≥5.9.3, svgo ≥4.1.0) via website toolchain.
-14. vulnix: nixpkgs channel bump decision (24 CVEs incl. critical curl ones) — likely a fleet-level repin.
-15. Add dprint/prettier/lychee (+ maybe govulncheck/vulnix) to devShells.default to silence the "not in project devShell" warnings.
-16. Add `meta.platforms` to flake packages.default meta (flake-meta-checker info).
-17. Add `meta.description` to the 8+ flake apps (nix-flake-check warnings) or accept the noise.
-18. Remove or fix the dependabot.yml "nix" ecosystem entry (info).
-19. Reconsider skip of go-version-auto-configure once BuildFlow dispositions are aligned upstream (the skip is a workaround, not a forever-decision).
-20. Run `buildflow update` explicitly at a chosen time to get real dependency updates WITHOUT the pipeline fighting the go line (then re-pin vendorHash + go line in one commit).
-21. Address the 12 go-auto-upgrade advisory findings deliberately (samber/lo lo.Map suggestions: adopt or rebut per how-to-golang policy; jsonv1tov2 migration blocked by the 1.26 floor — decision needed if/when CI matrix moves to 1.27).
+2. ~~If go-mod-tidy/normalize is the writer: add it to skip_steps with rationale (tidy verified by `tidy -diff` canary in doctor/go-mod-update's check).~~ no longer open here — routed to TODO_LIST (writers before racing them) and fix the buildflow skill DB path)
+3. ~~Achieve the GREEN full run in `/tmp/gfw-verify` (worktree, `verify-gomod-floor`, go.mod at 1.26.7).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+4. ~~Sync the final `.buildflow.yml` dispositions to the main repo; delete the worktree + branch.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+5. ~~Restore main-repo go.mod to `go 1.26.7`; refresh `./result` (`nix build .`).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+6. ~~Re-run `buildflow --fix --build-mode=full` in the MAIN repo in a quiet window; expect exit 0.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+7. ~~Update AGENTS.md "go.mod language version" section with the refined mechanism (go-mod-update minor mode = bumper; disposition fix = skip + explicit `buildflow update`).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+8. ~~Update AGENTS.md nix-hash-fix entry with the additional failure signature seen today ("build reported hash mismatch but no fixable findings were generated").~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+9. ~~Trim AGENTS.md under the size limit: move File Organization table + Dependencies/gogenfilter section + CI Workflows table + Linter Cheat Sheet to `docs/` with pointers (verify every concept survives).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+10. ~~File upstream BuildFlow issues: (a) nix-hash-fix "stale hash not found verbatim" false negative; (b) go-mod-update minor mode silently bumping the go directive against documented floors; (c) `go get -u=patch` failing on this module graph (maybe upstream Go behavior worth a BuildFlow fallback).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+11. ~~Consider `dep_update_mode: patch` + fixing the `-u=patch` failure as the alternative to skipping go-mod-update (keeps auto-updates working at patch level).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+12. ~~Decide lychee fleet policy (authenticate vs exclude) — this repo now has a working `lychee.toml` exclude to copy.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+13. ~~pnpm-audit: update website deps (js-yaml ≥4.3.2, fast-uri ≥3.1.6, source-map-js ≥1.2.2, devalue ≥5.9.3, svgo ≥4.1.0) via website toolchain.~~ verified — `website/pnpm-lock.yaml` now carries fast-uri 3.1.9, source-map-js 1.2.2, http-cache-semantics 4.3.0, svgo 4.1.0, devalue 6.0.3
+14. ~~vulnix: nixpkgs channel bump decision (24 CVEs incl. critical curl ones) — likely a fleet-level repin.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+15. ~~Add dprint/prettier/lychee (+ maybe govulncheck/vulnix) to devShells.default to silence the "not in project devShell" warnings.~~ no longer open here — routed to TODO_LIST (**Verify prettier's "3 fixed" daemon-committed files** from the 2026-10-07)
+16. ~~Add `meta.platforms` to flake packages.default meta (flake-meta-checker info).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+17. ~~Add `meta.description` to the 8+ flake apps (nix-flake-check warnings) or accept the noise.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+18. ~~Remove or fix the dependabot.yml "nix" ecosystem entry (info).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+19. ~~Reconsider skip of go-version-auto-configure once BuildFlow dispositions are aligned upstream (the skip is a workaround, not a forever-decision).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+20. ~~Run `buildflow update` explicitly at a chosen time to get real dependency updates WITHOUT the pipeline fighting the go line (then re-pin vendorHash + go line in one commit).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+21. ~~Address the 12 go-auto-upgrade advisory findings deliberately (samber/lo lo.Map suggestions: adopt or rebut per how-to-golang policy; jsonv1tov2 migration blocked by the 1.26 floor — decision needed if/when CI matrix moves to 1.27).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 22. Decide the fleet Go strategy: either CI matrix moves to 1.27 (then bump floor deliberately: ci.yml, AGENTS.md, flake go_1_26→go_1_27, vendorHash) or the go directive guard becomes enforcement (a nix check that fails loudly when go.mod ≠ floor).
-23. Add a nix `check` that asserts go.mod's go line equals the documented floor with a CLEAR error message (turns the obscure FOD failure into an actionable one).
-24. art-dupl: 97 findings reported (detect-only) — triage harmful vs intentional clones.
-25. branching-flow: 75 findings reported (detect-only) — triage or document as accepted.
-26. go-structure-linter: 19 findings (appeared in run 2, disappeared in run 4 — check why the scanner context changed).
-27. Confirm golangci-lint stays at 0 findings after the go-mod skips (the 5 formatting findings were auto-fixed; verify they didn't regress).
-28. Check `.buildflow.yml` against `buildflow list providers` names once more before finalizing skips (skip_steps is whole-tool only; qualified entries warn).
-29. Investigate why the AGENTS.md size limit differed between main-repo runs (377) and the worktree run (220) — scanner context dependency worth understanding.
-30. Clean up stray files: `/tmp/bf-*.log`, `/tmp/nixbuild*.log`, `/tmp/erraudit.*`, `/tmp/gmu.log`, `/tmp/goget.log`, `/tmp/writer-snapshot`, `/tmp/gomod-mtime` (keep the useful ones as evidence for upstream issues first).
-31. Remove the `result` symlink or keep it fresh (vulnix warning heuristic; also it is in .gitignore?).
-32. Consider adding `go.mod` go-line to the preflight's flipflop detector allowlist once dispositions are aligned (warning noise).
-33. Verify the examples-build check still passes after the `examples/demo/shared.go` nolint edits (it does per nix-build green, but re-verify post any further edits).
-34. Re-run `nix flake check` directly once for the full warning inventory (16 app warnings etc.) and decide each.
-35. Bench-diff per AGENTS.md rule (benchmarks must run without parallel load — today's machine had 9 crush sessions; NOT a valid window; schedule for a quiet time).
-36. Website: the pnpm-workspace `allowBuilds` mechanism is documented in AGENTS.md; verify the concurrent session's css churn (`global.out.css` ±1931 lines twice today) is intentional.
-37. Reconcile with the concurrent website session: coordinate a quiet window for pipeline runs, or gate runs on a lockfile convention.
-38. Consider `buildflow doctor` full output review (34 ok / 3 warn / 0 fail) — the 3 warns beyond the ones triaged.
-39. Check whether `interrogate` (missing tool warning) should be installed or is even applicable to this repo.
-40. Documentation: add the nix-hash-fix + GOEXPERIMENT entries to the website/docs if the docs-consistency workflow requires parity.
-41. Review whether the 11 `//nolint:erraudit` suppressions should instead be code restructures with debugLog (observability upgrade, listed as possible follow-up).
-42. Verify CI on GitHub is green after the daemon pushed today's commits (the last pushed go.mod=1.27 will FAIL CI — the floor restore must land on origin before the next release/PR).
-43. **URGENT practical note:** origin/master currently carries `go 1.27` (daemon pushed) — every open PR's CI will fail until the restore is pushed; coordinate the push.
-44. Update TODO_LIST.md with this session's outcomes (docs-health flow: harvest status into TODO_LIST).
-45. Add the "go-directive disposition war" as a `references/lessons.md` candidate in crush-config (cross-project lesson: instrument writers before racing them).
-46. BuildFlow feature request: preflight check that warns when go.mod's go line ≠ the CI matrix version in ci.yml (would have caught today's war in run 1).
-47. BuildFlow feature request: `skip_steps` for repair sub-steps (qualified entries currently warn and never match).
-48. Re-check that `nix fmt`/treefmt config still passes after flake.nix edits (the `format` check was green in cached runs; re-verify in the final green run).
-49. Evaluate `--flight-recorder` on the next failing run (flag exists per help; would capture a trace on step failure).
-50. Celebrate-safe: once green, capture `buildflow history`/`timings` baseline so future regressions of today's failure classes are visible in the fleet dashboard.
+23. ~~Add a nix `check` that asserts go.mod's go line equals the documented floor with a CLEAR error message (turns the obscure FOD failure into an actionable one).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+24. ~~art-dupl: 97 findings reported (detect-only) — triage harmful vs intentional clones.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+25. ~~branching-flow: 75 findings reported (detect-only) — triage or document as accepted.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+26. ~~go-structure-linter: 19 findings (appeared in run 2, disappeared in run 4 — check why the scanner context changed).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+27. ~~Confirm golangci-lint stays at 0 findings after the go-mod skips (the 5 formatting findings were auto-fixed; verify they didn't regress).~~ no longer open here — routed to TODO_LIST (file can never drive a CI regression gate. Machine-specific noise makes)
+28. ~~Check `.buildflow.yml` against `buildflow list providers` names once more before finalizing skips (skip_steps is whole-tool only; qualified entries warn).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+29. ~~Investigate why the AGENTS.md size limit differed between main-repo runs (377) and the worktree run (220) — scanner context dependency worth understanding.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+30. ~~Clean up stray files: `/tmp/bf-*.log`, `/tmp/nixbuild*.log`, `/tmp/erraudit.*`, `/tmp/gmu.log`, `/tmp/goget.log`, `/tmp/writer-snapshot`, `/tmp/gomod-mtime` (keep the useful ones as evidence for upstream issues first).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+31. ~~Remove the `result` symlink or keep it fresh (vulnix warning heuristic; also it is in .gitignore?).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+32. ~~Consider adding `go.mod` go-line to the preflight's flipflop detector allowlist once dispositions are aligned (warning noise).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+33. ~~Verify the examples-build check still passes after the `examples/demo/shared.go` nolint edits (it does per nix-build green, but re-verify post any further edits).~~ no longer open here — routed to TODO_LIST (`nix-checker` ×8, `nix-build-verify` fate, `vulnix` CVEs). The two)
+34. ~~Re-run `nix flake check` directly once for the full warning inventory (16 app warnings etc.) and decide each.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+35. ~~Bench-diff per AGENTS.md rule (benchmarks must run without parallel load — today's machine had 9 crush sessions; NOT a valid window; schedule for a quiet time).~~ no longer open here — routed to TODO_LIST (**Add a scheduled `BUILDFLOW_NO_RESULT_CACHE=1` run as a cache-lie)
+36. ~~Website: the pnpm-workspace `allowBuilds` mechanism is documented in AGENTS.md; verify the concurrent session's css churn (`global.out.css` ±1931 lines twice today) is intentional.~~ no longer open here — routed to TODO_LIST (in `pnpm-workspace.yaml`; the actual age window lives in a machine-local)
+37. ~~Reconcile with the concurrent website session: coordinate a quiet window for pipeline runs, or gate runs on a lockfile convention.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+38. ~~Consider `buildflow doctor` full output review (34 ok / 3 warn / 0 fail) — the 3 warns beyond the ones triaged.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+39. ~~Check whether `interrogate` (missing tool warning) should be installed or is even applicable to this repo.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+40. ~~Documentation: add the nix-hash-fix + GOEXPERIMENT entries to the website/docs if the docs-consistency workflow requires parity.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+41. ~~Review whether the 11 `//nolint:erraudit` suppressions should instead be code restructures with debugLog (observability upgrade, listed as possible follow-up).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+42. ~~Verify CI on GitHub is green after the daemon pushed today's commits (the last pushed go.mod=1.27 will FAIL CI — the floor restore must land on origin before the next release/PR).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+43. ~~**URGENT practical note:** origin/master currently carries `go 1.27` (daemon pushed) — every open PR's CI will fail until the restore is pushed; coordinate the push.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+44. ~~Update TODO_LIST.md with this session's outcomes (docs-health flow: harvest status into TODO_LIST).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+45. ~~Add the "go-directive disposition war" as a `references/lessons.md` candidate in crush-config (cross-project lesson: instrument writers before racing them).~~ no longer open here — routed to TODO_LIST (**Cross-repo (crush-config):** commit the `lessons.md` entry (instrument)
+46. ~~BuildFlow feature request: preflight check that warns when go.mod's go line ≠ the CI matrix version in ci.yml (would have caught today's war in run 1).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+47. ~~BuildFlow feature request: `skip_steps` for repair sub-steps (qualified entries currently warn and never match).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+48. ~~Re-check that `nix fmt`/treefmt config still passes after flake.nix edits (the `format` check was green in cached runs; re-verify in the final green run).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+49. ~~Evaluate `--flight-recorder` on the next failing run (flag exists per help; would capture a trace on step failure).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+50. ~~Celebrate-safe: once green, capture `buildflow history`/`timings` baseline so future regressions of today's failure classes are visible in the fleet dashboard.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 
 ## g) QUESTIONS FOR YOU (cannot figure out myself)
 

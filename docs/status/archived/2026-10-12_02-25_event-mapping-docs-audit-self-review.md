@@ -1,5 +1,11 @@
 # Session Status: Event-Mapping Q&A + Documentation Audit (with Self-Review)
 
+> **ARCHIVED 2026-11-06** (docs-health sweep): every forward-looking item in
+> this report is resolved inline — struck through with the evidence that closed
+> it, or struck through and routed to the living docs ([TODO_LIST.md](../../../TODO_LIST.md)
+> / [ROADMAP.md](../../../ROADMAP.md)) where the work still lives. The history below
+> is settled; open work is in the TODO list, not here.
+
 **Date:** 2026-10-12 02:25 · **Session type:** read-only Q&A (3 turns) · **Repo state:** clean tree at `d4f9b22`, zero files modified by this session
 
 **Scope:** This report covers ONLY this session's run. No other research was performed.
@@ -81,46 +87,54 @@ No code, docs, or tests were changed. All findings below are analysis output tha
 
 **Documentation (highest value, all from this session's verified findings):**
 
-| #  | Task                                                                                                        | Size |
-| -- | ----------------------------------------------------------------------------------------------------------- | ---- |
-| 1  | Add inotify→Op mapping table to README Event section                                                        | S    |
-| 2  | Link research doc from README + Troubleshooting + gotchas                                                   | XS   |
-| 3  | Expand gotchas #6 with user consequence (metadata changes → no event)                                       | XS   |
-| 4  | Document mmap-without-sync gap in Troubleshooting                                                           | S    |
-| 5  | Document hardlink cross-directory gap in Troubleshooting                                                    | S    |
-| 6  | Document IN_Q_OVERFLOW loss + what does/doesn't mitigate it (correcting my d.3 imprecision)                 | S    |
-| 7  | Add poll-mode blindness caveat to website resilience guide                                                  | XS   |
-| 8  | Enrich `Op` doc comments in event.go with arrival semantics (incl. "created-and-written arrives as Create") | S    |
-| 9  | Website guide page: "Event semantics across platforms"                                                      | M    |
-| 10 | Verify + document Windows ReadDirectoryChangesW mapping differences                                         | M    |
-| 11 | Verify + document macOS kqueue/FSEvents mapping differences                                                 | M    |
+<!-- check-rows:ledger -->
+
+| #      | Task                                                                                                            | Size                                                                                                                          |
+| ------ | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 1      | Add inotify→Op mapping table to README Event section                                                            | S                                                                                                                             |
+| ~~2~~  | ~~Link research doc from README + Troubleshooting + gotchas~~                                                   | ~~XS~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)                                    |
+| 3      | Expand gotchas #6 with user consequence (metadata changes → no event)                                           | XS                                                                                                                            |
+| ~~4~~  | ~~Document mmap-without-sync gap in Troubleshooting~~                                                           | ~~S~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)                                     |
+| ~~5~~  | ~~Document hardlink cross-directory gap in Troubleshooting~~                                                    | ~~S~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)                                     |
+| ~~6~~  | ~~Document IN_Q_OVERFLOW loss + what does/doesn't mitigate it (correcting my d.3 imprecision)~~                 | ~~S~~ no longer open here — routed to TODO_LIST (**Triage the `vulnix` advisories** (accept or mitigate per CVE) and refresh) |
+| ~~7~~  | ~~Add poll-mode blindness caveat to website resilience guide~~                                                  | ~~XS~~ no longer open here — routed to ROADMAP (**Poll-mode event quality (v2.5+/v3)** — `WithPollDeduplicate(true)`)         |
+| ~~8~~  | ~~Enrich `Op` doc comments in event.go with arrival semantics (incl. "created-and-written arrives as Create")~~ | ~~S~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)                                     |
+| ~~9~~  | ~~Website guide page: "Event semantics across platforms"~~                                                      | ~~M~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)                                     |
+| ~~10~~ | ~~Verify + document Windows ReadDirectoryChangesW mapping differences~~                                         | ~~M~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)                                     |
+| ~~11~~ | ~~Verify + document macOS kqueue/FSEvents mapping differences~~                                                 | ~~M~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)                                     |
 
 **Tests (hardening the claims I made):**
 
-| #  | Task                                                                                                          | Size |
-| -- | ------------------------------------------------------------------------------------------------------------- | ---- |
-| 12 | Table-driven test: convertEvent over synthetic fsnotify Op bitmasks (all 2^5 combos) asserting priority order | S    |
-| 13 | Test: poll mode misses same-size+same-mtime rewrite (documents the blindness as executable spec)              | S    |
-| 14 | Test/docs: editor atomic-save produces Create+Remove, not Write (reliability_semantics_test.go candidate)     | S    |
-| 15 | Verify existing convertEvent Chmod-drop test coverage (commit 215f114 suggests it exists — confirm)           | XS   |
+<!-- check-rows:ledger -->
+
+| #      | Task                                                                                                              | Size                                                                                                                     |
+| ------ | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| ~~12~~ | ~~Table-driven test: convertEvent over synthetic fsnotify Op bitmasks (all 2^5 combos) asserting priority order~~ | ~~S~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)                                |
+| ~~13~~ | ~~Test: poll mode misses same-size+same-mtime rewrite (documents the blindness as executable spec)~~              | ~~S~~ no longer open here — routed to TODO_LIST (catching order-dependent flakes that the every-push single run misses.) |
+| ~~14~~ | ~~Test/docs: editor atomic-save produces Create+Remove, not Write (reliability_semantics_test.go candidate)~~     | ~~S~~ no longer open here — routed to TODO_LIST (**Settle the `reliability_semantics_test.go` placement convention** —)  |
+| ~~15~~ | ~~Verify existing convertEvent Chmod-drop test coverage (commit 215f114 suggests it exists — confirm)~~           | ~~XS~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)                               |
 
 **Product/type decisions (v3 fuel):**
 
-| #  | Task                                                                                                                                   | Size |
-| -- | -------------------------------------------------------------------------------------------------------------------------------------- | ---- |
-| 16 | Decide Chmod policy for v3: stay dropped vs opt-in metadata events (record in docs/research/v3-decisions.md — read it first this time) | M    |
-| 17 | Decide: surface move-in vs create distinction (consumers cannot distinguish IN_MOVED_TO from IN_CREATE today)                          | M    |
-| 18 | Consider `Stats.EventsCoalesced` counter — multi-op merges are currently invisible to observability                                    | S    |
-| 19 | Consider poll-mode content-hash comparison option to catch same-size/mtime rewrites (interacts with WithContentHashing)                | M    |
-| 20 | Decide whether root-move (watched dir itself renamed) is handled by self-heal — verify watcher_selfheal.go, then document              | M    |
+<!-- check-rows:ledger -->
+
+| #      | Task                                                                                                                                       | Size                                                                                                                 |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| ~~16~~ | ~~Decide Chmod policy for v3: stay dropped vs opt-in metadata events (record in docs/research/v3-decisions.md — read it first this time)~~ | ~~M~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)                            |
+| ~~17~~ | ~~Decide: surface move-in vs create distinction (consumers cannot distinguish IN_MOVED_TO from IN_CREATE today)~~                          | ~~M~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)                            |
+| ~~18~~ | ~~Consider `Stats.EventsCoalesced` counter — multi-op merges are currently invisible to observability~~                                    | ~~S~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)                            |
+| ~~19~~ | ~~Consider poll-mode content-hash comparison option to catch same-size/mtime rewrites (interacts with WithContentHashing)~~                | ~~M~~ no longer open here — routed to ROADMAP (**Poll-mode event quality (v2.5+/v3)** — `WithPollDeduplicate(true)`) |
+| ~~20~~ | ~~Decide whether root-move (watched dir itself renamed) is handled by self-heal — verify watcher_selfheal.go, then document~~              | ~~M~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)                            |
 
 **Process:**
 
-| #  | Task                                                                                         | Size |
-| -- | -------------------------------------------------------------------------------------------- | ---- |
-| 21 | HARVEST this report's items 1-11 into TODO_LIST.md                                           | XS   |
-| 22 | docs-health VERIFY pass over the whole docs tree (the proper version of my improvised audit) | M    |
-| 23 | Check getting-started website pages for event-semantics claims I never grepped               | S    |
+<!-- check-rows:ledger -->
+
+| #      | Task                                                                                             | Size                                                                                                                           |
+| ------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| ~~21~~ | ~~HARVEST this report's items 1-11 into TODO_LIST.md~~                                           | ~~XS~~ done — harvested; `docs-gates freshness --audit-all` reports 0 unharvested items over the whole corpus (2026-11-06)     |
+| ~~22~~ | ~~docs-health VERIFY pass over the whole docs tree (the proper version of my improvised audit)~~ | ~~M~~ done 2026-11-06 — full VERIFY/AUDIT pass: living docs rebuilt, corpus annotated, 2026-10 and 2026-10-07 batches archived |
+| ~~23~~ | ~~Check getting-started website pages for event-semantics claims I never grepped~~               | ~~S~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)                                      |
 
 Remaining slots (24-50): intentionally not padded — see g) before spending them.
 

@@ -1,5 +1,11 @@
 # Status Report: Pareto Execution Session — CI hardening, race fix, docs debts
 
+> **ARCHIVED 2026-11-06** (docs-health sweep): every forward-looking item in
+> this report is resolved inline — struck through with the evidence that closed
+> it, or struck through and routed to the living docs ([TODO_LIST.md](../../../TODO_LIST.md)
+> / [ROADMAP.md](../../../ROADMAP.md)) where the work still lives. The history below
+> is settled; open work is in the TODO list, not here.
+
 **Date:** 2026-10-07 09:47 CEST
 **Scope:** This session only ("GET SHIT DONE — the whole TODO list", executing the 08:17
 Master Pareto Execution Plan). Plan tasks T1–T9 attempted; T10–T27 untouched.
@@ -150,113 +156,113 @@ race found by CI and fixed (2 follow-up iterations) · branch protection now ON
 
 Impact-ordered. 1–8 are immediate mechanics; 9+ follow the 08:17 plan order.
 
-1. Merge PR #38 (CLEAN/MERGEABLE) with `gh pr merge 38 --rebase`, then VERIFY
-   `state == MERGED`; watch the master push run go green (1% item complete).
-2. Rebase + merge #39 (docs sweep follow-ups), #40 (exemption zero), #41 (AGENTS
-   split) in order, verifying each; watch master stay green after each.
-3. Post-merge bookkeeping in TODO_LIST: tick CI-guard/required-checks/dispatch/
+1. ~~Merge PR #38 (CLEAN/MERGEABLE) with `gh pr merge 38 --rebase`, then VERIFY
+   `state == MERGED`; watch the master push run go green (1% item complete).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+2. ~~Rebase + merge #39 (docs sweep follow-ups), #40 (exemption zero), #41 (AGENTS
+   split) in order, verifying each; watch master stay green after each.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+3. ~~Post-merge bookkeeping in TODO_LIST: tick CI-guard/required-checks/dispatch/
    26.04-matrix/check-rows/03-10 items; update the 03-10 annotations' `done at`
-   hashes to the final squashed/rebased ones.
-4. Reset local master to origin and clear the daemon's diverged local commits
+   hashes to the final squashed/rebased ones.~~ no longer open here — routed to TODO_LIST (**Adopt a post-merge master-CI confirmation habit for docs-only PRs** —)
+4. ~~Reset local master to origin and clear the daemon's diverged local commits
    (`git fetch && git switch master && git reset --hard origin/master` is banned by
    policy — use `git switch` + `git reset origin/master` (mixed) after confirming
-   nothing unique is local; e759746's content is already in #38).
-5. T4.3: dry-run `workflow_dispatch` on release.yml (dispatch on v2.4.1, cancel
-   before the release step — proves the test+lint path without touching the release).
-6. T10: `docs/status/README.md` index (active reports + archived pointer) +
-   CHANGELOG v2.4.0 cosmetic blank-line fix.
-7. T5 re-run: full `nix flake check` on a quiet machine; verify the second
-   vendorHash leg (flake.nix benchstat); record results in the 08-14 report §b6.
-8. T11+T12: Windows/macOS CI matrix jobs (extend the os matrix; platform skips for
-   inotify-only tests; triage+fix; document Windows semantics in Troubleshooting).
-9. T13: reliability test trio (ContentHashMaxSize(0) semantics pin,
-   BudgetCap==WatchLimit @ fraction 1.0, ErrorContext.Event population).
-10. T14: website CI job (`pnpm install && pnpm build` + html-validate) — PR-gated
+   nothing unique is local; e759746's content is already in #38).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+5. ~~T4.3: dry-run `workflow_dispatch` on release.yml (dispatch on v2.4.1, cancel
+   before the release step — proves the test+lint path without touching the release).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+6. ~~T10: `docs/status/README.md` index (active reports + archived pointer) +
+   CHANGELOG v2.4.0 cosmetic blank-line fix.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+7. ~~T5 re-run: full `nix flake check` on a quiet machine; verify the second
+   vendorHash leg (flake.nix benchstat); record results in the 08-14 report §b6.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+8. ~~T11+T12: Windows/macOS CI matrix jobs (extend the os matrix; platform skips for
+   inotify-only tests; triage+fix; document Windows semantics in Troubleshooting).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+9. ~~T13: reliability test trio (ContentHashMaxSize(0) semantics pin,
+   BudgetCap==WatchLimit @ fraction 1.0, ErrorContext.Event population).~~ no longer open here — routed to ROADMAP (`WithContentHashMaxSize`, `WithErrorBufferSize`), middleware drop/backpressure)
+10. ~~T14: website CI job (`pnpm install && pnpm build` + html-validate) — PR-gated
     like everything else now; T15: website dep updates (fast-uri/astro) + dedupe +
-    redeploy + sharp spot-check.
-11. T18: dependabot PRs #31/#32 (review + merge — they now need rebase onto the new
-    master and green required checks), close stale #14.
-12. T16: BuildFlow binary upgrade + findings triage (9-tools warning, go-auto-
-    upgrade ×12, nix-checker ×8, nix-build-verify fate, vulnix CVEs).
-13. T17 (user-gated): draft the two upstream BuildFlow issues (go-structure-linter
+    redeploy + sharp spot-check.~~ no longer open here — routed to TODO_LIST (spot-check sharp 0.35.5 rendering on an image-heavy page.)
+11. ~~T18: dependabot PRs #31/#32 (review + merge — they now need rebase onto the new
+    master and green required checks), close stale #14.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+12. ~~T16: BuildFlow binary upgrade + findings triage (9-tools warning, go-auto-
+    upgrade ×12, nix-checker ×8, nix-build-verify fate, vulnix CVEs).~~ no longer open here — routed to TODO_LIST (finding noise (9-tools-unavailable warning, `go-auto-upgrade` ×12,)
+13. ~~T17 (user-gated): draft the two upstream BuildFlow issues (go-structure-linter
     auto-bump with strace evidence; result-cache ignoring pnpm-lock.yaml) — submit
-    only on approval.
-14. T19: pkg.go.dev crawl state for v2.4.0/v2.4.1; OG image check; editLink/
-    lastUpdated; changelog.mdx gitignore decision.
-15. T20: website deploy runbook (flake apps, trailingSlash/cleanUrls quirk,
-    slug-verify step) — given the AGENTS split, put it in docs/ with a pointer.
-16. T21: content-verify DOMAIN_LANGUAGE / API_STABILITY / Troubleshooting /
-    MIGRATION / ARCHITECTURE against code; fix findings.
-17. T22: benchmark re-capture (quiet machine; then README table refresh; Q2 policy
-    question still gates "committed baseline").
-18. T23: fuzz expansion (combinators, Event JSON round-trip, gitignore matcher,
-    case-insensitive filter+middleware) + corpus run.
-19. T24: large-tree stress harness (100k-dir fixture; batch/budget/self-heal
-    assertions; CI gating decision).
-20. T25: hygiene (gitleaks + codespell once; /tmp evidence-log cleanup now that CI
-    is green).
-21. T26: v3 decision doc (docs/research/v3-decisions.md) — now also records the
-    go-directive-floor-to-1.27 constraint (json/v2 gate) as a first-class input.
-22. T27: cross-repo bundle (crush-config lessons.md entry; buildflow skill DB path
-    fix + fan-out verify).
-23. Add the go-directive floor to the release-please release-PR validation path —
-    release PRs touch version files only, but confirm the floor job reports on them.
-24. Decide Benchmark job's role in required checks (currently NOT required — it
+    only on approval.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+14. ~~T19: pkg.go.dev crawl state for v2.4.0/v2.4.1; OG image check; editLink/
+    lastUpdated; changelog.mdx gitignore decision.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+15. ~~T20: website deploy runbook (flake apps, trailingSlash/cleanUrls quirk,
+    slug-verify step) — given the AGENTS split, put it in docs/ with a pointer.~~ no longer open here — routed to TODO_LIST (apps, the `trailingSlash: false` quirk, cleanUrls, and "verify built slugs)
+16. ~~T21: content-verify DOMAIN_LANGUAGE / API_STABILITY / Troubleshooting /
+    MIGRATION / ARCHITECTURE against code; fix findings.~~ done 2026-10-07 — API_STABILITY + DOMAIN_LANGUAGE verified; dead links fixed
+17. ~~T22: benchmark re-capture (quiet machine; then README table refresh; Q2 policy
+    question still gates "committed baseline").~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+18. ~~T23: fuzz expansion (combinators, Event JSON round-trip, gitignore matcher,
+    case-insensitive filter+middleware) + corpus run.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+19. ~~T24: large-tree stress harness (100k-dir fixture; batch/budget/self-heal
+    assertions; CI gating decision).~~ no longer open here — routed to TODO_LIST (**Large-tree stress harness** — synthetic 100k-directory fixture that)
+20. ~~T25: hygiene (gitleaks + codespell once; /tmp evidence-log cleanup now that CI
+    is green).~~ done 2026-10-07 — gitleaks clean and two real codespell typos fixed (PR #49); the /tmp evidence logs were trashed by the 15:21 resume session
+21. ~~T26: v3 decision doc (docs/research/v3-decisions.md) — now also records the
+    go-directive-floor-to-1.27 constraint (json/v2 gate) as a first-class input.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+22. ~~T27: cross-repo bundle (crush-config lessons.md entry; buildflow skill DB path
+    fix + fan-out verify).~~ no longer open here — routed to TODO_LIST (bundle into `docs/research/v3-decisions.md`.)
+23. ~~Add the go-directive floor to the release-please release-PR validation path —
+    release PRs touch version files only, but confirm the floor job reports on them.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+24. ~~Decide Benchmark job's role in required checks (currently NOT required — it
     caught today's race, but races are schedule-dependent; weigh flake-blocking vs
-    detection value).
-25. Consider `continue-on-error` for the Benchmark job on PRs if it proves flaky
-    post-race-fix (its failures today were real, not noise — revisit after a week).
-26. Wire the dev-shell `GOTOOLCHAIN=local` story into AGENTS.md gotcha (it landed in
+    detection value).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+25. ~~Consider `continue-on-error` for the Benchmark job on PRs if it proves flaky
+    post-race-fix (its failures today were real, not noise — revisit after a week).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+26. ~~Wire the dev-shell `GOTOOLCHAIN=local` story into AGENTS.md gotcha (it landed in
     flake.nix + the CI PR, but the gotcha section's "Restore" instructions predate
-    it).
-27. After the 24.04/26.04 matrix bakes for a week: drop the 24.04 pins for the
-    non-test jobs OR keep until brownouts (documented decision point 2026-11-19).
-28. Dependabot: verify gomod PRs will pass the new required checks (they rebase
-    automatically; the floor guard blocks any directive bump — watch for conflicts).
-29. Add a repo-level `CODEOWNERS`-style pointer so docs/ PRs (new files from #41)
-    get reviewed by the right person — even solo, it documents intent.
-30. Sweep the remaining `//nolint:erraudit` unknown-linter warnings in CI logs
+    it).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+27. ~~After the 24.04/26.04 matrix bakes for a week: drop the 24.04 pins for the
+    non-test jobs OR keep until brownouts (documented decision point 2026-11-19).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+28. ~~Dependabot: verify gomod PRs will pass the new required checks (they rebase
+    automatically; the floor guard blocks any directive bump — watch for conflicts).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+29. ~~Add a repo-level `CODEOWNERS`-style pointer so docs/ PRs (new files from #41)
+    get reviewed by the right person — even solo, it documents intent.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+30. ~~Sweep the remaining `//nolint:erraudit` unknown-linter warnings in CI logs
     (golangci-lint v2.14 doesn't know `erraudit` — the nolint directives are dead
-    weight or version-mismatched; audit them).
-31. Re-check the zero-job release-PR startup failures on the NEXT release PR
-    (03-10 f.12; transient-race hypothesis untested).
-32. Post-release smoke-test script (TODO_LIST new item) — write it before the next
-    release, not after.
-33. Move `minimumReleaseAge` window into pnpm-workspace.yaml (TODO_LIST new item).
-34. Overnight merge-ownership protocol (TODO_LIST new item) — now MORE relevant:
-    release PRs are the only remaining release path and they need green checks.
-35. Consumer sweep (TODO_LIST new item) — dependents' CI vs red-master windows.
-36. Audit the 292 marker-free tables in archives (TODO_LIST new item) — classify
-    data vs open-task tables.
-37. Investigate the July 6h Benchmark hang (TODO_LIST new item) — timeout caps bound
-    the blast radius now; root cause still unknown.
-38. Re-verify vite 8.3.3 lands with the T15 pnpm update (03-10 b.2 — still open).
-39. Confirm the deployed website got the v2.4.1 fix (03-10 f.24) during T15's
-    redeploy.
-40. Record the protection configuration (contexts, strict, enforce_admins) in
-    AGENTS.md's Release/CI gotchas — it's live repo state now, not just intent.
-41. Consider requiring the `Go Directive Floor` context in release-please PR branch
-    protection explicitly if release PRs ever target a different branch.
-42. Keep a local `git fetch` cadence: with protection, origin is authoritative;
-    local master is disposable (confirm no unique work before any reset).
-43. Re-run `buildflow doctor` after the AGENTS split — the 220-line finding should
-    clear; record the new line count in TODO_LIST when it does.
-44. Update FEATURES.md row for "Generated-code detection" to cross-reference the
-    two new rows from #40 (consistency of the filter family presentation).
-45. Verify the 26.04 runner leg picks up the benchmark job eventually (benchmark
-    still pinned to 24.04 — fine, but note the asymmetry).
-46. Add the event-channel lifecycle (closer goroutine, chUsers) to AGENTS gotcha #25
-    or docs/gotchas.md — the design is subtle enough to deserve a paragraph.
-47. Consider a `-race -count=2` weekly CI run (race was schedule-dependent; a
-    second count increases catch probability) — cost/benefit decision.
-48. Sweep stale `website/src/styles/global.out.css` (+1931 daemon-committed lines)
+    weight or version-mismatched; audit them).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+31. ~~Re-check the zero-job release-PR startup failures on the NEXT release PR
+    (03-10 f.12; transient-race hypothesis untested).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+32. ~~Post-release smoke-test script (TODO_LIST new item) — write it before the next
+    release, not after.~~ no longer open here — routed to TODO_LIST (**Post-release smoke-test script** — after each release-please merge, assert)
+33. ~~Move `minimumReleaseAge` window into pnpm-workspace.yaml (TODO_LIST new item).~~ no longer open here — routed to TODO_LIST (review the 7 `minimumReleaseAgeExclude` entries once the patched versions)
+34. ~~Overnight merge-ownership protocol (TODO_LIST new item) — now MORE relevant:
+    release PRs are the only remaining release path and they need green checks.~~ no longer open here — routed to TODO_LIST (**Overnight merge-ownership protocol for release PRs** — define who/what)
+35. ~~Consumer sweep (TODO_LIST new item) — dependents' CI vs red-master windows.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+36. ~~Audit the 292 marker-free tables in archives (TODO_LIST new item) — classify
+    data vs open-task tables.~~ no longer open here — routed to TODO_LIST (`~~` anywhere were never classified as data-vs-open-task. One bounded pass)
+37. ~~Investigate the July 6h Benchmark hang (TODO_LIST new item) — timeout caps bound
+    the blast radius now; root cause still unknown.~~ no longer open here — routed to TODO_LIST (benchmark/watcher deadlock. Timeout caps bound the blast radius)
+38. ~~Re-verify vite 8.3.3 lands with the T15 pnpm update (03-10 b.2 — still open).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+39. ~~Confirm the deployed website got the v2.4.1 fix (03-10 f.24) during T15's
+    redeploy.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+40. ~~Record the protection configuration (contexts, strict, enforce_admins) in
+    AGENTS.md's Release/CI gotchas — it's live repo state now, not just intent.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+41. ~~Consider requiring the `Go Directive Floor` context in release-please PR branch
+    protection explicitly if release PRs ever target a different branch.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+42. ~~Keep a local `git fetch` cadence: with protection, origin is authoritative;
+    local master is disposable (confirm no unique work before any reset).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+43. ~~Re-run `buildflow doctor` after the AGENTS split — the 220-line finding should
+    clear; record the new line count in TODO_LIST when it does.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+44. ~~Update FEATURES.md row for "Generated-code detection" to cross-reference the
+    two new rows from #40 (consistency of the filter family presentation).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+45. ~~Verify the 26.04 runner leg picks up the benchmark job eventually (benchmark
+    still pinned to 24.04 — fine, but note the asymmetry).~~ no longer open here — routed to TODO_LIST (not-planned); keeping it means it should be wired in eventually.)
+46. ~~Add the event-channel lifecycle (closer goroutine, chUsers) to AGENTS gotcha #25
+    or docs/gotchas.md — the design is subtle enough to deserve a paragraph.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+47. ~~Consider a `-race -count=2` weekly CI run (race was schedule-dependent; a
+    second count increases catch probability) — cost/benefit decision.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+48. ~~Sweep stale `website/src/styles/global.out.css` (+1931 daemon-committed lines)
     — likely a build artifact that shouldn't be tracked; decide gitignore vs
-    keep (touches the website cluster).
-49. T28 candidate: `docs/README.md` index of all docs/ reference files created by
-    #41 (nine files, no index yet).
-50. After everything merges: cut the CHANGELOG entry for the CI hardening + race
+    keep (touches the website cluster).~~ no longer open here — routed to TODO_LIST (**Verify prettier's "3 fixed" daemon-committed files** from the 2026-10-07)
+49. ~~T28 candidate: `docs/README.md` index of all docs/ reference files created by
+    #41 (nine files, no index yet).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+50. ~~After everything merges: cut the CHANGELOG entry for the CI hardening + race
     fix (release-please will pick up `fix:`/`ci:` — verify it doesn't cut a
-    Go release for docs-only commits; path-scoping already handles it).
+    Go release for docs-only commits; path-scoping already handles it).~~ no longer open here — routed to TODO_LIST (change is website CSS (pre-path-scoping incident). Published and)
 
 ## g) Questions I cannot figure out myself
 

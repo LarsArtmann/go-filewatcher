@@ -1,6 +1,6 @@
 # Status Report: Filesystem Awareness Remediation — Brutal Self-Review
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Created:** 2026-07-29 08:59
 **Session scope:** Self-critique of the 22-task remediation pass

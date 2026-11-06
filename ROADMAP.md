@@ -1,6 +1,6 @@
 # Roadmap
 
-**Last Updated:** 2026-10-07
+**Last Updated:** 2026-11-06
 
 Long-term direction and raw ideas for go-filewatcher. Items here are
 **exploratory and not yet committed** — they graduate to
@@ -30,7 +30,8 @@ certain directions worth exploring.
 ### Platform Coverage
 
 - **macOS FSEvents edge cases** — rename semantics differ from Linux; document
-  or test the divergences (current CI is Linux-only).
+  or test the divergences (the macOS probe leg runs the suite but only
+  informationally, and POSIX-shaped assertions still skip there).
 - **BSD/kqueue** — fsnotify supports it; verify our assumptions (budget
   detection, batched registration) hold.
 - **Real filesystem probing (v3)** — `CaseSensitivityAuto` currently resolves by
@@ -39,10 +40,11 @@ certain directions worth exploring.
   mode that writes two differently-cased probe files at startup would detect the
   truth. NFC normalization, `pathKey`, and the poll/gitignore case-awareness are
   already in place; probing is the remaining gap.
-- **macOS/Windows CI for case-insensitive tests** — the case-insensitive and
-  NFD/NFC behavior is verified as _logic_ on Linux (case-sensitive ext4). Real
-  filesystem behavior on APFS/NTFS is only provable with a macOS/Windows CI
-  matrix.
+- **macOS/Windows case-insensitivity proof** — the case-insensitive and NFD/NFC
+  behavior is verified as _logic_ on Linux (case-sensitive ext4). The
+  `windows-2025` + `macos-15` probe legs now exist, but the POSIX-shape
+  assertions still skip there via `skipOnWindows(t)`, so APFS/NTFS behavior is
+  not exercised yet: per-OS expectations are the gate (TODO_LIST).
 
 ### API Evolution
 
@@ -196,5 +198,7 @@ v2.4.0 (2026-10-06) shipped filesystem case-sensitivity + NFC normalization,
 the reliability knobs (`WithMaxWatchesSafetyFraction`, `WithEventChannelMode`,
 `WithContentHashMaxSize`, `WithErrorBufferSize`), middleware drop/backpressure
 stats, and symlink cycle detection. v2.4.1 (2026-10-07) was a website-only
-patch (release-please is now path-scoped so that cannot recur). The next minor
-will accumulate toward v3.0, where deprecated symbols will be removed.
+patch (release-please is now path-scoped so that cannot recur). v2.5.0
+(2026-11-06) added the health API — `Healthy(ctx)` plus the introspectable
+circuit breaker. The next minor will accumulate toward v3.0, where deprecated
+symbols will be removed.

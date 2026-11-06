@@ -1,5 +1,11 @@
 # Status Report: PR Review Session — master CI recovery, 4 PRs processed, v2.4.1 released
 
+> **ARCHIVED 2026-11-06** (docs-health sweep): every forward-looking item in
+> this report is resolved inline — struck through with the evidence that closed
+> it, or struck through and routed to the living docs ([TODO_LIST.md](../../../TODO_LIST.md)
+> / [ROADMAP.md](../../../ROADMAP.md)) where the work still lives. The history below
+> is settled; open work is in the TODO list, not here.
+
 **Date:** 2026-10-07 03:10 CEST
 **Scope:** This session only ("Review all PRs" on LarsArtmann/go-filewatcher). A parallel
 session was actively committing to the same checkout throughout (postmortem doc, website CSS
@@ -63,7 +69,7 @@ AGENTS.md (`a55557d`).
    the release was verified safe afterwards via master push CI). Outcome good; process was
    act-first-diagnose-later.
 4. ~~**Parallel-session overlap unverified.**~~ resolved: postmortem read and deduplicated during the 08:14 docs sweep (AGENTS consolidation, `3b56ef0`). The parallel session committed a v2.4.0 release
-   postmortem (`a7f1fe5`, `docs/status/2026-10-07_02-24_v2.4.0-release-postmortem.md`) that I
+   postmortem (`a7f1fe5`, `docs/status/archived/2026-10-07_02-24_v2.4.0-release-postmortem.md`) that I
    never read; my AGENTS.md additions may partially duplicate its content (split-brain risk).
 5. **July 6-hour Benchmark hang observed but not investigated.** PR #14's Benchmark job ran
    02:23:48 → 08:24:02 UTC (6h, cancelled at job timeout). October Benchmark failures were the
@@ -122,66 +128,66 @@ what this session directly observed.
 
 1. ~~Correct the "~1 day of red CI" claim in AGENTS.md~~ done at `3b56ef0` (08:14 consolidation; claim absent, grep-verified). (see d.2) with the real two-window
    timeline; pin the first window's start from CI history if possible.
-2. Prevent go.mod recurrence at the source: add go.mod/go.sum to the auto-commit daemon's
-   heuristic ignore list (or require scoped messages for them).
+2. ~~Prevent go.mod recurrence at the source: add go.mod/go.sum to the auto-commit daemon's
+   heuristic ignore list (or require scoped messages for them).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 3. ~~Add a CI guard job: fail fast with a clear message if the `go` directive ≠ 1.26.x.~~ done at `c0fe962` (PR #38), with the flake-check twin.
 4. Investigate the July 6-hour Benchmark hang (PR #14, 02:23→08:24 UTC cancelled) — possible
    benchmark/watcher deadlock in the suite.
 5. ~~Add `timeout-minutes` caps to all CI jobs; Benchmark's only cap today is the 6h default.~~ done at `b2caf11` (5-15 min caps on every job; release.yml too).
-6. Decide Benchmark-on-PRs policy: keep / `continue-on-error` / drop from PR CI (it is
-   informational-only today).
-7. Land vite 8.3.3 on master (the lost transitive patch from closed PRs #34/#35).
-8. Add a website build CI job (`astro build`) — website dependency PRs are currently never
-   build-verified.
+6. ~~Decide Benchmark-on-PRs policy: keep / `continue-on-error` / drop from PR CI (it is
+   informational-only today).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+7. ~~Land vite 8.3.3 on master (the lost transitive patch from closed PRs #34/#35).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+8. ~~Add a website build CI job (`astro build`) — website dependency PRs are currently never
+   build-verified.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 9. ~~Read the parallel session's v2.4.0 postmortem (`docs/status/2026-10-07_02-24_...`) and
    deduplicate against my AGENTS.md notes (split-brain check).~~ done during the 08:14 sweep (AGENTS consolidation `3b56ef0`).
 10. ~~Verify `744a0ee`'s release-please `exclude-paths` behaves: the next website/docs-only
     commit batch should NOT cut a release.~~ verified 2026-10-07: doc-heavy pushes `3b56ef0`/`ddd15e7` ran Release Please green with NO release cut (runs 37581695234/37581977214).
 11. ~~Sanity-check that excluding `.github` from release-please can't strand CI-only fixes (a
     ci.yml-only commit should still be releasable via an accompanying commit if ever needed).~~ decided 2026-10-07: acceptable — releases cut from module-scope commits; CI-only fixes ride along (AGENTS path-scoping row, `3b56ef0`).
-12. Re-run the zero-job workflows on the NEXT release PR once, to test the transient-race
-    hypothesis for the startup failures.
-13. Real benchmark regression gating: committed baseline + benchstat, fail on >20% regression
-    (ci.yml comments already promise this as "Future").
+12. ~~Re-run the zero-job workflows on the NEXT release PR once, to test the transient-race
+    hypothesis for the startup failures.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+13. ~~Real benchmark regression gating: committed baseline + benchstat, fail on >20% regression
+    (ci.yml comments already promise this as "Future").~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 14. ~~Branch protection decision: required status checks — today red release PRs are mergeable.
     Was that deliberate?~~ decided 2026-10-07: NOT deliberate (protection was later removed 2026-10-12; direct pushes are the workflow) — protection now applied (strict required checks, enforce_admins, linear history; direct pushes declined too).
 15. ~~Verify Dependabot covers the Go ecosystem (this session saw only npm_and_yarn PRs).~~ verified 2026-10-07: `.github/dependabot.yml` has a gomod entry (plus actions, nix, npm x2).
 16. ~~Dependabot grouping for transitive-only updates so vite-class patches aren't silently lost.~~ done 2026-10-07: minor-and-patch groups exist; transitive-only bumps arrive via periodic `pnpm update` chores (TODO_LIST website cluster).
-17. Move the pnpm `minimumReleaseAge` policy into the repo (pnpm-workspace.yaml) — only the
+17. ~~Move the pnpm `minimumReleaseAge` policy into the repo (pnpm-workspace.yaml) — only the
     excludes list is committed today; the actual age window lives in a machine-local global
-    config nobody else can see.
+    config nobody else can see.~~ no longer open here — routed to TODO_LIST (in `pnpm-workspace.yaml`; the actual age window lives in a machine-local)
 18. ~~Review cadence for `minimumReleaseAgeExclude` entries (astro@7.3.6 etc. rot as versions age).~~ DUPLICATE — routed to TODO_LIST website cluster + open question Q8 during the 08:14 sweep.
-19. Curate the v2.4.1 changelog if the auto-entry should read better (2.4.0 precedent: a
-    follow-up docs commit).
+19. ~~Curate the v2.4.1 changelog if the auto-entry should read better (2.4.0 precedent: a
+    follow-up docs commit).~~ no longer open here — routed to TODO_LIST (relying on `runtime.GOOS`. More accurate for edge cases (case-sensitive)
 20. ~~Run docs-health HARVEST on this list into TODO_LIST.md / ROADMAP.md.~~ done 2026-10-07 (this pass).
-21. GOTOOLCHAIN=local in the dev shell or a `.go-version` file, to stop silent directive bumps
-    at the toolchain level.
+21. ~~GOTOOLCHAIN=local in the dev shell or a `.go-version` file, to stop silent directive bumps
+    at the toolchain level.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 22. ~~Capture Dependabot's own closure reasons for #32/#34/#35 into an audit note (my
     "superseded" verdict is content-verified, but the bot's words aren't recorded anywhere).~~ NOT-DO — the content-verified verdict is the record; the bot's wording adds no decision value.
-23. Script a post-release smoke test: after each release-please merge, assert tag + GitHub
-    Release exist and the changelog section matches the merge (I did this manually today).
-24. Confirm the deployed website actually got redeployed after `7c4ea79` (v2.4.1 ships the fix;
-    release ≠ Firebase deploy — that was parallel-session work I did not verify).
+23. ~~Script a post-release smoke test: after each release-please merge, assert tag + GitHub
+    Release exist and the changelog section matches the merge (I did this manually today).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+24. ~~Confirm the deployed website actually got redeployed after `7c4ea79` (v2.4.1 ships the fix;
+    release ≠ Firebase deploy — that was parallel-session work I did not verify).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 25. ~~Verify whether any other local daemon auto-commits landed while master was red today
     (only `109a20c` is known-bad; check the daemon's log for siblings).~~ verified 2026-10-07: post-sweep master is green on the 1.26 CI legs (runs on `3b56ef0`/`ddd15e7`) and the floor guard now fails fast on any recurrence.
 26. ~~Establish the exact red-CI window for the record (first window started before 22:43 UTC;
     when exactly?).~~ NOT-DO — the start is unpinnable from retained run history; the corrected AGENTS text supersedes the exact figure and the floor guard makes the class moot.
-27. Check whether dependabot PRs propose versions younger than the minimumReleaseAge window
+27. ~~Check whether dependabot PRs propose versions younger than the minimumReleaseAge window
     (supply-chain policy vs bot cadence mismatch — devalue 5.9.4 content merged within hours of
-    the version existing).
-28. Consider a "re-run failed jobs" nudge automation for PRs whose failures are zero-job
-    startup failures (they never retry on their own).
-29. Commitlint scope: decide whether release-please bot commits should be exempted (the pattern
-    matches, but zero-job failures mean it has never actually validated a release PR).
+    the version existing).~~ no longer open here — routed to TODO_LIST (younger than the window (bot cadence vs supply-chain policy mismatch —)
+28. ~~Consider a "re-run failed jobs" nudge automation for PRs whose failures are zero-job
+    startup failures (they never retry on their own).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+29. ~~Commitlint scope: decide whether release-please bot commits should be exempted (the pattern
+    matches, but zero-job failures mean it has never actually validated a release PR).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 30. ~~Record the 744a0ee scoping convention in AGENTS.md with a cross-link (scope-based release
     policy: `chore(website)`/`docs(website)` for non-module changes) — currently it lives only
     in that commit message.~~ done at `3b56ef0` ("release-please is path-scoped" gotcha row).
-31. Fresh benchmark baseline after tonight's churn (bench-diff methodology requires no parallel
-    CPU load; the machine had multiple sessions hammering it — earlier baselines may be tainted).
-32. Decide the ownership protocol for overnight autonomous merges of release PRs while other
-    sessions push to master (today's race window was seconds-wide; it won't always be).
-33. Capture a consistent index/README for `docs/status/` — incident docs are accumulating
-    (postmortem + this report within 46 minutes of each other).
+31. ~~Fresh benchmark baseline after tonight's churn (bench-diff methodology requires no parallel
+    CPU load; the machine had multiple sessions hammering it — earlier baselines may be tainted).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+32. ~~Decide the ownership protocol for overnight autonomous merges of release PRs while other
+    sessions push to master (today's race window was seconds-wide; it won't always be).~~ no longer open here — routed to TODO_LIST (race window was seconds-wide).)
+33. ~~Capture a consistent index/README for `docs/status/` — incident docs are accumulating
+    (postmortem + this report within 46 minutes of each other).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 34. ~~Post-release changelog-curation guidance belongs in AGENTS.md (the 2.4.0 precedent is
     folklore, not written down).~~ superseded — routed: policy decision pending (TODO_LIST Q9); guidance lands in docs/research/v3-decisions.md then AGENTS.md.
 35. ~~State the Go support matrix publicly (README) — the 1.26 floor is in go.mod but not in
@@ -192,7 +198,7 @@ what this session directly observed.
     vanished; convenient today, but confirm it's deliberate).~~ verified 2026-10-07: deleteBranchOnMerge=true (intentional).
 38. ~~Add a master-health beacon (CI badge + auto-issue on red master) so go.mod-class breakage
     gets noticed without a PR review session as the detector.~~ half done: CI badge exists (README:7); auto-issue on red routed to ROADMAP (harvest 2026-10-07).
-39. Consumer sweep: check no dependent repos' CI keyed off tonight's red master window.
+39. ~~Consumer sweep: check no dependent repos' CI keyed off tonight's red master window.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 40. ~~Fold the (unread) postmortem's action items into this list / TODO_LIST.~~ done during the 08:14 sweep (postmortem harvested into the rebuilt TODO_LIST).
 
 ## g) Questions I cannot figure out myself

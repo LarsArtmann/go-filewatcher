@@ -1,6 +1,6 @@
 # Status Report: Error Simulation, Example Refactor, and Docs Remediation
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Date:** 2026-07-26 20:00
 **Session Scope:** 4 tasks — split brain fix, `MustWatch` helper, `resolveBatchDefaults` test, error simulation suite

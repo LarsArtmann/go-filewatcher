@@ -1,6 +1,6 @@
 # go-filewatcher — Comprehensive SDK Review & Status Report
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Date:** 2026-04-04 07:00 CEST
 **Project:** `github.com/larsartmann/go-filewatcher`
@@ -306,16 +306,16 @@ Using an untyped `interface{}` in a Go library that otherwise embraces strong ty
 
 ### P2 — Before v1.0 (Nice to Have)
 
-| #      | Task                                                    | Effort                                                   |
-| ------ | ------------------------------------------------------- | -------------------------------------------------------- |
-| ~~18~~ | ~~`Stats()` method (event counts, uptime, last event)~~ | ~~20min~~ done — shipped ≤v2.1.0, verified v2.4.1        |
-| ~~19~~ | ~~Stress test with 10k+ files~~ | ~~30min~~ no longer open here — routed to TODO_LIST (large-tree stress harness) |
-| ~~20~~ | ~~`examples/` directory with standalone programs~~      | ~~30min~~ done — shipped ≤v2.1.0, verified v2.4.1        |
-| ~~21~~ | ~~Set up GitHub Actions CI~~                            | ~~20min~~ done — shipped ≤v2.1.0, verified v2.4.1        |
-| ~~22~~ | ~~Create justfile or Makefile~~                         | ~~10min~~ no longer applicable — removed; Nix flake apps |
-| ~~23~~ | ~~Integrate in a real project to validate API~~         | ~~1hr~~ done — shipped ≤v2.1.0, verified v2.4.1          |
-| ~~24~~ | ~~`FilterMinSize(size int64)` filter~~                  | ~~10min~~ done — shipped ≤v2.1.0, verified v2.4.1        |
-| ~~25~~ | ~~Tag v0.1.0 after all P0/P1 items done~~               | ~~2min~~ done — shipped ≤v2.1.0, verified v2.4.1         |
+| #      | Task                                                    | Effort                                                                          |
+| ------ | ------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| ~~18~~ | ~~`Stats()` method (event counts, uptime, last event)~~ | ~~20min~~ done — shipped ≤v2.1.0, verified v2.4.1                               |
+| ~~19~~ | ~~Stress test with 10k+ files~~                         | ~~30min~~ no longer open here — routed to TODO_LIST (large-tree stress harness) |
+| ~~20~~ | ~~`examples/` directory with standalone programs~~      | ~~30min~~ done — shipped ≤v2.1.0, verified v2.4.1                               |
+| ~~21~~ | ~~Set up GitHub Actions CI~~                            | ~~20min~~ done — shipped ≤v2.1.0, verified v2.4.1                               |
+| ~~22~~ | ~~Create justfile or Makefile~~                         | ~~10min~~ no longer applicable — removed; Nix flake apps                        |
+| ~~23~~ | ~~Integrate in a real project to validate API~~         | ~~1hr~~ done — shipped ≤v2.1.0, verified v2.4.1                                 |
+| ~~24~~ | ~~`FilterMinSize(size int64)` filter~~                  | ~~10min~~ done — shipped ≤v2.1.0, verified v2.4.1                               |
+| ~~25~~ | ~~Tag v0.1.0 after all P0/P1 items done~~               | ~~2min~~ done — shipped ≤v2.1.0, verified v2.4.1                                |
 
 ---
 

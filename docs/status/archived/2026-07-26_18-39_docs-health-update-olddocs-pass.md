@@ -1,6 +1,6 @@
 # Status Report — Docs-Health + Update-Old-Docs Pass (2026-07-26 18:39 CEST)
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 > **Scope:** This session only — read all five `2026-07-*` status reports, then
 > ran the `docs-health` skill (AUDIT mode) and the `update-old-docs` skill across

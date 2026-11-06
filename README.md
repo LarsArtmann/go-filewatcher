@@ -16,7 +16,7 @@
 
 ---
 
-Built on [fsnotify](https://github.com/fsnotify/fsnotify). Eliminates the boilerplate of raw fsnotify with sensible defaults, automatic recursion, 17+ composable filters, 18 middleware, and production-grade resilience.
+Built on [fsnotify](https://github.com/fsnotify/fsnotify). Eliminates the boilerplate of raw fsnotify with sensible defaults, automatic recursion, 20 built-in filters (plus AND/OR/NOT composition), 19 middleware, and production-grade resilience.
 
 ## Why?
 
@@ -32,17 +32,17 @@ go-filewatcher handles all of this. Built for production, tested with `-race`, a
 
 ## Comparison
 
-| Feature            | Raw fsnotify | Other wrappers | go-filewatcher |
-| ------------------ | :----------: | :------------: | :------------: |
-| Recursive watching |              |    Partial     |       ✓        |
-| Built-in filters   |              |      Few       |      17+       |
-| Middleware chains  |              |                |       18       |
-| Debouncing         |              |    Partial     | Global+PerPath |
-| .gitignore-aware   |              |                |       ✓        |
-| ENOSPC resilience  |              |                |       ✓        |
-| NFS/FUSE polling   |              |                |       ✓        |
-| Self-healing       |              |                |       ✓        |
-| Prometheus + OTel  |              |                |       ✓        |
+| Feature            | Raw fsnotify | Other wrappers |  go-filewatcher  |
+| ------------------ | :----------: | :------------: | :--------------: |
+| Recursive watching |              |    Partial     |        ✓         |
+| Built-in filters   |              |      Few       | 20 + combinators |
+| Middleware chains  |              |                |        19        |
+| Debouncing         |              |    Partial     |  Global+PerPath  |
+| .gitignore-aware   |              |                |        ✓         |
+| ENOSPC resilience  |              |                |        ✓         |
+| NFS/FUSE polling   |              |                |        ✓         |
+| Self-healing       |              |                |        ✓         |
+| Prometheus + OTel  |              |                |        ✓         |
 
 ## How it works
 

@@ -1,5 +1,11 @@
 # Status Report: Website Fixes, Changelog Sync & v2.4.1 Incident
 
+> **ARCHIVED 2026-11-06** (docs-health sweep): every forward-looking item in
+> this report is resolved inline — struck through with the evidence that closed
+> it, or struck through and routed to the living docs ([TODO_LIST.md](../../../TODO_LIST.md)
+> / [ROADMAP.md](../../../ROADMAP.md)) where the work still lives. The history below
+> is settled; open work is in the TODO list, not here.
+
 **Date:** 2026-10-07 03:09 CEST
 **Scope:** This continuation session — the `deploy` command, the card-overflow bug, the missing-2.3.0/2.4.0 changelog investigation, and the v2.4.1 mis-release they uncovered. Builds on the earlier `2026-10-07_02-24_v2.4.0-release-postmortem.md`.
 **Headline:** Website deployed 3× with real fixes; website changelog now auto-synced from CHANGELOG.md (single source of truth); release-please path-scoped after a `fix(website)` commit leaked a Go-only-less patch release (v2.4.1). Two of my own commits caused the incidents I then had to fix — honest accounting below.
@@ -54,36 +60,36 @@
 
 ## f) NEXT — concrete, Pareto-ordered
 
-1. Verify proxy serves v2.4.1 (`go list -m github.com/larsartmann/go-filewatcher/v2@v2.4.1`).
-2. Add website CI job: `pnpm install && pnpm build` (+ `html-validate`), catching missing-node_modules/ESLint-class breakage before deploy.
-3. Add a link checker to the website build (e.g. `html-validate` or an Astro dead-link plugin) — would have caught the migration-guide 404.
-4. Deploy automation: `firebase deploy` from CI on master (or at least a workflow_dispatch) so deploys don't depend on this laptop.
+1. ~~Verify proxy serves v2.4.1 (`go list -m github.com/larsartmann/go-filewatcher/v2@v2.4.1`).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+2. ~~Add website CI job: `pnpm install && pnpm build` (+ `html-validate`), catching missing-node_modules/ESLint-class breakage before deploy.~~ no longer open here — routed to TODO_LIST (catching order-dependent flakes that the every-push single run misses.)
+3. ~~Add a link checker to the website build (e.g. `html-validate` or an Astro dead-link plugin) — would have caught the migration-guide 404.~~ no longer open here — routed to TODO_LIST (Astro dead-link plugin in the build; would have caught the)
+4. ~~Deploy automation: `firebase deploy` from CI on master (or at least a workflow_dispatch) so deploys don't depend on this laptop.~~ no longer open here — routed to TODO_LIST (. **Should website deploys be automated from CI** (Firebase service-account)
 5. Document the deploy runbook in AGENTS.md (install → build → deploy via flake apps, `trailingSlash: false` quirk, cleanUrls).
-6. pkg.go.dev check for v2.4.0/2.4.1; request crawl if stale.
-7. FEATURES.md: mark v2.4.x shipped features DONE.
+6. ~~pkg.go.dev check for v2.4.0/2.4.1; request crawl if stale.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+7. ~~FEATURES.md: mark v2.4.x shipped features DONE.~~ no longer open here — routed to TODO_LIST (**Re-capture the benchmark baseline post-v2.4.x** — `nix run .#bench-baseline`)
 8. ~~TODO_LIST.md harvest + ROADMAP refresh.~~ done 2026-10-07 (docs-health AUDIT pass: TODO_LIST rebuilt to 29 items + 9 open questions; ROADMAP v2.4.x + v3 backlog refreshed).
 9. ~~README staleness pass (Go version, feature bullets, v2.4 links).~~ done 2026-10-07: Go 1.26.7, gogenfilter v3.6.1 + x/text dependency, sqlc v3.6 semantics note.
-10. CI guard: fail if go.mod `go` directive > matrix Go version.
-11. Add Go 1.27 to the test matrix.
-12. Required status checks on master/release PRs.
-13. `nix flake check` + `nix build .` (vendorHash) — still unrun since the go.mod fix.
-14. `release.yml` `workflow_dispatch` trigger (still dead code for GITHUB_TOKEN tags).
-15. Test asserting `ErrorContext.Event` population (added in the lint fix, untested).
-16. Review/merge dependabot #31/#32; close stale #14.
-17. Benchmark baseline re-capture post-v2.4.x.
-18. Consider exposing gogenfilter sqlc output-dir config (recover deliberate `models.go` filtering).
-19. README/website API docs: document gogenfilter v3.6 weak-filename semantics.
+10. ~~CI guard: fail if go.mod `go` directive > matrix Go version.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+11. ~~Add Go 1.27 to the test matrix.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+12. ~~Required status checks on master/release PRs.~~ done 2026-10-07 — strict required checks applied (later removed 2026-10-12; restore script in docs/ci-workflows.md)
+13. ~~`nix flake check` + `nix build .` (vendorHash) — still unrun since the go.mod fix.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+14. ~~`release.yml` `workflow_dispatch` trigger (still dead code for GITHUB_TOKEN tags).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+15. ~~Test asserting `ErrorContext.Event` population (added in the lint fix, untested).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+16. ~~Review/merge dependabot #31/#32; close stale #14.~~ done 2026-10-07 — #31/#32/#14 all closed unmerged; content landed via the pnpm wave
+17. ~~Benchmark baseline re-capture post-v2.4.x.~~ no longer open here — routed to TODO_LIST (**Re-capture the benchmark baseline post-v2.4.x** — `nix run .#bench-baseline`)
+18. ~~Consider exposing gogenfilter sqlc output-dir config (recover deliberate `models.go` filtering).~~ no longer open here — routed to ROADMAP (**gogenfilter sqlc output-dir config** — expose gogenfilter's)
+19. ~~README/website API docs: document gogenfilter v3.6 weak-filename semantics.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 20. ~~Consolidate the "Release / CI Gotchas" AGENTS.md section (parallel sessions stacked 5 subsections; tighten into a table).~~ done 2026-10-07 (table + single go.mod subsection + BuildFlow machine notes).
-21. Daemon: exclude `.github/`, `go.mod`, `release-please*.json`, `website/flake.nix` from auto-commits (cross-repo tooling — needs your buy-in).
-22. Ubuntu 26 runner migration audit (**deadline 2026-10-12**, warnings already in every run log — was Oct 19 in the log text; treat the earlier date as the safe target).
+21. ~~Daemon: exclude `.github/`, `go.mod`, `release-please*.json`, `website/flake.nix` from auto-commits (cross-repo tooling — needs your buy-in).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+22. ~~Ubuntu 26 runner migration audit (**deadline 2026-10-12**, warnings already in every run log — was Oct 19 in the log text; treat the earlier date as the safe target).~~ no longer open here — routed to TODO_LIST (runner determinism; the original 2026-10-12 audit deadline passed with the)
 23. ~~Sweep `docs/status/` — mark items done by this session (website link, changelog sync, release-please scoping, v2.4.1 annotation).~~ done 2026-10-07: full docs-health sweep — 86 reports annotated inline and archived to `docs/status/archived/` + `docs/planning/archived/` with manifests.
-24. Star/OG image check: does the new og image actually render on social cards (added by a parallel session)? Unverified.
-25. Add `editLink`/`lastUpdated` to astro.config (website-launch skill retrofit list) — check if already on.
-26. Demo video on the landing page (skill default; site currently has none) — bigger item, needs your call.
-27. v2.4.1's CHANGELOG entry on the website is the release-please stub — acceptable, but the sync script could post-process; probably not worth it.
-28. `changelog.mdx` is a committed build artifact — consider gitignoring it + generating in CI to avoid stale-checkout drift (low priority; build regenerates).
-29. Check CodeRabbit "bot user not eligible for review" config.
-30. Retro: add "verify built slugs before publishing URLs" to AGENTS.md release runbook.
+24. ~~Star/OG image check: does the new og image actually render on social cards (added by a parallel session)? Unverified.~~ no longer open here — routed to TODO_LIST (spot-check sharp 0.35.5 rendering on an image-heavy page.)
+25. ~~Add `editLink`/`lastUpdated` to astro.config (website-launch skill retrofit list) — check if already on.~~ no longer open here — routed to TODO_LIST (`website/astro.config.mjs`, though both are built-ins)
+26. ~~Demo video on the landing page (skill default; site currently has none) — bigger item, needs your call.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+27. ~~v2.4.1's CHANGELOG entry on the website is the release-please stub — acceptable, but the sync script could post-process; probably not worth it.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+28. ~~`changelog.mdx` is a committed build artifact — consider gitignoring it + generating in CI to avoid stale-checkout drift (low priority; build regenerates).~~ no longer open here — routed to ROADMAP (exploratory angle is auto-generating doc tables from `go doc -all` source)
+29. ~~Check CodeRabbit "bot user not eligible for review" config.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+30. ~~Retro: add "verify built slugs before publishing URLs" to AGENTS.md release runbook.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 
 ## g) QUESTIONS I CANNOT ANSWER MYSELF
 

@@ -1,6 +1,6 @@
 # Status Report: Docs Health Audit — Brutal Self-Review
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Date:** 2026-07-13 22:12
 **Session Scope:** Read `2026-07-13_21-22` and `2026-07-13_21-58` status reports, then executed the docs-health skill (full AUDIT mode) across all 7 core documentation files

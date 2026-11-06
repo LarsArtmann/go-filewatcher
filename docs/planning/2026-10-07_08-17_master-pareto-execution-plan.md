@@ -1,5 +1,13 @@
 # Master Pareto Execution Plan — go-filewatcher
 
+> **STATUS 2026-11-06 — superseded, kept for provenance.** This plan ordered the
+> 2026-10-07 backlog: the pipeline-of-truth phase (master push, go-directive CI
+> guard), the docs sweep, and the release/CI hardening streams all landed that
+> day (see [CHANGELOG.md](../../CHANGELOG.md) and the archived 2026-10-07 status
+> reports). What is still open lives in [TODO_LIST.md](../../TODO_LIST.md) — this
+> file is not a backlog and is not maintained; per-task evidence was never
+> recorded here, so it stays unarchived rather than pretending otherwise.
+
 **Created:** 2026-10-07 08:17 CEST
 **Input:** TODO_LIST.md (29 items + 9 open questions, harvested 08:14) + docs-health sweep debts (2026-10-07_08-14 report §b/§c)
 **Method:** pareto-planning skill — 1%→51%, 4%→64%, 20%→80%, remainder→100%. Medium plan ≤27 tasks @ 30–100 min, fine plan ≤150 tasks @ ≤12 min. ALL todos included.

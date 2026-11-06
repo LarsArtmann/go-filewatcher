@@ -1,6 +1,6 @@
 # Status Report: Filesystem Awareness Implementation
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Date:** 2026-07-28 23:20
 **Session Goal:** Make go-filewatcher aware of underlying filesystem differences (case sensitivity, path normalization)

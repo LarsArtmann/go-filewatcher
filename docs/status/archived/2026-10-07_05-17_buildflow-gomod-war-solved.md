@@ -1,5 +1,11 @@
 # Status: buildflow go.mod War SOLVED (root cause + proof) — 2026-10-07 05:17
 
+> **ARCHIVED 2026-11-06** (docs-health sweep): every forward-looking item in
+> this report is resolved inline — struck through with the evidence that closed
+> it, or struck through and routed to the living docs ([TODO_LIST.md](../../../TODO_LIST.md)
+> / [ROADMAP.md](../../../ROADMAP.md)) where the work still lives. The history below
+> is settled; open work is in the TODO list, not here.
+
 > **SUPERSEDED (2026-10-07 06:00):** closed out by `2026-10-07_06-00_buildflow-green-pnpm-audit-zero-cache-war.md` — findings gate cleared honestly (pnpm-audit 12→0), pipeline exit 0 twice, master pushed. §b/c residues below are resolved there except where marked.
 
 **Session window:** 04:37–05:17 CEST (resumed from `2026-10-07_04-34_buildflow-recovery-session.md`)
@@ -77,63 +83,63 @@ Two bumpers were identified and neutralized:
 **Immediate sync (main repo)**
 
 1. Restore main go.mod → `go 1.26.7` (daemon commits).
-2. Commit main `.buildflow.yml` 3-skip policy.
+2. ~~Commit main `.buildflow.yml` 3-skip policy.~~ done — .buildflow.yml committed with its skip_steps (2 today; go-structure-linter re-enabled)
 3. Cold full run on main → expect "0 failed steps", exit 69 only via findings gate.
-4. `nix build .` to refresh `./result` and confirm vendorHash `9qQXBs…` still valid at the floor.
-5. Remove worktree `git worktree remove --force /tmp/gfw-verify`; delete branch `verify-gomod-floor`.
-6. Verify no background monitors/buildflow stragglers remain (`ps aux | grep -E 'buildflow|inotifywait'`).
+4. ~~`nix build .` to refresh `./result` and confirm vendorHash `9qQXBs…` still valid at the floor.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+5. ~~Remove worktree `git worktree remove --force /tmp/gfw-verify`; delete branch `verify-gomod-floor`.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+6. ~~Verify no background monitors/buildflow stragglers remain (`ps aux | grep -E 'buildflow|inotifywait'`).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 
 **AGENTS.md / docs**
-7. Rewrite "go.mod language version" gotcha: three bumpers (go-version-auto-configure, go-mod-update, go-structure-linter), skip policy, strace verification date.
-8. Add gotcha: "nix flake eval ignores dirty state in linked worktrees — commit experiment state".
-9. Add gotcha: go-structure-linter (202b114+) auto-bumps go directive; backup dir `/tmp/go-structure-linter-backups/`.
-10. Record the attribution recipe (inotify --timefmt + strace execve mapping) in crush-config `references/lessons.md` (cross-project lesson, via commit).
-11. Update/annotate `docs/status/2026-10-07_04-34_buildflow-recovery-session.md` with a pointer to this report (its item #1 "instrument inotify" is now DONE and answered).
-12. Reconcile TODO_LIST.md with the new work items below.
+7. ~~Rewrite "go.mod language version" gotcha: three bumpers (go-version-auto-configure, go-mod-update, go-structure-linter), skip policy, strace verification date.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+8. ~~Add gotcha: "nix flake eval ignores dirty state in linked worktrees — commit experiment state".~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+9. ~~Add gotcha: go-structure-linter (202b114+) auto-bumps go directive; backup dir `/tmp/go-structure-linter-backups/`.~~ no longer open here — routed to TODO_LIST (auto-bumps the `go` directive mid-run (strace evidence ready); (b) result)
+10. ~~Record the attribution recipe (inotify --timefmt + strace execve mapping) in crush-config `references/lessons.md` (cross-project lesson, via commit).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+11. ~~Update/annotate `docs/status/2026-10-07_04-34_buildflow-recovery-session.md` with a pointer to this report (its item #1 "instrument inotify" is now DONE and answered).~~ no longer open here — routed to TODO_LIST (**Cross-repo (crush-config):** commit the `lessons.md` entry (instrument)
+12. ~~Reconcile TODO_LIST.md with the new work items below.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 
 **Findings gate (the last mile to exit 0)**
-13. `buildflow -s pnpm-audit --format finding` — enumerate the 9 errors (js-yaml, fast-uri, source-map-js, http-cache-semantics + 5 more).
-14. Upgrade `js-yaml` ≥ 4.3.2 (website/).
-15. Upgrade `fast-uri` ≥ 3.1.6.
-16. Upgrade `source-map-js` ≥ 1.2.2.
-17. Upgrade `http-cache-semantics` ≥ 4.2.1.
-18. Fix remaining 5 pnpm-audit errors.
-19. `buildflow -s type-check --format finding` — fix the 4 website TS errors.
-20. Decide gate policy: fix-all vs `--fail-on` config vs findings baseline for website/.
+13. ~~`buildflow -s pnpm-audit --format finding` — enumerate the 9 errors (js-yaml, fast-uri, source-map-js, http-cache-semantics + 5 more).~~ done — the 9 errors were enumerated and worked through; `website/pnpm-lock.yaml` reports 0 advisories as of 2026-11-06
+14. ~~Upgrade `js-yaml` ≥ 4.3.2 (website/).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+15. ~~Upgrade `fast-uri` ≥ 3.1.6.~~ verified — website/pnpm-lock.yaml resolves fast-uri@3.1.9
+16. ~~Upgrade `source-map-js` ≥ 1.2.2.~~ verified — website/pnpm-lock.yaml resolves source-map-js@1.2.2
+17. ~~Upgrade `http-cache-semantics` ≥ 4.2.1.~~ verified — website/pnpm-lock.yaml resolves http-cache-semantics@4.3.0
+18. ~~Fix remaining 5 pnpm-audit errors.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+19. ~~`buildflow -s type-check --format finding` — fix the 4 website TS errors.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+20. ~~Decide gate policy: fix-all vs `--fail-on` config vs findings baseline for website/.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 21. Re-run full pipeline → target **exit 0**.
-22. Review dependabot-auto-configure info finding (nix ecosystem entry "matches nothing") — keep or drop the dependabot entry.
-23. Triage go-auto-upgrade's 12 findings (jsonv1tov2 skips are deliberate; lo.Map suggestions need a decision: adopt samber/lo or suppress).
+22. ~~Review dependabot-auto-configure info finding (nix ecosystem entry "matches nothing") — keep or drop the dependabot entry.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+23. ~~Triage go-auto-upgrade's 12 findings (jsonv1tov2 skips are deliberate; lo.Map suggestions need a decision: adopt samber/lo or suppress).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 24. nix-checker "extract vendorHash to file" suggestion contradicts AGENTS.md (nix-hash-fix bug note) → document as deliberate non-fix (known-tool-bug pattern).
 25. art-dupl 97 + branching-flow 14 findings → schedule a deduplicate-code session (detect-only today).
-26. nix-flake-check: add `meta.description` to flake apps (16 warnings).
-27. flake-meta-checker: add `platforms` attribute or suppress.
+26. ~~nix-flake-check: add `meta.description` to flake apps (16 warnings).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+27. ~~flake-meta-checker: add `platforms` attribute or suppress.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 28. vulnix 20 findings (binutils/bison/coreutils CVEs) → nixpkgs bump or document accepted debt.
 29. Fix "binary X not in project devShell" warnings (dprint, prettier, tsc, tailwindcss, lychee, vulnix, govulncheck) → add to devShells.default or accept.
-30. Identify the "9 tools unavailable (health check failed)" via `buildflow -v` and fix or document.
+30. ~~Identify the "9 tools unavailable (health check failed)" via `buildflow -v` and fix or document.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 
 **BuildFlow upstream (this machine's repo is actively developed)**
-31. File issue: go-structure-linter must not auto-repair the go directive (or must respect GOTOOLCHAIN=local floors / repo policy); fleet-wide breakage vector.
-32. Suggest rule-level skip granularity (`.buildflow.yml` per-rule suppression) instead of whole-step skips.
-33. Consider making nix-hash-fix aware of this flake (still fails 15+/15 with "stale hash not found verbatim" — documented AGENTS.md).
-34. Rebuild + reinstall fleet buildflow binary (nix build . && nix run .#reinstall in ~/projects/BuildFlow) — currently stale vs HEAD.
-35. After rebuild, verify the three skip_steps names still resolve (provider renames would silently unskip).
+31. ~~File issue: go-structure-linter must not auto-repair the go directive (or must respect GOTOOLCHAIN=local floors / repo policy); fleet-wide breakage vector.~~ no longer open here — routed to TODO_LIST (Both are fleet-wide hazards; filings need your go-ahead since you own)
+32. ~~Suggest rule-level skip granularity (`.buildflow.yml` per-rule suppression) instead of whole-step skips.~~ no longer open here — routed to TODO_LIST (granularity, closed-watcher semantics, depth reconciliation) live in)
+33. ~~Consider making nix-hash-fix aware of this flake (still fails 15+/15 with "stale hash not found verbatim" — documented AGENTS.md).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+34. ~~Rebuild + reinstall fleet buildflow binary (nix build . && nix run .#reinstall in ~/projects/BuildFlow) — currently stale vs HEAD.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+35. ~~After rebuild, verify the three skip_steps names still resolve (provider renames would silently unskip).~~ no longer open here — routed to TODO_LIST (resolve (provider renames silently unskip) and triage the non-gating)
 
 **Repo hygiene / CI**
-36. Add CI guard asserting `grep -q '^go 1.26.7$' go.mod` (fail fast on directive poison).
-37. Sweep sibling repos' go.mod histories for the same 1.27 flips (mr-sync, bank-sync, cqrs-lite…).
-38. Push master once user approves; verify open PR CIs go green.
-39. Confirm daemon didn't commit partial `.buildflow.yml` states (`git log -p -- .buildflow.yml`).
-40. Investigate the two non-linter writer TIDs (2058918/2060731) if ever relevant — proof run shows they're net-zero today.
-41. Coordinate with the concurrent website session (observed `nix run .#deploy`, `.#mr-sync`, `.#pre-deploy-check` at 04:55) before pushing website-affecting changes.
-42. Verify `website/src/styles/global.out.css` (+1931/−1931 churn from concurrent sessions) didn't break the website build.
+36. ~~Add CI guard asserting `grep -q '^go 1.26.7$' go.mod` (fail fast on directive poison).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+37. ~~Sweep sibling repos' go.mod histories for the same 1.27 flips (mr-sync, bank-sync, cqrs-lite…).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+38. ~~Push master once user approves; verify open PR CIs go green.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+39. ~~Confirm daemon didn't commit partial `.buildflow.yml` states (`git log -p -- .buildflow.yml`).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+40. ~~Investigate the two non-linter writer TIDs (2058918/2060731) if ever relevant — proof run shows they're net-zero today.~~ no longer open here — routed to TODO_LIST (writers before racing them) and fix the buildflow skill DB path)
+41. ~~Coordinate with the concurrent website session (observed `nix run .#deploy`, `.#mr-sync`, `.#pre-deploy-check` at 04:55) before pushing website-affecting changes.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+42. ~~Verify `website/src/styles/global.out.css` (+1931/−1931 churn from concurrent sessions) didn't break the website build.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 43. Performance budget: full runs exceed the 1 m default budget → set an explicit `--budget` in the standard command or document the ignore.
-44. Evaluate exporting `GOTOOLCHAIN=local` in `.envrc` (buildflow's fix-hint referenced shell pinning mismatches).
-45. After AGENTS.md trim: consider re-enabling go-structure-linter WITHOUT its go-version repair (pending upstream fix) to keep the structure checks.
-46. bench-diff discipline: schedule `nix run .#bench-diff` only with an idle machine (AGENTS.md rule; today's machine was saturated).
-47. Check whether any open PRs touch the files this session changed (conflict risk before push).
-48. Add the flip-flop preflight check's advice to docs: after any go.mod incident, run `git log -p -G'^go ' -- go.mod` (it's the fastest history X-ray).
-49. Keep `/tmp/proof-run.log`, `/tmp/strace-bf.log`, `/tmp/strace-bf2.log`, `/tmp/gomod-*.log` until the next session confirms main-repo green (they are the evidence chain).
-50. Write the close-out: after main-repo exit 0, append a "RESOLVED" note linking this report from README-adjacent changelog or the 04:34 report.
+44. ~~Evaluate exporting `GOTOOLCHAIN=local` in `.envrc` (buildflow's fix-hint referenced shell pinning mismatches).~~ no longer open here — routed to TODO_LIST (value. This is a v3 decision — exporting it is a breaking commitment.)
+45. ~~After AGENTS.md trim: consider re-enabling go-structure-linter WITHOUT its go-version repair (pending upstream fix) to keep the structure checks.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+46. ~~bench-diff discipline: schedule `nix run .#bench-diff` only with an idle machine (AGENTS.md rule; today's machine was saturated).~~ no longer open here — routed to TODO_LIST (**Add a scheduled `BUILDFLOW_NO_RESULT_CACHE=1` run as a cache-lie)
+47. ~~Check whether any open PRs touch the files this session changed (conflict risk before push).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+48. ~~Add the flip-flop preflight check's advice to docs: after any go.mod incident, run `git log -p -G'^go ' -- go.mod` (it's the fastest history X-ray).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+49. ~~Keep `/tmp/proof-run.log`, `/tmp/strace-bf.log`, `/tmp/strace-bf2.log`, `/tmp/gomod-*.log` until the next session confirms main-repo green (they are the evidence chain).~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
+50. ~~Write the close-out: after main-repo exit 0, append a "RESOLVED" note linking this report from README-adjacent changelog or the 04:34 report.~~ no longer open here — routed to the living backlog (docs-health harvest 2026-11-06)
 
 ## g) QUESTIONS I CANNOT ANSWER MYSELF
 

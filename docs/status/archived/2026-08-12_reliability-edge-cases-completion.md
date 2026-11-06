@@ -1,6 +1,6 @@
 # Reliability Edge-Case Feedback — Completion Report
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Date:** 2026-08-12 (follow-up session)
 **Prior session:** `docs/status/2026-08-12_14-39_reliability-edge-cases-implementation.md`

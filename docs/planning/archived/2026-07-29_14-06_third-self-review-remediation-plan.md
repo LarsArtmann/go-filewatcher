@@ -1,6 +1,6 @@
 # Third Self-Review Remediation Plan
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Created:** 2026-07-29 14:06
 **Source:** `docs/status/2026-07-29_09-44_self-review-remediation-second-brutal-review.md`

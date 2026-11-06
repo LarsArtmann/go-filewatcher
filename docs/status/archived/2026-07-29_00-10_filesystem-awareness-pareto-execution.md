@@ -1,6 +1,6 @@
 # Status Report: Filesystem Awareness — Full Pareto Execution
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Created:** 2026-07-29 00:10
 **Session scope:** Execution of the 14-task Pareto plan (`docs/planning/2026-07-28_23-30_filesystem-awareness-pareto-plan.md`)

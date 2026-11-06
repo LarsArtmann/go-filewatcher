@@ -1,6 +1,6 @@
 # Status Report: Third Self-Review Remediation — Brutal Self-Critique
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Created:** 2026-07-29 14:38
 **Session scope:** Self-critique of the 30-task third self-review remediation pass

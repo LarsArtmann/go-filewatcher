@@ -1,6 +1,6 @@
 # Status Report — HIGH Priority TODO Clearance & Deprecation Audit
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Generated:** 2026-07-26 18:53 CEST
 **Session scope:** The 3 HIGH priority items from `TODO_LIST.md` + the `file-and-image-renamer` integration tick-off.

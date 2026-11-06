@@ -1,6 +1,6 @@
 # Full Comprehensive Status Report — go-filewatcher
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Generated:** 2026-04-12 11:28:13 CEST\
 **Commit:** 5f0d3b4 (chore(presentation): apply comprehensive formatting and golfer improvements)\

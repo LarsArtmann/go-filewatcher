@@ -1,6 +1,6 @@
 # TODO List Clearance — All 15 Items Complete
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Date:** 2026-07-26_22-01
 **Scope:** All HIGH (5) + MEDIUM (10) priority items from the 2026-07-26 TODO harvest.

@@ -1,6 +1,6 @@
 # Status Report: go-filewatcher Public Presence — DNS + Firebase + Website
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Date:** 2026-07-13 21:58
 **Session Scope:** Full public presence overhaul across two repos: go-filewatcher (README + website + GitHub metadata) and domains (DNS CNAME + ACME challenge for Firebase Hosting)

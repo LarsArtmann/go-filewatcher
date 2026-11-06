@@ -1,6 +1,6 @@
 # Reliability Feedback — Session 3 Honest Status
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Date:** 2026-08-12 19:22
 **Session:** Third session continuing `docs/feedback/done/2026-08-12_reliability-edge-cases-all-consumers.md`

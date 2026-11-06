@@ -1,6 +1,6 @@
 # Comprehensive Status Report — 2026-05-31
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Module:** `github.com/larsartmann/go-filewatcher/v2`
 **Go Version:** 1.26.2 minimum, toolchain go1.26.3

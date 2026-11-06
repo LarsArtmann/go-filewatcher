@@ -37,6 +37,12 @@ nix flake check          # Run all checks (build, test, lint, fmt, vet, examples
 nix build .              # Validate reproducible build
 nix fmt                  # Format .nix files
 
+# Documentation gates (docs-gates binary; pins live in .docs-gates.json)
+docs-gates run .                     # freshness + audit-all + annotate + routing + cadence
+docs-gates freshness . --audit-all   # replay every report's open items vs the living docs
+docs-gates annotate . --verbose      # struck items must carry resolvable verdicts
+dprint fmt <files>                   # markdown formatting — re-run annotate after it
+
 # Inside dev shell (aliases are set automatically):
 check       # nix run .#check
 ci          # nix run .#ci
@@ -177,3 +183,25 @@ Full detail, fix commands, and incident history:
 | go.mod language floor     | `go 1.26.7` is enforced by the `go-directive` nix check AND a blocking CI job. Three BuildFlow tools fight it — never fix a bump by editing the guards alone.                                |
 | Nix sandbox / BuildFlow   | GOEXPERIMENT, nix-hash-fix, and pnpm-audit cache replay each need a specific workaround: see the doc before improvising.                                                                     |
 | Accepted BuildFlow noise  | `file-size-check`, `cue-vet`, `go-auto-upgrade`, `nix-checker`, `dependabot`, `art-dupl`, `vulnix` findings are baselined or documented non-fixes. Read the doc's table before "fixing" one. |
+
+---
+
+## Documentation Gates
+
+`docs-gates run .` is a real quality gate, not advisory: five checks over
+`docs/status/**` plus the living docs. `.docs-gates.json` pins **zero** tolerated
+findings (`audit_max`, `annotate_max`) and a 8-report / 21-day cadence — never
+raise a pin to silence a finding; fix the finding or annotate it resolved.
+
+| Gate      | Says                                                                                   | Fix                                                                                                     |
+| --------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| freshness | the newest report's §f items are harvested into TODO_LIST/ROADMAP/CHANGELOG            | harvest the item, or strike it with its evidence                                                        |
+| audit-all | every historical report's open items are represented in the living docs                | same ritual, corpus-wide                                                                                |
+| annotate  | every struck item carries a verdict marker (`done`/`resolved`/`superseded`/`NOT-DO`/…) | add the verdict **outside** the `~~strike~~`; table cells are struck per cell, verdict text stays plain |
+| routing   | every open actionable row outside §f is routed                                         | add the row to TODO_LIST/ROADMAP or strike it                                                           |
+| cadence   | TODO_LIST purge + report archive age                                                   | archive resolved reports to `docs/status/archived/` (with the manifest row)                             |
+
+Two rules that cost real money when forgotten: **strike per cell** (a `~~span~~`
+across `|` pipes is the "ID-cell-only" defect the gate exists to catch), and
+**format, then re-run annotate** — dprint rewrites markdown and can break the
+markers it did not understand. Run `dprint fmt` BEFORE the final gate pass.

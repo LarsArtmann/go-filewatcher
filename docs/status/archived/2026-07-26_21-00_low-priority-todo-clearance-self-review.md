@@ -1,6 +1,6 @@
 # Status Report — 2026-07-26 21:00 (LOW-Priority TODO Clearance)
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Session scope:** Clear all 8 🟢 LOW-priority items from `TODO_LIST.md`.
 **Outcome:** All 8 items delivered, committed by the auto-git daemon, `go vet` + `golangci-lint` + `go test -race` green.

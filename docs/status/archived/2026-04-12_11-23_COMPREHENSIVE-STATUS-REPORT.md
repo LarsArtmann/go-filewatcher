@@ -1,6 +1,6 @@
 # Comprehensive Status Report: go-filewatcher
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 **Generated:** 2026-04-12 11:23:26\
 **Commit:** d28f8d1 (docs: add MIGRATION.md for v2.0 ErrorHandler breaking change)\

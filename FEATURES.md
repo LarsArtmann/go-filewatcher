@@ -1,6 +1,6 @@
 # Feature Inventory
 
-**Last Updated:** 2026-10-07 · **Version:** v2.4.1
+**Last Updated:** 2026-11-06 · **Version:** v2.5.0
 
 Honest status of every capability in go-filewatcher. Statuses:
 
@@ -164,9 +164,9 @@ Honest status of every capability in go-filewatcher. Statuses:
 | ---------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Nix flake dev shell                | ✅     | `nix develop`, `direnv allow`                                                                                                                                                                                                                                           |
 | Nix apps for all common commands   | ✅     | `nix run .#{check,ci,test,lint,lint-fix,bench,coverage,...}`                                                                                                                                                                                                            |
-| GitHub Actions CI                  | ✅     | Test with race + 90% threshold, lint, examples-build, bench                                                                                                                                                                                                             |
+| GitHub Actions CI                  | ✅     | Test with race + 85% coverage threshold, lint, examples-build, bench                                                                                                                                                                                                    |
 | Documentation website              | ✅     | Astro + Starlight site at `filewatcher.lars.software`                                                                                                                                                                                                                   |
-| Godoc examples                     | ✅     | 30 examples in `example_test.go`                                                                                                                                                                                                                                        |
+| Godoc examples                     | ✅     | 29 examples in `example_test.go`                                                                                                                                                                                                                                        |
 | Error simulation testing framework | ✅     | `error_simulation_test.go` + `fake_backend_test.go` — scripted Add failures, error injection, full pipeline tests                                                                                                                                                       |
 | Runnable example programs          | ✅     | `examples/{basic,middleware,per-path-debounce,demo,filter-generated}`                                                                                                                                                                                                   |
 | Cross-platform releases            | 🟡     | `release.yml` triggers on `v*` tags (tests + lint + GitHub Release with auto-generated notes); release-please automates versioning from conventional commits. `.goreleaser.yml` exists but is NOT invoked — no compiled binaries shipped (see TODO_LIST open questions) |
@@ -176,11 +176,11 @@ Honest status of every capability in go-filewatcher. Statuses:
 
 See [ROADMAP.md](./ROADMAP.md) for long-term direction and [TODO_LIST.md](./TODO_LIST.md) for committed short/mid-term work. Highlights:
 
-| Feature                                         | Status | Notes                                                                                                                                                |
-| ----------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Windows-specific edge case tests                | 🔵     | Currently CI runs Linux only                                                                                                                         |
-| Fuzz testing expansion                          | 🔵     | Existing fuzz tests; expand to more surfaces                                                                                                         |
-| Semantic-release automation                     | ✅     | release-please wired in (`.github/workflows/release-please.yml`) + commitlint gate; see [evaluation](./docs/research/semantic-release-evaluation.md) |
-| Localizable error messages                      | ⚪     | Sentinel errors are English-only today                                                                                                               |
-| fsnotify v2 tracking                            | ⚪     | Monitor upstream for breaking changes                                                                                                                |
-| `WatchChanges(ctx, targetState)` idempotent API | ⚪     | For sync-style workflows; see [contract sketch](./docs/research/watchchanges-contract.md)                                                            |
+| Feature                                         | Status | Notes                                                                                                                                                                                                                |
+| ----------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Windows/macOS test parity                       | 🟡     | `windows-2025` + `macos-15` probe legs run the suite (informational, not required). Remaining work: replace the `skipOnWindows(t)` skips with per-OS assertions, then promote the legs ([TODO_LIST](./TODO_LIST.md)) |
+| Fuzz testing expansion                          | 🔵     | Existing fuzz tests; expand to more surfaces                                                                                                                                                                         |
+| Semantic-release automation                     | ✅     | release-please wired in (`.github/workflows/release-please.yml`) + commitlint gate; see [evaluation](./docs/research/semantic-release-evaluation.md)                                                                 |
+| Localizable error messages                      | ⚪     | Sentinel errors are English-only today                                                                                                                                                                               |
+| fsnotify v2 tracking                            | ⚪     | Monitor upstream for breaking changes                                                                                                                                                                                |
+| `WatchChanges(ctx, targetState)` idempotent API | ⚪     | For sync-style workflows; see [contract sketch](./docs/research/watchchanges-contract.md)                                                                                                                            |

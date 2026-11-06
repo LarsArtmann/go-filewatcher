@@ -1,6 +1,6 @@
 # Status Report — 2026-07-25 17:31 CEST
 
-> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../TODO_LIST.md).
+> **ARCHIVED 2026-10-07** (docs-health sweep): forward items resolved inline below — `~~strikethrough~~` verdicts cite evidence. Live work lives in [TODO_LIST.md](../../../TODO_LIST.md).
 
 > **Scope:** This session only — the `art-dupl` de-duplication runs.
 > **Session goal:** Drive `art-dupl` duplication down toward zero across two

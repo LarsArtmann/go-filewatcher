@@ -102,7 +102,7 @@ Grouped by impact. [T] = already TODO_LIST'd by this session, [N] = new.
 4. [N] Replace the literal zero-Stats struct in NewPrometheusCollector with `Stats{}` (kills the drift class, 1-line).
 5. [N] Verify (or label) the README ctx-closure workaround claim — compile + run it.
 6. [T] Land `examples/otel/` (span adapter + stdouttrace + PrometheusCollector adapter) — move /tmp/otel-verify into the repo.
-7. [N] Run `nix run .#lint` + `nix flake check` once, post-restore.
+7. ~~[N] Run `nix run .#lint` + `nix flake check` once, post-restore.~~ done 2026-11-06 — `nix run .#lint` reports 0 issues and `nix flake check` passes all 9 checks.
 8. [N] CHANGELOG entry: two doc-claim fixes + README root-span note.
 
 **OTel depth (the actual product gap):**
@@ -127,7 +127,7 @@ Grouped by impact. [T] = already TODO_LIST'd by this session, [N] = new.
 23. [N] Website `features.ts` line 25 claim ("OpenTelemetry tracing middleware...") — keep, but cite the example once it exists.
 24. [N] Cross-link the new AGENTS.md catch-22 note from docs/gotchas.md.
 25. [N] Fix AGENTS.md Dependencies table (x/text v0.42.0 → v0.43.0 reality).
-26. [N] Bump TODO_LIST `Last Updated:` header.
+26. ~~[N] Bump TODO_LIST `Last Updated:` header.~~ done 2026-11-06 — the header now records the docs-health session and the ratchet drain.
 27. [N] Refresh TODO_LIST Status Snapshot after the merged tree's session churn settles.
 
 **Platform/CI hardening:**

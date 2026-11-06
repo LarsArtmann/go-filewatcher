@@ -1,15 +1,4 @@
-## [Unreleased]
-
-### Added
-
-- Nothing yet.
-
-### Fixed
-
-- Nothing yet.
-
 ## [2.5.0](https://github.com/LarsArtmann/go-filewatcher/compare/v2.4.3...v2.5.0) (2026-11-06)
-
 
 ### Features
 

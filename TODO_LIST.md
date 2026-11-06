@@ -411,6 +411,19 @@ Harvested from `docs/status/2026-11-06_07-22_buildflow-green-lint-fix-and-docs-r
       flaking test, and harden it** — the 07:29 `test-race` failure happened only
       while a second BuildFlow process held the state DB (`SQLITE_BUSY`); four
       subsequent runs with the same seed were green. — P1/M/Quality.
+- [ ] **Document the health API on the website** — `Healthy` appears in
+      README/FEATURES/API_STABILITY but not in `website/src/content/docs`
+      (`api-reference.mdx` only mentions `MiddlewareCircuitBreaker`), so the
+      feature shipped in v2.5.0 is invisible on filewatcher.lars.software. Add a
+      health section/page, rebuild, deploy. — P1/M/Docs.
+- [x] **Document `GOEXPERIMENT=jsonv2` in the README Install section** — DONE
+      2026-11-06: validated with a throwaway consumer module that a build
+      without the experiment fails with "build constraints exclude all Go files
+      in …/encoding/json/v2"; README now states the requirement and the export
+      line. — P1/S/Docs.
+- [ ] **Add a CI check that `.release-please-manifest.json` matches the newest
+      `v*` tag** — v2.4.3 shipped by hand and left the manifest at 2.4.2, which
+      would have produced a wrong `v2.4.2...v2.5.0` compare link. — P2/S/CI.
 
 ---
 

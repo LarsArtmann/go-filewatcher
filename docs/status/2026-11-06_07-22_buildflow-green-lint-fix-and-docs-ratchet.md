@@ -151,6 +151,43 @@ finding classes were cleared or documented, and the same command now exits **0**
 
 ---
 
+## Release: v2.5.0 shipped (same session, after the green run)
+
+Asked "time a new release?" — the answer was yes, and the pipeline was ready.
+
+- **Version determination.** Since `v2.4.3` the only user-facing commit was
+  `83db113 feat(health)`, so this is a **MINOR** bump → **v2.5.0**; release-please
+  had already opened PR #71 proposing exactly that.
+- **Drift repaired first.** `v2.4.3` (2026-11-02) was tagged by hand with GitHub
+  auto-generated notes: `CHANGELOG.md` had no 2.4.3 section, and
+  `.release-please-manifest.json` still said 2.4.2, which would have produced a
+  wrong `v2.4.2...v2.5.0` compare link. Added the missing section and moved the
+  manifest to 2.4.3 (`320e0b2`); release-please then regenerated PR #71 against
+  the real latest tag (`v2.4.3...v2.5.0`, manifest → 2.5.0).
+- **Pre-release verification.** `go mod verify` (all verified), `go mod tidy
+  -diff` (empty), `go build ./...`, `go vet ./...`, `go build ./examples/...`,
+  `go test -race` (4.2 s green), `golangci-lint` (0 issues), `nix flake check`
+  (all passed), no `replace` directives, and the CI's exported-symbol docs gate
+  replicated locally (FAIL=0, so `Healthy`/`NewCircuitBreaker`/`WithCircuitBreaker`
+  are all documented in FEATURES/README).
+- **Merged and released.** PR #71 merged (`--rebase`) → release-please created
+  tag + GitHub Release **v2.5.0** on commit `b77b280`.
+- **Curated notes** replaced the one-line generated body: what the health API
+  does, a drop-in `check.Handle(...)` snippet, the breaker-state story, and the
+  consumer caveats below.
+- **Post-release proof.** `proxy.golang.org` now lists `… v2.5.0`, and a fresh
+  throwaway module (`/tmp/fw-relcheck`) ran `go get
+  github.com/larsartmann/go-filewatcher/v2@v2.5.0`, compiled, and executed the
+  new API: `Healthy` → `watcher is not watching`, `cb.State()` and
+  `Stats().CircuitBreakerState` → `closed`. pkg.go.dev still lags (shows 2.4.3)
+  — normal propagation delay, not a defect.
+- **Consumer caveat found while validating.** Building a consumer **without**
+  `GOEXPERIMENT=jsonv2` fails with `build constraints exclude all Go files in
+  …/encoding/json/v2`. README's Install section only mentioned the Go version, so
+  it now documents the experiment (f27, fixed in this session).
+
+---
+
 ## (b) PARTIALLY DONE
 
 | Work                                  | What exists                                                         | What is missing                                                                     |
@@ -266,33 +303,36 @@ finding classes were cleared or documented, and the same command now exits **0**
 Priority / size / tag in the trailing parenthesis. Every item is mirrored in
 `TODO_LIST.md` so the freshness gate stays satisfied.
 
-| #   | Task                                                                                                                                                                   | P / Size / Tag     |
-| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| f1  | Split `watcher_test.go` (1860 lines) into topic files                                                                                                                  | P1 / L / Quality   |
-| f2  | Split `middleware.go` (1001 lines) into themed middleware files                                                                                                        | P1 / L / Quality   |
-| f3  | Split `middleware_test.go` (1406 lines)                                                                                                                                | P2 / L / Quality   |
-| f4  | Split `watcher.go` (919 lines) along its walk/event/health seams                                                                                                       | P2 / L / Quality   |
-| f5  | Split the remaining 16 oversized files and drop their baseline entries                                                                                                 | P3 / L / Quality   |
-| f6  | Annotate a first 100-item batch of the 1786 docs-annotate findings and lower the ratchet                                                                               | P1 / M / Cleanup   |
-| f7  | Archive the 2026-10-07 report batch (13 files) and lower the cadence ratchet to 15/21                                                                                  | P1 / M / Cleanup   |
-| f8  | Identify the 9 "tools unavailable (health check failed)" providers and fix or exclude them                                                                             | P1 / S / Quality   |
-| f9  | Upgrade the BuildFlow binary past `e81c118` and re-prove the three skip_steps still match the current provider names                                                   | P1 / S / Quality   |
-| f10 | Verify this session's changes on CI, including the Windows and macOS probe legs                                                                                        | P1 / S / Quality   |
-| f11 | Decide whether test files are exempt from the 350-line budget (and ask BuildFlow upstream for a per-glob limit)                                                        | P1 / S / Decision  |
-| f12 | Write `website/README.md` (build, generated `/changelog`, oxlint conventions)                                                                                          | P2 / S / Docs      |
-| f13 | Add `actionlint` to pre-push verification                                                                                                                              | P2 / S / Quality   |
-| f14 | Decide on a weekly `-race -count=2` CI run                                                                                                                             | P2 / S / Decision  |
-| f15 | Add a scheduled `BUILDFLOW_NO_RESULT_CACHE=1` run as a cache-lie tripwire                                                                                              | P2 / S / Quality   |
-| f16 | Automate the pnpm-audit/oxlint result-cache purge (script or upstream key fix)                                                                                         | P2 / M / Quality   |
-| f17 | Re-verify the documented BuildFlow limitations (nix-hash-fix, pnpm-audit cache, max_file_size) against the current binary                                              | P2 / M / Quality   |
-| f18 | Confirm the dependabot `nix` and root-`npm` entries actually manage something                                                                                          | P2 / S / Docs      |
-| f19 | Re-check the cue-vet runner deviation after the 2026-11-19 rollout and delete both baseline entries                                                                    | P1 / S / CI        |
-| f20 | Triage the `vulnix` advisories: accept or mitigate per CVE, and refresh the stale `result` scan target                                                                 | P3 / S / Security  |
-| f21 | Settle the `reliability_semantics_test.go` placement convention                                                                                                        | P3 / S / Quality   |
-| f22 | Adopt the post-merge master-CI confirmation habit for docs-only PRs                                                                                                    | P3 / S / Process   |
-| f23 | Decide the website CSS direction (Starlight theme vs custom layer)                                                                                                     | P3 / S / Decision  |
-| f24 | Public-presence polish: apple-touch-icon, logo redesign, Firefox/Safari pass, README screenshot/GIF, "Why not X?"                                                      | P3 / M / Marketing |
-| f25 | Re-drive seed `1793946570936674137` under concurrent load, name the flaking test, and harden it (the 07:29 run failed only while a second BuildFlow held the state DB) | P1 / M / Quality   |
+| #   | Task                                                                                                                                                                                                | P / Size / Tag     |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| f1  | Split `watcher_test.go` (1860 lines) into topic files                                                                                                                                               | P1 / L / Quality   |
+| f2  | Split `middleware.go` (1001 lines) into themed middleware files                                                                                                                                     | P1 / L / Quality   |
+| f3  | Split `middleware_test.go` (1406 lines)                                                                                                                                                             | P2 / L / Quality   |
+| f4  | Split `watcher.go` (919 lines) along its walk/event/health seams                                                                                                                                    | P2 / L / Quality   |
+| f5  | Split the remaining 16 oversized files and drop their baseline entries                                                                                                                              | P3 / L / Quality   |
+| f6  | Annotate a first 100-item batch of the 1786 docs-annotate findings and lower the ratchet                                                                                                            | P1 / M / Cleanup   |
+| f7  | Archive the 2026-10-07 report batch (13 files) and lower the cadence ratchet to 15/21                                                                                                               | P1 / M / Cleanup   |
+| f8  | Identify the 9 "tools unavailable (health check failed)" providers and fix or exclude them                                                                                                          | P1 / S / Quality   |
+| f9  | Upgrade the BuildFlow binary past `e81c118` and re-prove the three skip_steps still match the current provider names                                                                                | P1 / S / Quality   |
+| f10 | Verify this session's changes on CI, including the Windows and macOS probe legs                                                                                                                     | P1 / S / Quality   |
+| f11 | Decide whether test files are exempt from the 350-line budget (and ask BuildFlow upstream for a per-glob limit)                                                                                     | P1 / S / Decision  |
+| f12 | Write `website/README.md` (build, generated `/changelog`, oxlint conventions)                                                                                                                       | P2 / S / Docs      |
+| f13 | Add `actionlint` to pre-push verification                                                                                                                                                           | P2 / S / Quality   |
+| f14 | Decide on a weekly `-race -count=2` CI run                                                                                                                                                          | P2 / S / Decision  |
+| f15 | Add a scheduled `BUILDFLOW_NO_RESULT_CACHE=1` run as a cache-lie tripwire                                                                                                                           | P2 / S / Quality   |
+| f16 | Automate the pnpm-audit/oxlint result-cache purge (script or upstream key fix)                                                                                                                      | P2 / M / Quality   |
+| f17 | Re-verify the documented BuildFlow limitations (nix-hash-fix, pnpm-audit cache, max_file_size) against the current binary                                                                           | P2 / M / Quality   |
+| f18 | Confirm the dependabot `nix` and root-`npm` entries actually manage something                                                                                                                       | P2 / S / Docs      |
+| f19 | Re-check the cue-vet runner deviation after the 2026-11-19 rollout and delete both baseline entries                                                                                                 | P1 / S / CI        |
+| f20 | Triage the `vulnix` advisories: accept or mitigate per CVE, and refresh the stale `result` scan target                                                                                              | P3 / S / Security  |
+| f21 | Settle the `reliability_semantics_test.go` placement convention                                                                                                                                     | P3 / S / Quality   |
+| f22 | Adopt the post-merge master-CI confirmation habit for docs-only PRs                                                                                                                                 | P3 / S / Process   |
+| f23 | Decide the website CSS direction (Starlight theme vs custom layer)                                                                                                                                  | P3 / S / Decision  |
+| f24 | Public-presence polish: apple-touch-icon, logo redesign, Firefox/Safari pass, README screenshot/GIF, "Why not X?"                                                                                   | P3 / M / Marketing |
+| f25 | Re-drive seed `1793946570936674137` under concurrent load, name the flaking test, and harden it (the 07:29 run failed only while a second BuildFlow held the state DB)                              | P1 / M / Quality   |
+| f26 | Document the health API on the website — `Healthy` appears in README/FEATURES/API_STABILITY but not in `website/src/content/docs`, so the shipped feature is invisible on filewatcher.lars.software | P1 / M / Docs      |
+| f27 | ~~Document `GOEXPERIMENT=jsonv2` in the README Install section~~ done 2026-11-06 (validated with a throwaway consumer: builds fail without it)                                                      | P1 / S / Docs      |
+| f28 | Add a CI check that `.release-please-manifest.json` matches the newest `v*` tag (v2.4.3 shipped manually and left the manifest at 2.4.2, which would have produced a wrong compare link on 2.5.0)   | P2 / S / CI        |
 
 ---
 

@@ -57,7 +57,14 @@ go-filewatcher handles all of this. Built for production, tested with `-race`, a
 go get github.com/larsartmann/go-filewatcher/v2
 ```
 
-Requires Go 1.26.7 or later (the version pinned in `go.mod` and the CI matrix).
+Requires Go 1.26.7 or later (the version pinned in `go.mod` and the CI matrix)
+**and `GOEXPERIMENT=jsonv2`**: the module imports `encoding/json/v2`, so a build
+without that experiment fails with `build constraints exclude all Go files in
+.../encoding/json/v2`. Set it in your environment or CI:
+
+```bash
+export GOEXPERIMENT=jsonv2   # Go 1.26; expected to become the default in Go 1.27
+```
 
 ## Usage
 

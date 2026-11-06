@@ -203,27 +203,27 @@ Compose with `FilterAnd`, `FilterOr`, and `FilterNot`.
 
 Middleware wraps event handlers for cross-cutting concerns. Runs in **option order**: the first added wraps outermost and processes each event first.
 
-| Middleware                                      | Description                                                            |
-| ----------------------------------------------- | ---------------------------------------------------------------------- |
-| `MiddlewareLogging(logger)`                     | Log all events with structured logging (slog)                          |
-| `MiddlewareRecovery()`                          | Recover from panics, log stack trace                                   |
-| `MiddlewareFilter(filter)`                      | Filter events (same as WithFilter)                                     |
-| `MiddlewareOnError(handler)`                    | Handle errors from downstream handlers                                 |
-| `MiddlewareRateLimit(maxEvents)` ⚠️              | **Deprecated.** Use `MiddlewareThrottle(maxEvents, maxEvents)` instead |
-| `MiddlewareSlidingWindowRateLimit(n, win)`      | Sliding-window rate limiting                                           |
-| `MiddlewareThrottle(maxEvents, burst)`          | Token-bucket rate limiting via `golang.org/x/time/rate`                |
-| `MiddlewareMetrics(counter)`                    | Count processed events by operation                                    |
-| `MiddlewareDeduplicate(window)`                 | Drop duplicate events within a time window                             |
-| `MiddlewareBatch(window, maxSize, flush)`       | Batch events over a window or size threshold                           |
-| `MiddlewareWriteFileLog(path)`                  | Write events to file for audit trail                                   |
-| `MiddlewareCircuitBreaker(maxFail, reset)`      | Fault tolerance with closed/open/half-open states                      |
+| Middleware                                                     | Description                                                                       |
+| -------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `MiddlewareLogging(logger)`                                    | Log all events with structured logging (slog)                                     |
+| `MiddlewareRecovery()`                                         | Recover from panics, log stack trace                                              |
+| `MiddlewareFilter(filter)`                                     | Filter events (same as WithFilter)                                                |
+| `MiddlewareOnError(handler)`                                   | Handle errors from downstream handlers                                            |
+| `MiddlewareRateLimit(maxEvents)` ⚠️                             | **Deprecated.** Use `MiddlewareThrottle(maxEvents, maxEvents)` instead            |
+| `MiddlewareSlidingWindowRateLimit(n, win)`                     | Sliding-window rate limiting                                                      |
+| `MiddlewareThrottle(maxEvents, burst)`                         | Token-bucket rate limiting via `golang.org/x/time/rate`                           |
+| `MiddlewareMetrics(counter)`                                   | Count processed events by operation                                               |
+| `MiddlewareDeduplicate(window)`                                | Drop duplicate events within a time window                                        |
+| `MiddlewareBatch(window, maxSize, flush)`                      | Batch events over a window or size threshold                                      |
+| `MiddlewareWriteFileLog(path)`                                 | Write events to file for audit trail                                              |
+| `MiddlewareCircuitBreaker(maxFail, reset)`                     | Fault tolerance with closed/open/half-open states                                 |
 | `NewCircuitBreaker(maxFail, reset)` + `WithCircuitBreaker(cb)` | Introspectable breaker: `cb.State()`, `Stats.CircuitBreakerState`, `Healthy(ctx)` |
-| `MiddlewareExponentialBackoff(maxF, init, max)` | Configurable backoff for event processing                              |
-| `MiddlewareErrorRateLimit(maxErrs, window)`     | Per-error-type rate limiting                                           |
-| `MiddlewareErrorRecovery(strategy)`             | Recoverable error handling with custom strategies                      |
-| `MiddlewareErrorCorrelation(idGen)`             | Attach correlation IDs for request tracing                             |
-| `MiddlewareErrorSanitization(sanitize)`         | Safe error message scrubbing preserving error chains                   |
-| `MiddlewareErrorBatch(window, maxSize, flush)`  | Batch errors for analytics                                             |
+| `MiddlewareExponentialBackoff(maxF, init, max)`                | Configurable backoff for event processing                                         |
+| `MiddlewareErrorRateLimit(maxErrs, window)`                    | Per-error-type rate limiting                                                      |
+| `MiddlewareErrorRecovery(strategy)`                            | Recoverable error handling with custom strategies                                 |
+| `MiddlewareErrorCorrelation(idGen)`                            | Attach correlation IDs for request tracing                                        |
+| `MiddlewareErrorSanitization(sanitize)`                        | Safe error message scrubbing preserving error chains                              |
+| `MiddlewareErrorBatch(window, maxSize, flush)`                 | Batch errors for analytics                                                        |
 
 ## Event
 

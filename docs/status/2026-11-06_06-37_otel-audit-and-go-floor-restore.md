@@ -9,17 +9,17 @@
 
 **VERIFIED (command/artifact-backed, this session):**
 
-| Claim | How verified |
-| --- | --- |
-| `trace.Span` does NOT satisfy `filewatcher.OTelSpan` | Compiler error on `var _ filewatcher.OTelSpan = (trace.Span)(nil)`; primary source `otel/trace@v1.47.0/span.go:22-62` (module cache) |
-| `*PrometheusCollector` does NOT implement `prometheus.Collector` | Compiler error: `missing method Collect` |
-| README adapter + stdouttrace + PrometheusCollector adapter work end-to-end | Runtime run in `/tmp/otel-verify`: `spanCount=2 eventsProcessed=2 promMetrics=15`; spans carry `filewatcher.path/op/is_dir` |
-| Every event span is a ROOT trace | Runtime stdout exporter output: two events → two distinct TraceIDs, parent TraceID all-zeros |
-| Repo-wide: zero copies of the two false doc claims remain | `grep` after fixes: no matches |
-| Build + vet + `go test -race` green after my restore AND on the merged tree (incl. concurrent session's work) | `go build ./... && go vet ./... && go test -race -count=1 .` → `ok ... 4.167s` at 06:37 |
-| `nix build .` green after vendorHash update | `got:` hash captured from first (failing) build, applied to flake.nix:25, rebuild succeeded |
-| yaml v3.0.4 (not v3.0.5) is graph-true | grep of gogenfilter v3.6.1 + gomega v1.43.0 go.mods: both require v3.0.4; nothing requires v3.0.5 |
-| Working tree composition | `git status`: 15 modified + 2 untracked; HEAD = `9b8e5fb` (daemon commit that caused the incident) |
+| Claim                                                                                                         | How verified                                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `trace.Span` does NOT satisfy `filewatcher.OTelSpan`                                                          | Compiler error on `var _ filewatcher.OTelSpan = (trace.Span)(nil)`; primary source `otel/trace@v1.47.0/span.go:22-62` (module cache) |
+| `*PrometheusCollector` does NOT implement `prometheus.Collector`                                              | Compiler error: `missing method Collect`                                                                                             |
+| README adapter + stdouttrace + PrometheusCollector adapter work end-to-end                                    | Runtime run in `/tmp/otel-verify`: `spanCount=2 eventsProcessed=2 promMetrics=15`; spans carry `filewatcher.path/op/is_dir`          |
+| Every event span is a ROOT trace                                                                              | Runtime stdout exporter output: two events → two distinct TraceIDs, parent TraceID all-zeros                                         |
+| Repo-wide: zero copies of the two false doc claims remain                                                     | `grep` after fixes: no matches                                                                                                       |
+| Build + vet + `go test -race` green after my restore AND on the merged tree (incl. concurrent session's work) | `go build ./... && go vet ./... && go test -race -count=1 .` → `ok ... 4.167s` at 06:37                                              |
+| `nix build .` green after vendorHash update                                                                   | `got:` hash captured from first (failing) build, applied to flake.nix:25, rebuild succeeded                                          |
+| yaml v3.0.4 (not v3.0.5) is graph-true                                                                        | grep of gogenfilter v3.6.1 + gomega v1.43.0 go.mods: both require v3.0.4; nothing requires v3.0.5                                    |
+| Working tree composition                                                                                      | `git status`: 15 modified + 2 untracked; HEAD = `9b8e5fb` (daemon commit that caused the incident)                                   |
 
 **NOT verified (and why):**
 
@@ -167,4 +167,4 @@ Grouped by impact. [T] = already TODO_LIST'd by this session, [N] = new.
 
 ---
 
-*Verified-state footer: build + vet + `go test -race` green at 06:37 on the merged tree; HEAD `9b8e5fb`; this report uncommitted by design (daemon sweep expected).*
+_Verified-state footer: build + vet + `go test -race` green at 06:37 on the merged tree; HEAD `9b8e5fb`; this report uncommitted by design (daemon sweep expected)._

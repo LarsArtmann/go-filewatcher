@@ -281,7 +281,7 @@ Related subtleties (added 2026-11-06 with the Health API):
   purpose: inserting it earlier would have renumbered the existing states
   (serialized values, gauge encodings, tests).
 - `CircuitBreaker.State()` is read-only: the open→half-open timeout transition
-  happens lazily on the event path. `State()` *reports* half-open once the
+  happens lazily on the event path. `State()` _reports_ half-open once the
   timeout elapsed (freshest truth without traffic) but does not mutate, so
   `halfOpenSent` bookkeeping stays event-path-owned.
 - `Healthy()` treats HalfOpen as healthy (probe events are admitted) and

@@ -50,27 +50,27 @@ Honest status of every capability in go-filewatcher. Statuses:
 
 ## Middleware
 
-| Feature                        | Status | Notes                                                                                                                       |
-| ------------------------------ | ------ | --------------------------------------------------------------------------------------------------------------------------- |
-| Logging (slog)                 | ✅     | `MiddlewareLogging(*slog.Logger)`                                                                                           |
-| Panic recovery                 | ✅     | `MiddlewareRecovery()`                                                                                                      |
-| Filter-as-middleware           | ✅     | `MiddlewareFilter(Filter)`                                                                                                  |
-| OnError handling               | ✅     | `MiddlewareOnError(func(Event, error))`                                                                                     |
-| Rate limiting (fixed)          | ✅     | `MiddlewareRateLimit(maxEvents)`                                                                                            |
-| Rate limiting (sliding)        | ✅     | `MiddlewareSlidingWindowRateLimit(maxEvents, window)`                                                                       |
-| Throttle (token bucket)        | ✅     | `MiddlewareThrottle(maxEvents, burst)` via `golang.org/x/time`                                                              |
-| Metrics counter                | ✅     | `MiddlewareMetrics(func(Op))`                                                                                               |
-| Deduplicate                    | ✅     | `MiddlewareDeduplicate(window)` — NFC-normalized keys                                                                       |
-| Deduplicate (case-insensitive) | ✅     | `MiddlewareDeduplicateCaseInsensitive(window)` — lowercased + NFC keys for case-insensitive filesystems                     |
-| Batch                          | ✅     | `MiddlewareBatch(window, maxSize, flush)`                                                                                   |
-| Audit to file                  | ✅     | `MiddlewareWriteFileLog(path)` or `NewFileLogMiddleware` (returns closer for fd cleanup via `WithCleanup`)                  |
+| Feature                        | Status | Notes                                                                                                                                                                                                    |
+| ------------------------------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Logging (slog)                 | ✅     | `MiddlewareLogging(*slog.Logger)`                                                                                                                                                                        |
+| Panic recovery                 | ✅     | `MiddlewareRecovery()`                                                                                                                                                                                   |
+| Filter-as-middleware           | ✅     | `MiddlewareFilter(Filter)`                                                                                                                                                                               |
+| OnError handling               | ✅     | `MiddlewareOnError(func(Event, error))`                                                                                                                                                                  |
+| Rate limiting (fixed)          | ✅     | `MiddlewareRateLimit(maxEvents)`                                                                                                                                                                         |
+| Rate limiting (sliding)        | ✅     | `MiddlewareSlidingWindowRateLimit(maxEvents, window)`                                                                                                                                                    |
+| Throttle (token bucket)        | ✅     | `MiddlewareThrottle(maxEvents, burst)` via `golang.org/x/time`                                                                                                                                           |
+| Metrics counter                | ✅     | `MiddlewareMetrics(func(Op))`                                                                                                                                                                            |
+| Deduplicate                    | ✅     | `MiddlewareDeduplicate(window)` — NFC-normalized keys                                                                                                                                                    |
+| Deduplicate (case-insensitive) | ✅     | `MiddlewareDeduplicateCaseInsensitive(window)` — lowercased + NFC keys for case-insensitive filesystems                                                                                                  |
+| Batch                          | ✅     | `MiddlewareBatch(window, maxSize, flush)`                                                                                                                                                                |
+| Audit to file                  | ✅     | `MiddlewareWriteFileLog(path)` or `NewFileLogMiddleware` (returns closer for fd cleanup via `WithCleanup`)                                                                                               |
 | Circuit breaker                | ✅     | `MiddlewareCircuitBreaker(maxFailures, resetTimeout)`; `CircuitState` enum: `CircuitClosed`→`CircuitOpen`→`CircuitHalfOpen`→`CircuitNone`; introspectable via `NewCircuitBreaker` + `WithCircuitBreaker` |
-| Exponential backoff            | ✅     | `MiddlewareExponentialBackoff(maxFailures, initial, max)`                                                                   |
-| Error rate limit               | ✅     | `MiddlewareErrorRateLimit(maxErrors, window)`                                                                               |
-| Error recovery strategy        | ✅     | `MiddlewareErrorRecovery(strategy)`                                                                                         |
-| Error correlation IDs          | ✅     | `MiddlewareErrorCorrelation(idGenerator)`                                                                                   |
-| Error sanitization             | ✅     | `MiddlewareErrorSanitization(sanitize)`                                                                                     |
-| Error batching                 | ✅     | `MiddlewareErrorBatch(window, maxSize, flush)`                                                                              |
+| Exponential backoff            | ✅     | `MiddlewareExponentialBackoff(maxFailures, initial, max)`                                                                                                                                                |
+| Error rate limit               | ✅     | `MiddlewareErrorRateLimit(maxErrors, window)`                                                                                                                                                            |
+| Error recovery strategy        | ✅     | `MiddlewareErrorRecovery(strategy)`                                                                                                                                                                      |
+| Error correlation IDs          | ✅     | `MiddlewareErrorCorrelation(idGenerator)`                                                                                                                                                                |
+| Error sanitization             | ✅     | `MiddlewareErrorSanitization(sanitize)`                                                                                                                                                                  |
+| Error batching                 | ✅     | `MiddlewareErrorBatch(window, maxSize, flush)`                                                                                                                                                           |
 
 ## Debouncing
 
@@ -82,19 +82,19 @@ Honest status of every capability in go-filewatcher. Statuses:
 
 ## Observability
 
-| Feature                          | Status | Notes                                                                                                                          |
-| -------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| `Stats()` struct                 | ✅     | Events, filters, middleware drops, backpressure drops, error drops, uptime, watch budget, budget cap                           |
-| Health check                     | ✅     | `Healthy(ctx)` — nil when running, breaker not open, all watches registered; `errors.Is`-able joined sentinels; go-health `CheckFunc`-compatible |
+| Feature                          | Status | Notes                                                                                                                                                               |
+| -------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Stats()` struct                 | ✅     | Events, filters, middleware drops, backpressure drops, error drops, uptime, watch budget, budget cap                                                                |
+| Health check                     | ✅     | `Healthy(ctx)` — nil when running, breaker not open, all watches registered; `errors.Is`-able joined sentinels; go-health `CheckFunc`-compatible                    |
 | Breaker & failed-path state      | ✅     | `Stats.CircuitBreakerState` (`CircuitNone` when unconfigured) + `Stats.FailedPaths` (registrations currently failing — live complement to cumulative `WatchErrors`) |
-| Middleware drop counter          | ✅     | `Stats.EventsDroppedByMiddleware` — surfaces rate-limit/dedup/circuit-breaker drops                                            |
-| Backpressure drop counter        | ✅     | `Stats.EventsDroppedByBackpressure` — events dropped in DropOnFull mode                                                        |
-| Error drop counter               | ✅     | `Stats.ErrorsDropped` — errors dropped when error channel is full                                                              |
-| Budget cap                       | ✅     | `Stats.WatchBudgetCap` — effective cap after safety fraction; `WatchLimit` shows raw system limit                              |
-| Structured debug logging         | ✅     | `WithDebug(*slog.Logger)`                                                                                                      |
-| Prometheus collector             | ✅     | `PrometheusCollector` with `StatsFunc`, `CounterMetric`, `GaugeMetric` interfaces (includes backpressure + budget cap metrics) |
-| OpenTelemetry tracing middleware | ✅     | `OTelMiddleware` with `OTelSpan` interface (zero-dep)                                                                          |
-| Stack traces on errors           | ✅     | `WatcherError.Stack` via `debug.Stack()`; `NewWatcherErrorWithStack` for caller-provided stacks                                |
+| Middleware drop counter          | ✅     | `Stats.EventsDroppedByMiddleware` — surfaces rate-limit/dedup/circuit-breaker drops                                                                                 |
+| Backpressure drop counter        | ✅     | `Stats.EventsDroppedByBackpressure` — events dropped in DropOnFull mode                                                                                             |
+| Error drop counter               | ✅     | `Stats.ErrorsDropped` — errors dropped when error channel is full                                                                                                   |
+| Budget cap                       | ✅     | `Stats.WatchBudgetCap` — effective cap after safety fraction; `WatchLimit` shows raw system limit                                                                   |
+| Structured debug logging         | ✅     | `WithDebug(*slog.Logger)`                                                                                                                                           |
+| Prometheus collector             | ✅     | `PrometheusCollector` with `StatsFunc`, `CounterMetric`, `GaugeMetric` interfaces (includes backpressure + budget cap metrics)                                      |
+| OpenTelemetry tracing middleware | ✅     | `OTelMiddleware` with `OTelSpan` interface (zero-dep)                                                                                                               |
+| Stack traces on errors           | ✅     | `WatcherError.Stack` via `debug.Stack()`; `NewWatcherErrorWithStack` for caller-provided stacks                                                                     |
 
 ## Resilience & Scalability
 

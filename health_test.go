@@ -211,7 +211,7 @@ func TestWatcherHealthy_MatchesCheckFuncShape(t *testing.T) {
 
 	// Compile-time proof that the method value satisfies go-health's
 	// CheckFunc signature: func(ctx context.Context) error.
-	var check func(ctx context.Context) error = w.Healthy
+	check := w.Healthy
 
 	if err := check(context.Background()); !errors.Is(err, ErrWatcherNotWatching) {
 		t.Errorf("expected ErrWatcherNotWatching via CheckFunc-shaped call, got %v", err)
@@ -315,6 +315,7 @@ func TestCircuitBreaker_SuccessClosesCircuit(t *testing.T) {
 	ctx := context.Background()
 
 	fail.Store(true)
+
 	_ = handler(ctx, testWriteEvent("/a"))
 
 	if got := cb.State(); got != CircuitOpen {

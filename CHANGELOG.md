@@ -8,6 +8,18 @@
 
 - Nothing yet.
 
+## [2.4.3](https://github.com/LarsArtmann/go-filewatcher/compare/v2.4.2...v2.4.3) (2026-11-02)
+
+### Miscellaneous Chores
+
+* converge the golangci-lint configuration via auto-configure ([a965e6b](https://github.com/LarsArtmann/go-filewatcher/commit/a965e6b8be500594e117eb52e4269fefa90cfcfb))
+* pin content-hash, watch-budget, and error-context semantics with tests ([#46](https://github.com/LarsArtmann/go-filewatcher/pull/46))
+
+> Shipped as a manually tagged maintenance release (no release-please pull
+> request existed for it), so this section was recorded retroactively on
+> 2026-11-06 to keep `CHANGELOG.md` — and the generated website `/changelog`
+> page — complete.
+
 ## [2.4.2](https://github.com/LarsArtmann/go-filewatcher/compare/v2.4.1...v2.4.2) (2026-10-07)
 
 ### Bug Fixes

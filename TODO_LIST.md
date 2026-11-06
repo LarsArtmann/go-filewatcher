@@ -127,6 +127,15 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       slugs before publishing URLs" (the v2.4.0 release-notes 404 lesson) in
       AGENTS.md or a RELEASE.md.
       (`src: 2026-10-07_03-09 §f5/#30, 02-24 §e1/e5`)
+- [ ] **Compiled `examples/otel`** — the README OTel span-adapter + stdouttrace
+      pattern is documentation-only; nothing compiles it against the real OTel
+      SDK, so it can rot silently. Add `examples/otel/` (span adapter +
+      stdouttrace exporter + PrometheusCollector adapter) so `go build
+      ./examples/...` CI-verified it. 2026-11-06: verified the README pattern
+      compiles and runs against otel v1.47.0 (spans + 15 metric families), but
+      also found two false doc claims (otel.go OTelSpan "satisfies trace.Span",
+      metrics.go direct-MustRegister) — both since fixed in doc comments.
+      (`src: 2026-11-06 OTEL support audit`)
 
 ## Website Maintenance
 
@@ -242,6 +251,14 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       `EffectiveCaseSensitivity`, a symlink-to-watched-path dedup test, and an
       `EffectiveCaseSensitivity`-vs-`Reset()` concurrency test.
       (`src: 2026-07-29_14-38 §f4/5/10/13/17`)
+- [ ] **Context-aware `OTelMiddleware`** — `startSpan func(path, op string)`
+      carries no `context.Context`, so every event span is a ROOT trace:
+      verified 2026-11-06 (two events → two distinct TraceIDs, parent all
+      zeros). Downstream apps cannot correlate file events with their own
+      request traces. v3 shape: a context-aware startSpan variant (or thread
+      the pipeline ctx into startSpan) with the old signature kept as a
+      wrapper. Root-span workaround until then: close over a captured ctx.
+      (`src: 2026-11-06 OTEL support audit`)
 
 ---
 

@@ -1132,6 +1132,7 @@ func TestCircuitState_String(t *testing.T) {
 		{CircuitClosed, "closed"},
 		{CircuitOpen, "open"},
 		{CircuitHalfOpen, "half-open"},
+		{CircuitNone, "none"},
 		{CircuitState(99), "unknown"},
 	}
 

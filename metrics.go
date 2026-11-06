@@ -1,24 +1,16 @@
 package filewatcher
 
-// PrometheusCollector is a Prometheus metrics collector for the watcher.
-// It implements the prometheus.Collector interface:
+// PrometheusCollector exposes the watcher's Stats as dependency-free
+// metric descriptors. It does NOT implement the prometheus.Collector
+// interface (no Describe/Collect methods); instead, iterate
+// Counters() and Gauges() and adapt to your metrics system of choice
+// (Prometheus, OpenTelemetry, Datadog, etc.) without adding a
+// dependency to this library.
 //
-//	type Collector interface {
-//	    Describe(chan<- *Desc)
-//	    Collect(chan<- Metric)
-//	}
-//
-// Users register it with their prometheus.Registry:
-//
-//	import "github.com/prometheus/client_golang/prometheus"
-//
-//	collector := filewatcher.NewPrometheusCollector(watcher.Stats)
-//	prometheus.MustRegister(collector)
-//
-// The collector does not depend on prometheus/client_golang — it is a
-// standalone type that can be adapted by users to any metrics system
-// (Prometheus, OpenTelemetry, Datadog, etc.) without adding a dependency
-// to this library.
+// For prometheus/client_golang, wrap it in a small adapter that
+// implements Collector by delegating to Counters()/Gauges() — a
+// complete working adapter is in the "Prometheus" section of
+// README.md. Register the adapter (not this type) with your registry.
 //
 // The StatsFunc is called on each Collect invocation to retrieve the
 // current Stats snapshot. This allows the collector to be reused across
@@ -53,6 +45,8 @@ func NewPrometheusCollector(stats StatsFunc) *PrometheusCollector {
 				WatchLimit:                  0,
 				WatchBudgetCap:              0,
 				WatchBudgetUsed:             0,
+				FailedPaths:                 0,
+				CircuitBreakerState:         CircuitNone,
 				CaseSensitivity:             "",
 				CaseSensitivityMode:         CaseSensitivityAuto,
 			}

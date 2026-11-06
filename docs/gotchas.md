@@ -264,3 +264,33 @@ those legs green:
   POSIX contracts pending per-OS expectations. `ExampleEventPath` is split
   into `example_path_test.go` (!windows) and `example_path_windows_test.go`
   because Example funcs cannot call `t.Skip`.
+
+### 28. Breaker State Is Only Observable Through `WithCircuitBreaker`
+
+`MiddlewareCircuitBreaker(maxFailures, resetTimeout)` builds its breaker inside
+a closure — the watcher structurally cannot see its state (middleware is
+`func(Handler) Handler`; no interface, no type assertion possible). Only the
+`NewCircuitBreaker` + `WithCircuitBreaker` pair registers the handle that
+surfaces `Stats.CircuitBreakerState` and feeds `Healthy`. Health checks on a
+watcher configured with the anonymous form always report `CircuitNone` — a
+silent observability gap, not an error.
+
+Related subtleties (added 2026-11-06 with the Health API):
+
+- `CircuitNone` was appended AFTER the existing `CircuitState` iota values on
+  purpose: inserting it earlier would have renumbered the existing states
+  (serialized values, gauge encodings, tests).
+- `CircuitBreaker.State()` is read-only: the open→half-open timeout transition
+  happens lazily on the event path. `State()` *reports* half-open once the
+  timeout elapsed (freshest truth without traffic) but does not mutate, so
+  `halfOpenSent` bookkeeping stays event-path-owned.
+- `Healthy()` treats HalfOpen as healthy (probe events are admitted) and
+  middleware/backpressure drops as healthy (throughput, not liveness). Only
+  closed-watcher / never-started / open-breaker / live `failedPaths` are
+  unhealthy; the sentinels arrive joined via `errors.Join`, so assert with
+  `errors.Is`, not string comparison.
+- `Stats.FailedPaths` (`len(failedPaths)`) is the LIVE complement to the
+  cumulative `WatchErrors` counter: self-heal removes healed paths AND
+  abandons permanent failures, so a nonzero count means "registrations still
+  broken right now". Note `Reset()` does NOT clear `failedPaths` (verified
+  2026-11-06) — stale entries survive a reset until self-heal resolves them.

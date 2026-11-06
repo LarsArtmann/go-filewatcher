@@ -14,6 +14,7 @@
 | `filter_gogen.go`      | Generated-code detection filter (gogenfilter v3 integration)                                     |
 | `middleware.go`        | All Middleware functions (circuit breaker, error batch, correlation, exponential backoff)        |
 | `metrics.go`           | PrometheusCollector, StatsFunc, CounterMetric, GaugeMetric                                       |
+| `health.go`            | Watcher.Healthy health check (go-health CheckFunc-compatible, errors.Join sentinels)             |
 | `otel.go`              | OTelMiddleware, OTelSpan interface                                                               |
 | `debouncer.go`         | Debouncer + GlobalDebouncer                                                                      |
 | `event.go`             | Op type, Event type, JSON/Text marshaling                                                        |

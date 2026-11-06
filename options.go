@@ -85,11 +85,30 @@ func WithRecursive(b bool) Option {
 }
 
 // WithMiddleware adds middleware to the event processing pipeline.
-// Middleware is applied in reverse order (last added runs first),
-// matching the go-cqrs-lite convention.
+// Middleware runs in option order: the first added wraps outermost and
+// processes each event first, matching the go-cqrs-lite convention.
 func WithMiddleware(m ...Middleware) Option {
 	return func(w *Watcher) {
 		w.middleware = append(w.middleware, m...)
+	}
+}
+
+// WithCircuitBreaker registers an introspectable circuit breaker: its
+// middleware joins the pipeline (like WithMiddleware) and its state becomes
+// visible in [Watcher.Stats] (CircuitBreakerState) and [Watcher.Healthy].
+// A nil breaker is ignored.
+//
+// Chain placement follows option order: options are appended in the order
+// given, and the first-added middleware runs outermost. Place the breaker
+// outside any error-producing middleware so its failures counter observes them.
+func WithCircuitBreaker(breaker *CircuitBreaker) Option {
+	return func(w *Watcher) { //nolint:varnamelen // idiomatic short name for Watcher
+		if breaker == nil {
+			return
+		}
+
+		w.circuitBreaker = breaker
+		w.middleware = append(w.middleware, breaker.Middleware())
 	}
 }
 

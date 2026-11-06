@@ -558,6 +558,10 @@ const (
 	CircuitOpen
 	// CircuitHalfOpen means the circuit is testing if the downstream is healthy.
 	CircuitHalfOpen
+	// CircuitNone means no circuit breaker is configured in the pipeline.
+	// Stats.CircuitBreakerState reports it so a default can be distinguished
+	// from a registered, healthy breaker.
+	CircuitNone
 )
 
 // String returns a human-readable name for the circuit state.
@@ -569,6 +573,8 @@ func (s CircuitState) String() string {
 		return "open"
 	case CircuitHalfOpen:
 		return "half-open"
+	case CircuitNone:
+		return "none"
 	default:
 		return categoryStringUnknown
 	}
@@ -591,85 +597,127 @@ func resolveMaxFailures(maxFailures int) int {
 	return maxFailures
 }
 
-// MiddlewareCircuitBreaker returns a middleware that implements the circuit breaker pattern.
-// After maxFailures consecutive failures from the downstream handler, the circuit opens
-// and drops all events for the resetTimeout duration. After the timeout, the circuit
-// enters half-open state and allows one event through. If it succeeds, the circuit closes;
-// if it fails, the circuit opens again.
+// CircuitBreaker is an introspectable circuit breaker middleware.
+// Create one with [NewCircuitBreaker] and attach it via [WithCircuitBreaker]
+// so the watcher can report its state in [Watcher.Stats] and [Watcher.Healthy].
+// [MiddlewareCircuitBreaker] is the anonymous convenience form: identical
+// behavior, but its state is not observable.
 //
+// States: [CircuitClosed] (all events pass), [CircuitOpen] (all events are
+// dropped until resetTimeout elapses), [CircuitHalfOpen] (one probe event is
+// admitted; success closes the circuit, failure re-opens it).
+type CircuitBreaker struct {
+	mu           sync.Mutex
+	state        CircuitState
+	failures     int
+	lastFailure  time.Time
+	halfOpenSent bool
+	maxFailures  int
+	resetTimeout time.Duration
+}
 
-func MiddlewareCircuitBreaker(maxFailures int, resetTimeout time.Duration) Middleware {
+// NewCircuitBreaker returns a circuit breaker that opens after maxFailures
+// consecutive downstream failures and resets after resetTimeout. Non-positive
+// arguments fall back to the package defaults (5 failures, 30s timeout),
+// matching [MiddlewareCircuitBreaker].
+func NewCircuitBreaker(maxFailures int, resetTimeout time.Duration) *CircuitBreaker {
 	maxFailures = resolveMaxFailures(maxFailures)
 
 	if resetTimeout <= 0 {
 		resetTimeout = circuitBreakerDefaultTimeout
 	}
 
-	type circuitBreaker struct {
-		mu           sync.Mutex
-		state        CircuitState
-		failures     int
-		lastFailure  time.Time
-		halfOpenSent bool
-	}
-
-	breaker := &circuitBreaker{
+	return &CircuitBreaker{
 		mu:           sync.Mutex{},
 		state:        CircuitClosed,
 		failures:     0,
 		lastFailure:  time.Time{},
 		halfOpenSent: false,
+		maxFailures:  maxFailures,
+		resetTimeout: resetTimeout,
+	}
+}
+
+// State returns the current circuit state without mutating it. An open
+// circuit whose reset timeout has elapsed reports [CircuitHalfOpen], matching
+// what the next event would observe: the real transition happens lazily on
+// the event path, so this is the freshest truth available without traffic.
+func (cb *CircuitBreaker) State() CircuitState {
+	cb.mu.Lock()
+	defer cb.mu.Unlock()
+
+	if cb.state == CircuitOpen && time.Since(cb.lastFailure) > cb.resetTimeout {
+		return CircuitHalfOpen
 	}
 
+	return cb.state
+}
+
+// Middleware returns the breaker as middleware for use with [WithMiddleware]
+// or [WithCircuitBreaker]. Multiple calls share the same breaker state.
+func (cb *CircuitBreaker) Middleware() Middleware {
 	return func(next Handler) Handler {
 		return func(ctx context.Context, event Event) error {
-			breaker.mu.Lock()
+			cb.mu.Lock()
 
-			switch breaker.state { //nolint:exhaustive // CircuitClosed needs no special handling
+			switch cb.state { //nolint:exhaustive // CircuitClosed and CircuitNone need no special handling
 			case CircuitOpen:
-				if time.Since(breaker.lastFailure) > resetTimeout {
-					breaker.state = CircuitHalfOpen
-					breaker.halfOpenSent = false
+				if time.Since(cb.lastFailure) > cb.resetTimeout {
+					cb.state = CircuitHalfOpen
+					cb.halfOpenSent = false
 				} else {
-					breaker.mu.Unlock()
+					cb.mu.Unlock()
 
 					return nil
 				}
 
 			case CircuitHalfOpen:
-				if breaker.halfOpenSent {
-					breaker.mu.Unlock()
+				if cb.halfOpenSent {
+					cb.mu.Unlock()
 
 					return nil
 				}
 
-				breaker.halfOpenSent = true
+				cb.halfOpenSent = true
 			}
 
-			breaker.mu.Unlock()
+			cb.mu.Unlock()
 
 			err := next(ctx, event)
 
-			breaker.mu.Lock()
-			defer breaker.mu.Unlock()
+			cb.mu.Lock()
+			defer cb.mu.Unlock()
 
 			if err != nil {
-				breaker.failures++
-				breaker.lastFailure = time.Now()
+				cb.failures++
+				cb.lastFailure = time.Now()
 
-				if breaker.failures >= maxFailures {
-					breaker.state = CircuitOpen
+				if cb.failures >= cb.maxFailures {
+					cb.state = CircuitOpen
 				}
 
 				return err
 			}
 
-			breaker.failures = 0
-			breaker.state = CircuitClosed
+			cb.failures = 0
+			cb.state = CircuitClosed
 
 			return nil
 		}
 	}
+}
+
+// MiddlewareCircuitBreaker returns a middleware that implements the circuit breaker pattern.
+// After maxFailures consecutive failures from the downstream handler, the circuit opens
+// and drops all events for the resetTimeout duration. After the timeout, the circuit
+// enters half-open state and allows one event through. If it succeeds, the circuit closes;
+// if it fails, the circuit opens again.
+//
+// The breaker state is not observable through this constructor. Use
+// [NewCircuitBreaker] with [WithCircuitBreaker] when the watcher should report
+// the breaker state via [Watcher.Stats] and [Watcher.Healthy].
+func MiddlewareCircuitBreaker(maxFailures int, resetTimeout time.Duration) Middleware {
+	return NewCircuitBreaker(maxFailures, resetTimeout).Middleware()
 }
 
 // MiddlewareErrorRateLimit returns a middleware that limits the rate of error dispatching.

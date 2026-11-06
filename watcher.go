@@ -89,6 +89,7 @@ type Watcher struct {
 	contentHashMaxSize       int64                     // Max file size for content hashing (0 = disabled, default 10 MiB when enabled)
 	selfHealInterval         time.Duration             // interval for self-healing failed watch registrations (0=disabled)
 	failedPaths              map[string]string         // pathKey → original path; retried by selfHealLoop
+	circuitBreaker           *CircuitBreaker           // registered via WithCircuitBreaker; state surfaces in Stats/Healthy (nil = none)
 	done                     chan struct{}             // closed by Close() to signal shutdown to in-flight goroutines
 	cleanups                 []func() error            // lifecycle cleanup funcs registered via WithCleanup
 	caseSensitivity          FilesystemCaseSensitivity // configured case-sensitivity mode
@@ -299,6 +300,7 @@ func New(
 		contentHashMaxSize:          0,
 		selfHealInterval:            0,
 		failedPaths:                 make(map[string]string),
+		circuitBreaker:              nil,
 		done:                        make(chan struct{}),
 		cleanups:                    nil,
 		caseSensitivity:             CaseSensitivityAuto,
@@ -657,6 +659,8 @@ type Stats struct {
 	ErrorsEncountered           uint64                    // Total errors encountered
 	ErrorsDropped               uint64                    // Errors dropped because the error channel was full
 	WatchErrors                 uint64                    // Watch add failures (ENOSPC, permission denied, etc.)
+	FailedPaths                 int                       // Watch registrations currently failing (pending self-heal; complements cumulative WatchErrors)
+	CircuitBreakerState         CircuitState              // State of the registered circuit breaker (CircuitNone when none configured)
 	Uptime                      time.Duration             // Time since watcher was started
 	WatchLimit                  int                       // System inotify limit before safety fraction (0 if unknown or explicit)
 	WatchBudgetCap              int                       // Effective watch budget cap after safety fraction
@@ -692,6 +696,8 @@ func (w *Watcher) Stats() Stats {
 		ErrorsEncountered:           w.errorsEncountered.Load(),
 		ErrorsDropped:               w.errorsDropped.Load(),
 		WatchErrors:                 w.watchErrors.Load(),
+		FailedPaths:                 len(w.failedPaths),
+		CircuitBreakerState:         w.breakerStateLocked(),
 		Uptime:                      uptime,
 		WatchLimit:                  w.maxWatchesDetected,
 		WatchBudgetCap:              w.maxWatches,
@@ -699,6 +705,17 @@ func (w *Watcher) Stats() Stats {
 		CaseSensitivity:             w.effectiveCaseSensitivity.String(),
 		CaseSensitivityMode:         w.effectiveCaseSensitivity,
 	}
+}
+
+// breakerStateLocked returns the registered circuit breaker's state, or
+// CircuitNone when no breaker is registered. The caller must hold w.mu for
+// reading; the breaker's own mutex is taken for the state snapshot.
+func (w *Watcher) breakerStateLocked() CircuitState {
+	if w.circuitBreaker == nil {
+		return CircuitNone
+	}
+
+	return w.circuitBreaker.State()
 }
 
 // EffectiveCaseSensitivity returns the resolved case-sensitivity mode

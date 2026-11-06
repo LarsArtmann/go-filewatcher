@@ -64,7 +64,7 @@ Honest status of every capability in go-filewatcher. Statuses:
 | Deduplicate (case-insensitive) | ✅     | `MiddlewareDeduplicateCaseInsensitive(window)` — lowercased + NFC keys for case-insensitive filesystems                     |
 | Batch                          | ✅     | `MiddlewareBatch(window, maxSize, flush)`                                                                                   |
 | Audit to file                  | ✅     | `MiddlewareWriteFileLog(path)` or `NewFileLogMiddleware` (returns closer for fd cleanup via `WithCleanup`)                  |
-| Circuit breaker                | ✅     | `MiddlewareCircuitBreaker(maxFailures, resetTimeout)`; `CircuitState` enum: `CircuitClosed`→`CircuitOpen`→`CircuitHalfOpen` |
+| Circuit breaker                | ✅     | `MiddlewareCircuitBreaker(maxFailures, resetTimeout)`; `CircuitState` enum: `CircuitClosed`→`CircuitOpen`→`CircuitHalfOpen`→`CircuitNone`; introspectable via `NewCircuitBreaker` + `WithCircuitBreaker` |
 | Exponential backoff            | ✅     | `MiddlewareExponentialBackoff(maxFailures, initial, max)`                                                                   |
 | Error rate limit               | ✅     | `MiddlewareErrorRateLimit(maxErrors, window)`                                                                               |
 | Error recovery strategy        | ✅     | `MiddlewareErrorRecovery(strategy)`                                                                                         |
@@ -85,6 +85,8 @@ Honest status of every capability in go-filewatcher. Statuses:
 | Feature                          | Status | Notes                                                                                                                          |
 | -------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------ |
 | `Stats()` struct                 | ✅     | Events, filters, middleware drops, backpressure drops, error drops, uptime, watch budget, budget cap                           |
+| Health check                     | ✅     | `Healthy(ctx)` — nil when running, breaker not open, all watches registered; `errors.Is`-able joined sentinels; go-health `CheckFunc`-compatible |
+| Breaker & failed-path state      | ✅     | `Stats.CircuitBreakerState` (`CircuitNone` when unconfigured) + `Stats.FailedPaths` (registrations currently failing — live complement to cumulative `WatchErrors`) |
 | Middleware drop counter          | ✅     | `Stats.EventsDroppedByMiddleware` — surfaces rate-limit/dedup/circuit-breaker drops                                            |
 | Backpressure drop counter        | ✅     | `Stats.EventsDroppedByBackpressure` — events dropped in DropOnFull mode                                                        |
 | Error drop counter               | ✅     | `Stats.ErrorsDropped` — errors dropped when error channel is full                                                              |

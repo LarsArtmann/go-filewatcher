@@ -128,6 +128,7 @@ Full detail for every gotcha: [docs/gotchas.md](docs/gotchas.md). The one-liners
 25. `EventChannelDropOnFull`: non-blocking send, drops counted; default is blocking backpressure.
 26. Watch-budget safety fraction applies ONLY to auto-detected limits; explicit `WithMaxWatches` wins, incl. through `Reset()`.
 27. Windows/macOS CI legs: budget enforcement is inotify-only; `failedPaths` lookups MUST go through `pathKey()` (raw paths only work on Linux); POSIX-shape tests skip via `skipOnWindows(t)`.
+28. Breaker state is only observable via `NewCircuitBreaker` + `WithCircuitBreaker` (the anonymous `MiddlewareCircuitBreaker` closure is invisible — health reports `CircuitNone`); `Healthy(ctx)` (go-health `CheckFunc`-compatible) treats HalfOpen and drop counters as healthy; `Reset()` does NOT clear `failedPaths`.
 
 ## Key Patterns
 
@@ -181,7 +182,12 @@ mode bumps to latest Go), and `go-structure-linter` (buildflow 202b114+
 auto-repairs its "Go 1.27 is available" finding mid-run, backups in
 `/tmp/go-structure-linter-backups/`). `go-mod-normalize` is exonerated
 (candidate downgrade is rejected by the dependency-floor gate, then atomically
-restored). Restore: `sed -i 's/^go 1\.27$/go 1.26.7/' go.mod`. The dev shell
+restored). Restore: `sed -i 's/^go 1\.27$/go 1.26.7/' go.mod`. If a daemon
+bump also dragged in deps that themselves require go 1.27 (happened 2026-11-06:
+gogenfilter v3.7.0 declares `go 1.27`), `go get <dep>@<older>` deadlocks under
+`GOTOOLCHAIN=local` because it must load the current graph first — downgrade
+via `go mod edit -require=<dep>@<older>` (no graph validation), then `go mod
+tidy`. The dev shell
 also pins `GOTOOLCHAIN=local` (flake.nix devShell, PR #38) so the local
 toolchain never silently switches to a newer one that would re-apply the bump.
 The bump can

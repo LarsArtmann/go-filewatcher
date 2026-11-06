@@ -42,6 +42,18 @@ var (
 
 	// ErrMiddlewareFailed is returned when middleware execution fails.
 	ErrMiddlewareFailed = errors.New("middleware execution failed")
+
+	// ErrWatcherNotWatching is returned by health checks against a watcher
+	// that has not started watching (or was stopped by Reset).
+	ErrWatcherNotWatching = errors.New("watcher is not watching")
+
+	// ErrWatchFailed is returned by health checks when watch registrations
+	// are currently failing: paths have no working watch (pending self-heal).
+	ErrWatchFailed = errors.New("watch registrations are failing")
+
+	// ErrCircuitOpen is returned by health checks when the registered circuit
+	// breaker is open and dropping all events.
+	ErrCircuitOpen = errors.New("circuit breaker is open")
 )
 
 // ErrorCode is a string identifier for categorizing watcher errors.

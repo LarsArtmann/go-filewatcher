@@ -8,13 +8,11 @@ import "context"
 //
 // Implementations should call End() when the span is no longer needed.
 //
-// The real go.opentelemetry.io/otel/trace.Span satisfies this interface
-// (End, SetStatus, SetAttributes, RecordError). Users can wrap their
-// span type with a small adapter:
-//
-//	func toOtelSpan(s trace.Span) filewatcher.OTelSpan {
-//	    return &otelSpanAdapter{s: s}
-//	}
+// NOTE: the real go.opentelemetry.io/otel/trace.Span does NOT satisfy
+// this interface — the method signatures differ (End has variadic
+// SpanEndOption, SetStatus takes codes.Code, SetAttributes takes
+// attribute.KeyValue). Wrap your span with a small adapter instead;
+// see the "OpenTelemetry" section in README.md for a working one.
 type OTelSpan interface {
 	// End completes the span. Should be called exactly once.
 	End()

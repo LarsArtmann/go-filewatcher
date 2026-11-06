@@ -156,6 +156,7 @@ Detects sqlc, protobuf, templ, mockgen, stringer, and 13 more generators.
 | `WithIgnoreHidden()`          | Discard events for hidden files/dirs (dot prefix)                           | —                         |
 | `WithRecursive(b)`            | Enable/disable recursive directory watching                                 | `true`                    |
 | `WithMiddleware(m...)`        | Add middleware to the event processing pipeline                             | —                         |
+| `WithCircuitBreaker(cb)`      | Register an introspectable circuit breaker: state in `Stats` and `Healthy`  | —                         |
 | `WithErrorHandler(fn)`        | Set custom error handler for watcher errors                                 | `stderr` logging          |
 | `WithOnError(fn)` ⚠️           | **Deprecated.** Use `WithErrorHandler`. Simplified callback (`func(error)`) | —                         |
 | `WithSkipDotDirs(skip)`       | Skip directories starting with a dot during walking                         | `true`                    |
@@ -200,7 +201,7 @@ Compose with `FilterAnd`, `FilterOr`, and `FilterNot`.
 
 ## Middleware
 
-Middleware wraps event handlers for cross-cutting concerns. Applied in **reverse order** (last added runs first).
+Middleware wraps event handlers for cross-cutting concerns. Runs in **option order**: the first added wraps outermost and processes each event first.
 
 | Middleware                                      | Description                                                            |
 | ----------------------------------------------- | ---------------------------------------------------------------------- |
@@ -216,6 +217,7 @@ Middleware wraps event handlers for cross-cutting concerns. Applied in **reverse
 | `MiddlewareBatch(window, maxSize, flush)`       | Batch events over a window or size threshold                           |
 | `MiddlewareWriteFileLog(path)`                  | Write events to file for audit trail                                   |
 | `MiddlewareCircuitBreaker(maxFail, reset)`      | Fault tolerance with closed/open/half-open states                      |
+| `NewCircuitBreaker(maxFail, reset)` + `WithCircuitBreaker(cb)` | Introspectable breaker: `cb.State()`, `Stats.CircuitBreakerState`, `Healthy(ctx)` |
 | `MiddlewareExponentialBackoff(maxF, init, max)` | Configurable backoff for event processing                              |
 | `MiddlewareErrorRateLimit(maxErrs, window)`     | Per-error-type rate limiting                                           |
 | `MiddlewareErrorRecovery(strategy)`             | Recoverable error handling with custom strategies                      |
@@ -331,7 +333,37 @@ stats := watcher.Stats()
 fmt.Printf("watching %d/%d paths (%.1f%% budget), %d add failures\n",
     stats.WatchCount, stats.WatchBudgetCap,
     stats.WatchBudgetUsed*100, stats.WatchErrors)
+fmt.Printf("breaker: %s, failed paths: %d\n",
+    stats.CircuitBreakerState, stats.FailedPaths)
 ```
+
+`Stats.CircuitBreakerState` reports the registered breaker's state (`CircuitNone`
+when no breaker is configured). `Stats.FailedPaths` counts watch registrations
+currently failing (the live complement to the cumulative `Stats.WatchErrors`).
+
+### Health checks
+
+`Healthy(ctx)` answers "is this watcher delivering events?" in one call:
+running, breaker not open, and every path holding a working watch registration.
+It returns nil, or a joined error you can match with `errors.Is`
+(`ErrWatcherClosed`, `ErrWatcherNotWatching`, `ErrCircuitOpen`, `ErrWatchFailed`).
+Throttle/dedup/backpressure drops are throughput, not health. The signature
+matches [go-health](https://github.com/LarsArtmann/go-health)'s `CheckFunc`, so
+it wires in without glue code:
+
+```go
+import "github.com/LarsArtmann/go-health"
+
+cb := filewatcher.NewCircuitBreaker(5, 30*time.Second)
+watcher, _ := filewatcher.New([]string{"/data"}, filewatcher.WithCircuitBreaker(cb))
+
+probe := health.NewChecks(map[string]health.CheckFunc{
+    "filewatcher": watcher.Healthy,
+})
+```
+
+A half-open circuit reports healthy: probe events are admitted; a failing probe
+re-opens the breaker and the next check reports `ErrCircuitOpen`.
 
 ### Prometheus
 
@@ -437,6 +469,11 @@ watcher, err := filewatcher.New(paths,
     ),
 )
 ```
+
+Note: `OTelMiddleware` calls `startSpan` with only the path and op — there is
+no request context to thread through, so in this example each event span is a
+root trace. To correlate events with one of your own operations, close over a
+`context.Context` captured at `Watch` time inside your startSpan function.
 
 To see spans in a real exporter, initialize the OTel SDK with a stdout or
 Jaeger exporter at program startup. Each file event will produce a span that

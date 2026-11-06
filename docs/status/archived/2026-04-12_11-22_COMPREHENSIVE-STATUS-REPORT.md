@@ -201,45 +201,43 @@ gopls version  # Check if needed
 
 ### P0 - Critical (Fix Today)
 
-| #  | Task  | File                      | Effort                         |
-| -- | ----- | ------------------------- | ------------------------------ |
-| ~~ | ~~1~~ | ~~Fix compilation error~~ | ~~`filter_gogen_test.go:233`~~ |
-| ~~ | ~~2~~ | ~~Fix test timeouts~~     | ~~`*_test.go`~~                |
-| ~~ | ~~3~~ | ~~Restart LSP~~           | ~~gopls~~                      |
-| ~~ | ~~4~~ | ~~Verify all tests pass~~ | ~~`go test ./...`~~            |
-| ~~ | ~~5~~ | ~~Commit fixes~~          | ~~git~~                        |
-
-> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
+| #     | Task                      | File                           | Effort                                             |
+| ----- | ------------------------- | ------------------------------ | -------------------------------------------------- |
+| ~~1~~ | ~~Fix compilation error~~ | ~~`filter_gogen_test.go:233`~~ | ~~2 min~~ done — shipped ≤v2.1.0, verified v2.4.1  |
+| ~~2~~ | ~~Fix test timeouts~~     | ~~`*_test.go`~~                | ~~30 min~~ done — shipped ≤v2.1.0, verified v2.4.1 |
+| ~~3~~ | ~~Restart LSP~~           | ~~gopls~~                      | ~~5 min~~ no longer applicable — gopls env issue   |
+| ~~4~~ | ~~Verify all tests pass~~ | ~~`go test ./...`~~            | ~~10 min~~ done — shipped ≤v2.1.0, verified v2.4.1 |
+| ~~5~~ | ~~Commit fixes~~          | ~~git~~                        | ~~5 min~~ done — shipped ≤v2.1.0, verified v2.4.1  |
 
 ### P1 - High (This Week)
 
-| #  | Task   | Impact                              | Effort            |
-| -- | ------ | ----------------------------------- | ----------------- |
-| ~~ | ~~6~~  | ~~Add Event.Path phantom type~~     | ~~Type safety~~   |
-| ~~ | ~~7~~  | ~~Complete Error Context Wrapping~~ | ~~Debuggability~~ |
-| ~~ | ~~8~~  | ~~Add integration tests~~           | ~~Quality~~       |
-| ~~ | ~~9~~  | ~~Raise test coverage to 90%~~      | ~~Quality~~       |
-| ~~ | ~~10~~ | ~~Implement DebounceEntry Mixin~~   | ~~Code quality~~  |
-| ~~ | ~~11~~ | ~~Add test for Remove() method~~    | ~~Coverage~~      |
-| ~~ | ~~12~~ | ~~Add test for WatchList() method~~ | ~~Coverage~~      |
-| ~~ | ~~13~~ | ~~Add test for FilterMinSize()~~    | ~~Coverage~~      |
-| ~~ | ~~14~~ | ~~Fix remaining gocritic issues~~   | ~~Linting~~       |
-| ~~ | ~~15~~ | ~~Address depguard warnings~~       | ~~Linting~~       |
+| #      | Task                                | Impact            | Effort                                          |
+| ------ | ----------------------------------- | ----------------- | ----------------------------------------------- |
+| ~~6~~  | ~~Add Event.Path phantom type~~     | ~~Type safety~~   | ~~2h~~ done — shipped ≤v2.1.0, verified v2.4.1  |
+| ~~7~~  | ~~Complete Error Context Wrapping~~ | ~~Debuggability~~ | ~~3h~~ done — shipped ≤v2.1.0, verified v2.4.1  |
+| ~~8~~  | ~~Add integration tests~~           | ~~Quality~~       | ~~4h~~ done — shipped ≤v2.1.0, verified v2.4.1  |
+| ~~9~~  | ~~Raise test coverage to 90%~~      | ~~Quality~~       | ~~6h~~ done — shipped ≤v2.1.0, verified v2.4.1  |
+| ~~10~~ | ~~Implement DebounceEntry Mixin~~   | ~~Code quality~~  | ~~1h~~ done — shipped ≤v2.1.0, verified v2.4.1  |
+| ~~11~~ | ~~Add test for Remove() method~~    | ~~Coverage~~      | ~~30m~~ done — shipped ≤v2.1.0, verified v2.4.1 |
+| ~~12~~ | ~~Add test for WatchList() method~~ | ~~Coverage~~      | ~~30m~~ done — shipped ≤v2.1.0, verified v2.4.1 |
+| ~~13~~ | ~~Add test for FilterMinSize()~~    | ~~Coverage~~      | ~~30m~~ done — shipped ≤v2.1.0, verified v2.4.1 |
+| ~~14~~ | ~~Fix remaining gocritic issues~~   | ~~Linting~~       | ~~1h~~ done — shipped ≤v2.1.0, verified v2.4.1  |
+| ~~15~~ | ~~Address depguard warnings~~       | ~~Linting~~       | ~~30m~~ done — shipped ≤v2.1.0, verified v2.4.1 |
 
 ### P2 - Medium (This Month)
 
-| #  | Task   | Impact                            | Effort            |
-| -- | ------ | --------------------------------- | ----------------- |
-| ~~ | ~~16~~ | ~~Implement event batching~~      | ~~Performance~~   |
-| ~~ | ~~17~~ | ~~Add symlink following~~         | ~~Feature~~       |
-| ~~ | ~~18~~ | ~~Create standalone CLI tool~~    | ~~Usability~~     |
-| ~~ | ~~19~~ | ~~Write Architecture.md~~         | ~~Documentation~~ |
-| ~~ | ~~20~~ | ~~Write Troubleshooting.md~~      | ~~Documentation~~ |
-| ~~ | ~~21~~ | ~~Add stress tests (10k+ files)~~ | ~~Reliability~~   |
-| ~~ | ~~22~~ | ~~Optimize convertEvent os.Stat~~ | ~~Performance~~   |
-| ~~ | ~~23~~ | ~~Add prometheus metrics~~        | ~~Observability~~ |
-| ~~ | ~~24~~ | ~~Create CONTRIBUTING.md~~        | ~~Community~~     |
-| ~~ | ~~25~~ | ~~Tag v2.0.0 release~~            | ~~Milestone~~     |
+| #      | Task                                | Impact            | Effort                                          |
+| ------ | ----------------------------------- | ----------------- | ----------------------------------------------- |
+| ~~6~~  | ~~Add Event.Path phantom type~~     | ~~Type safety~~   | ~~2h~~ done — shipped ≤v2.1.0, verified v2.4.1  |
+| ~~7~~  | ~~Complete Error Context Wrapping~~ | ~~Debuggability~~ | ~~3h~~ done — shipped ≤v2.1.0, verified v2.4.1  |
+| ~~8~~  | ~~Add integration tests~~           | ~~Quality~~       | ~~4h~~ done — shipped ≤v2.1.0, verified v2.4.1  |
+| ~~9~~  | ~~Raise test coverage to 90%~~      | ~~Quality~~       | ~~6h~~ done — shipped ≤v2.1.0, verified v2.4.1  |
+| ~~10~~ | ~~Implement DebounceEntry Mixin~~   | ~~Code quality~~  | ~~1h~~ done — shipped ≤v2.1.0, verified v2.4.1  |
+| ~~11~~ | ~~Add test for Remove() method~~    | ~~Coverage~~      | ~~30m~~ done — shipped ≤v2.1.0, verified v2.4.1 |
+| ~~12~~ | ~~Add test for WatchList() method~~ | ~~Coverage~~      | ~~30m~~ done — shipped ≤v2.1.0, verified v2.4.1 |
+| ~~13~~ | ~~Add test for FilterMinSize()~~    | ~~Coverage~~      | ~~30m~~ done — shipped ≤v2.1.0, verified v2.4.1 |
+| ~~14~~ | ~~Fix remaining gocritic issues~~   | ~~Linting~~       | ~~1h~~ done — shipped ≤v2.1.0, verified v2.4.1  |
+| ~~15~~ | ~~Address depguard warnings~~       | ~~Linting~~       | ~~30m~~ done — shipped ≤v2.1.0, verified v2.4.1 |
 
 ---
 

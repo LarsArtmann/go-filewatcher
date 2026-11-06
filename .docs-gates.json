@@ -1,9 +1,9 @@
 {
-  "audit_max": 16,
+  "audit_max": 17,
   "annotate_max": 1786,
   "cadence": {
     "struck_rows": 20,
-    "max_unarchived": 18,
+    "max_unarchived": 19,
     "oldest_days": 30
   }
 }

@@ -84,23 +84,23 @@
 
 ~~DONE: DNS applied — `https://filewatcher.lars.software` returns HTTP 200 (verified 2026-07-26);~~
 
-- ~~Cannot apply DNS changes without real Namecheap API key~~
-- ~~The `terraform.tfvars` file exists but contains `namecheap_api_key = "REPLACE_WITH_YOUR_API_KEY"`~~
-- ~~User must provide credentials or apply manually via Namecheap dashboard~~
+- ~~Cannot apply DNS changes without real Namecheap API key~~ done — DNS applied, domain live (verified 2026-07-26; see Resolution).
+- ~~The `terraform.tfvars` file exists but contains `namecheap_api_key = "REPLACE_WITH_YOUR_API_KEY"`~~ done — credentials no longer needed: records applied and live (2026-07-26).
+- ~~User must provide credentials or apply manually via Namecheap dashboard~~ done — records applied, custom domain serving (verified 2026-07-26).
 
 ### DNS Propagation Verification
 
 ~~DONE: `filewatcher.lars.software` resolves to `filewatcher.web.app` and serves HTTP 200 (2026-07-26);~~
 
-- ~~Never verified whether the DNS records propagated after applying (because we never applied)~~
-- ~~No `dig` or `nslookup` checks done against `filewatcher.lars.software`~~
+- ~~Never verified whether the DNS records propagated after applying (because we never applied)~~ done — propagation verified 2026-07-26 (resolves to filewatcher.web.app).
+- ~~No `dig` or `nslookup` checks done against `filewatcher.lars.software`~~ done — resolution checked 2026-07-26 (IPv6 2620:0:890::100).
 
 ### SSL Certificate Provisioning
 
 ~~DONE: valid HTTPS cert provisioned by Firebase — `https://filewatcher.lars.software` returns 200 over TLS (2026-07-26);~~
 
-- ~~Firebase reports `CERT_PENDING` — will remain pending until DNS propagates~~
-- ~~Once CNAME + TXT records are live and propagated, Firebase auto-provisions the SSL cert~~
+- ~~Firebase reports `CERT_PENDING` — will remain pending until DNS propagates~~ done — certificate provisioned, HTTPS 200 (verified 2026-07-26).
+- ~~Once CNAME + TXT records are live and propagated, Firebase auto-provisions the SSL cert~~ done — auto-provisioned as expected (verified 2026-07-26).
 
 ### Website CI/CD Pipeline
 

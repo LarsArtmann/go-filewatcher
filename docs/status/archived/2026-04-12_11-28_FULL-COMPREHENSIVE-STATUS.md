@@ -282,45 +282,43 @@ The go-filewatcher project is in **excellent condition**. All tests pass, the bu
 
 ### P0: Critical (Blockers)
 
-| #  | Task  | File/Area                                                | Effort                     | Customer Value |
-| -- | ----- | -------------------------------------------------------- | -------------------------- | -------------- |
-| ~~ | ~~1~~ | ~~Add nolint:paralleltest for intentional serial tests~~ | ~~errors_test.go:330,360~~ | ~~5 min~~      |
-| ~~ | ~~2~~ | ~~Fix gopls diagnostic cache~~                           | ~~LSP restart~~            | ~~2 min~~      |
-| ~~ | ~~3~~ | ~~Document pre-existing debouncer race~~                 | ~~docs/adr/~~              | ~~15 min~~     |
-| ~~ | ~~4~~ | ~~Complete filter_gogen.go tests~~                       | ~~filter_gogen_test.go~~   | ~~45 min~~     |
-| ~~ | ~~5~~ | ~~Fix examples/filter-generated linter issues~~          | ~~examples/~~              | ~~20 min~~     |
-
-> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
+| #     | Task                                                     | File/Area                  | Effort     | Customer Value                                                  |
+| ----- | -------------------------------------------------------- | -------------------------- | ---------- | --------------------------------------------------------------- |
+| ~~1~~ | ~~Add nolint:paralleltest for intentional serial tests~~ | ~~errors_test.go:330,360~~ | ~~5 min~~  | ~~Clean linter output~~ done — shipped ≤v2.1.0, verified v2.4.1 |
+| ~~2~~ | ~~Fix gopls diagnostic cache~~                           | ~~LSP restart~~            | ~~2 min~~  | ~~Developer experience~~ no longer applicable — gopls env issue |
+| ~~3~~ | ~~Document pre-existing debouncer race~~                 | ~~docs/adr/~~              | ~~15 min~~ | ~~Transparency~~ done — shipped ≤v2.1.0, verified v2.4.1        |
+| ~~4~~ | ~~Complete filter_gogen.go tests~~                       | ~~filter_gogen_test.go~~   | ~~45 min~~ | ~~Quality assurance~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| ~~5~~ | ~~Fix examples/filter-generated linter issues~~          | ~~examples/~~              | ~~20 min~~ | ~~Code quality~~ done — shipped ≤v2.1.0, verified v2.4.1        |
 
 ### P1: High Value
 
-| #  | Task   | Impact                               | Effort              |
-| -- | ------ | ------------------------------------ | ------------------- |
-| ~~ | ~~6~~  | ~~Add tests for Stats() method~~     | ~~Coverage~~        |
-| ~~ | ~~7~~  | ~~Add tests for Remove() method~~    | ~~Coverage~~        |
-| ~~ | ~~8~~  | ~~Add tests for WatchList() method~~ | ~~Coverage~~        |
-| ~~ | ~~9~~  | ~~Create Architecture.md~~           | ~~Documentation~~   |
-| ~~ | ~~10~~ | ~~Add benchmark results to README~~  | ~~Marketing~~       |
-| ~~ | ~~11~~ | ~~Implement WithOnError() option~~   | ~~API enhancement~~ |
-| ~~ | ~~12~~ | ~~Add stress tests~~                 | ~~Reliability~~     |
-| ~~ | ~~13~~ | ~~Fix remaining linter issues~~      | ~~Quality~~         |
-| ~~ | ~~14~~ | ~~Create CONTRIBUTING.md~~           | ~~Community~~       |
-| ~~ | ~~15~~ | ~~Add fuzz tests for filters~~       | ~~Robustness~~      |
+| #      | Task                                 | Impact              | Effort                                               |
+| ------ | ------------------------------------ | ------------------- | ---------------------------------------------------- |
+| ~~6~~  | ~~Add tests for Stats() method~~     | ~~Coverage~~        | ~~15 min~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| ~~7~~  | ~~Add tests for Remove() method~~    | ~~Coverage~~        | ~~15 min~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| ~~8~~  | ~~Add tests for WatchList() method~~ | ~~Coverage~~        | ~~15 min~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| ~~9~~  | ~~Create Architecture.md~~           | ~~Documentation~~   | ~~1 hour~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| ~~10~~ | ~~Add benchmark results to README~~  | ~~Marketing~~       | ~~30 min~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| ~~11~~ | ~~Implement WithOnError() option~~   | ~~API enhancement~~ | ~~20 min~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| 12     | Add stress tests                     | Reliability         | 2 hours OPEN → TODO_LIST (large-tree stress harness) |
+| ~~13~~ | ~~Fix remaining linter issues~~      | ~~Quality~~         | ~~1 hour~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| ~~14~~ | ~~Create CONTRIBUTING.md~~           | ~~Community~~       | ~~30 min~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| ~~15~~ | ~~Add fuzz tests for filters~~       | ~~Robustness~~      | ~~1 hour~~ done — shipped ≤v2.1.0, verified v2.4.1   |
 
 ### P2: Medium Value
 
-| #  | Task   | Impact                              | Effort            |
-| -- | ------ | ----------------------------------- | ----------------- |
-| ~~ | ~~16~~ | ~~Implement event batching~~        | ~~Performance~~   |
-| ~~ | ~~17~~ | ~~Add Prometheus metrics~~          | ~~Observability~~ |
-| ~~ | ~~18~~ | ~~Add slog integration~~            | ~~Logging~~       |
-| ~~ | ~~19~~ | ~~Create Troubleshooting.md~~       | ~~Support~~       |
-| ~~ | ~~20~~ | ~~Add WithRecursive(false) option~~ | ~~API~~           |
-| ~~ | ~~21~~ | ~~Implement WatchOnce() mode~~      | ~~Feature~~       |
-| ~~ | ~~22~~ | ~~Add FilterMinAge()~~              | ~~Feature~~       |
-| ~~ | ~~23~~ | ~~Add FilterMaxSize()~~             | ~~Feature~~       |
-| ~~ | ~~24~~ | ~~Create video tutorial~~           | ~~Education~~     |
-| ~~ | ~~25~~ | ~~Tag v2.0.0 release~~              | ~~Milestone~~     |
+| #      | Task                                 | Impact              | Effort                                               |
+| ------ | ------------------------------------ | ------------------- | ---------------------------------------------------- |
+| ~~6~~  | ~~Add tests for Stats() method~~     | ~~Coverage~~        | ~~15 min~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| ~~7~~  | ~~Add tests for Remove() method~~    | ~~Coverage~~        | ~~15 min~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| ~~8~~  | ~~Add tests for WatchList() method~~ | ~~Coverage~~        | ~~15 min~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| ~~9~~  | ~~Create Architecture.md~~           | ~~Documentation~~   | ~~1 hour~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| ~~10~~ | ~~Add benchmark results to README~~  | ~~Marketing~~       | ~~30 min~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| ~~11~~ | ~~Implement WithOnError() option~~   | ~~API enhancement~~ | ~~20 min~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| 12     | Add stress tests                     | Reliability         | 2 hours OPEN → TODO_LIST (large-tree stress harness) |
+| ~~13~~ | ~~Fix remaining linter issues~~      | ~~Quality~~         | ~~1 hour~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| ~~14~~ | ~~Create CONTRIBUTING.md~~           | ~~Community~~       | ~~30 min~~ done — shipped ≤v2.1.0, verified v2.4.1   |
+| ~~15~~ | ~~Add fuzz tests for filters~~       | ~~Robustness~~      | ~~1 hour~~ done — shipped ≤v2.1.0, verified v2.4.1   |
 
 ---
 

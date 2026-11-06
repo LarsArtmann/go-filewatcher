@@ -176,7 +176,7 @@ Neither issue reached a commit.
 31. Add ESLint config for the website (Astro + TypeScript)
 32. Verify CSP headers work with the inline scripts (theme-init.js, header.js, etc.)
 33. Test the website in Firefox and Safari (only Chrome-adjacent testing done)
-34. Run Lighthouse audit on the built site
+34. ~~Run Lighthouse audit on the built site~~ no longer open here — routed to TODO_LIST (website Lighthouse audit)
 35. Fix any accessibility issues found by Lighthouse/axe
 36. Add `prefers-color-scheme` media query testing (verify dark/light actually toggles)
 

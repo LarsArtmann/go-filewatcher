@@ -23,17 +23,15 @@ documentation (CHANGELOG, API_STABILITY, FEATURES, website, AGENTS.md).
 
 ## A) Coverage Gaps Closed (5/5)
 
-| #      | Gap                                           | Test Added                                                   | File                                                         |
-| ------ | --------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ~~     | ~~1~~                                         | ~~Batch timer flush error routing~~                          | ~~`TestMiddlewareBatch_TimerFlushErrorReturnedOnNextEvent`~~ |
-| ~~     | ~~2~~                                         | ~~`WithMaxWatchesSafetyFraction` clamping~~                  | ~~`TestWithMaxWatchesSafetyFraction_Clamping`~~              |
-| ~~2b~~ | ~~`applyMaxWatchesFraction` effective limit~~ | ~~`TestApplyMaxWatchesFraction_ReducesAutoDetectedLimit`~~   | ~~`options_test.go`~~                                        |
-| ~~2c~~ | ~~Explicit limits not affected~~              | ~~`TestApplyMaxWatchesFraction_DoesNotAffectExplicitLimit`~~ | ~~`options_test.go`~~                                        |
-| ~~     | ~~3~~                                         | ~~DropOnFull mode drops + counts~~                           | ~~`TestDropOnFull_DropsEventsAndCounts`~~                    |
-| ~~     | ~~4~~                                         | ~~`WithWatchFilteredDirectories(false)`~~                    | ~~`TestWatchFilteredDirectories_Disabled`~~                  |
-| ~~     | ~~5~~                                         | ~~`FilterIgnoreDirsCaseInsensitive`~~                        | ~~`TestFilterIgnoreDirsCaseInsensitive`~~                    |
-
-> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
+| #      | Gap                                           | Test Added                                                   | File                                                                             |
+| ------ | --------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| ~~1~~  | ~~Batch timer flush error routing~~           | ~~`TestMiddlewareBatch_TimerFlushErrorReturnedOnNextEvent`~~ | ~~`middleware_test.go`~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP |
+| ~~2~~  | ~~`WithMaxWatchesSafetyFraction` clamping~~   | ~~`TestWithMaxWatchesSafetyFraction_Clamping`~~              | ~~`options_test.go`~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP    |
+| ~~2b~~ | ~~`applyMaxWatchesFraction` effective limit~~ | ~~`TestApplyMaxWatchesFraction_ReducesAutoDetectedLimit`~~   | ~~`options_test.go`~~                                                            |
+| ~~2c~~ | ~~Explicit limits not affected~~              | ~~`TestApplyMaxWatchesFraction_DoesNotAffectExplicitLimit`~~ | ~~`options_test.go`~~                                                            |
+| ~~3~~  | ~~DropOnFull mode drops + counts~~            | ~~`TestDropOnFull_DropsEventsAndCounts`~~                    | ~~`watcher_test.go`~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP    |
+| ~~4~~  | ~~`WithWatchFilteredDirectories(false)`~~     | ~~`TestWatchFilteredDirectories_Disabled`~~                  | ~~`watcher_test.go`~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP    |
+| ~~5~~  | ~~`FilterIgnoreDirsCaseInsensitive`~~         | ~~`TestFilterIgnoreDirsCaseInsensitive`~~                    | ~~`filter_test.go`~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP     |
 
 ### Key discovery: WithWatchFilteredDirectories test needed Filter, not Middleware
 
@@ -140,14 +138,14 @@ documented in the `WithPolling` doc comment and Troubleshooting guide.
 
 ## F) What Remains (Not Started — Deferred to Future Work)
 
-| Item | Reason                                                       |
-| ---- | ------------------------------------------------------------ |
-| ~~   | ~~Items 2+3: Poll dedup + rename detection~~                 |
-| ~~   | ~~macOS/Windows CI matrix~~                                  |
-| ~~   | ~~`WithContentHashMaxSize` configurable option~~             |
-| ~~   | ~~`WithErrorBufferSize` option~~                             |
-| ~~   | ~~Runtime deprecation warning for `MiddlewareWriteFileLog`~~ |
-| ~~   | ~~`MiddlewareDropCallback` API~~                             |
+| Item                                                         | Reason                                                                                                                       |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| ~~Items 2+3: Poll dedup + rename detection~~                 | ~~Large features requiring new design (LRU timestamp tracking, inode extraction)~~ OPEN → ROADMAP (v2.5+/v3 feature backlog) |
+| ~~macOS/Windows CI matrix~~                                  | ~~CI infrastructure change, requires cross-platform testing strategy~~ OPEN → TODO_LIST (CI matrices)                        |
+| ~~`WithContentHashMaxSize` configurable option~~             | ~~The hardcoded 10 MiB cap works; configurable option is polish~~ done — shipped v2.4.0 (options.go)                         |
+| ~~`WithErrorBufferSize` option~~                             | ~~Error channel decoupling is a nice-to-have, not urgent~~ done — shipped v2.4.0 (options.go)                                |
+| ~~Runtime deprecation warning for `MiddlewareWriteFileLog`~~ | ~~Doc comment already warns; runtime warning is v3 prep~~ OPEN → v3 prep (ROADMAP API evolution)                             |
+| ~~`MiddlewareDropCallback` API~~                             | ~~Would be more accurate than `atomic.Bool` heuristic but requires API change~~ OPEN → v3 candidate (ROADMAP)                |
 
 ---
 

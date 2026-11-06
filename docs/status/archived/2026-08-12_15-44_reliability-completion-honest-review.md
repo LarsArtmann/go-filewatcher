@@ -151,15 +151,13 @@ changelog for migration concerns have to read every bullet. A "Breaking" or
 
 ### From the original feedback document (25 items):
 
-| #  | Item   | Status                                                       | Reason          |
-| -- | ------ | ------------------------------------------------------------ | --------------- |
-| ~~ | ~~2~~  | ~~Poll dedup heuristic (`WithPollDeduplicate`)~~             | ~~NOT STARTED~~ |
-| ~~ | ~~3~~  | ~~Poll loop rename detection (`WithPollDetectRenames`)~~     | ~~NOT STARTED~~ |
-| ~~ | ~~20~~ | ~~Runtime deprecation warning for `MiddlewareWriteFileLog`~~ | ~~NOT STARTED~~ |
-| ~~ | ~~21~~ | ~~`Reset()` and `failedPaths` retention~~                    | ~~NOT STARTED~~ |
-| ~~ | ~~22~~ | ~~`WatcherError.Stack` behavior~~                            | ~~NOT STARTED~~ |
-
-> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
+| #      | Item                                                         | Status          | Reason                                                                                                                               |
+| ------ | ------------------------------------------------------------ | --------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| ~~2~~  | ~~Poll dedup heuristic (`WithPollDeduplicate`)~~             | ~~NOT STARTED~~ | ~~Large feature: per-path timestamp tracking with LRU. Documented as limitation.~~ resolved by session 3 (19-22) or shipped v2.4.0   |
+| ~~3~~  | ~~Poll loop rename detection (`WithPollDetectRenames`)~~     | ~~NOT STARTED~~ | ~~Large feature: platform-specific inode extraction.~~ resolved by session 3 (19-22) or shipped v2.4.0                               |
+| ~~20~~ | ~~Runtime deprecation warning for `MiddlewareWriteFileLog`~~ | ~~NOT STARTED~~ | ~~Doc comment already warns. Runtime warning is v3 prep.~~ resolved by session 3 (19-22) or shipped v2.4.0                           |
+| ~~21~~ | ~~`Reset()` and `failedPaths` retention~~                    | ~~NOT STARTED~~ | ~~Feedback document itself concludes this is minor, not a real bug.~~ resolved by session 3 (19-22) or shipped v2.4.0                |
+| ~~22~~ | ~~`WatcherError.Stack` behavior~~                            | ~~NOT STARTED~~ | ~~Feedback document offers "document current behavior" as valid fix. Not acted on.~~ resolved by session 3 (19-22) or shipped v2.4.0 |
 
 ### From the prior session's "should-do" list:
 

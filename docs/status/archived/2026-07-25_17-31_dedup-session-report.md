@@ -37,7 +37,7 @@ Go idiom. That said, I made real mistakes this session (see §d).
 - 15 inline sites migrated to the **pre-existing but unused** `newTestWatcher`
   helper in `testing_helpers_test.go:412`.
 - Files: `options_test.go` (9), `watcher_selfheal_test.go` (5),
-  `watcher_gitignore_test.go` (4 manual `defer Close`s removed via
+  `watcher_gitignore_test.go` (4 manual `defer Close` calls removed via
   `setupGitignoreTest` rewrite + 1 inline site), `watcher_reset_test.go` (1).
 - Left 2 `watcher_reset_test.go` tests explicit on purpose — they test the
   `Close → Reset` lifecycle and need the explicit `Close()` mid-test.

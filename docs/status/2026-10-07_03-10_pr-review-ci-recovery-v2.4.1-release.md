@@ -28,7 +28,7 @@ AGENTS.md (`a55557d`).
    entire proposed content (and much more: astro 7.3.6, starlight 0.42.5, rolldown 1.2.12) had
    already landed via the parallel session's lockfile refresh `843bd9d`. Dependabot auto-closed
    all three as superseded; closure correctness verified by content, not assumed.
-3. ~~**PR #14 closed as obsolete**~~ done 2026-10-07 03:10 session. (July, pre-pnpm-migration: touches `website/package-lock.json`
+3. ~~**PR #14 closed as obsolete**~~ done 2026-10-07 03:10 session. (July, pre-pnpm-migration: touches the npm lockfile `package-lock.json` (deleted in the pnpm migration)
    which no longer exists on master; proposes astro ^7.0.3→^7.1.3 vs master ^7.3.6). Closed
    with a terse own-repo closing comment (github-voice register).
 4. ~~**PR #36 (release 2.4.1) reviewed and merged.**~~ done (v2.4.1 live; fix `7c4ea79`). Diff was CHANGELOG-only, single clean bug-fix
@@ -99,7 +99,7 @@ work was lost. Two process failures need honest naming:
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. ~~**Verify-then-act for irreversible-ish actions.**~~ now structurally enforced for merges/releases by branch protection (2026-10-07); the personal discipline remains standing guidance. Merges/releases: diagnose failing checks
+1. ~~**Verify-then-act for irreversible-ish actions.**~~ resolved 2026-10-07 — structurally enforced by branch protection at the time; protection was later removed (2026-10-12, direct pushes), so the personal discipline is the standing guidance; the personal discipline remains standing guidance. Merges/releases: diagnose failing checks
    before executing, and verify merge success explicitly (gh's quiet output misled me).
 2. **Master is a moving target with the daemon + parallel sessions.** Re-fetch immediately
    before every commit/push. I did this — and still lost my go.mod fix's commit message to the
@@ -144,9 +144,9 @@ what this session directly observed.
 13. Real benchmark regression gating: committed baseline + benchstat, fail on >20% regression
     (ci.yml comments already promise this as "Future").
 14. ~~Branch protection decision: required status checks — today red release PRs are mergeable.
-    Was that deliberate?~~ answered 2026-10-07: NOT deliberate — protection now applied (strict required checks, enforce_admins, linear history; direct pushes declined too).
+    Was that deliberate?~~ decided 2026-10-07: NOT deliberate (protection was later removed 2026-10-12; direct pushes are the workflow) — protection now applied (strict required checks, enforce_admins, linear history; direct pushes declined too).
 15. ~~Verify Dependabot covers the Go ecosystem (this session saw only npm_and_yarn PRs).~~ verified 2026-10-07: `.github/dependabot.yml` has a gomod entry (plus actions, nix, npm x2).
-16. ~~Dependabot grouping for transitive-only updates so vite-class patches aren't silently lost.~~ addressed 2026-10-07: minor-and-patch groups exist; transitive-only bumps arrive via periodic `pnpm update` chores (TODO_LIST website cluster).
+16. ~~Dependabot grouping for transitive-only updates so vite-class patches aren't silently lost.~~ done 2026-10-07: minor-and-patch groups exist; transitive-only bumps arrive via periodic `pnpm update` chores (TODO_LIST website cluster).
 17. Move the pnpm `minimumReleaseAge` policy into the repo (pnpm-workspace.yaml) — only the
     excludes list is committed today; the actual age window lives in a machine-local global
     config nobody else can see.
@@ -183,7 +183,7 @@ what this session directly observed.
 33. Capture a consistent index/README for `docs/status/` — incident docs are accumulating
     (postmortem + this report within 46 minutes of each other).
 34. ~~Post-release changelog-curation guidance belongs in AGENTS.md (the 2.4.0 precedent is
-    folklore, not written down).~~ routed: policy decision pending (TODO_LIST Q9); guidance lands in docs/research/v3-decisions.md then AGENTS.md.
+    folklore, not written down).~~ superseded — routed: policy decision pending (TODO_LIST Q9); guidance lands in docs/research/v3-decisions.md then AGENTS.md.
 35. ~~State the Go support matrix publicly (README) — the 1.26 floor is in go.mod but not in
     prose for users.~~ done: README says "Requires Go 1.26.7 or later" (verified 2026-10-07).
 36. ~~Pin the website toolchain (`packageManager` field / engines) so local pnpm drift can't

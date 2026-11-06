@@ -189,15 +189,13 @@ preserved but don't check the `maxWatchesDetected` value for auto-detected limit
 
 ### From the original feedback document (25 items):
 
-| #  | Item   | Status                                                       | Reason                                                |
-| -- | ------ | ------------------------------------------------------------ | ----------------------------------------------------- |
-| ~~ | ~~2~~  | ~~Poll dedup heuristic (`WithPollDeduplicate`)~~             | ~~NOT STARTED~~                                       |
-| ~~ | ~~3~~  | ~~Poll loop rename detection (`WithPollDetectRenames`)~~     | ~~NOT STARTED~~                                       |
-| ~~ | ~~20~~ | ~~Runtime deprecation warning for `MiddlewareWriteFileLog`~~ | ~~NOT STARTED~~                                       |
-| ~~ | ~~21~~ | ~~`Reset()` and `failedPaths` retention~~                    | ~~NOT STARTED~~                                       |
-| ~~ | ~~22~~ | ~~`WatcherError.Stack` behavior~~                            | ~~DONE via doc comment + `NewWatcherErrorWithStack`~~ |
-
-> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
+| #      | Item                                                     | Status                                                | Reason                                                                                                                                                     |
+| ------ | -------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2      | Poll dedup heuristic (`WithPollDeduplicate`)             | NOT STARTED                                           | Large feature: per-path timestamp tracking with LRU. Documented as limitation in `WithPolling` doc + Troubleshooting.md. OPEN → ROADMAP (v2.5+/v3 backlog) |
+| 3      | Poll loop rename detection (`WithPollDetectRenames`)     | NOT STARTED                                           | Large feature: platform-specific inode extraction. OPEN → ROADMAP (v2.5+/v3 backlog)                                                                       |
+| 20     | Runtime deprecation warning for `MiddlewareWriteFileLog` | NOT STARTED                                           | Doc comment warns. Runtime `log.Warn` is v3 prep. OPEN → v3 prep (ROADMAP)                                                                                 |
+| ~~21~~ | ~~`Reset()` and `failedPaths` retention~~                | ~~NOT STARTED~~                                       | ~~Feedback author self-dismissed: "I'll remove this item."~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP                                       |
+| ~~22~~ | ~~`WatcherError.Stack` behavior~~                        | ~~DONE via doc comment + `NewWatcherErrorWithStack`~~ | ~~Documented current behavior. Added caller-provided stack constructor.~~ done — shipped in v2.4.0 or routed to TODO_LIST/ROADMAP                          |
 
 ### From prior sessions' should-do lists:
 

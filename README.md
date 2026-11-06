@@ -581,7 +581,7 @@ go run ./examples/middleware          # Logging, recovery, metrics
 
 ## Related Projects
 
-- **[go-daemon](https://github.com/LarsArtmann/go-daemon)** — building blocks for long-lived daemons served over unix domain sockets: socket lifecycle, `sd_notify` readiness/watchdog, graceful drain, JSON/CBOR/SSE. The natural companion when a watcher outgrows its process: start watching in its `Lifecycle.OnListen` hook and stop in `OnShutdown`, gate systemd readiness on established watches, stream `Event`s over the socket, and back a health endpoint with `Stats()`. Its systemd watchdog pairs well with `WithSelfHeal` — self-heal recovers transient failures in-process, the watchdog catches hard hangs.
+- **[go-daemon](https://github.com/LarsArtmann/go-daemon)** — building blocks for long-lived daemons served over unix domain sockets: socket lifecycle, `sd_notify` readiness/watchdog, graceful drain, JSON/CBOR/SSE. The natural companion when a watcher outgrows its process: start watching in its `Lifecycle.OnListen` hook and stop in `OnShutdown`, gate systemd readiness on established watches, stream `Event` values over the socket, and back a health endpoint with `Stats()`. Its systemd watchdog pairs well with `WithSelfHeal` — self-heal recovers transient failures in-process, the watchdog catches hard hangs.
 
 ## API Stability
 

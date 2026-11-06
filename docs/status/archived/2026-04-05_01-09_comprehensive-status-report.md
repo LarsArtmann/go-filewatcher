@@ -46,15 +46,13 @@ Evaluated `samber/do/v2` integration (decision: **no**), then deep-reflected on 
 
 The ADR lists 5 future improvements. None are implemented yet — they're documented as next steps:
 
-| #  | Improvement | Status                                                                   |
-| -- | ----------- | ------------------------------------------------------------------------ |
-| ~~ | ~~1~~       | ~~Extract `fsnotify.Watcher` behind internal interface for testability~~ |
-| ~~ | ~~2~~       | ~~Add `HealthCheck() error` to `Watcher`~~                               |
-| ~~ | ~~3~~       | ~~Document DI integration pattern in README~~                            |
-| ~~ | ~~4~~       | ~~Use `log/slog` in middleware (replace `log.Logger`)~~                  |
-| ~~ | ~~5~~       | ~~Add `Event` batch accumulation~~                                       |
-
-> Row-level marker note (2026-10-07 second pass): the earlier sweep's buggy wrapper left a bare `~~` in the first cell of these rows. Cells are now uniformly struck; this marks the table resolved wholesale. Per-row outcomes: read the era's git history — this file is archived, closed history.
+| #     | Improvement                                                              | Status                                                             |
+| ----- | ------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| ~~1~~ | ~~Extract `fsnotify.Watcher` behind internal interface for testability~~ | ~~Not started~~ done — shipped ≤v2.2.0, verified v2.4.1            |
+| ~~2~~ | ~~Add `HealthCheck() error` to `Watcher`~~                               | ~~Not started~~ no longer applicable — never built; Stats() covers |
+| ~~3~~ | ~~Document DI integration pattern in README~~                            | ~~Not started~~ done — shipped ≤v2.2.0, verified v2.4.1            |
+| ~~4~~ | ~~Use `log/slog` in middleware (replace `log.Logger`)~~                  | ~~Not started~~ done — shipped ≤v2.2.0, verified v2.4.1            |
+| ~~5~~ | ~~Add `Event` batch accumulation~~                                       | ~~Not started~~ done — shipped ≤v2.2.0, verified v2.4.1            |
 
 ### Test Coverage — 78.9%
 
@@ -68,21 +66,21 @@ The ADR lists 5 future improvements. None are implemented yet — they're docume
 
 ## c) NOT STARTED 📋
 
-| #  | Item   | Why it matters                                                             |
-| -- | ------ | -------------------------------------------------------------------------- |
-| ~~ | ~~1~~  | ~~**Fix pre-existing race condition** in `walkAndAddPaths` / `watchList`~~ |
-| ~~ | ~~2~~  | ~~**Fix 10 exhaustruct violations** in `filter_test.go`~~                  |
-| ~~ | ~~3~~  | ~~**Fix 5 gocritic exitAfterDefer** in examples~~                          |
-| ~~ | ~~4~~  | ~~**Fix new recvcheck warning** in `event.go:10`~~                         |
-| ~~ | ~~5~~  | ~~**Fix golines formatting** in `filter_test.go:36`~~                      |
-| ~~ | ~~6~~  | ~~**Extract `fsnotify.Watcher` behind internal interface**~~               |
-| ~~ | ~~7~~  | ~~**Add `HealthCheck() error` to `Watcher`**~~                             |
-| ~~ | ~~8~~  | ~~**Replace `log.Logger` with `log/slog`** in middleware~~                 |
-| ~~ | ~~9~~  | ~~**Document DI integration patterns** in README~~                         |
-| ~~ | ~~10~~ | ~~**Add `Event` batch accumulation**~~                                     |
-| ~~ | ~~11~~ | ~~**Increase test coverage to 85%+**~~                                     |
-| ~~ | ~~12~~ | ~~**Add benchmarks** for filter evaluation and middleware chains~~         |
-| ~~ | ~~13~~ | ~~**CI pipeline**~~                                                        |
+| #      | Item                                                                       | Why it matters                                                                                                                                                                                                                                    |
+| ------ | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ~~1~~  | ~~**Fix pre-existing race condition** in `walkAndAddPaths` / `watchList`~~ | ~~Race detector fails on `go test -race`. `watchList` is appended without holding `w.mu` when called from `handleNewDirectory` in the watch goroutine, while `Close()` reads it from another goroutine.~~ done — shipped ≤v2.2.0, verified v2.4.1 |
+| ~~2~~  | ~~**Fix 10 exhaustruct violations** in `filter_test.go`~~                  | ~~Event structs missing `IsDir` field in test cases~~ done — shipped ≤v2.2.0, verified v2.4.1                                                                                                                                                     |
+| ~~3~~  | ~~**Fix 5 gocritic exitAfterDefer** in examples~~                          | ~~`log.Fatal` after `defer cancel()` means cancel never runs~~ done — shipped ≤v2.2.0, verified v2.4.1                                                                                                                                            |
+| ~~4~~  | ~~**Fix new recvcheck warning** in `event.go:10`~~                         | ~~`Op` methods mix pointer (`UnmarshalText`) and value (`String`, `MarshalText`) receivers — self-introduced in commit `6d934dc`~~ done — shipped ≤v2.2.0, verified v2.4.1                                                                        |
+| ~~5~~  | ~~**Fix golines formatting** in `filter_test.go:36`~~                      | ~~Line too long~~ done — shipped ≤v2.2.0, verified v2.4.1                                                                                                                                                                                         |
+| ~~6~~  | ~~**Extract `fsnotify.Watcher` behind internal interface**~~               | ~~Enables mock-based testing of watch loop~~ done — shipped ≤v2.2.0, verified v2.4.1                                                                                                                                                              |
+| ~~7~~  | ~~**Add `HealthCheck() error` to `Watcher`**~~                             | ~~DI-friendly lifecycle hook~~ no longer applicable — never built; Stats() covers                                                                                                                                                                 |
+| ~~8~~  | ~~**Replace `log.Logger` with `log/slog`** in middleware~~                 | ~~Structured logging (stdlib since Go 1.21)~~ done — shipped ≤v2.2.0, verified v2.4.1                                                                                                                                                             |
+| ~~9~~  | ~~**Document DI integration patterns** in README~~                         | ~~Show consumers how to use with `samber/do`, `wire`, `fx`~~ no longer applicable — samber/do rejected (docs/adr/2026-04-04)                                                                                                                      |
+| ~~10~~ | ~~**Add `Event` batch accumulation**~~                                     | ~~Useful for consumers processing events in batches~~ done — shipped ≤v2.2.0, verified v2.4.1                                                                                                                                                     |
+| ~~11~~ | ~~**Increase test coverage to 85%+**~~                                     | ~~Currently 78.9%~~ done — shipped ≤v2.2.0, verified v2.4.1                                                                                                                                                                                       |
+| ~~12~~ | ~~**Add benchmarks** for filter evaluation and middleware chains~~         | ~~`just bench` exists but no bench tests~~ done — shipped ≤v2.2.0, verified v2.4.1                                                                                                                                                                |
+| ~~13~~ | ~~**CI pipeline**~~                                                        | ~~No GitHub Actions or CI config~~ done — shipped ≤v2.2.0, verified v2.4.1                                                                                                                                                                        |
 
 ---
 
@@ -150,16 +148,16 @@ TestDebouncer_DefaultDelay, TestDebouncer_NegativeDelay
 
 Sorted by impact × urgency ÷ work:
 
-| #  | Task  | Impact                                                                  | Work            | Type       |
-| -- | ----- | ----------------------------------------------------------------------- | --------------- | ---------- |
-| ~~ | ~~1~~ | ~~Fix race condition in `walkAndAddPaths` / `watchList`~~               | ~~🔴 Critical~~ | ~~Small~~  |
-| ~~ | ~~2~~ | ~~Fix recvcheck: make `String()`/`MarshalText()` use pointer receiver~~ | ~~Medium~~      | ~~Tiny~~   |
-| ~~ | ~~3~~ | ~~Fix 10 exhaustruct violations in `filter_test.go`~~                   | ~~Medium~~      | ~~Tiny~~   |
-| ~~ | ~~4~~ | ~~Fix 5 gocritic exitAfterDefer in examples~~                           | ~~Medium~~      | ~~Tiny~~   |
-| ~~ | ~~5~~ | ~~Fix golines formatting in `filter_test.go`~~                          | ~~Low~~         | ~~Tiny~~   |
-| ~~ | ~~6~~ | ~~Extract `fsnotify.Watcher` behind internal interface~~                | ~~High~~        | ~~Medium~~ |
-| ~~ | ~~7~~ | ~~Add mock-based tests for watch loop~~                                 | ~~High~~        | ~~Medium~~ |
-| ~~ | ~~8~~ | ~~Add `HealthCheck() error` to `Watcher`~~                              | ~~Medium~~      | ~~Small~~  |
+| #     | Task                                                                    | Impact          | Work       | Type                                                           |
+| ----- | ----------------------------------------------------------------------- | --------------- | ---------- | -------------------------------------------------------------- |
+| ~~1~~ | ~~Fix race condition in `walkAndAddPaths` / `watchList`~~               | ~~🔴 Critical~~ | ~~Small~~  | ~~Bug~~ done — shipped ≤v2.2.0, verified v2.4.1                |
+| ~~2~~ | ~~Fix recvcheck: make `String()`/`MarshalText()` use pointer receiver~~ | ~~Medium~~      | ~~Tiny~~   | ~~Lint~~ done — shipped ≤v2.2.0, verified v2.4.1               |
+| ~~3~~ | ~~Fix 10 exhaustruct violations in `filter_test.go`~~                   | ~~Medium~~      | ~~Tiny~~   | ~~Lint~~ done — shipped ≤v2.2.0, verified v2.4.1               |
+| ~~4~~ | ~~Fix 5 gocritic exitAfterDefer in examples~~                           | ~~Medium~~      | ~~Tiny~~   | ~~Lint~~ done — shipped ≤v2.2.0, verified v2.4.1               |
+| ~~5~~ | ~~Fix golines formatting in `filter_test.go`~~                          | ~~Low~~         | ~~Tiny~~   | ~~Lint~~ done — shipped ≤v2.2.0, verified v2.4.1               |
+| ~~6~~ | ~~Extract `fsnotify.Watcher` behind internal interface~~                | ~~High~~        | ~~Medium~~ | ~~Architecture~~ done — shipped ≤v2.2.0, verified v2.4.1       |
+| ~~7~~ | ~~Add mock-based tests for watch loop~~                                 | ~~High~~        | ~~Medium~~ | ~~Testing~~ done — shipped ≤v2.2.0, verified v2.4.1            |
+| ~~8~~ | ~~Add `HealthCheck() error` to `Watcher`~~                              | ~~Medium~~      | ~~Small~~  | ~~Feature~~ no longer applicable — never built; Stats() covers |
 
 ~~| 9 | Replace `log.Logger` with `log/slog` in middleware | Medium | Small | Modernization |~~ done — shipped ≤v2.2.0, verified v2.4.1
 ~~| 10 | Increase test coverage to 85%+ | Medium | Medium | Quality |~~ done — shipped ≤v2.2.0, verified v2.4.1

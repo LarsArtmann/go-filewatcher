@@ -154,7 +154,7 @@ certain directions worth exploring.
 ### Ecosystem
 
 - **go-daemon pairing examples** — `examples/watcher-daemon`
-  (OnListen→`Watch`, OnShutdown→`Close`, stream `Event`s over unix socket/SSE),
+  (OnListen→`Watch`, OnShutdown→`Close`, stream `Event` values over unix socket/SSE),
   a "watcher as a systemd service" website guide (sd_notify + watchdog ×
   `WithSelfHeal`), and a health endpoint backed by `Stats()`. Host-repo
   decision pending (this module is Go 1.26-pinned; go-daemon needs 1.27+).

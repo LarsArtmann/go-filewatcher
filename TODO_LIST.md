@@ -424,6 +424,41 @@ Harvested from `docs/status/2026-11-06_07-22_buildflow-green-lint-fix-and-docs-r
 - [ ] **Add a CI check that `.release-please-manifest.json` matches the newest
       `v*` tag** — v2.4.3 shipped by hand and left the manifest at 2.4.2, which
       would have produced a wrong `v2.4.2...v2.5.0` compare link. — P2/S/CI.
+- [ ] **Confirm the release-commit CI run is green** — the v2.5.0 merge (`b77b280`)
+      and the follow-up docs commit (`2bd47ff`); fix anything it flagged.
+      — P1/S/CI.
+- [ ] **Rebuild and deploy the website so `/changelog` shows 2.4.3 + 2.5.0** —
+      the site is deployed by hand, so the release is invisible there until
+      someone runs the runbook. — P1/S/Docs.
+- [ ] **Re-check pkg.go.dev shows `v2.5.0`** and record the confirmation (it still
+      listed 2.4.3 at release time; proxy already serves 2.5.0). — P1/S/Docs.
+- [ ] **Rewrite the published v2.4.3 release notes** — GitHub's auto-generated
+      body lists PRs #43–#60, most of which shipped in 2.4.2. — P1/S/Docs.
+- [ ] **Verify or footnote the "Go 1.27 defaults to json/v2" claim** in README and
+      the v2.5.0 release notes; it is currently an unsourced expectation.
+      — P2/S/Docs.
+- [ ] **Generate the GitHub Release body from the CHANGELOG section at tag time**
+      so notes have one source. — P2/M/CI.
+- [ ] **Add `docs/release-checklist.md`** — prerequisites (GOEXPERIMENT, Go floor),
+      CI gate before tagging, then proxy + pkg.go.dev + site verification.
+      — P2/S/Docs.
+- [ ] **Add a "peer agent active" check to the session-start ritual** on shared
+      machines (`ps` for peer sessions; treat unexpected worktree diffs as
+      someone else's). — P2/S/Process.
+- [ ] **Bump a real consumer to `v2.5.0` and run its tests** (e.g. a `go-health`
+      example) — release proof currently rests on a throwaway `/tmp` module.
+      — P2/M/Quality.
+- [ ] **Verify the Windows/macOS probe legs ran on the release commit** — P3/S/CI.
+- [ ] **Add a `Healthy`-in-action example under `examples/`** so
+      `go build ./examples/...` compiles the health wiring. — P3/S/Quality.
+- [ ] **Document `MiddlewareCircuitBreaker` → `NewCircuitBreaker` migration** in the
+      website middleware guide. — P3/S/Docs.
+- [ ] **Move the docs-gates cadence pin whenever a report is added** — pinned at the
+      measured state, so a new report always needs the pin bumped.
+      — P3/S/Process.
+- [ ] **Confirm the release did not silently move a consumer-visible dependency
+      floor** (`go.yaml.in/yaml/v3` went 3.0.5 → 3.0.4 indirect across v2.4.3 →
+      v2.5.0). — P3/S/Quality.
 
 ---
 

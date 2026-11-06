@@ -8,6 +8,13 @@
 
 - Nothing yet.
 
+## [2.5.0](https://github.com/LarsArtmann/go-filewatcher/compare/v2.4.3...v2.5.0) (2026-11-06)
+
+
+### Features
+
+* **health:** add Healthy() health check and introspectable circuit breaker ([83db113](https://github.com/LarsArtmann/go-filewatcher/commit/83db113f1b5afed9484b6566c960a8138dae9586))
+
 ## [2.4.3](https://github.com/LarsArtmann/go-filewatcher/compare/v2.4.2...v2.4.3) (2026-11-02)
 
 ### Miscellaneous Chores

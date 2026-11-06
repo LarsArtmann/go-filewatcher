@@ -1,0 +1,4 @@
+# Generated Tailwind CSS output (tailwind-build regenerates it every run) — do
+# not reformat, or the tree oscillates between raw and prettier-formatted and
+# every BuildFlow run leaves the working tree dirty (five reports chased this).
+src/styles/global.out.css

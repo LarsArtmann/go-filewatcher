@@ -1,0 +1,4 @@
+# Generated Tailwind CSS output: tailwind-build regenerates it on every run.
+# Formatting it makes the working tree oscillate between raw and prettier output
+# (five earlier reports chased this churn). Keep it out of prettier.
+website/src/styles/global.out.css

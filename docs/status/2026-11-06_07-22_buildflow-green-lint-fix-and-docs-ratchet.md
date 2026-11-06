@@ -136,6 +136,18 @@ finding classes were cleared or documented, and the same command now exits **0**
     green; `audit_max` was then tightened 29 → **16** (the real post-harvest
     number) and `max_unarchived` raised 17 → 18 for this report, keeping the
     ratchet honest in both directions. Battery: 5/5 PASS.
+14. **The `global.out.css` churn loop is closed.** Every BuildFlow run left
+    `website/src/styles/global.out.css` modified: the Tailwind generator writes
+    the raw output, prettier reformats it, and the next run undoes that — five
+    earlier reports chased the same ±1931-line oscillation without deciding.
+    Root cause is prettier formatting a generated artifact, so this session added
+    root `.prettierignore` (plus `website/.prettierignore` for local runs)
+    excluding that file and stored the generator's own output as the committed
+    state. Verified: `buildflow -s prettier-format` → `✓ BuildFlow passed 1/1
+    (0 findings)`, and re-running `tailwind-build` leaves the file byte-identical
+    (`md5 fb76699d…`). Note the file is still tracked; gitignoring it entirely is
+    the follow-up decision (f11-adjacent), not done here because deleting a
+    tracked file is the owner's call.
 
 ---
 

@@ -1,8 +1,9 @@
 # TODO List
 
-**Last Updated:** 2026-11-06 (docs-health audit: docs-gates now passes with zero
+**Last Updated:** 2026-11-06 (docs-health audit: docs-gates passes with zero
 tolerated findings — annotate 1786 → 0, audit-all 16 → 0, 15 resolved reports
-archived, this list deduplicated so every item appears exactly once)
+archived, this list deduplicated; see
+[docs/status/2026-11-06_08-20_docs-health-ratchet-drain-and-archive-sweep.md](./docs/status/2026-11-06_08-20_docs-health-ratchet-drain-and-archive-sweep.md))
 
 Short- and mid-term actionable work. Each item is scoped — pick one, do it, tick
 the box. An item lives here only when it is bounded and estimable; vague or
@@ -32,6 +33,14 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       `nix-checker` ×8, `nix-build-verify` fate, `vulnix` CVEs). The two
       upstream BuildFlow filings stay gated on open question 6.
       (`src: 2026-10-07_06-00 §f7/B2/B3/C1, 2026-11-06_07-22 §f9`)
+
+- [ ] **Wire `docs-gates` into the flake checks and CI** — the five documentation
+      gates are a hand-run local binary today, so a docs regression (unharvested
+      item, verdict-less strike, outlived report) cannot fail a build. Add a
+      `docs-gates` package to the flake plus a `checks.docs-gates` entry and a CI
+      job, so `nix flake check` and a push enforce what `.docs-gates.json` pins at
+      zero.
+      (`src: 2026-11-06 docs-health audit`)
 
 ## Testing & Platform
 
@@ -194,6 +203,23 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       machines (`ps` for peer sessions; treat unexpected worktree diffs as
       someone else's).
       (`src: 2026-11-06_07-22 §f` process cluster)
+- [ ] **Hand-verify the routed verdicts in the 2026-10 archive batch** — 457 items
+      were struck as "no longer open here — routed to …" on the strength of
+      `docs-gates freshness --audit-all`'s token test, not a human re-reading each
+      living-doc row. Spot-check the batch (worst case: a wrong routing target
+      looks like a harvest) and correct any that point at the wrong TODO_LIST row.
+      (`src: 2026-11-06 docs-health audit`)
+- [ ] **Give `docs/planning/` the same archival pass** — the 2026-10-07 Pareto plan
+      (150 task rows, never given per-task evidence) carries a "superseded" banner
+      but still sits in the active planning dir; either reconstruct per-task
+      verdicts from the 2026-10-07 reports or move it to `docs/planning/archived/`
+      with the banner as its manifest row.
+      (`src: 2026-11-06 docs-health audit`)
+- [ ] **Settle the two dprint-unclean files** — `.config/metadata.yaml` (4-space
+      indent) and `website/pnpm-lock.yaml` fail bare `dprint check` while passing
+      the project's `treefmt`; either format them or add explicit `excludes`
+      entries so `dprint check` is a trustworthy local gate.
+      (`src: 2026-11-06 docs-health audit`)
 - [ ] **Audit the remaining marker-free tables in archived files** — the
       cell-boundary sweep made every struck row uniform, but tables with zero
       `~~` anywhere were never classified as data-vs-open-task. One bounded pass
@@ -317,7 +343,7 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 | Coverage (CI gate) | ≥ 85% enforced | ✅     |
 | Flaky tests known  | 0              | ✅     |
 | Broken benches     | 0              | ✅     |
-| Open items         | 60             | 🟡     |
+| Open items         | 64             | 🟡     |
 | docs-gates         | 5/5 PASS       | ✅     |
 
 `docs-gates run` is the standing documentation gate: freshness, audit-all,

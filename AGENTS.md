@@ -188,10 +188,12 @@ Full detail, fix commands, and incident history:
 
 ## Documentation Gates
 
-`docs-gates run .` is a real quality gate, not advisory: five checks over
-`docs/status/**` plus the living docs. `.docs-gates.json` pins **zero** tolerated
-findings (`audit_max`, `annotate_max`) and a 8-report / 21-day cadence — never
-raise a pin to silence a finding; fix the finding or annotate it resolved.
+`docs-gates run .` runs five checks over `docs/status/**` plus the living docs.
+It is invoked by hand today (the binary is a local install — **it is not yet a
+flake check or CI job**, see TODO_LIST): treat it as a required pre-commit step.
+`.docs-gates.json` pins **zero** tolerated findings (`audit_max`,
+`annotate_max`) and a 8-report / 21-day cadence — never raise a pin to silence a
+finding; fix the finding or annotate it resolved.
 
 | Gate      | Says                                                                                   | Fix                                                                                                     |
 | --------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |

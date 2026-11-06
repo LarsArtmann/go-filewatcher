@@ -1,6 +1,7 @@
 # TODO List
 
-**Last Updated:** 2026-10-07 (docs-health harvest from the 2026-08-12 reliability series + seven 2026-10-07 reports)
+**Last Updated:** 2026-11-06 (BuildFlow green run: harvested the 2026-10-12 and
+2026-11-06 reports, recorded the file-size/docs-annotate/cadence ratchets)
 
 Short- and mid-term actionable work. Each item is scoped — pick one, do it, tick
 the box. An item lives here only when it is bounded and estimable; vague or
@@ -109,6 +110,22 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       tag + GitHub Release exist and the changelog section matches the merge
       (done manually on v2.4.0/v2.4.1).
       (`src: 2026-10-07_03-10 §f23`)
+- [ ] **Re-check the fleet cue-policy runner deviation** — `cue-vet` flags
+      `ci.yml` (`ubuntu-24.04` + a `${{ matrix.os }}` leg) and `release.yml`
+      (`ubuntu-24.04`) against the fleet's `ubuntu-latest` allowlist. The pins
+      are deliberate for runner determinism through the `ubuntu-latest` 26.04
+      rollout (complete 2026-11-19), so both findings are baselined in
+      `.buildflow-baseline.json` rather than changed. After the rollout: either
+      switch to `ubuntu-latest` (and drop the 26.04 matrix leg) or re-file the
+      deviation with the cue-policy repo, then remove the baseline entries.
+      (`src: 2026-11-06 buildflow findings gate`)
+- [ ] **Add `actionlint` to pre-push verification** — catch workflow-expression
+      and `runs-on` mistakes locally instead of after a push.
+      (`src: 2026-10-07_15-51 §f35`)
+- [ ] **Decide on a weekly `-race -count=2` CI run** — cost/benefit call for
+      catching order-dependent flakes the every-push single run misses; two
+      reports reached the same open question independently.
+      (`src: 2026-10-07_13-09 §f24, 15-21 §f21, 15-51 §f26`)
 
 ## Documentation
 
@@ -117,11 +134,18 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       `WithWatchedIgnoreDirs` (deprecated) + 2 real gaps:
       `FilterGeneratedCodeFull` and `FilterGeneratedCodeWithFilter`). Document
       the two filters in FEATURES.md to reach zero real exemptions.
-- [ ] **Split AGENTS.md to carrying capacity** — ~645 lines vs the doctor's
-      220-line max; move File Organization table, gogenfilter API notes, CI
-      Workflows table, and Linter Cheat Sheet to `docs/` with pointers. Every
-      distinct concept must survive the move.
+- [x] **Split AGENTS.md to carrying capacity** — DONE 2026-11-06: AGENTS.md is
+      now 178 lines (gate: 220). The Release/CI gotchas table, the go.mod floor
+      narrative, and the Known Issues section moved verbatim to
+      [docs/release-ci-gotchas.md](./docs/release-ci-gotchas.md), with a
+      one-line-per-gotcha index left behind. File Organization, gogenfilter
+      notes, CI Workflows, and the Linter Cheat Sheet had moved earlier.
       (`src: 2026-10-07_04-34 §c1, 06-00 §f18/B5`)
+- [ ] **Website JS conventions doc** — write `website/README.md` documenting the
+      site's build (`nix run .#build`), the generated `/changelog` page, and the
+      nested `.oxlintrc.json` conventions carved out of the root config. Also
+      restores the file AGENTS.md used to link to.
+      (`src: 2026-10-12_03-10 §f18`)
 - [ ] **Website deploy runbook** — document install → build → deploy via flake
       apps, the `trailingSlash: false` quirk, cleanUrls, and "verify built
       slugs before publishing URLs" (the v2.4.0 release-notes 404 lesson) in
@@ -139,9 +163,13 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 
 ## Website Maintenance
 
-- [ ] **Fix website dependabot alerts** — `fast-uri` (high, host confusion) and
-      `astro` (medium, reflected XSS) in `website/package.json`. Update with
-      `cd website && pnpm update`. (`src: 2026-07-29_14-06 §Dependabot`)
+- [x] **Fix website dependabot alerts** — DONE 2026-11-06: `pnpm audit --fix=update`
+      in `website/` cleared all 19 advisories (3 low / 10 moderate / 6 high) —
+      `fast-uri` 3.1.9, `undici` 8.12.2, `vite` 8.3.3, `zod` 4.6.6 now resolved,
+      `pnpm audit` reports "No known vulnerabilities found". The four patched
+      versions were added to `minimumReleaseAgeExclude` (they are younger than
+      the age window); `pnpm run build` verified green (14 pages) after the bump.
+      (`src: 2026-07-29_14-06 §Dependabot`)
 - [x] **Website CI build job** — DONE 2026-10-07 (PRs #52–#54):
       `website-build.yml` runs pnpm install (frozen lockfile) + astro build on
       website/** PRs and master pushes. Three fix-forward rounds taught the
@@ -168,6 +196,13 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
       missing; consider gitignoring `changelog.mdx` (committed build artifact);
       check the OG image renders on social cards.
       (`src: 2026-10-07_03-09 §f24/#25/#28`)
+- [ ] **Public-presence polish** — add a 180x180 `apple-touch-icon` to the site
+      head, redesign the logo SVG so it is distinctive rather than generic, test
+      the site in Firefox and Safari, embed a website screenshot/GIF in
+      README.md, and add a "Why not X?" comparison section against the popular
+      alternatives (fsnotify, viper/fsnotify wrappers, watcher libraries). The
+      sitemap itself is verified (`website/dist/sitemap-index.xml` is built).
+      (`src: 2026-07-13_21-22 §f5/#23/#42, 2026-07-13_21-58 §f25/#27/#34/#47/#48`)
 
 ## Hygiene
 
@@ -194,6 +229,50 @@ long-term ideas live in [ROADMAP.md](./ROADMAP.md). Completed work is recorded i
 
 ## Process debts (2026-10-07 docs sweep tail)
 
+- [ ] **Split the 20 oversized Go files (file-size campaign)** — `file-size-check`
+      errors on 20 files over the 350-line budget; they are baselined in
+      `.buildflow-baseline.json` so new overages still fail. Work largest first:
+      `watcher_test.go` (1860), `middleware_test.go` (1406), `middleware.go`
+      (1001), `watcher.go` (919), `filter_test.go` (853), `benchmark_test.go`
+      (727), `filesystem_test.go` (642), `watcher_coverage_test.go` (597),
+      `errors_test.go` (563), `filter.go` (543), `error_simulation_test.go`
+      (537), `testing_helpers_test.go` (518), `options.go` (466),
+      `filesystem_poll_gitignore_test.go` (457), `example_test.go` (447),
+      `filter_gogen_test.go` (419), `watcher_internal.go` (408),
+      `watcher_walk_test.go` (378), `options_test.go` (369), `errors.go` (364).
+      Beware: `max_file_size` is INERT in BuildFlow (BuildFlow#75) so raising the
+      limit is not an option. Drop each baseline entry as its file splits.
+      (`src: 2026-11-06 buildflow findings gate`)
+- [ ] **Reduce the docs-annotate backlog (ratchet at 1786)** — `docs-gates
+      annotate` reports 1786 findings (struck items with no verdict marker, or a
+      verdict citing a path that no longer exists) across 105 files, mostly in
+      `docs/status/archived/`. `.docs-gates.json` pins the count so the gate is
+      red only past it; annotate a batch and ratchet down.
+      (`src: 2026-11-06 docs-gates battery`)
+- [ ] **Run the report archive ritual (17 unarchived, oldest 30 days)** —
+      `docs-gates cadence` is ratcheted at 17 reports / 30 days. Walk the
+      2026-10-07 batch: verify every remaining item is struck, WONT-DO, or
+      routed, `git mv` into `docs/status/archived/` with the `> **Live
+      remainder:**` banner, update `docs/status/README.md`, then tighten the
+      cadence ratchet back to the fleet defaults (15 / 21).
+      (`src: 2026-11-06 docs-gates battery`)
+- [ ] **Add a scheduled `BUILDFLOW_NO_RESULT_CACHE=1` run as a cache-lie
+      tripwire** — result-cache keying gaps (pnpm-lock, oxlint) have twice hidden
+      real findings behind a stale zero-finding entry.
+      (`src: 2026-10-12_03-10 §f14`)
+- [ ] **Settle the `reliability_semantics_test.go` placement convention** — decide
+      whether semantics tests live in their own file (as now) or next to the code
+      they pin, and record the rule.
+      (`src: 2026-10-07_15-51 §f43`)
+- [ ] **Adopt a post-merge master-CI confirmation habit for docs-only PRs** —
+      check the merge commit's run before moving on; release-please PRs report a
+      zero-job failure that is a GitHub quirk, so master CI is the only real
+      signal.
+      (`src: 2026-10-07_15-21 §f46, 15-51 §f46`)
+- [ ] **Decide the website CSS direction (still open since 2026-10-07 15:51)** —
+      the Starlight theme layer has both inline `style` shims and custom CSS;
+      pick one home so future styling does not split across both.
+      (`src: 2026-10-07_16-30 §f20`)
 - [ ] **Audit the 292 marker-free tables in archived files** — check-rows now
       passes (86/86 uniform), but tables with zero `~~` anywhere were left as
       non-task data tables or potentially-open items; one bounded pass should
@@ -278,6 +357,60 @@ workflow_dispatch, probe legs, reliability test trio, codespell), three new
 items added (leg-promotion decision, per-OS expectations, follow-up items
 from the probe), net 39 → 40; the /tmp evidence-log cleanup ticked in the
 15:21 resume session, net 40 → 39.
+
+---
+
+## Session backlog (2026-11-06 buildflow-green run)
+
+Harvested from `docs/status/2026-11-06_07-22_buildflow-green-lint-fix-and-docs-ratchet.md`
+§f. Duplicates of the campaigns above were dropped; these are the distinct ones.
+(`src: 2026-11-06_07-22 §f`)
+
+- [ ] **Split `watcher_test.go` (1860 lines) into topic files** — P1/L/Quality.
+- [ ] **Split `middleware.go` (1001 lines) into themed middleware files** — P1/L/Quality.
+- [ ] **Split `middleware_test.go` (1406 lines)** — P2/L/Quality.
+- [ ] **Split `watcher.go` (919 lines) along its walk/event/health seams** — P2/L/Quality.
+- [ ] **Split the remaining 16 oversized files and drop their baseline entries** — P3/L/Quality.
+- [ ] **Annotate a first 100-item batch of the 1786 docs-annotate findings and
+      lower the ratchet** — P1/M/Cleanup.
+- [ ] **Archive the 2026-10-07 report batch (13 files) and lower the cadence
+      ratchet to 15/21** — P1/M/Cleanup.
+- [ ] **Identify the 9 "tools unavailable (health check failed)" providers and
+      fix or exclude them** — P1/S/Quality.
+- [ ] **Upgrade the BuildFlow binary past `e81c118` and re-prove the three
+      skip_steps still match the current provider names** — P1/S/Quality.
+- [ ] **Verify this session's changes on CI, including the Windows and macOS
+      probe legs** — P1/S/Quality.
+- [ ] **Decide whether test files are exempt from the 350-line budget** (and ask
+      BuildFlow upstream for a per-glob limit) — P1/S/Decision.
+- [ ] **Write `website/README.md`** (build, generated `/changelog`, oxlint
+      conventions) — P2/S/Docs.
+- [ ] **Add `actionlint` to pre-push verification** — P2/S/Quality.
+- [ ] **Decide on a weekly `-race -count=2` CI run** — P2/S/Decision.
+- [ ] **Add a scheduled `BUILDFLOW_NO_RESULT_CACHE=1` run as a cache-lie
+      tripwire** — P2/S/Quality.
+- [ ] **Automate the pnpm-audit/oxlint result-cache purge** (script or upstream
+      key fix) — P2/M/Quality.
+- [ ] **Re-verify the documented BuildFlow limitations** (`nix-hash-fix`,
+      pnpm-audit cache, `max_file_size`) against the current binary — P2/M/Quality.
+- [ ] **Confirm the dependabot `nix` and root-`npm` entries actually manage
+      something** — P2/S/Docs.
+- [ ] **Re-check the cue-vet runner deviation after the 2026-11-19 rollout and
+      delete both baseline entries** — P1/S/CI.
+- [ ] **Triage the `vulnix` advisories** (accept or mitigate per CVE) and refresh
+      the stale `result` scan target — P3/S/Security.
+- [ ] **Settle the `reliability_semantics_test.go` placement convention** —
+      P3/S/Quality.
+- [ ] **Adopt the post-merge master-CI confirmation habit for docs-only PRs** —
+      P3/S/Process.
+- [ ] **Decide the website CSS direction** (Starlight theme vs custom layer) —
+      P3/S/Decision.
+- [ ] **Public-presence polish**: apple-touch-icon, logo redesign, Firefox/Safari
+      pass, README screenshot/GIF, "Why not X?" — P3/M/Marketing.
+- [ ] **Re-drive seed `1793946570936674137` under concurrent load, name the
+      flaking test, and harden it** — the 07:29 `test-race` failure happened only
+      while a second BuildFlow process held the state DB (`SQLITE_BUSY`); four
+      subsequent runs with the same seed were green. — P1/M/Quality.
 
 ---
 

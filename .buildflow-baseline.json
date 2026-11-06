@@ -1,0 +1,350 @@
+{
+  "tool": {
+    "name": "buildflow-baseline"
+  },
+  "findings": [
+    {
+      "id": "file-size-check:go-file-too-large:021abf3b58a05467",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:04a7f6c07035b1ba",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:1689f107a6852a1c",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:1773ec2357ebee9f",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:20aff1930995d0ee",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:2cbe19504d96774d",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:2db3027bdda7d613",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:377c6df6132714d4",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:5c64e54eea9426dc",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:6093dbf36b39b165",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:63926ee193eb2fb4",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:64e2db4643c88cef",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:8b083c9166130e66",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:93aa9695d61db445",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:b6d914013df575ae",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:ce8350f83c9c68c0",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:d69946d99c589075",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:d83e090e3cf0fda2",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:e15d6c9c5560de98",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "file-size-check:go-file-too-large:f262b8223c42851d",
+      "rule": "go-file-too-large",
+      "toolName": "file-size-check",
+      "message": "accepted noise for rule \"go-file-too-large\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": "",
+        "line": 0,
+        "column": 0,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "cue-vet:workflow-policy-violation:.github/workflows/ci.yml:1:1",
+      "rule": "workflow-policy-violation",
+      "toolName": "cue-vet",
+      "message": "accepted noise for rule \"workflow-policy-violation\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": ".github/workflows/ci.yml",
+        "line": 1,
+        "column": 1,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    },
+    {
+      "id": "cue-vet:workflow-policy-violation:.github/workflows/release.yml:1:1",
+      "rule": "workflow-policy-violation",
+      "toolName": "cue-vet",
+      "message": "accepted noise for rule \"workflow-policy-violation\" (added via buildflow baseline add)",
+      "severity": "warning",
+      "position": {
+        "file": ".github/workflows/release.yml",
+        "line": 1,
+        "column": 1,
+        "offset": -1
+      },
+      "fixStrategy": "none",
+      "confidence": 0
+    }
+  ],
+  "summary": {
+    "total": 22,
+    "bySeverity": {
+      "warning": 22
+    },
+    "byFixStrategy": {
+      "none": 22
+    },
+    "filesAffected": 2,
+    "filesScanned": 0,
+    "suppressed": 0
+  },
+  "schema_version": 1
+}

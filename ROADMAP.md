@@ -52,7 +52,10 @@ certain directions worth exploring.
   The concrete deprecation inventory is a TODO_LIST task; this is the strategic
   framing: gather breaking changes over the next 6–12 months before cutting.
   See [docs/research/watchchanges-contract.md](./docs/research/watchchanges-contract.md)
-  for the event-contract analysis that informs v3 API decisions.
+  for the event-contract analysis that informs v3 API decisions, and
+  [docs/research/v3-decisions.md](./docs/research/v3-decisions.md) for the
+  decisions already recorded (including the no-Go-1.27-CI-leg call).
+  (`src: 2026-10-07_15-21 §f36`)
 - **Poll-mode event quality (v2.5+/v3)** — `WithPollDeduplicate(true)`
   (per-path timestamp tracking with an LRU) and `WithPollDetectRenames(true)`
   (platform-specific inode extraction) are designed-but-unbuilt; both are
@@ -84,6 +87,11 @@ certain directions worth exploring.
 - **Phantom-typed `PathKey`** — `pathKey()` returns a bare `string`; a named
   `type PathKey string` (like the existing `EventPath`/`RootPath` phantom types)
   would make accidental misuse of raw paths vs canonical keys a compile error.
+- **`filewatcher.CheckFunc` alias** — a local
+  `type CheckFunc func(context.Context) error` would let doc comments describe
+  the health-check shape without naming go-health's type. YAGNI for now: the
+  method value already satisfies the signature, so the alias buys readability
+  only once several checks exist. (`src: 2026-11-06_06-46 §f33`)
 
 ### Observability
 
@@ -113,6 +121,11 @@ certain directions worth exploring.
   hardened via the `waitForCondition` polling helper. The open question is
   whether to also add a `-count=50 -race` statistical gate in CI for
   timing-sensitive tests (self-heal, debouncer intervals).
+- **Event-staleness option** — an option that flags events whose timestamp is
+  older than a threshold; would surface slow consumers. YAGNI and
+  consumer-specific: latency guarantees belong to the consumer, and the event
+  timestamp is already carried through the pipeline.
+  (`src: 2026-11-06_06-46 §f30`)
 
 ### Operational
 

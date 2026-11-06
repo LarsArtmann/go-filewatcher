@@ -113,8 +113,9 @@
             doCheck = false;
           };
 
-          mkApp = name: text: {
+          mkApp = name: description: text: {
             type = "app";
+            meta.description = description;
             program = "${
               pkgs.writeShellApplication {
                 inherit name;
@@ -132,8 +133,9 @@
           };
 
           # Like mkApp but also includes benchstat in runtimeInputs.
-          mkBenchApp = name: text: {
+          mkBenchApp = name: description: text: {
             type = "app";
+            meta.description = description;
             program = "${
               pkgs.writeShellApplication {
                 inherit name;
@@ -169,6 +171,7 @@
               homepage = "https://github.com/larsartmann/go-filewatcher";
               license = lib.licenses.mit;
               mainProgram = "go-filewatcher";
+              platforms = lib.platforms.linux ++ lib.platforms.darwin;
               maintainers = [
                 {
                   name = "Lars Artmann";
@@ -223,46 +226,46 @@
           };
 
           apps = {
-            test = mkApp "test" ''
+            test = mkApp "test" "Run the full test suite with the race detector" ''
               cd "${self}"
               go test -race -count=1 ./...
             '';
 
-            test-v = mkApp "test-v" ''
+            test-v = mkApp "test-v" "Run the full test suite with the race detector, verbose" ''
               cd "${self}"
               go test -v -race -count=1 ./...
             '';
 
-            lint = mkApp "lint" ''
+            lint = mkApp "lint" "Lint the module with golangci-lint" ''
               cd "${self}"
               golangci-lint run ./...
             '';
 
             # Explicit test-file linting (--tests is default true, but this app
             # makes the intent clear for CI and local iteration).
-            lint-tests = mkApp "lint-tests" ''
+            lint-tests = mkApp "lint-tests" "Lint the module including test files" ''
               cd "${self}"
               golangci-lint run --tests ./...
             '';
 
-            lint-fix = mkApp "lint-fix" ''
+            lint-fix = mkApp "lint-fix" "Apply golangci-lint auto-fixes to the working tree" ''
               cd "${self}"
               golangci-lint run --fix ./...
             '';
 
-            vet = mkApp "vet" ''
+            vet = mkApp "vet" "Run go vet over the module" ''
               cd "${self}"
               go vet ./...
             '';
 
             # Writes to the working tree, so run in the CALLER's directory
             # (not the read-only nix store copy). Invoke from repo root.
-            fmt = mkApp "fmt" ''
+            fmt = mkApp "fmt" "Format the working tree with go fmt and gofumpt" ''
               go fmt ./...
               gofumpt -w .
             '';
 
-            bench = mkApp "bench" ''
+            bench = mkApp "bench" "Run all benchmarks with memory stats and the race detector" ''
               cd "${self}"
               go test -bench=. -benchmem -race ./...
             '';
@@ -274,9 +277,11 @@
             # IMPORTANT: Runs in the CALLER's working directory (not the nix
             # store copy) so the gitignored baseline lands in the repo root.
             # Invoke from the project root: nix run .#bench-baseline
-            bench-baseline = mkBenchApp "bench-baseline" ''
-              go test -bench=. -benchmem -count=6 -run=^$ ./... | tee bench-baseline.txt
-            '';
+            bench-baseline =
+              mkBenchApp "bench-baseline" "Capture a six-sample benchmark baseline into bench-baseline.txt"
+                ''
+                  go test -bench=. -benchmem -count=6 -run=^$ ./... | tee bench-baseline.txt
+                '';
 
             # Run fresh benchmarks and diff against bench-baseline.txt with
             # the hermetically-built benchstat (no network needed).
@@ -284,16 +289,18 @@
             #
             # IMPORTANT: Runs in the CALLER's working directory. Invoke from
             # the project root: nix run .#bench-diff
-            bench-diff = mkBenchApp "bench-diff" ''
-              if [ ! -f bench-baseline.txt ]; then
-                echo "bench-baseline.txt not found. Run 'nix run .#bench-baseline' first."
-                exit 1
-              fi
-              go test -bench=. -benchmem -count=6 -run=^$ ./... > "''${TMPDIR:-/tmp}/bench-new.txt"
-              benchstat bench-baseline.txt "''${TMPDIR:-/tmp}/bench-new.txt"
-            '';
+            bench-diff =
+              mkBenchApp "bench-diff" "Compare fresh benchmarks against bench-baseline.txt with benchstat"
+                ''
+                  if [ ! -f bench-baseline.txt ]; then
+                    echo "bench-baseline.txt not found. Run 'nix run .#bench-baseline' first."
+                    exit 1
+                  fi
+                  go test -bench=. -benchmem -count=6 -run=^$ ./... > "''${TMPDIR:-/tmp}/bench-new.txt"
+                  benchstat bench-baseline.txt "''${TMPDIR:-/tmp}/bench-new.txt"
+                '';
 
-            coverage = mkApp "coverage" ''
+            coverage = mkApp "coverage" "Run tests and print per-function coverage" ''
               cd "${self}"
               COVERAGE_OUT="''${TMPDIR:-/tmp}/coverage.out"
               go test -coverprofile="$COVERAGE_OUT" ./...
@@ -302,11 +309,11 @@
 
             # Writes to the working tree, so run in the CALLER's directory
             # (not the read-only nix store copy). Invoke from repo root.
-            tidy = mkApp "tidy" ''
+            tidy = mkApp "tidy" "Run go mod tidy in the working tree" ''
               go mod tidy
             '';
 
-            check = mkApp "check" ''
+            check = mkApp "check" "Full local quality gate: vet, lint, and tests" ''
               cd "${self}"
               echo "Running vet..."
               go vet ./...
@@ -319,7 +326,7 @@
 
             # Writes to the working tree (tidy + fmt), so run in the CALLER's
             # directory — not the read-only nix store copy. Invoke from repo root.
-            ci = mkApp "ci" ''
+            ci = mkApp "ci" "Format, tidy, vet, lint, and test the working tree" ''
               echo "Running tidy..."
               go mod tidy
               echo "Running fmt..."

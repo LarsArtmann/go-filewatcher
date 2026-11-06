@@ -5,6 +5,14 @@ Point-in-time session reports, newest first. Resolved reports are moved to
 into [`../../TODO_LIST.md`](../../TODO_LIST.md) — the archive is history, the
 TODO list is the live backlog.
 
+## Active (2026-11-06)
+
+| Report                                                                                                           | Topic                                                                                                                                                                  | State                                                                                                     |
+| ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| [07-22 buildflow-green lint fix + docs ratchet](./2026-11-06_07-22_buildflow-green-lint-fix-and-docs-ratchet.md) | BuildFlow exit 69 → 0: varnamelen rename in `health_test.go`, AGENTS.md 266 → 179, flake app meta, pnpm audit 19 → 0, docs-gates 4 red → 5 PASS, 22 findings baselined | Steps done; f1–f24 harvested into TODO_LIST; 3 owner questions open (skips, 350-line policy, runner pins) |
+| [06-46 health API session](./2026-11-06_06-46_go-filewatcher-health-api-session.md)                              | `Healthy(ctx)` + introspectable circuit breaker shipped                                                                                                                | Done; its 2 open §f items harvested into ROADMAP on 2026-11-06                                            |
+| [06-37 otel audit + go floor restore](./2026-11-06_06-37_otel-audit-and-go-floor-restore.md)                     | OTel support audit, `go 1.26.7` floor restored                                                                                                                         | Done; no open items                                                                                       |
+
 ## Active (2026-10-07)
 
 | Report                                                                                                             | Topic                                                                                                                                                                                   | State                                                                                                                                                                                          |

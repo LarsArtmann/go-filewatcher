@@ -1,13 +1,33 @@
-# go.mod's `go 1.26.7` patch floor is documented policy (AGENTS.md: matches the
-# CI matrix and the encoding/json/v2 GOEXPERIMENT toolchain). Two pipeline
-# tools fight it, verified by strace attribution on 2026-10-07:
+# BuildFlow project configuration (minimal — everything else stays auto-detected).
+#
+# go.mod's `go 1.26.7` patch floor is documented policy (AGENTS.md + the
+# `go-directive` flake check and CI job: the floor matches the CI matrix and the
+# encoding/json/v2 GOEXPERIMENT toolchain). Two pipeline tools fight that line,
+# verified by strace attribution on 2026-10-07:
 #   - go-version-auto-configure wants a major.minor-only directive.
 #   - go-mod-update minor mode bumps the directive to the latest Go release;
 #     patch mode fails outright on this module graph. Run `buildflow update`
 #     explicitly instead.
-# go-structure-linter UNSKIPPED 2026-10-09 (SUPERB plan A5): its go-version
-# repair is detect-only in v0.11.3 (it no longer bumps the directive) and
-# root-package-files auto-defers for this flat single-package layout.
+# go-structure-linter stays ENABLED: its go-version repair is detect-only in
+# v0.11.3 and its root-package-files rule auto-defers for this flat
+# single-package layout.
 skip_steps:
   - go-version-auto-configure
   - go-mod-update
+
+# Committed accepted-noise baseline (`buildflow baseline`).
+#
+# Holds two documented backlogs whose findings are pre-existing, not new:
+#   1. file-size-check — 20 files over the 350-line budget, recorded as a split
+#      campaign in TODO_LIST.md. Baselining beats raising max_file_size: the
+#      gate stays armed for NEW oversized files (a changed line count mints a new
+#      finding ID and re-flags), while the legacy backlog does not block every
+#      run. NOTE: max_file_size is currently INERT in BuildFlow (BuildFlow#75,
+#      re-verified 2026-11-06: the YAML key and BUILDFLOW_MAX_FILE_SIZE_LINES
+#      both leave the step at 350) — another reason not to rely on it.
+#   2. cue-vet — ci.yml/release.yml deliberately pin ubuntu-24.04 (and run a
+#      24.04 + 26.04 test matrix) instead of the fleet's `ubuntu-latest`
+#      allowlist, for runner determinism through the ubuntu-latest 26.04
+#      rollout (complete 2026-11-19). Transitional deviation tracked in
+#      TODO_LIST.md; re-check and remove these entries once the rollout lands.
+baseline: .buildflow-baseline.json

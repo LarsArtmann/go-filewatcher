@@ -1,9 +1,9 @@
 module github.com/larsartmann/go-filewatcher/v2
 
-go 1.26.7
+go 1.27
 
 require (
-	github.com/LarsArtmann/gogenfilter/v3 v3.6.1
+	github.com/LarsArtmann/gogenfilter/v3 v3.7.0
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06
 	golang.org/x/text v0.43.0

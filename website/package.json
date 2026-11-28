@@ -35,14 +35,14 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.6",
-    "@astrojs/starlight": "^0.42.10",
+    "@astrojs/starlight": "^0.43.1",
     "@tailwindcss/vite": "^4.3.5",
     "astro": "^7.4.13",
     "tailwindcss": "^4.3.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
-    "html-validate": "^11.21.1",
+    "html-validate": "^11.22.1",
     "typescript": "^7.0.2"
   },
   "overrides": {
